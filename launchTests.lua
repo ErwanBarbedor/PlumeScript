@@ -22,15 +22,14 @@ local function loadTests(filenames)
     local tests = {}
 
     for filename in filenames:gmatch("%S+") do
-        local content = io.open("tests/" .. filename .. ".plume"):read("*a")
-        
+        local content = io.open("tests/" .. filename .. ".plume"):read("*a"):gsub('\r', '')
         -- Test block structure:
         -- /// Test "Name"
         -- [code]
         -- /// ResultType (Error/Result)
         -- [expected output]
         -- /// End
-        for name, code, resultKind, result in content:gmatch('/// Test "(.-)"\n(.-)\n/// (.-)\n(.-)\n/// End') do
+        for name, code, resultKind, result in content:gmatch('/// Test "(.-)"\r?\n(.-)\r?\n/// (.-)\r?\n(.-)\r?\n/// End') do
             table.insert(tests, {
                 file = filename,
                 name = name,
@@ -93,29 +92,31 @@ end
 function showTestsResult(tests, successCount)
     local _VERSION = _VERSION
     if jit then  -- Detect LuaJIT runtime
-        _VERSION = "LuaJIT"
+        _VERSION = "Lua JIT"
     end
 
     print(plume._VERSION .. ' (' .. _VERSION .. ") : " 
         .. successCount .. "/" .. #tests 
-        .. " tests passed.\n")
+        .. " tests passed.")
 
-    for _, test in ipairs(tests) do
-        if not test.success then
-            -- Format expected/actual with error type annotations
-            local expected = test.result
-            local obtained = test.failInfos.result or ""
+    if arg[1] ~= "silent" then
+        for _, test in ipairs(tests) do
+            if not test.success then
+                -- Format expected/actual with error type annotations
+                local expected = test.result
+                local obtained = test.failInfos.result or ""
 
-            -- Prefix error types for visual distinction
-            expected = test.resultKind == "Error" and "(error)" .. expected or expected
-            obtained = test.failInfos.resultKind == "Error" and "(error)" .. obtained or obtained
+                -- Prefix error types for visual distinction
+                expected = test.resultKind == "Error" and "(error)" .. expected or expected
+                obtained = test.failInfos.resultKind == "Error" and "(error)" .. obtained or obtained
 
-            -- hint: gsub used for multi-line result indentation
-            print('Test "' .. test.file .. "/" .. test.name .. '" failed.')
-            print("\tExpected:")
-            print("\t\t" .. expected:gsub("\n", "\n\t\t"))
-            print("\tObtained:")
-            print("\t\t" .. obtained:gsub("\n", "\n\t\t"))
+                -- hint: gsub used for multi-line result indentation
+                print('Test "' .. test.file .. "/" .. test.name .. '" failed.')
+                print("\tExpected:")
+                print("\t\t" .. expected:gsub("\n", "\n\t\t"))
+                print("\tObtained:")
+                print("\t\t" .. obtained:gsub("\n", "\n\t\t"))
+            end
         end
     end
 end

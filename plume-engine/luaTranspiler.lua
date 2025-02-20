@@ -15,15 +15,21 @@ If not, see <https://www.gnu.org/licenses/>.
 
 return function(plume)
 
-    local INITIAL_DECLARATION = "local __plume_concat = table.concat"
-
     local contains           = plume.utils.containsWord
     local STATEMENTS         = "FOR ASSIGNMENT LOCAL_ASSIGNMENT IF ELSE ELSEIF WHILE MACRO LOCAL_MACRO RETURN BREAK"
 
     local transpileToLua
 
     ---Main transpilation entry point
-    plume.transpileToLua = function(ast)
+    plume.transpileToLua = function(ast, luaVersion)
+
+        if not luaVersion then
+            if jit then
+                luaVersion = "JIT"
+            else
+                luaVersion = _VERSION:match('%S+$')
+            end
+        end
 
         local map = {{}}
 
@@ -32,10 +38,19 @@ return function(plume)
             return "\n"
         end
 
-        local function insertAll(t1, t2)
-            table.move(t2, 1, #t2, #t1 + 1, t1)
-        end
+        local insertAll
 
+        if table.move then
+            function insertAll(t1, t2)
+                table.move(t2, 1, #t2, #t1 + 1, t1)
+            end
+        else
+            function insertAll(t1, t2)
+                for i = 1, #t2 do
+                    table.insert(t1, t2[i])
+                end
+            end
+        end
         local insert = table.insert
 
         local function parseChildren (node)
@@ -279,11 +294,6 @@ return function(plume)
                 local mainBlock = (node.indent or 0) >= 0
                 local result = transpileChildren (node, mainBlock, true, true)
 
-                if not mainBlock then
-                    table.insert(result, 1, newline())
-                    table.insert(result, 1, INITIAL_DECLARATION)
-                end
-
                 return result
             end,
 
@@ -303,13 +313,13 @@ return function(plume)
                 if not inlineArgs and not extendedArgs then
                     return {node.content, "()"}
                 elseif not extendedArgs then
-                    local result = {node.content, "(unpack(", newline()}
+                    local result = {node.content, "(__plume_unpack(", newline()}
                     insertAll(result, transpileChildren (inlineArgs, true, true))
                     insert(result, "))")
                     return result
                 elseif not inlineArgs then
                     if extendedArgs.returnType == "TABLE" then
-                        local result = {node.content, "(unpack(", newline()}
+                        local result = {node.content, "(__plume_unpack(", newline()}
                         insertAll(result, transpileChildren (extendedArgs, true, true))
                         insert(result, "))")
                         return result
@@ -323,7 +333,7 @@ return function(plume)
                     local inline   = transpileChildren (inlineArgs, true, true)
                     local extended = transpileChildren (extendedArgs, true, true)
 
-                    local result = {newline(), node.content, "(unpack("}
+                    local result = {newline(), node.content, "(__plume_unpack("}
                     insert(result, newline())
                     insert(result, "plume.table.merge(")
                     insert(result, newline())
@@ -476,6 +486,17 @@ return function(plume)
             end
         end
 
-        return table.concat(transpileToLua(ast))
+        local result = {"local __plume_concat = table.concat"}
+
+        table.insert(result, newline())
+        if contains("5.1 JIT", luaVersion) then
+            table.insert(result, "__plume_unpack = unpack")
+        else
+            table.insert(result, "__plume_unpack = table.unpack")
+        end
+        table.insert(result, newline())
+
+        insertAll(result, transpileToLua(ast))
+        return table.concat(result)
     end
 end

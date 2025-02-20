@@ -48,15 +48,20 @@ function plume.execute(text)
     code   = plume.beautifier(code)
 
     -- Compile generated Lua code with custom environment
-    local compiledFunction = load(code)
-    
-    -- Create isolated environment that falls back to global namespace
+    -- And create isolated environment that falls back to global namespace
     -- while exposing plume standard library explicitly
+
+    local compiledFunction
     local env = setmetatable({
         plume = plume.plumeStdLib
     }, {__index = _G})
-    
-    setfenv(compiledFunction, setmetatable({}, {__index = env}))
+
+    if setfenv then
+        compiledFunction = loadstring(code)
+        setfenv(compiledFunction, setmetatable({}, {__index = env}))
+    else
+        compiledFunction = load(code, nil, nil, env)
+    end
     
     return compiledFunction()
 end
