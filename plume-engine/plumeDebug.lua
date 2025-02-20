@@ -37,20 +37,30 @@ return function(plume)
     end
 
 
-    local function printAstNode(node, indent)
+    function plume.printParseResult(node, indent)
         indent = indent or ""
         if node.children then
             print(indent..node.returnType .. " " .. node.kind .. ': ' .. (node.content or ""))
 
             for _, child in ipairs(node.children) do
-                printAstNode(child, indent.."\t")
+                plume.printParseResult(child, indent.."\t")
             end
         else
             print(indent..node.kind .. ': ' .. node.content)
         end
     end
 
-    plume.printParseResult = function(ast)
-        printAstNode(ast)
+    function plume.printDebugInfo (code, map)
+        local noline = 0
+
+        for line in (code.."\n"):gmatch('[ \t]*([^\n]*)\n') do
+            noline = noline + 1
+            print("Line n°" .. noline .. " : " .. line)
+            if map[noline] and #map[noline]>0 then
+                for _, token in ipairs(map[noline]) do
+                    print("\t- " .. token.kind .. " " .. (token.content or ""))
+                end
+            end
+        end
     end
 end

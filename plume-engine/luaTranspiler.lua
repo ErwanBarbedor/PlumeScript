@@ -38,6 +38,10 @@ return function(plume)
             return "\n"
         end
 
+        local function use (token)
+            table.insert(map[#map], token)
+        end
+
         local insertAll
 
         if table.move then
@@ -63,9 +67,7 @@ return function(plume)
 
             for _, child in ipairs(node.children) do
                 local isStatement = contains(STATEMENTS, child.kind)
-                local content = transpileToLua(child)
-                assert(type(content) == "table", "WRONG HANDLER "..child.kind.. " (return " .. type(content) .. ")")
-
+                -- local content = transpileToLua(child)
                 if child.returnType == "NIL" or isStatement then
                     onlyValues = false
 
@@ -76,7 +78,7 @@ return function(plume)
                         end
                     end
 
-                    table.insert(result, {store=false, kind="node", content=content})
+                    table.insert(result, {store=false, kind="node", content=child})
 
                     -- Cannot count inside constrole strcutre
                     if contains("IF ELSEIF ELSE FOR WHILE", child.kind) then
@@ -87,12 +89,12 @@ return function(plume)
                     if valueCount ~= -1 then
                         valueCount = valueCount+1
                     end
-                    table.insert(acc, content)
+                    table.insert(acc, child)
                 else
                     if valueCount ~= -1 then
                         valueCount = valueCount+1
                     end
-                    table.insert(result, {store=true, kind="node", content=content})
+                    table.insert(result, {store=true, kind="node", content=child})
                 end
             end
 
@@ -149,12 +151,9 @@ return function(plume)
                     insert(result, newline())
                 end
                 for i, content in ipairs(infos[1].content) do
-                    insertAll(result, content)
+                    insertAll(result, transpileToLua(content))
                     if i < #infos[1].content then
                         insert(result, sep)
-                    end
-                    if not directConcat then
-                        insert(result, newline())
                     end
                 end
 
@@ -174,7 +173,6 @@ return function(plume)
                 local firstValueFound = false
                 local alreadyReturn   = false
                 for index, info in ipairs(infos) do
-
                     if info.store then
                         local values = info.content
                         if info.kind == "node" then
@@ -197,7 +195,7 @@ return function(plume)
                                 insert(result, "{")
                             end
 
-                            insertAll(result, values[1])
+                            insertAll(result, transpileToLua(values[1]))
 
                             if node.returnType == "TABLE" then
                                 insert(result, newline())
@@ -209,7 +207,7 @@ return function(plume)
                                 for _, value in ipairs(values) do
                                     insert(result, newline())
                                     insert(result, "table.insert(__plume_temp, ")
-                                    insertAll(result, value )
+                                    insertAll(result, transpileToLua(value))
                                     insert(result, ")")
                                 end
                             elseif #values > 0 then
@@ -218,7 +216,7 @@ return function(plume)
                                 insert(result, "local __plume_temp = {")
                                 for _, value in ipairs(values) do
                                     insert(result, newline())
-                                    insertAll(result, value)
+                                    insertAll(result, transpileToLua(value))
                                     insert(result, ", ")
                                 end
                                 insert(result, newline())
@@ -228,11 +226,9 @@ return function(plume)
                                 insert(result, newline())
                                 insert(result, "local __plume_temp = {}")
                             end
-                        
                         end
                     else
-                        insert(result, newline())
-                        insertAll(result, info.content)
+                        insertAll(result, transpileToLua(info.content))
                     end
                 end
 
@@ -260,6 +256,7 @@ return function(plume)
             local body       = node.children[2]
 
             local result = {newline()}
+            use(node)
 
             if islocal then
                 insert(result, "local ")
@@ -280,17 +277,17 @@ return function(plume)
                 end
             end
             insert(result, ")")
-            insert(result, newline())
             insertAll(result, transpileChildren (body, false, true, true))
             insert(result, newline())
             insert(result, "end")
 
-           return result
+            return result
         end
 
         -- AST node type to handler mapping
         local tokenHandlers = {
             BLOCK = function (node)
+                use(node)
                 local mainBlock = (node.indent or 0) >= 0
                 local result = transpileChildren (node, mainBlock, true, true)
 
@@ -361,12 +358,14 @@ return function(plume)
 
             ASSIGNMENT = function (node)
                 local result = {newline(), node.content, " = "}
+                use(node)
                 insertAll(result, transpileChildren (node, true, true))
                 return result
             end,
 
             LOCAL_ASSIGNMENT = function (node)
                 local result = {newline(), "local ", node.content, " = "}
+                use(node)
                 insertAll(result, transpileChildren (node, true, true))
                 return result
             end,
@@ -390,23 +389,27 @@ return function(plume)
             end,
 
             LIST_ITEM = function (node)
+                use(node)
                 return transpileChildren (node, true, true)
             end,
 
             HASH_ITEM = function (node)
                 local result = {newline(), node.content, " = "}
+                use(node)
                 insertAll(result, transpileChildren (node, true, true))
                 return result
             end,
 
             RETURN = function (node)
                 local result = {newline(), "return "}
+                use(node)
                 insertAll(result, transpileChildren (node, true, true))
                 return result
             end,
 
             FOR = function (node)
                 local result = {newline()}
+                use(node)
                 insertAll(result, {"for", node.content, " do"})
                 insertAll(result, transpileChildren (node, false, false))
                 insert(result, newline())
@@ -416,6 +419,7 @@ return function(plume)
 
             WHILE = function (node)
                 local result = {newline()}
+                use(node)
                 insertAll(result, {"while", node.content, " do"})
                 insertAll(result, transpileChildren (node, false, false))
                 insert(result, newline())
@@ -425,6 +429,7 @@ return function(plume)
 
             IF = function (node)
                 local result = {newline()}
+                use(node)
                 insertAll(result, {"if", node.content, " then"})
                 insertAll(result, transpileChildren (node, false, false))
                 if not node.noend then
@@ -436,6 +441,7 @@ return function(plume)
 
             ELSEIF = function (node)
                 local result = {newline()}
+                use(node)
                 insertAll(result, {"elseif", node.content, " then"})
                 insertAll(result, transpileChildren (node, false, false))
                 if not node.noend then
@@ -447,6 +453,7 @@ return function(plume)
 
             ELSE = function (node)
                 local result = {newline()}
+                use(node)
                 insertAll(result, {"else"})
                 insertAll(result, transpileChildren (node, false, false))
                 insert(result, newline())
@@ -456,11 +463,13 @@ return function(plume)
 
             BREAK = function (node)
                 local result = {newline()}
+                use(node)
                 insert(result, "break")
                 return result
             end,
 
             TEXT = function (node)
+                use(node)
                 if tonumber(node.content) then
                     return {node.content}
                 else
@@ -469,10 +478,12 @@ return function(plume)
             end,
 
             VARIABLE = function (node)
+                use(node)
                 return {node.content}
             end,
 
             LUA_EXPRESSION = function (node)
+                use(node)
                 return {node.content}
             end
         }
@@ -494,9 +505,8 @@ return function(plume)
         else
             table.insert(result, "__plume_unpack = table.unpack")
         end
-        table.insert(result, newline())
 
         insertAll(result, transpileToLua(ast))
-        return table.concat(result)
+        return table.concat(result), map
     end
 end

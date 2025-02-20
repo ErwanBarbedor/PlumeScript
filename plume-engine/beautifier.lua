@@ -51,7 +51,7 @@ return function(plume)
         end
 
         -- Main processing loop
-        for line in code:gmatch("[^\n]+") do
+        for line in (code.."\n"):gmatch("([^\n]*)\n") do
             -- Process DECREMENT rules before adding line
             for _, rule in ipairs(INDENT_RULES.decrement) do
                 if match_line(line, rule) then
