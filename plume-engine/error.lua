@@ -33,7 +33,7 @@ return function (plume)
             end
         end
 
-        return string.format("File %s, line n°%i : %s", source.filename, lineCount, capturedLine)
+        return string.format("File %s, line n°%i :\n    %s", source.filename:sub(2, -1), lineCount, capturedLine)
     end
 
     ---Throws a contextual error with source code location information
@@ -41,7 +41,7 @@ return function (plume)
     ---@param msg string Error message to display
     function plume.error (source, msg)
         local line = getLine(source)
-        error (msg .. "\n    " .. line, -1)  -- -1 level hides this function from stack trace
+        error (msg .. "\n" .. line, -1)  -- -1 level hides this function from stack trace
     end
 
     ---Handles type mismatch errors within blocks
@@ -53,5 +53,32 @@ return function (plume)
             "mixedBlockError : Given the previous expressions in this block, it was expected to be of type %s, but a %s expression has been supplied",
             expectedType, givenType
         ))
+    end
+
+    function plume.convertLuaError(msg, map)
+        local result = {}
+        local filename, noline, message = msg:match('(.-):(.-):%s*(.*)')
+
+        table.insert(result, "Error : ")
+        table.insert(result, message)
+        local tokens = map[tonumber(noline)]
+
+        local lineFound = false
+
+        for _, token in ipairs(tokens) do
+            if token.sourceToken and token.sourceToken.source then
+                table.insert(result, "\n")
+                table.insert(result, getLine(token.sourceToken.source))
+                table.insert(result, "\n(Error handling is still under development, so locating the lua error in the Plume code may be imprecise.)")
+                lineFound = true
+                break
+            end
+        end
+
+        if not lineFound then
+            table.insert(result, "\nUnable to locate the error in a Plume file.")
+        end
+        
+        return table.concat(result)
     end
 end

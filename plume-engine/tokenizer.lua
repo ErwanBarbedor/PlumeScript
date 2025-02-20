@@ -57,7 +57,7 @@ return function(plume)
         -- Factory for source metadata objects
         local source = function(length)
             return {
-                filename = filename or "<string>",
+                filename = filename,
                 sourceFile = text, -- NOTE: Storing entire text may be memory-intensive for large files
                 absolutePosition = pos, -- Starting position of token
                 length = length -- Token content length

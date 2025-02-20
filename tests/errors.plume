@@ -4,7 +4,8 @@ a =
     Bar
 /// Error
 mixedBlockError : Given the previous expressions in this block, it was expected to be of type TABLE, but a TEXT expression has been supplied
-    File <string>, line n°3 : Bar
+File <string>, line n°3 :
+    Bar
 /// End
 
 /// Test "Mixed Table/Text"
@@ -13,7 +14,8 @@ a =
     - Bar
 /// Error
 mixedBlockError : Given the previous expressions in this block, it was expected to be of type TEXT, but a TABLE expression has been supplied
-    File <string>, line n°3 : - Bar
+File <string>, line n°3 :
+    - Bar
 /// End
 
 /// Test "Mixed Table/Text"
@@ -22,5 +24,15 @@ a =
     return Bar
 /// Error
 mixedBlockError : Given the previous expressions in this block, it was expected to be of type TEXT, but a VALUE expression has been supplied
-    File <string>, line n°3 : return Bar
+File <string>, line n°3 :
+    return Bar
+/// End
+
+/// Test "Evaluation Error"
+a = $(1+b)
+/// Error
+Error : attempt to perform arithmetic on global 'b' (a nil value)
+File <string>, line n°1 :
+    a = $(1+b)
+(Error handling is still under development, so locating the lua error in the Plume code may be imprecise.)
 /// End

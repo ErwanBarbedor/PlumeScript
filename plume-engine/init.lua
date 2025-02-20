@@ -37,15 +37,16 @@ require "plume-engine/plumeDebug"    (plume)
 --- Execute Plume code through full processing pipeline
 --- @param text string Input Plume code to execute
 --- @return any Result of executed code
-function plume.execute(text)
+function plume.execute(text, filename)
     -- Pipeline stages: Text -> Tokens -> AST -> Lua code -> Formatted code
-    local tokens, ast, code
+    local tokens, ast, code, map
+    filename = filename or "@<string>"
 
-    tokens = plume.tokenize(text)
-    tokens = plume.parse(tokens)
-    ast    = plume.makeAST(tokens)
-    code   = plume.transpileToLua(ast)
-    code   = plume.beautifier(code)
+    tokens    = plume.tokenize(text, filename)
+    tokens    = plume.parse(tokens)
+    ast       = plume.makeAST(tokens)
+    code, map = plume.transpileToLua(ast)
+    code      = plume.beautifier(code)
 
     -- Compile generated Lua code with custom environment
     -- And create isolated environment that falls back to global namespace
@@ -57,13 +58,19 @@ function plume.execute(text)
     }, {__index = _G})
 
     if setfenv then
-        compiledFunction = loadstring(code)
+        compiledFunction = loadstring(code, filename)
         setfenv(compiledFunction, setmetatable({}, {__index = env}))
     else
-        compiledFunction = load(code, nil, nil, env)
+        compiledFunction = load(code, filename, nil, env)
     end
     
-    return compiledFunction()
+    local sucess, result = pcall(compiledFunction)
+    
+    if sucess then
+        return result
+    else
+        error(plume.convertLuaError(result, map), -1)
+    end
 end
 
 return plume
