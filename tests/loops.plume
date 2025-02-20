@@ -5,6 +5,16 @@ for i=1, 5
 12345
 /// End
 
+/// Test "Simple while"
+local i = 100
+while i>0
+    i = $(i-1)
+$i
+/// Result
+0
+/// End
+
+
 /// Test "gmatch for"
 for m in ("foo bar"):gmatch("%S+")
     $m

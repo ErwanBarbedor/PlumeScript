@@ -228,7 +228,7 @@ return function (plume)
                 popContext(currentIndent)  -- Close completed contexts
 
             -- Control flow constructs
-            elseif contains("FOR IF ELSEIF ELSE", token.kind) then
+            elseif contains("FOR IF ELSEIF ELSE WHILE", token.kind) then
                 pushContext(token, token.kind, currentIndent+1, token.content)
 
             -- Return statement handling
