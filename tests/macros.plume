@@ -1,0 +1,136 @@
+/// Test "Simple macro and call"
+def foo()
+    bar
+$foo()
+/// Result
+bar
+/// End
+
+/// Test "Simple local macro and call"
+local def foo()
+    bar
+$foo()
+/// Result
+bar
+/// End
+
+/// Test "Alternative declaration"
+foo = def ()
+    bar
+$foo()
+/// Result
+bar
+/// End
+
+/// Test "Alternative declaration - local"
+local foo = def ()
+    bar
+$foo()
+/// Result
+bar
+/// End
+
+/// Test "Macro return"
+def foo()
+    return bar
+
+$foo()
+/// Result
+bar
+/// End
+
+/// Test "Factorial"
+def fact(n)
+    if n==0
+        return 1
+    else
+        return $(n * fact(n-1))
+
+10! = $fact(10)
+/// Result
+10! = 3628800
+/// End
+
+/// Test "Macro with parameters"
+def double(x)
+    $x $x
+$(double("foo"))
+/// Result
+foo foo
+/// End
+
+/// Test "Extended Parameters - single value"
+def double(x)
+    $x $x
+$double()
+    Foo
+/// Result
+Foo Foo
+/// End
+
+/// Test "Extended Parameters - double value"
+def keyvalue(key, value)
+    $key \= $value
+$keyvalue()
+    - Foo
+    - Bar
+/// Result
+Foo = Bar
+/// End
+
+/// Test "Extended Parameters - mixed args 1"
+def concat(x, y)
+    $x$y
+$concat(Foo)
+    Bar
+/// Result
+FooBar
+/// End
+
+/// Test "Extended Parameters - mixed args 2"
+def concat(x, y)
+    $x$y
+$concat(Foo)
+    - Bar
+/// Result
+FooBar
+/// End
+
+/// Test "Nested Call"
+def double(x)
+    $x $x
+$double($double(Foo))
+/// Result
+Foo Foo Foo Foo
+/// End
+
+/// Test "Extended Parameters & Affectation"
+def double(x)
+    $x $x
+a = $double()
+    Foo
+$a
+/// Result
+Foo Foo
+/// End
+
+/// Test "Void capture"
+local x = 0
+def inc()
+    x = $(x+1)
+    Foo
+
+$inc()\n
+local void = $inc()
+$x
+/// Result
+Foo
+2
+/// End
+
+/// Test "Empty Macro"
+def void()
+foo
+/// Result
+foo
+/// End

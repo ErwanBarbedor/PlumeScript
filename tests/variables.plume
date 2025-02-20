@@ -1,0 +1,55 @@
+/// Test "Simple affectation"
+name = John
+/// Result
+nil
+/// End
+
+/// Test "Affectation and interpolation"
+name = John
+$name
+/// Result
+John
+/// End
+
+/// Test "Interpolation between words"
+name = John
+Hello $name!
+/// Result
+Hello John!
+/// End
+
+/// Test "Block affectation"
+name =
+    John
+    Doe
+Hello $name!
+/// Result
+Hello JohnDoe!
+/// End
+
+/// Test "local affectation"
+local name = John
+Hello $name!
+/// Result
+Hello John!
+/// End
+
+/// Test "global scope"
+name = John
+some_block =
+    name = Doe
+    
+Hello $name!
+/// Result
+Hello Doe!
+/// End
+
+/// Test "local scope"
+local name = John
+some_block =
+    local name = Doe
+
+Hello $name!
+/// Result
+Hello John!
+/// End

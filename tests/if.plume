@@ -1,0 +1,51 @@
+/// Test "Simple if"
+a = 5
+if a == 5
+    foo
+/// Result
+foo
+/// End
+
+/// Test "Simple if-else"
+a = 5
+if a == 6
+    foo
+else
+    bar
+/// Result
+bar
+/// End
+
+/// Test "Simple if-elseif"
+a = 5
+if a == 6
+    foo
+elseif a == 5
+    bar
+/// Result
+bar
+/// End
+
+/// Test "Simple if-elseif-elseif"
+a = 5
+if a == 6
+    foo
+elseif a == 7
+    baz
+elseif a == 5
+    bar
+/// Result
+bar
+/// End
+
+/// Test "Simple if-elseif-else"
+a = 5
+if a == 6
+    foo
+elseif a == 7
+    baz
+else
+    bar
+/// Result
+bar
+/// End

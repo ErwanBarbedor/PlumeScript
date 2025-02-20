@@ -1,0 +1,80 @@
+/// Test "Simple list"
+a =
+    - Foo
+    - Bar
+for _, x in ipairs(a)
+    $x
+/// Result
+FooBar
+/// End
+
+/// Test "Simple hash"
+a =
+    key: value
+
+$(a.key)
+/// Result
+value
+/// End
+
+/// Test "List with computation"
+a =
+    i = 5
+    - $i
+    i = $(i*2)
+    - $i
+
+for _, x in ipairs(a)
+    $x
+/// Result
+510
+/// End
+
+/// Test "One item list"
+a =
+    - Foo
+$(a[1])
+/// Result
+Foo
+/// End
+
+/// Test "Mixed table"
+a =
+    - item
+    key: value
+$(a[1]) $(a.key)
+/// Result
+item value
+/// End
+
+/// Test "Empty line don't break scope"
+a =
+    - bar
+
+    - baz
+a[2] = $(a[2])
+/// Result
+a[2] = baz
+/// End
+
+/// Test "Macro in table"
+lib =
+    foo: def ()
+        bar
+
+    double: def (x)
+        $x $x
+$(lib.foo())
+/// Result
+bar
+/// End
+
+/// Test "Macro in table 2"
+lib =
+    init: def (self, x)
+        self.x = $x
+void = $(lib:init(3))
+$(lib.x)
+/// Result
+3
+/// End

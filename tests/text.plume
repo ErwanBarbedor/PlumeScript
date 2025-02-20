@@ -1,0 +1,61 @@
+/// Test "Simple Text - 1 line"
+Hello!
+/// Result
+Hello!
+/// End
+
+/// Test "Simple Text - 2 lines"
+Hello!
+World!!
+/// Result
+Hello!World!!
+/// End
+
+/// Test "Escape quote"
+Hello "John".
+/// Result
+Hello "John".
+/// End
+
+/// Test "Special char : newline"
+\n
+/// Result
+
+
+/// End
+
+/// Test "Special char : tab"
+\t
+/// Result
+	
+/// End
+
+/// Test "Special char : space"
+\s
+/// Result
+ 
+/// End
+
+/// Test "Escape"
+foo\: bar
+/// Result
+foo: bar
+/// End
+
+/// Test "Malformed syntax count as text - 1"
+-bar
+/// Result
+-bar
+/// End
+
+/// Test "Malformed syntax count as text - 2"
+key:value
+/// Result
+key:value
+/// End
+
+/// Test "Malformed syntax count as text - 3"
+a! = 5
+/// Result
+a! = 5
+/// End

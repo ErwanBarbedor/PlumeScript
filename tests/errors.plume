@@ -1,0 +1,26 @@
+/// Test "Mixed Table/Text"
+a =
+    - Foo
+    Bar
+/// Error
+mixedBlockError : Given the previous expressions in this block, it was expected to be of type TABLE, but a TEXT expression has been supplied
+    File <string>, line n°3 : Bar
+/// End
+
+/// Test "Mixed Table/Text"
+a =
+    Foo
+    - Bar
+/// Error
+mixedBlockError : Given the previous expressions in this block, it was expected to be of type TEXT, but a TABLE expression has been supplied
+    File <string>, line n°3 : - Bar
+/// End
+
+/// Test "Mixed Table/Text"
+a =
+    Foo
+    return Bar
+/// Error
+mixedBlockError : Given the previous expressions in this block, it was expected to be of type TEXT, but a VALUE expression has been supplied
+    File <string>, line n°3 : return Bar
+/// End

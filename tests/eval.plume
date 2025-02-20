@@ -1,0 +1,6 @@
+/// Test "Simple eval"
+a = $(1+1)
+$a
+/// Result
+2
+/// End
