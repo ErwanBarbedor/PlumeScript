@@ -14,32 +14,44 @@ If not, see <https://www.gnu.org/licenses/>.
 ]]
 
 return function (plume)
-    
+    ---Finds the source line containing the error position and formats context information
+    ---@param source table Source metadata containing sourceFile, absolutePosition, and filename
+    ---@return string Formatted error context string with filename, line number, and line content
     local function getLine(source)
         local pos = 0
         local lineCount = 0
         local capturedLine
 
+        -- Iterate through lines while tracking cumulative position to find the error line
         for line in (source.sourceFile.."\n"):gmatch('([^\n]*)\n') do
             lineCount = lineCount + 1
-            pos = pos + #line + 1
+            pos = pos + #line + 1  -- +1 accounts for newline character
             if pos >= source.absolutePosition then
+                -- Remove leading whitespace for cleaner error display
                 capturedLine = line:gsub('^%s*', '')
                 break
             end
         end
 
         return string.format("File %s, line n°%i : %s", source.filename, lineCount, capturedLine)
-
     end
 
+    ---Throws a contextual error with source code location information
+    ---@param source table Source metadata
+    ---@param msg string Error message to display
     function plume.error (source, msg)
         local line = getLine(source)
-        error (msg .. "\n    " .. line, -1)
+        error (msg .. "\n    " .. line, -1)  -- -1 level hides this function from stack trace
     end
 
+    ---Handles type mismatch errors within blocks
+    ---@param source table Source metadata
+    ---@param expectedType string Expected expression type
+    ---@param givenType string Actually provided type
     function plume.mixedBlockError (source, expectedType, givenType)
-        
-        plume.error(source, string.format("mixedBlockError : Given the previous expressions in this block, it was expected to be of type %s, but a %s expression has been supplied", expectedType, givenType))
+        plume.error(source, string.format(
+            "mixedBlockError : Given the previous expressions in this block, it was expected to be of type %s, but a %s expression has been supplied",
+            expectedType, givenType
+        ))
     end
 end

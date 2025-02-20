@@ -13,58 +13,61 @@ You should have received a copy of the GNU General Public License along with Plu
 If not, see <https://www.gnu.org/licenses/>.
 ]]
 
+--- Formats Lua code with automatic indentation based on syntax patterns.
+
 return function(plume)
-    -- Defines a code formatter for the plume object
+
     plume.beautifier = function(code)
         local formatted_lines = {}
         local indent_level = 0
 
-        -- Indentation pattern configuration
+        -- Pattern configuration for indentation changes
         local INDENT_RULES = {
-            decrement = {
-                { pattern = "^},?$"},                    -- Closing brace (non-empty)
-                { pattern = "end" },                  -- Block end
-                { pattern = "return $" },
-                { pattern = "^else" },                -- Else control structure
-                { pattern = "^elseif" },              -- Elseif control structure
-                { pattern = "^%)+$" }
+            decrement = {  -- Rules for decreasing indentation BEFORE processing line
+                { pattern = "^},?$"     },  -- Closing brace (with optional comma)
+                { pattern = "end"       },  -- End of block
+                { pattern = "return $"  },  -- Return statement (simplistic match)
+                { pattern = "^else"     },  -- Else/elseif keyword at line start
+                { pattern = "^%)+$"     }   -- Lines ending with closing parentheses
             },
-            increment = {
-                { pattern = "{$"},                    -- Opening brace (non-empty)
-                { pattern = "function" },         -- Function declaration
-                { pattern = "return $" },
-                { pattern = "^for" },                 -- For loop
-                { pattern = "^if" },                  -- If condition
-                { pattern = "^else" },                -- Else block
-                { pattern = "^elseif" },              -- Elseif block
-                { pattern = "^while" },                -- While loop
-                { pattern = "%($" }
+            increment = {  -- Rules for increasing indentation AFTER processing line 
+                { pattern = "{$"        },  -- Opening brace
+                { pattern = "function"  },  -- Function declaration
+                { pattern = "return $"  },  -- Match returns with block creation
+                { pattern = "^for"      },  -- Loop structures
+                { pattern = "^if"       },  -- Conditional blocks
+                { pattern = "^else"     },  -- Else block (indent after)
+                { pattern = "^while"    },  -- While loop
+                { pattern = "%($"       }   -- Opening parenthesis (basic match)
             }
         }
 
-        -- Checks if a line matches a pattern with exclusions
+        --- Checks if a line matches indentation rules while ignoring excluded patterns
+        -- @param line: Raw input line to check
+        -- @param rule: Rule table containing pattern and optional exclude
+        -- @return: boolean indicating match status
         local function match_line(line, rule)
             return line:match(rule.pattern) and not (rule.exclude and line:match(rule.exclude))
         end
 
-        -- Line-by-line processing
+        -- Main processing loop
         for line in code:gmatch("[^\n]+") do
-            -- Decrease indentation before line
+            -- Process DECREMENT rules before adding line
             for _, rule in ipairs(INDENT_RULES.decrement) do
                 if match_line(line, rule) then
-                    indent_level = math.max(indent_level - 1, 0)
-                    break -- Single decrement per line
+                    indent_level = math.max(indent_level - 1, 0)  -- Prevent negative indentation
+                    break  -- Only apply first matching decrement rule
                 end
             end
 
-            -- Format current line
-            table.insert(formatted_lines, string.rep("\t", indent_level) .. line)
+            -- Add line with current indentation
+            table.insert(formatted_lines, string.rep("\t", indent_level) .. line:gsub("^%s+", ""))
 
-            -- Increase indentation after line
+            -- Process INCREMENT rules after adding line
             for _, rule in ipairs(INDENT_RULES.increment) do
                 if match_line(line, rule) then
                     indent_level = indent_level + 1
-                    break -- Single increment per line
+                    break  -- Only apply first matching increment rule
                 end
             end
         end
