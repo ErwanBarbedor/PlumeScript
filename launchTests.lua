@@ -1,127 +1,126 @@
+--[[This file is part of Plume
+
+Plume🪶 is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, version 3 of the License.
+
+Plume🪶 is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+See the GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License along with Plume🪶.
+If not, see <https://www.gnu.org/licenses/>.
+]]
+
 local plume = require("plume-engine/init")
 
---- Load test cases from specified files
---- Parses test files following specific comment patterns to extract test metadata
----@param filenames string Space-separated list of base filenames (without extension)
----@return table Array of test objects containing code and expected results
+--- Load test cases from specified files using custom comment syntax
+---@param filenames string Space-separated list of base filenames
+---@return table Array of test case objects with metadata
 local function loadTests(filenames)
     local tests = {}
 
     for filename in filenames:gmatch("%S+") do
-        -- Read test file content (potential error if file missing - hint: add error handling)
         local content = io.open("tests/" .. filename .. ".plume"):read("*a")
-        -- Pattern matches test blocks with specific comment syntax:
-        -- /// Test "name"
-        -- code
+        
+        -- Test block structure:
+        -- /// Test "Name"
+        -- [code]
         -- /// ResultType (Error/Result)
-        -- expected_output
+        -- [expected output]
         -- /// End
         for name, code, resultKind, result in content:gmatch('/// Test "(.-)"\n(.-)\n/// (.-)\n(.-)\n/// End') do
-            table.insert(
-                tests,
-                {
-                    file = filename,
-                    name = name,
-                    code = code,
-                    resultKind = resultKind,
-                    result = result,
-                    sucess = true,
-                    failInfos = {
-                        resultKind = "",
-                        result = ""
-                    }
+            table.insert(tests, {
+                file = filename,
+                name = name,
+                code = code,
+                resultKind = resultKind,
+                result = result,
+                success = true,
+                failInfos = {
+                    resultKind = "",
+                    result = ""
                 }
-            )
+            })
         end
     end
     return tests
 end
 
---- Execute tests and validate results against expectations
----@param tests table Test cases loaded by loadTests
+--- Execute tests and validate against expected outcomes
+---@param tests table Test cases from loadTests
 ---@return integer Number of successful tests
 local function passTests(tests)
-    local sucessCount = 0
+    local successCount = 0
     for _, test in ipairs(tests) do
-        -- Safely execute test code using plume engine
-        local sucess, result = pcall(plume.execute, test.code)
-        result = tostring(result)  -- Convert all results to strings for comparison
+        local success, result = pcall(plume.execute, test.code)
+        result = tostring(result)  -- Normalize output for comparison
 
-        -- Logic for 'expect valid result' tests
         if test.resultKind == "Result" then
-            if not sucess then
-                test.sucess = false
+            -- Success requires both execution success AND matching output
+            if not success then
+                test.success = false
                 test.failInfos.resultKind = "Error"
                 test.failInfos.result = result
             elseif result ~= test.result then
-                test.sucess = false
+                test.success = false
                 test.failInfos.resultKind = "Result"
                 test.failInfos.result = result
             else
-                sucessCount = sucessCount + 1
+                successCount = successCount + 1
             end
-        -- Logic for 'expect error' tests
-        else
-            if sucess then
-                test.sucess = false
+        else  -- Error expectation tests
+            if success then
+                test.success = false
                 test.failInfos.resultKind = "Result"
                 test.failInfos.result = result
             elseif result ~= test.result then
-                test.sucess = false
+                test.success = false
                 test.failInfos.resultKind = "Result"
                 test.failInfos.result = result
             else
-                sucessCount = sucessCount + 1
+                successCount = successCount + 1
             end
         end
     end
-
-    return sucessCount
+    return successCount
 end
 
---- Display test results with detailed failure information
----@param tests table Test cases after execution
----@param sucessCount integer Number of successful tests
-function showTestsResult(tests, sucessCount)
+--- Display formatted test results with diff highlighting
+---@param tests table Processed test cases
+---@param successCount integer Number of successful tests
+function showTestsResult(tests, successCount)
     local _VERSION = _VERSION
-
-    -- Detect LuaJIT environment
-    if jit then
+    if jit then  -- Detect LuaJIT runtime
         _VERSION = "LuaJIT"
     end
 
-    print(
-        plume._VERSION .. ' (' .. _VERSION .. ") : " 
-            .. sucessCount .. "/" .. #tests 
-        .. " tests passed.\n"
-    )
+    print(plume._VERSION .. ' (' .. _VERSION .. ") : " 
+        .. successCount .. "/" .. #tests 
+        .. " tests passed.\n")
 
-    -- Print detailed failure information for each failed test
     for _, test in ipairs(tests) do
-        if not test.sucess then
-            -- Format expected/obtained values with error type annotations
+        if not test.success then
+            -- Format expected/actual with error type annotations
             local expected = test.result
             local obtained = test.failInfos.result or ""
 
-            -- Add error context prefixes
-            if test.resultKind == "Error" then
-                expected = "(error)" .. expected
-            end
-            if test.failInfos.resultKind == "Error" then
-                obtained = "(error)" .. obtained
-            end
+            -- Prefix error types for visual distinction
+            expected = test.resultKind == "Error" and "(error)" .. expected or expected
+            obtained = test.failInfos.resultKind == "Error" and "(error)" .. obtained or obtained
 
-            -- Print multi-line results with indentation
+            -- hint: gsub used for multi-line result indentation
             print('Test "' .. test.file .. "/" .. test.name .. '" failed.')
             print("\tExpected:")
-            print("\t\t" .. expected:gsub("\n", "\n\t\t") .. "")
+            print("\t\t" .. expected:gsub("\n", "\n\t\t"))
             print("\tObtained:")
-            print("\t\t" .. obtained:gsub("\n", "\n\t\t") .. "")
+            print("\t\t" .. obtained:gsub("\n", "\n\t\t"))
         end
     end
 end
 
--- Load and execute tests
+-- Main execution flow
 local tests = loadTests("block errors eval if loops macros table text variables")
-local sucessCount = passTests(tests)
-showTestsResult(tests, sucessCount)
+local successCount = passTests(tests)
+showTestsResult(tests, successCount)
