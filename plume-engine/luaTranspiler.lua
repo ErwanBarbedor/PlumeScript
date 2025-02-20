@@ -15,10 +15,12 @@ If not, see <https://www.gnu.org/licenses/>.
 
 return function(plume)
 
-    local INITIAL_DECLARATION = "local __plume_concat = table.concat\n"
+    local INITIAL_DECLARATION = "local __plume_concat = table.concat"
 
     local contains           = plume.utils.containsWord
     local STATEMENTS         = "FOR ASSIGNMENT LOCAL_ASSIGNMENT IF ELSE ELSEIF WHILE MACRO LOCAL_MACRO RETURN VOID"
+
+    local transpileToLua
 
     ---Main transpilation entry point
     plume.transpileToLua = function(ast)
@@ -29,6 +31,12 @@ return function(plume)
             table.insert(map, {})
             return "\n"
         end
+
+        local function insertAll(t1, t2)
+            table.move(t2, 1, #t2, #t1 + 1, t1)
+        end
+
+        local insert = table.insert
 
         local function countStaticExpressions (node)
             local staticExpressionCount = 0
@@ -50,7 +58,8 @@ return function(plume)
 
             for _, child in ipairs(node.children) do
                 local isStatement = contains(STATEMENTS, child.kind)
-                local content = plume.transpileToLua(child)
+                local content = transpileToLua(child)
+                assert(type(content) == "table", "WRONG HANDLER "..child.kind.. " (return " .. type(content) .. ")")
 
                 if child.returnType == "NIL" or isStatement then
                     onlyValues = false
@@ -102,16 +111,16 @@ return function(plume)
                 local directConcat = (node.returnType == "TEXT") and valueCount==2
 
                 if forceReturn then
-                    table.insert(result, newline())
-                    table.insert(result, "return ")
+                    insert(result, newline())
+                    insert(result, "return ")
                 end
 
-                 if concat then
-                    table.insert(result, "__plume_concat ")
+                if concat then
+                    insert(result, "__plume_concat ")
                 end
 
                 if wrapInTable then
-                    table.insert(result, "{")
+                    insert(result, "{")
                 end
 
                 local sep
@@ -121,18 +130,22 @@ return function(plume)
                     sep = ", "
                 end
 
-                table.insert(result, newline())
+                if wrapInTable then
+                    insert(result, newline())
+                end
                 for i, content in ipairs(infos[1].content) do
-                    table.insert(result, content)
+                    insertAll(result, content)
                     if i < #infos[1].content then
-                        table.insert(result, sep)
+                        insert(result, sep)
                     end
-                    table.insert(result, newline())
+                    if not directConcat then
+                        insert(result, newline())
+                    end
                 end
 
                 if wrapInTable then
-                    table.insert(result, newline())
-                    table.insert(result, "}")
+                    insert(result, newline())
+                    insert(result, "}")
                 end
 
                 return result
@@ -140,7 +153,7 @@ return function(plume)
                 local result = {}
 
                 if wrapInFunction then
-                    table.insert(result, "(function()")
+                    insert(result, "(function()")
                 end
 
                 local firstValueFound = false
@@ -155,53 +168,72 @@ return function(plume)
 
                         if valueCount == 1 and shouldInitAccumulator and #values>0 then
 
-                            local value = values[1]
-
-                            if node.returnType == "TABLE" then
-                                value = "\n{\n" .. value .. "\n}\n"
-                            end
-
                             if index == #infos then
                                 alreadyReturn = true
-                                table.insert(result, "\nreturn " .. value)
+                                insert(result, newline())
+                                insert(result, "return ")
                             else
-                                table.insert(result, "\nlocal __plume_temp = " .. value)
+                                insert(result, newline())
+                                insert(result, "local __plume_temp = ")
                             end
+
+                            if node.returnType == "TABLE" then
+                                insert(result, newline())
+                                insert(result, "{")
+                            end
+
+                            insertAll(result, values[1])
+
+                            if node.returnType == "TABLE" then
+                                insert(result, newline())
+                                insert(result, "}")
+                            end
+                            
                         else
                             if firstValueFound or (not shouldInitAccumulator) then
                                 for _, value in ipairs(values) do
-                                    table.insert(result, "\ntable.insert(__plume_temp, " .. value .. ")")
+                                    insert(result, newline())
+                                    insert(result, "table.insert(__plume_temp, ")
+                                    insertAll(result, value )
+                                    insert(result, ")")
                                 end
                             elseif #values > 0 then
                                 firstValueFound = true
-                                table.insert(result,
-                                    "\nlocal __plume_temp = {\n"
-                                        .. table.concat(values, ",\n")
-                                    .. "\n}")
+                                insert(result, newline())
+                                insert(result, "local __plume_temp = {")
+                                for _, value in ipairs(values) do
+                                    insert(result, newline())
+                                    insertAll(result, value)
+                                    insert(result, ", ")
+                                end
+                                insert(result, newline())
+                                insert(result, "}")
                             else
                                 firstValueFound = true
-                                table.insert(result, "\nlocal __plume_temp = {}")
+                                insert(result, newline())
+                                insert(result, "local __plume_temp = {}")
                             end
                         
                         end
                     else
-                        table.insert(result, "\n"..info.content)
+                        insert(result, newline())
+                        insertAll(result, info.content)
                     end
                 end
 
                 if (wrapInFunction or forceReturn) and not alreadyReturn then
                     if node.returnType == "TEXT" and (valueCount ~= 1 or not shouldInitAccumulator) then
-                        table.insert(result, newline())
-                        table.insert(result, "return __plume_concat (__plume_temp)")
+                        insert(result, newline())
+                        insert(result, "return __plume_concat (__plume_temp)")
                     elseif node.returnType ~= "NIL" and node.returnType ~= "VALUE" then
-                        table.insert(result, newline())
-                        table.insert(result, "return __plume_temp")
+                        insert(result, newline())
+                        insert(result, "return __plume_temp")
                     end
                 end
 
                 if wrapInFunction then
-                    table.insert(result, newline())
-                    table.insert(result, "end)()")
+                    insert(result, newline())
+                    insert(result, "end)()")
                 end
 
                 return result
@@ -211,28 +243,34 @@ return function(plume)
         local function handlerMACRO (node, islocal)
             local parameters = node.children[1]
             local body       = node.children[2]
-            local result = transpileChildren (body, false, true, true)
 
-            local paramList = {}
-
-            for _, child in ipairs(parameters.children) do
-                if child.kind == "LIST_ITEM" then
-                    table.insert(result, newline())
-                    table.insert(paramList, child.content)
-                end
-            end
-
-            result = "\nfunction (".. table.concat(paramList, ", ") ..")\n"
-                ..table.concat(result, "\n")
-            .. "\nend"
+            local result = {newline()}
 
             if islocal then
-                return "\nlocal " .. node.content.." = " .. result
-            elseif node.content and #node.content > 0 then
-                return "\n"..node.content.." = " .. result
-            else
-                return result
+                insert(result, "local ")
             end
+
+            if node.content and #node.content > 0 then
+                insert(result, node.content)
+                insert(result, " = ")
+            end
+
+            insert(result, "function (")
+            for i, child in ipairs(parameters.children) do
+                if child.kind == "LIST_ITEM" then
+                    table.insert(result, child.content)
+                    if i < #parameters.children then
+                        table.insert(result, ",")
+                    end
+                end
+            end
+            insert(result, ")")
+            insert(result, newline())
+            insertAll(result, transpileChildren (body, false, true, true))
+            insert(result, newline())
+            insert(result, "end")
+
+           return result
         end
 
         -- AST node type to handler mapping
@@ -240,10 +278,10 @@ return function(plume)
             BLOCK = function (node)
                 local mainBlock = (node.indent or 0) >= 0
                 local result = transpileChildren (node, mainBlock, true, true)
-                result = table.concat(result, "")
 
                 if not mainBlock then
-                    result = INITIAL_DECLARATION .. result
+                    table.insert(result, 1, newline())
+                    table.insert(result, 1, INITIAL_DECLARATION)
                 end
 
                 return result
@@ -263,43 +301,64 @@ return function(plume)
 
 
                 if not inlineArgs and not extendedArgs then
-                    return node.content .. "()"
+                    return {node.content, "()"}
                 elseif not extendedArgs then
-                    local result = transpileChildren (inlineArgs, true, true)
-                    result = table.concat(result, "\n")
-                    return node.content .. "(unpack(\n" .. result .. "\n))"
+                    local result = {node.content, "(unpack(", newline()}
+                    insertAll(result, transpileChildren (inlineArgs, true, true))
+                    insert(result, "))")
+                    return result
                 elseif not inlineArgs then
                     if extendedArgs.returnType == "TABLE" then
-                        local result = transpileChildren (extendedArgs, true, true)
-                        result = table.concat(result, "\n")
-                        return node.content .. "(unpack(\n" .. result .. "\n))"
+                        local result = {node.content, "(unpack(", newline()}
+                        insertAll(result, transpileChildren (extendedArgs, true, true))
+                        insert(result, "))")
+                        return result
                     else
-                        local result = transpileChildren (extendedArgs, true, true)
-                        result = table.concat(result, "\n")
-                        return node.content .. "(\n" .. result .. "\n)"
+                        local result = {node.content, "(", newline()}
+                        insertAll(result, transpileChildren (extendedArgs, true, true))
+                        insert(result, ")")
+                        return result
                     end
                 else
-                    local inline   = table.concat(transpileChildren (inlineArgs, true, true), "\n")
-                    local extended = table.concat(transpileChildren (extendedArgs, true, true), "\n")
+                    local inline   = transpileChildren (inlineArgs, true, true)
+                    local extended = transpileChildren (extendedArgs, true, true)
 
+                    local result = {newline(), node.content, "(unpack("}
+                    insert(result, newline())
+                    insert(result, "plume.table.merge(")
+                    insert(result, newline())
+                    insertAll(result, inline)
+                    insert(result, ",")
+                    insert(result, newline())
                     if extendedArgs.returnType == "TEXT" then
-                        extended = "\n{\n" .. extended .. "\n}\n"
+                        insert(result, "{")
+                    end
+                    insertAll(result, extended)
+                    if extendedArgs.returnType == "TEXT" then
+                        insert(result, newline())
+                        insert(result, "}")
                     end
 
-                    return node.content .. "(unpack(\nplume.table.merge(\n" .. inline .. ",\n" .. extended .. "\n)\n))"
+                    insert(result, newline())
+                    insert(result, ")")
+                    insert(result, newline())
+                    insert(result, "))")
+
+                    return  result
                     
                 end
             end,
 
             ASSIGNMENT = function (node)
-                local result = transpileChildren (node, true, true)
-
-                return node.content.." = " .. table.concat(result, "")
+                local result = {newline(), node.content, " = "}
+                insertAll(result, transpileChildren (node, true, true))
+                return result
             end,
 
             LOCAL_ASSIGNMENT = function (node)
-                local result = transpileChildren (node, true, true)
-                return "local " .. node.content.." = " .. table.concat(result, "")
+                local result = {newline(), "local ", node.content, " = "}
+                insertAll(result, transpileChildren (node, true, true))
+                return result
             end,
 
             -- VOID = function (node)
@@ -321,81 +380,89 @@ return function(plume)
             end,
 
             LIST_ITEM = function (node)
-                local result = transpileChildren (node, true, true)
-                return table.concat(result, "")
+                return transpileChildren (node, true, true)
             end,
 
             HASH_ITEM = function (node)
-                local result = transpileChildren (node, true, true)
-                return node.content .. " = " .. table.concat(result, "")
+                local result = {newline(), node.content, " = "}
+                insertAll(result, transpileChildren (node, true, true))
+                return result
             end,
 
             RETURN = function (node)
-                local result = transpileChildren (node, true, true)
-                return "return " .. table.concat(result, "")
+                local result = {newline(), "return "}
+                insertAll(result, transpileChildren (node, true, true))
+                return result
             end,
 
             FOR = function (node)
-                local result = transpileChildren (node, false, false)
+                local result = {newline()}
+                insertAll(result, {"for", node.content, " do"})
+                insertAll(result, transpileChildren (node, false, false))
+                insert(result, newline())
+                insert(result, "end")
+                return result
+            end,
 
-                table.insert(result, 1, "for" .. node.content .. " do")
-                table.insert(result, "end")
-
-                return table.concat(result, "\n")
+            WHILE = function (node)
+                local result = {newline()}
+                insertAll(result, {"while", node.content, " do"})
+                insertAll(result, transpileChildren (node, false, false))
+                insert(result, newline())
+                insert(result, "end")
+                return result
             end,
 
             IF = function (node)
-                local result = transpileChildren (node, false, false)
-
-                table.insert(result, 1, "if" .. node.content .. " then")
-
+                local result = {newline()}
+                insertAll(result, {"if", node.content, " then"})
+                insertAll(result, transpileChildren (node, false, false))
                 if not node.noend then
-                    table.insert(result, "end")
+                    insert(result, newline())
+                    insert(result, "end")
                 end
-
-                return table.concat(result, "")
+                return result
             end,
 
             ELSEIF = function (node)
-                local result = transpileChildren (node, false, false)
-
-                table.insert(result, 1, "elseif" .. node.content .. " then")
-
+                local result = {newline()}
+                insertAll(result, {"elseif", node.content, " then"})
+                insertAll(result, transpileChildren (node, false, false))
                 if not node.noend then
-                    table.insert(result, "end")
+                    insert(result, newline())
+                    insert(result, "end")
                 end
-
-                return table.concat(result, "")
+                return result
             end,
 
             ELSE = function (node)
-                local result = transpileChildren (node, false, false)
-
-                table.insert(result, 1, "else")
-                table.insert(result, "end")
-
-                return table.concat(result, "")
+                local result = {newline()}
+                insertAll(result, {"else"})
+                insertAll(result, transpileChildren (node, false, false))
+                insert(result, newline())
+                insert(result, "end")
+                return result
             end,
 
             TEXT = function (node)
                 if tonumber(node.content) then
-                    return node.content
+                    return {node.content}
                 else
-                    return '"' .. node.content:gsub('"', '\\"') .. '"'
+                    return {'"', node.content:gsub('"', '\\"'), '"'}
                 end
             end,
 
             VARIABLE = function (node)
-                return node.content
+                return {node.content}
             end,
 
             LUA_EXPRESSION = function (node)
-                return node.content
+                return {node.content}
             end
         }
 
     
-        local function transpileToLua(ast)
+        function transpileToLua(ast)
             if tokenHandlers[ast.kind] then
                 return tokenHandlers[ast.kind](ast)
             else
@@ -403,6 +470,6 @@ return function(plume)
             end
         end
 
-        return transpileToLua(ast)
+        return table.concat(transpileToLua(ast))
     end
 end
