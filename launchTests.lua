@@ -121,6 +121,6 @@ function showTestsResult(tests, successCount)
 end
 
 -- Main execution flow
-local tests = loadTests("block errors eval if loops macros table text variables")
+local tests = loadTests("block errors eval if loops macros table text variables issues")
 local successCount = passTests(tests)
 showTestsResult(tests, successCount)

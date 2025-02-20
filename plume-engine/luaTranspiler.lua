@@ -38,16 +38,6 @@ return function(plume)
 
         local insert = table.insert
 
-        local function countStaticExpressions (node)
-            local staticExpressionCount = 0
-            for _, child in ipairs(node.children) do
-                if not contains(STATEMENTS, child.kind) then
-                    staticExpressionCount = staticExpressionCount + 1
-                end
-            end
-            return staticExpressionCount
-        end
-
         local function parseChildren (node)
             local result = {}
 
@@ -72,11 +62,21 @@ return function(plume)
                     end
 
                     table.insert(result, {store=false, kind="node", content=content})
+
+                    -- Cannot count inside constrole strcutre
+                    if contains("IF ELSEIF ELSE FOR WHILE", child.kind) then
+                        valueCount = -1    
+                    end
+
                 elseif not firstValueFound then
-                    valueCount = valueCount+1
+                    if valueCount ~= -1 then
+                        valueCount = valueCount+1
+                    end
                     table.insert(acc, content)
                 else
-                    valueCount = valueCount+1
+                    if valueCount ~= -1 then
+                        valueCount = valueCount+1
+                    end
                     table.insert(result, {store=true, kind="node", content=content})
                 end
             end
