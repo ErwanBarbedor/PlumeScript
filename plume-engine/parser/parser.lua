@@ -211,6 +211,12 @@ return function(plume)
                     content = ""
                 }
             end,
+            BREAK = function(match)
+                pushToken {
+                    kind = "BREAK",
+                    content = ""
+                }
+            end,
             ENDLINE = function(match)
                 pushToken {
                     kind = "ENDLINE",

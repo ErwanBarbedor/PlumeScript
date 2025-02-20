@@ -18,7 +18,7 @@ return function(plume)
     local INITIAL_DECLARATION = "local __plume_concat = table.concat"
 
     local contains           = plume.utils.containsWord
-    local STATEMENTS         = "FOR ASSIGNMENT LOCAL_ASSIGNMENT IF ELSE ELSEIF WHILE MACRO LOCAL_MACRO RETURN VOID"
+    local STATEMENTS         = "FOR ASSIGNMENT LOCAL_ASSIGNMENT IF ELSE ELSEIF WHILE MACRO LOCAL_MACRO RETURN BREAK"
 
     local transpileToLua
 
@@ -441,6 +441,12 @@ return function(plume)
                 insertAll(result, transpileChildren (node, false, false))
                 insert(result, newline())
                 insert(result, "end")
+                return result
+            end,
+
+            BREAK = function (node)
+                local result = {newline()}
+                insert(result, "break")
                 return result
             end,
 

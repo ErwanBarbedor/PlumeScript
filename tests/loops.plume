@@ -6,14 +6,23 @@ for i=1, 5
 /// End
 
 /// Test "Simple while"
+local i = 10
+while i>0
+    $i
+    i = $(i-1)
+/// Result
+10987654321
+/// End
+
+/// Test "Break loop"
 local i = 100
 while i>0
     i = $(i-1)
+    break
 $i
 /// Result
-0
+99
 /// End
-
 
 /// Test "gmatch for"
 for m in ("foo bar"):gmatch("%S+")

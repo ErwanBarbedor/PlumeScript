@@ -236,6 +236,11 @@ return function (plume)
                 setReturnType(token, "VALUE", context)
                 pushContext(token, token.kind, currentIndent+1, token.content)
 
+            -- Break for loops
+            elseif contains("BREAK", token.kind) then
+                -- Todo : check if we are inside a loop
+                pushChild(token, "BREAK", "")
+
             -- Macro definitions
             elseif contains("MACRO LOCAL_MACRO", token.kind) then
                 pushContext(token, token.kind, currentIndent+1, token.content)

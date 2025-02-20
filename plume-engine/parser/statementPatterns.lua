@@ -70,5 +70,6 @@ return {
         }
     },
     {name = "RETURN", pattern = {{kind = "TEXT", content = "return"}}},
-    {name = "ELSE",   pattern = {{kind = "TEXT", content = "else"}}}
+    {name = "ELSE",   pattern = {{kind = "TEXT", content = "else"}}},
+    {name = "BREAK",  pattern = {{kind = "TEXT", content = "break"}}},
 }
