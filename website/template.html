@@ -1,0 +1,174 @@
+<head>
+    <style>
+        {{CSS}}
+    </style>
+    <link href='https://fonts.googleapis.com/css?family=Fira Code' rel='stylesheet'>
+    <title>PlumeScript</title>
+    <script src="https://cdn.jsdelivr.net/npm/fengari-web@0.1.4/dist/fengari-web.js"></script>
+</head>
+
+<body>
+    <div id="head">
+        <img src="../logo.svg">
+        Version {{VERSION}}
+    </div>
+    <div id="main">
+        <textarea id="code-input">
+sentences =
+    colorEven: red
+    colorOdd: blue
+    - Welcome to Plume🪶!
+    - Plume🪶 is a lightweight templating language.
+    - Plume🪶 transpile to Lua.
+
+<ul>
+for i, sentence in ipairs(sentences)
+    local color =
+        if i%2 == 0
+            $sentences.colorEven
+        else
+            $sentences.colorOdd
+    <li style="color:$color">
+        $sentence
+    </li>
+</ul>
+
+def fact(n)
+    if n == 0
+        return 1
+    else
+        return $(n*fact(n-1))
+
+74! = $fact(74)
+</textarea>
+
+        <div id="right-panel">
+            <div class="tab-buttons">
+                <button class="tab-button" onclick="openTab('lua-output')">Lua Output</button>
+                <button class="tab-button" onclick="openTab('html-output')">HTML Output</button>
+                <button class="tab-button active" onclick="openTab('rendered-output')">Rendered Output</button>
+                
+            </div>
+            <div id="lua-output" class="tab-content">
+            </div>
+            <div id="html-output" class="tab-content">
+            </div>
+            <div id="rendered-output" class="tab-content active">
+            </div>
+            
+        </div>
+    </div>
+
+    <script>
+        function openTab(tabName) {
+            var tabContents = document.getElementsByClassName("tab-content");
+            for (var i = 0; i < tabContents.length; i++) {
+                tabContents[i].classList.remove("active");
+            }
+            var tabButtons = document.getElementsByClassName("tab-button");
+            for (var i = 0; i < tabButtons.length; i++) {
+                tabButtons[i].classList.remove("active");
+            }
+            document.getElementById(tabName).classList.add("active");
+            document.querySelector('.tab-button[onclick="openTab(\'' + tabName + '\')"]').classList.add("active");
+        }
+    </script>
+
+    <script type="application/lua">
+        local plume_files = {}
+        local function require (path)
+            return plume_files[path] ()
+        end
+
+        {{PLUME}}
+    </script>
+
+    <script type="application/lua">
+        js = require("js")
+        global = js.global
+        local document = global.document
+
+        local function escape(s)
+            return (s or ""):gsub("&", "&amp;")
+                        :gsub("<", "&lt;")
+                        :gsub(">", "&gt;")
+                        :gsub('"', "&quot;")
+                        :gsub("'", "&#039;")
+        end
+
+        local function updateOutput()
+            local inputElement = document:getElementById("code-input")
+            local outputElement = document:getElementById("html-output")
+            local codeElement = document:getElementById("lua-output")
+            local renderElement = document:getElementById("rendered-output")
+
+            local code = inputElement.value
+            local sucess, result
+
+            sucess, result = pcall(plume.tokenize, code, "<plume>")
+            if sucess then
+                sucess, result = pcall(plume.parse, result)
+                if sucess then
+                    sucess, result = pcall(plume.makeAST, result)
+                    if sucess then
+                        sucess, result, map = pcall(plume.transpileToLua, result)
+                        if sucess then
+                            code = plume.beautifier(result)
+                            local env = setmetatable({
+                                plume = plume.plumeStdLib
+                            }, {__index = _G})
+
+                            local f, msg = load(code, "@<plume>", nil, env)
+                            print(sucess, result)
+                            if f then
+                                sucess, result = pcall(f)
+                            else
+                                sucess = false
+                                result = msg
+                            end
+
+                            if not sucess then
+                                result = plume.convertLuaError(result, map)
+                            end
+                            
+                        end
+                    end
+                end
+            end
+
+            outputElement.innerHTML = "<pre>" .. escape(result).. "</pre>"
+            if sucess then
+                renderElement.innerHTML = (result or ""):gsub('\n', '<br>')
+            else
+                renderElement.innerHTML = outputElement.innerHTML
+            end
+
+            codeElement.innerHTML = "<pre>" .. escape(code) .. "</pre>"
+        end
+
+        local inputElement = document:getElementById("code-input")
+
+        inputElement:addEventListener("input", updateOutput)
+
+        local function handle_tab(self, event)
+            if event.key == "Tab" then
+                event:preventDefault()
+
+                local input = document:getElementById("code-input")
+                local start = input.selectionStart
+                local finish = input.selectionEnd
+                
+                -- Add the tab character
+                input.value = input.value:sub(1, start) .. "\t" .. input.value:sub(finish + 1)
+
+                -- Move the cursor to the correct position after the tab
+                input.selectionStart = start + 1
+                input.selectionEnd = start + 1
+            end
+        end
+
+        document:getElementById("code-input"):addEventListener("keydown", handle_tab)
+
+        updateOutput()
+    </script>
+</body>
