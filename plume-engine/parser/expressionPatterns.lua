@@ -53,6 +53,12 @@ return {
         }
     },
     {
+        name = "ESCAPE_ALONE",
+        pattern = {
+            {kind = "ESCAPE_ALONE"},
+        }
+    },
+    {
         name = "RPAR",
         pattern = {
             {kind = "RPAR"},

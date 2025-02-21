@@ -271,6 +271,12 @@ return function(plume)
                     content = match.content.content:sub(2, -1)
                 }
             end,
+            ESCAPE_ALONE = function(match)
+                pushToken {
+                    kind = "TEXT",
+                    content = "\\\\"
+                }
+            end,
             RPAR = function(match)
                 pushToken {
                     kind    = "RPAR",
