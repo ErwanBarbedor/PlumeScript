@@ -99,6 +99,10 @@ return function (plume)
                         else
                             error(lastContext.kind .. " must follow a if or elseif")
                         end
+
+                    -- Force list and hash item to have a type
+                    elseif contains("LIST_ITEM HASH_ITEM", lastContext.kind) and lastContext.returnType == "NIL" then
+                         lastContext.returnType = "TEXT" 
                     end
 
                     -- Move closed context to parent's children
