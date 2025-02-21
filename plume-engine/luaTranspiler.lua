@@ -154,6 +154,7 @@ return function(plume)
                     insertAll(result, transpileToLua(content))
                     if i < #infos[1].content then
                         insert(result, sep)
+                        insert(result, newline())
                     end
                 end
 
@@ -310,19 +311,27 @@ return function(plume)
                 if not inlineArgs and not extendedArgs then
                     return {node.content, "()"}
                 elseif not extendedArgs then
-                    local result = {node.content, "(__plume_unpack(", newline()}
+                    local result = {node.content, "(__plume_unpack("}
+                    if #inlineArgs.children > 1 then
+                        insert(result, newline())
+                    end
                     insertAll(result, transpileChildren (inlineArgs, true, true))
+                    if #inlineArgs.children > 1 then
+                        insert(result, newline())
+                    end
                     insert(result, "))")
                     return result
                 elseif not inlineArgs then
                     if extendedArgs.returnType == "TABLE" then
                         local result = {node.content, "(__plume_unpack(", newline()}
                         insertAll(result, transpileChildren (extendedArgs, true, true))
+                        insert(result, newline())
                         insert(result, "))")
                         return result
                     else
                         local result = {node.content, "(", newline()}
                         insertAll(result, transpileChildren (extendedArgs, true, true))
+                        insert(result, newline())
                         insert(result, ")")
                         return result
                     end
