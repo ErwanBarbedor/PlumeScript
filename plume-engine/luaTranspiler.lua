@@ -501,9 +501,9 @@ return function(plume)
 
         table.insert(result, newline())
         if contains("5.1 JIT", luaVersion) then
-            table.insert(result, "__plume_unpack = unpack")
+            table.insert(result, "local __plume_unpack = unpack")
         else
-            table.insert(result, "__plume_unpack = table.unpack")
+            table.insert(result, "local __plume_unpack = table.unpack")
         end
 
         insertAll(result, transpileToLua(ast))
