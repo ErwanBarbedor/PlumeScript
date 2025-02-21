@@ -52,18 +52,25 @@ function plume.execute(text, filename)
     -- And create isolated environment that falls back to global namespace
     -- while exposing plume standard library explicitly
 
-    local compiledFunction
+    local compiledFunction, errorMessage
     local env = setmetatable({
         plume = plume.plumeStdLib
     }, {__index = _G})
 
     if setfenv then
-        compiledFunction = loadstring(code, filename)
-        setfenv(compiledFunction, setmetatable({}, {__index = env}))
+        compiledFunction, errorMessage = loadstring(code, filename)
+
+        if compiledFunction then
+            setfenv(compiledFunction, setmetatable({}, {__index = env}))
+        end
     else
-        compiledFunction = load(code, filename, nil, env)
+        compiledFunction, errorMessage = load(code, filename, nil, env)
     end
     
+    if not compiledFunction then
+        error(plume.convertLuaError(errorMessage, map), -1)
+    end
+
     local sucess, result = pcall(compiledFunction)
     
     if sucess then
