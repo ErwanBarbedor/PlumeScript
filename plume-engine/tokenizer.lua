@@ -18,21 +18,22 @@ If not, see <https://www.gnu.org/licenses/>.
 -- Patterns use Lua string patterns with following notable behaviors:
 local tokenPatterns = {
     -- Structural tokens (order-sensitive syntax elements)
-    {name = "EVAL", pattern = "%$"}, -- Expression evaluation marker
+    {name = "EVAL",    pattern = "%$"},    -- Expression evaluation marker
     {name = "NEWLINE", pattern = "\r?\n"}, -- Line endings (CRLF or LF)
-    {name = "SPACE", pattern = "[ \t]"}, -- Individual whitespace character
-    {name = "DASH", pattern = "%-"}, -- List item identifier
-    {name = "COLON", pattern = ":"}, -- Type/Value separator
-    {name = "EQUAL", pattern = "="}, -- Assignment operator
-    {name = "ENDLINE", pattern = ";"}, -- Statement terminator
-    {name = "COMMA", pattern = ","}, -- List/item separator
-    {name = "LPAR", pattern = "%("}, -- Expression group start
-    {name = "RPAR", pattern = "%)"}, -- Expression group end
-    {name = "QUOTE", pattern = '"'}, -- String literal delimiter
+    {name = "SPACE",   pattern = "[ \t]"}, -- Individual whitespace character
+    {name = "DASH",    pattern = "%-"},    -- List item identifier
+    {name = "COLON",   pattern = ":"},     -- Type/Value separator
+    {name = "EQUAL",   pattern = "="},     -- Assignment operator
+    {name = "ENDLINE", pattern = ";"},     -- Statement terminator
+    {name = "COMMA",   pattern = ","},     -- List/item separator
+    {name = "LPAR",    pattern = "%("},    -- Expression group start
+    {name = "RPAR",    pattern = "%)"},    -- Expression group end
+    {name = "QUOTE",   pattern = '"'},     -- String literal delimiter
+    {name = "COMMENT", pattern = '//'},    -- Line comment
     -- Value tokens
-    {name = "ESCAPE", pattern = "\\."}, -- Escaped character (any following character)
-    {name = "TEXT", pattern = "[a-zA-Z%._][a-zA-Z0-9%._]*"}, -- Alphanumeric identifier
-    {name = "SYMBOL", pattern = "."} -- Catch-all for unmatched single characters
+    {name = "ESCAPE", pattern = "\\."},    -- Escaped character (any following character)
+    {name = "TEXT",  pattern = "[a-zA-Z%._][a-zA-Z0-9%._]*"}, -- Alphanumeric identifier
+    {name = "SYMBOL", pattern = "."}       -- Catch-all for unmatched single characters
 }
 
 -- Prepending ^ makes pattern match from current position only

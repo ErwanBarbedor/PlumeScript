@@ -63,5 +63,13 @@ return {
         pattern = {
             {kind = "COMMA"},
         }
+    },
+    {
+        name = "COMMENT",
+        pattern = {
+            {kind = "COMMENT"},
+            {neg={kind = {"NEWLINE", "ENDLINE"}}, multipleCapture = true},
+            {kind = {"NEWLINE", "ENDLINE"}, name = "tokens", multipleCapture = true}
+        }
     }
 }

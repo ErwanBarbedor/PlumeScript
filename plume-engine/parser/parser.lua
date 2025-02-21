@@ -225,6 +225,14 @@ return function(plume)
                 }
                 inStatementContext = true
             end,
+            COMMENT = function(match)
+                pushToken {
+                    kind = "ENDLINE",
+                    content = "",
+                    indent = match.tokens[#match.tokens].indent
+                }
+                inStatementContext = true
+            end,
             MACRO_CALL_BEGIN = function(match)
                 pushToken {
                     kind = "MACRO_CALL_BEGIN",

@@ -42,6 +42,13 @@ foo\: bar
 foo: bar
 /// End
 
+/// Test "Comment"
+//Foo
+Bar
+/// Result
+Bar
+/// End
+
 /// Test "Malformed syntax count as text - 1"
 -bar
 /// Result
