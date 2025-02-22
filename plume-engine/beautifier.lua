@@ -24,7 +24,7 @@ return function(plume)
         -- Pattern configuration for indentation changes
         local INDENT_RULES = {
             decrement = {  -- Rules for decreasing indentation BEFORE processing line
-                { pattern = "^},?$"     },  -- Closing brace (with optional comma)
+                { pattern = "^},?%s?$"     },  -- Closing brace (with optional comma)
                 { pattern = "end"       },  -- End of block
                 { pattern = "return $"  },  -- Return statement (simplistic match)
                 { pattern = "^else"     },  -- Else/elseif keyword at line start
