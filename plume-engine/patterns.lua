@@ -80,7 +80,7 @@ return function (plume)
             end
 
             -- Fail if tokens exhausted before pattern completion
-            if not token then
+            if not token and not infos.optional then
                 return false
             end
 
@@ -90,16 +90,17 @@ return function (plume)
             if infos.multipleCapture then
                 local captureList = {}
                 -- Consume all consecutive matching tokens
-                while plume.checkPattern(token, infos) do
+                while token and plume.checkPattern(token, infos) do
                     table.insert(captureList, token)
                     tokenPos = tokenPos + 1
                     token = tokens[tokenPos]
-                end
-                tokenPos = tokenPos - 1  -- Adjust for last non-matching token
+                end 
 
                 captureCount = #captureList
                 -- Fail if mandatory capture has zero matches
-                if captureCount == 0 and not infos.optional then
+                if captureCount > 0 then
+                    tokenPos = tokenPos - 1  -- Adjust for last non-matching token
+                elseif not infos.optional then
                     return false
                 end
 

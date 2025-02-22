@@ -55,6 +55,18 @@ Bar
 Bar
 /// End
 
+/// Test "Endline Comment 1"
+//
+/// Result
+nil
+/// End
+
+/// Test "Endline Comment 2"
+// Foo
+/// Result
+nil
+/// End
+
 /// Test "Malformed syntax count as text - 1"
 -bar
 /// Result

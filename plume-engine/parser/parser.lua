@@ -226,10 +226,15 @@ return function(plume)
                 inStatementContext = true
             end,
             COMMENT = function(match)
+                local indent = 0
+                if match.tokens and #match.tokens > 0 then
+                    indent = match.tokens[#match.tokens].indent
+                end
+
                 pushToken {
                     kind = "ENDLINE",
                     content = "",
-                    indent = match.tokens[#match.tokens].indent
+                    indent = indent
                 }
                 inStatementContext = true
             end,
@@ -294,7 +299,6 @@ return function(plume)
         local function testAllPatterns(patternList)
             for _, patternInfo in ipairs(patternList) do
                 local match = plume.matchPattern(tokens, pos, patternInfo.pattern)
-
                 if match then
                     return patternInfo.name, match
                 end
@@ -303,7 +307,6 @@ return function(plume)
 
         -- Main parsing loop
         while pos <= #tokens do
-
             local patternName, match
             if inStatementContext then
                 patternName, match = testAllPatterns(statementPatternList)
@@ -315,11 +318,13 @@ return function(plume)
             end
 
             if patternName then
+
                 captureBeginPos = pos
                 pos = pos + match.length
                 captureEndPos = pos-1
                 
                 popText()
+
                 statementHandler[patternName](match)
 
                 if inStatementContext then
@@ -329,9 +334,11 @@ return function(plume)
                 end
             else
                 captureEndPos = pos
+
                 pushText(tokens[pos].content)
                 pos = pos + 1
             end
+
         end
 
         popText()
