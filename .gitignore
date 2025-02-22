@@ -2,3 +2,5 @@ z
 benchmark
 .mdok
 test.bash
+website/plume.html
+.gitignore

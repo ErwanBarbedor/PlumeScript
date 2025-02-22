@@ -78,3 +78,33 @@ $(lib.x)
 /// Result
 3
 /// End
+
+/// Test "Nested table 1"
+t =
+    -
+        - Foo
+        - Bar
+$(t[1][1])
+/// Result
+Foo
+/// End
+
+/// Test "Nested table 2"
+t =
+    sub:
+        - Foo
+        - Bar
+$(t.sub[1])
+/// Result
+Foo
+/// End
+
+/// Test "Nested table 3"
+t =
+    -
+        x: 5
+        y: 6
+$(t[1].x)
+/// Result
+5
+/// End

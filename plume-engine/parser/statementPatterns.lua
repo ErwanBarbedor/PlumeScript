@@ -7,11 +7,26 @@ return {
         }
     },
     {
+        name = "LIST_ITEM_ENDLINE",
+        pattern = {
+            {kind = "DASH"},
+            {kind = {"NEWLINE", "ENDLINE"}, name = "tokens", multipleCapture = true}
+        }
+    },
+    {
         name = "HASH_ITEM",
         pattern = {
             {kind = "TEXT", name = "key"},
             {kind = "COLON"},
             {kind = "SPACE"}
+        }
+    },
+    {
+        name = "HASH_ITEM_ENDLINE",
+        pattern = {
+            {kind = "TEXT", name = "key"},
+            {kind = "COLON"},
+            {kind = {"NEWLINE", "ENDLINE"}, name = "tokens", multipleCapture = true}
         }
     },
     -- {

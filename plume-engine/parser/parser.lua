@@ -147,12 +147,20 @@ return function(plume)
             }
         end
 
-        local statementHandler = {
+        local statementHandler
+        statementHandler = {
             LIST_ITEM = function(match)
                 pushToken {
                     kind = "LIST_ITEM",
                     content = ""
                 }
+            end,
+            LIST_ITEM_ENDLINE = function(match)
+                pushToken {
+                    kind = "LIST_ITEM",
+                    content = ""
+                }
+                statementHandler.ENDLINE(match)
             end,
             VOID_LINE = function(match)
                 pushToken {
@@ -165,6 +173,13 @@ return function(plume)
                     kind = "HASH_ITEM",
                     content = match.key.content
                 }
+            end,
+            HASH_ITEM_ENDLINE = function(match)
+                pushToken {
+                    kind = "HASH_ITEM",
+                    content = match.key.content
+                }
+                statementHandler.ENDLINE(match)
             end,
             LOCAL_ASSIGNMENT = function(match)
                 pushToken {
