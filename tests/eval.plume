@@ -4,3 +4,10 @@ $a
 /// Result
 2
 /// End
+
+/// Test "Empty eval"
+a = $()
+$a
+/// Result
+nil
+/// End

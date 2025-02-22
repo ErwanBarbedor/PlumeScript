@@ -517,7 +517,11 @@ return function(plume)
 
             LUA_EXPRESSION = function (node)
                 use(node)
-                return {node.content}
+                if #node.content > 0 then
+                    return {node.content}
+                else
+                    return {"nil"}
+                end
             end
         }
 
