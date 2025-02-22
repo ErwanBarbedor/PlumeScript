@@ -3,8 +3,8 @@
         * {
     box-sizing: content-box;
     font-family: 'Fira Code';
-    font-size: 20px;
-    tab-size: 80px;
+    font-size: 18px;
+    tab-size: 40px;
 }
 #head {
     display: flex;
@@ -26,42 +26,40 @@ body {
     margin-top: 1rem;
 }
 
-#code-input, #right-panel {
+#code-input, #lua-output, #rendered-output {
     border-radius: 0.5rem;
     background: white;
     padding: 1rem;
-    width: 40vw;
-    height: 70vh;
-}
+    width: 42vw;
+    height: 80vh;
+    overflow: auto;
 
-#code-input, #right-panel>*, #right-panel>*>pre {
-     overflow: auto;
-}
-
-#right-panel {
     --shadow: 0px 0px 10px 5px rgba(200, 200, 200,1);
     -webkit-box-shadow: var(--shadow);
     -moz-box-shadow: var(--shadow);
     box-shadow: var(--shadow);
 }
 
-#code-input {
-    --shadow: 0px 0px 10px 5px rgba(200, 200, 200,1);
-    -webkit-box-shadow: var(--shadow);
-    -moz-box-shadow: var(--shadow);
-    box-shadow: var(--shadow);
+
+.CodeMirror {
+  width: auto !important;
+  height: auto !important;
+}
+
+#code-input, #lua-output {
     border: none;
     overflow: auto;
     outline: none;
-
     resize: none;
 }
 
 .tab-content {
     display: none;
 }
-.tab-buttons {
+#tab-buttons {
     margin-bottom: 1rem;
+    display: flex;
+    justify-content: space-around;
 }
 
 .tab-button {
@@ -76,10 +74,92 @@ body {
 .tab-content.active {
     display: block;
 }
+
+#output-switch {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+}
+
+.switch input {
+  position: absolute;
+  opacity: 0;
+  
+}
+
+.switch {
+  display: inline-block;
+  font-size: 20px; /* 1 */
+  margin: 0.5rem;
+  height: 1em;
+  width: 2em;
+  background: #d0dadd;
+  border-radius: 1em;
+  box-shadow: 0 0.1em 0.3em rgba(0,0,0,0.3) inset;
+}
+
+.switch div {
+  height: 1em;
+  width: 1em;
+  border-radius: 1em;
+  background: #fff;
+  box-shadow: 0 0.1em 0.3em rgba(0,0,0,0.3);
+  -webkit-transition: all 300ms;
+     -moz-transition: all 300ms;
+          transition: all 300ms;
+}
+
+.switch input:checked + div {
+  -webkit-transform: translate3d(100%, 0, 0);
+     -moz-transform: translate3d(100%, 0, 0);
+          transform: translate3d(100%, 0, 0);
+}
+
+#output-switch {
+    position: absolute;
+    top: 0;
+    right: 5%;
+}
+
+#output-switch span {
+    color: #ddd;
+    transition: all 1s;
+}
+
+#output-switch span.active {
+    color: #000;
+}
+
+#right-panel {
+    position: relative;
+}
+
+#github-button {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    display: inline-block;
+    background-color: #24292e;
+    color: #ffffff;
+    text-decoration: none;
+    padding: 15px;
+    border-radius: 5px;
+    text-align: center;
+    
+    --shadow: 0px 0px 10px 5px rgba(200, 200, 200,1);
+    -webkit-box-shadow: var(--shadow);
+    -moz-box-shadow: var(--shadow);
+    box-shadow: var(--shadow);
+}
     </style>
     <link href='https://fonts.googleapis.com/css?family=Fira Code' rel='stylesheet'>
     <title>PlumeScript</title>
     <script src="https://cdn.jsdelivr.net/npm/fengari-web@0.1.4/dist/fengari-web.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/6.65.7/codemirror.min.css" integrity="sha512-uf06llspW44/LZpHzHT6qBOIVODjWtv4MxCricRxkzvopAlSWnTf6hpZTFxuuZcuNE9CBQhqE0Seu1CoRk84nQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/6.65.7/codemirror.min.js" integrity="sha512-8RnEqURPUc5aqFEN04aQEiPlSAdE0jlFS/9iGgUyNtwFnSKCXhmB6ZTNl7LnDtDWKabJIASzXrzD0K+LYexU9g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/6.65.7/mode/lua/lua.min.js"></script>
+    
 </head>
 
 <body>
@@ -88,65 +168,69 @@ body {
         Version 0.20
     </div>
     <div id="main">
-        <textarea id="code-input">
-sentences =
-    colorEven: red
-    colorOdd: blue
-    - Welcome to Plume🪶!
-    - Plume🪶 is a lightweight templating language.
-    - Plume🪶 transpile to Lua.
+        <a id="github-button" href="https://github.com/ErwanBarbedor/PlumeScript">
+        View on GitHub
+        </a>
 
-<ul>
-for i, sentence in ipairs(sentences)
-    local color =
-        if i%2 == 0
-            $sentences.colorEven
-        else
-            $sentences.colorOdd
-    <li style="color:$color">
-        $sentence
-    </li>
-</ul>
-
-def fact(n)
-    if n == 0
-        return 1
-    else
-        return $(n*fact(n-1))
-
-74! = $fact(74)
-</textarea>
+        <div id="code-input">
+            <textarea id="code-input-content"></textarea>
+        </div>
 
         <div id="right-panel">
-            <div class="tab-buttons">
-                <button class="tab-button" onclick="openTab('lua-output')">Lua Output</button>
-                <button class="tab-button" onclick="openTab('html-output')">HTML Output</button>
-                <button class="tab-button active" onclick="openTab('rendered-output')">Rendered Output</button>
-                
-            </div>
-            <div id="lua-output" class="tab-content">
-            </div>
-            <div id="html-output" class="tab-content">
-            </div>
-            <div id="rendered-output" class="tab-content active">
-            </div>
             
+            <div id="lua-output" class="tab-content active">
+                <textarea id="lua-output-content"></textarea>
+            </div>
+
+            <div id="rendered-output" class="tab-content">
+            </div>
+
+            <div id="output-switch">
+                <span id="lua-output-label">Lua Code</span>
+                <label class="switch">
+                    <input type="checkbox" onclick="switchTable()" checked>
+                    <div></div>
+                </label>
+                <span id="rendered-output-label" class='active'>Output</span>
+            </div> 
         </div>
     </div>
 
     <script>
-        function openTab(tabName) {
-            var tabContents = document.getElementsByClassName("tab-content");
-            for (var i = 0; i < tabContents.length; i++) {
-                tabContents[i].classList.remove("active");
-            }
-            var tabButtons = document.getElementsByClassName("tab-button");
-            for (var i = 0; i < tabButtons.length; i++) {
-                tabButtons[i].classList.remove("active");
-            }
-            document.getElementById(tabName).classList.add("active");
-            document.querySelector('.tab-button[onclick="openTab(\'' + tabName + '\')"]').classList.add("active");
+        var activeTab = "lua-output";
+        var hiddenTab = "rendered-output";
+
+        function switchTable () {
+            document.getElementById(hiddenTab).classList.add("active");
+            document.getElementById(activeTab).classList.remove("active");
+            document.getElementById(hiddenTab+"-label").classList.add("active");
+            document.getElementById(activeTab+"-label").classList.remove("active");
+
+            [activeTab, hiddenTab] = [hiddenTab, activeTab]
         }
+
+        // setTimeout(100, switchTable);
+
+        var editor = CodeMirror.fromTextArea(document.getElementById("code-input-content"), {
+          lineNumbers: true,
+          mode: "javascript",
+          autofocus: true,  
+          indentWithTabs: true,
+          tabSize: 4,
+          indentUnit: 4
+        });
+
+        var luaCode = CodeMirror.fromTextArea(document.getElementById("lua-output-content"), {
+          lineNumbers: true,
+          mode: "lua",
+          readOnly: true
+        });
+
+setTimeout(function() {
+    editor.refresh();
+    luaCode.refresh()
+    switchTable();
+}, 100);
     </script>
 
     <script type="application/lua">
@@ -2088,12 +2172,9 @@ plume = require('plume-engine/init')
         end
 
         local function updateOutput()
-            local inputElement = document:getElementById("code-input")
-            local outputElement = document:getElementById("html-output")
-            local codeElement = document:getElementById("lua-output")
             local renderElement = document:getElementById("rendered-output")
 
-            local code = inputElement.value
+            local code = global.editor:getValue()
             local sucess, result
 
             sucess, result = pcall(plume.tokenize, code, "<plume>")
@@ -2110,7 +2191,6 @@ plume = require('plume-engine/init')
                             }, {__index = _G})
 
                             local f, msg = load(code, "@<plume>", nil, env)
-                            print(sucess, result)
                             if f then
                                 sucess, result = pcall(f)
                             else
@@ -2127,39 +2207,41 @@ plume = require('plume-engine/init')
                 end
             end
 
-            outputElement.innerHTML = "<pre>" .. escape(result).. "</pre>"
-            if sucess then
-                renderElement.innerHTML = (result or ""):gsub('\n', '<br>')
-            else
-                renderElement.innerHTML = outputElement.innerHTML
-            end
+            presult = (result or ""):gsub('\n', '<br>'):gsub('    ', '&nbsp;&nbsp;')
 
-            codeElement.innerHTML = "<pre>" .. escape(code) .. "</pre>"
+            if not sucess then
+                presult = "<p style='color:red'>" .. presult .. "</p>"
+            end
+            
+            renderElement.innerHTML =  presult 
+            
+            global.luaCode:setValue(code)
         end
 
-        local inputElement = document:getElementById("code-input")
+        global.editor:on("change", updateOutput)
 
-        inputElement:addEventListener("input", updateOutput)
+         global.editor:setValue [[sentences =
+    colorEven: red
+    colorOdd: blue
+    - Welcome to Plume🪶!
+    - Plume🪶 is a lightweight templating language.
+    - Plume🪶 transpile to Lua.
 
-        local function handle_tab(self, event)
-            if event.key == "Tab" then
-                event:preventDefault()
+<ul>
+for i, sentence in ipairs(sentences)
+    local color =
+        if i%2 == 0
+            $sentences.colorEven
+        else
+            $sentences.colorOdd
+    <li style='color: $color'>$sentence</li>
+</ul>
+def fact(n)
+    if n == 0
+        return 1
+    else
+        return $(n*fact(n-1))
 
-                local input = document:getElementById("code-input")
-                local start = input.selectionStart
-                local finish = input.selectionEnd
-                
-                -- Add the tab character
-                input.value = input.value:sub(1, start) .. "\t" .. input.value:sub(finish + 1)
-
-                -- Move the cursor to the correct position after the tab
-                input.selectionStart = start + 1
-                input.selectionEnd = start + 1
-            end
-        end
-
-        document:getElementById("code-input"):addEventListener("keydown", handle_tab)
-
-        updateOutput()
+10! = $fact(10)]]:gsub('    ', '\t')
     </script>
 </body>

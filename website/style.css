@@ -1,8 +1,8 @@
 * {
     box-sizing: content-box;
     font-family: 'Fira Code';
-    font-size: 20px;
-    tab-size: 80px;
+    font-size: 18px;
+    tab-size: 40px;
 }
 #head {
     display: flex;
@@ -24,42 +24,40 @@ body {
     margin-top: 1rem;
 }
 
-#code-input, #right-panel {
+#code-input, #lua-output, #rendered-output {
     border-radius: 0.5rem;
     background: white;
     padding: 1rem;
-    width: 40vw;
-    height: 70vh;
-}
+    width: 42vw;
+    height: 80vh;
+    overflow: auto;
 
-#code-input, #right-panel>*, #right-panel>*>pre {
-     overflow: auto;
-}
-
-#right-panel {
     --shadow: 0px 0px 10px 5px rgba(200, 200, 200,1);
     -webkit-box-shadow: var(--shadow);
     -moz-box-shadow: var(--shadow);
     box-shadow: var(--shadow);
 }
 
-#code-input {
-    --shadow: 0px 0px 10px 5px rgba(200, 200, 200,1);
-    -webkit-box-shadow: var(--shadow);
-    -moz-box-shadow: var(--shadow);
-    box-shadow: var(--shadow);
+
+.CodeMirror {
+  width: auto !important;
+  height: auto !important;
+}
+
+#code-input, #lua-output {
     border: none;
     overflow: auto;
     outline: none;
-
     resize: none;
 }
 
 .tab-content {
     display: none;
 }
-.tab-buttons {
+#tab-buttons {
     margin-bottom: 1rem;
+    display: flex;
+    justify-content: space-around;
 }
 
 .tab-button {
@@ -73,4 +71,81 @@ body {
 
 .tab-content.active {
     display: block;
+}
+
+#output-switch {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+}
+
+.switch input {
+  position: absolute;
+  opacity: 0;
+  
+}
+
+.switch {
+  display: inline-block;
+  font-size: 20px; /* 1 */
+  margin: 0.5rem;
+  height: 1em;
+  width: 2em;
+  background: #d0dadd;
+  border-radius: 1em;
+  box-shadow: 0 0.1em 0.3em rgba(0,0,0,0.3) inset;
+}
+
+.switch div {
+  height: 1em;
+  width: 1em;
+  border-radius: 1em;
+  background: #fff;
+  box-shadow: 0 0.1em 0.3em rgba(0,0,0,0.3);
+  -webkit-transition: all 300ms;
+     -moz-transition: all 300ms;
+          transition: all 300ms;
+}
+
+.switch input:checked + div {
+  -webkit-transform: translate3d(100%, 0, 0);
+     -moz-transform: translate3d(100%, 0, 0);
+          transform: translate3d(100%, 0, 0);
+}
+
+#output-switch {
+    position: absolute;
+    top: 0;
+    right: 5%;
+}
+
+#output-switch span {
+    color: #ddd;
+    transition: all 1s;
+}
+
+#output-switch span.active {
+    color: #000;
+}
+
+#right-panel {
+    position: relative;
+}
+
+#github-button {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    display: inline-block;
+    background-color: #24292e;
+    color: #ffffff;
+    text-decoration: none;
+    padding: 15px;
+    border-radius: 5px;
+    text-align: center;
+    
+    --shadow: 0px 0px 10px 5px rgba(200, 200, 200,1);
+    -webkit-box-shadow: var(--shadow);
+    -moz-box-shadow: var(--shadow);
+    box-shadow: var(--shadow);
 }
