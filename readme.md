@@ -6,6 +6,8 @@
 
 Plume is a lightweight and expressive templating language that transpiles to Lua. It's designed for clear syntax and seamless Lua integration, making it ideal for generating text-based output, such as HTML, configuration files, or documents. Plume leverages indentation for structure and minimizes special characters, resulting in clean and readable templates.
 
+You can test it [in your browser](https://app.barbedor.bzh/plume.html)
+
 
 ## Introduction
 
