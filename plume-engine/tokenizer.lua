@@ -31,6 +31,7 @@ local tokenPatterns = {
     {name = "QUOTE",   pattern = '"'},     -- String literal delimiter
     {name = "COMMENT", pattern = '//'},    -- Line comment
     -- Value tokens
+    {name = "ESCAPE", pattern = "\\\\"},  
     {name = "ESCAPE", pattern = "\\[-:=;,%(%)/snt]"},    -- Escaped character (any following character)
     {name = "ESCAPE_ALONE", pattern = "\\"},    -- Escaped character (any following character)
     {name = "TEXT",  pattern = "[a-zA-Z%._][a-zA-Z0-9%._]*"}, -- Alphanumeric identifier

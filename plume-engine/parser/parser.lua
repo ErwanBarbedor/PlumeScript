@@ -271,9 +271,13 @@ return function(plume)
                 }
             end,
             ESCAPE = function(match)
+                local content = match.content.content:sub(2, -1)
+                if content == "\\" then
+                    content = "\\\\"
+                end
                 pushToken {
                     kind = "TEXT",
-                    content = match.content.content:sub(2, -1)
+                    content = content
                 }
             end,
             ESCAPE_ALONE = function(match)

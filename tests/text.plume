@@ -42,8 +42,14 @@ foo\: bar
 foo: bar
 /// End
 
-/// Test "Backslah"
+/// Test "Backslah 1"
 foo\
+/// Result
+foo\
+/// End
+
+/// Test "Backslah 2"
+foo\\
 /// Result
 foo\
 /// End
