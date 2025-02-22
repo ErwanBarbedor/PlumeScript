@@ -120,8 +120,8 @@ return function(plume)
         ---@return table List of generated code lines
         local function transpileChildren (node, wrapInFunction, shouldInitAccumulator, forceReturn)
 
-            if #node.children == 0 and contains("LIST_ITEM HASH_ITEM TEXT VALUE RETURN", node.kind) then
-                return {"nil"}
+            if #node.children == 0 and contains("LIST_ITEM HASH_ITEM TEXT VALUE RETURN ASSIGNMENT", node.kind) then
+                return {'""'}
             end
 
             local infos, onlyValues, valueCount = parseChildren(node)
@@ -145,23 +145,32 @@ return function(plume)
                     insert(result, "{")
                 end
 
-                local sep
                 if directConcat then
-                    sep = " .. "
-                else
-                    sep = ", "
+                    insert(result, "(")
+                    insert(result, newline())
                 end
 
                 if wrapInTable then
                     insert(result, newline())
                 end
+
                 for i, content in ipairs(infos[1].content) do
                     insertAll(result, transpileToLua(content))
                     if i < #infos[1].content then
-                        insert(result, sep)
-                        insert(result, newline())
+                        if directConcat then     
+                            insert(result, newline())
+                            insert(result, ".. ")
+                        else
+                            insert(result, ", ")
+                            insert(result, newline())
+                        end
                     end
                 end
+
+                if directConcat then
+                    insert(result, newline())
+                    insert(result, ")")
+                 end
 
                 if wrapInTable then
                     insert(result, newline())
@@ -227,7 +236,7 @@ return function(plume)
                                 end
                                 insert(result, newline())
                                 insert(result, "}")
-                            elseif valueCount ~= 0 then
+                            elseif valueCount ~= 0 and (valueCount == -1 or #values > 0) then
                                 firstValueFound = true
                                 if node.returnType ~= "VALUE" then
                                     insert(result, newline())
@@ -418,7 +427,7 @@ return function(plume)
             end,
 
             HASH_ITEM = function (node)
-                local result = {newline(), node.content, " = "}
+                local result = {node.content, " = "}
                 use(node)
                 insertAll(result, transpileChildren (node, true, true))
                 return result
