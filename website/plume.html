@@ -233,8 +233,8 @@ return {
         name = "COMMENT",
         pattern = {
             {kind = "COMMENT"},
-            {neg={kind = {"NEWLINE", "ENDLINE"}}, multipleCapture = true},
-            {kind = {"NEWLINE", "ENDLINE"}, name = "tokens", multipleCapture = true}
+            {neg={kind = {"NEWLINE", "ENDLINE"}}, multipleCapture = true, optional=true},
+            {kind = {"NEWLINE", "ENDLINE"}, name = "tokens", multipleCapture = true, optional=true}
         }
     }
 }
@@ -456,10 +456,15 @@ return function(plume)
                 inStatementContext = true
             end,
             COMMENT = function(match)
+                local indent = 0
+                if match.tokens and #match.tokens > 0 then
+                    indent = match.tokens[#match.tokens].indent
+                end
+
                 pushToken {
                     kind = "ENDLINE",
                     content = "",
-                    indent = match.tokens[#match.tokens].indent
+                    indent = indent
                 }
                 inStatementContext = true
             end,
@@ -524,7 +529,6 @@ return function(plume)
         local function testAllPatterns(patternList)
             for _, patternInfo in ipairs(patternList) do
                 local match = plume.matchPattern(tokens, pos, patternInfo.pattern)
-
                 if match then
                     return patternInfo.name, match
                 end
@@ -533,7 +537,6 @@ return function(plume)
 
         -- Main parsing loop
         while pos <= #tokens do
-
             local patternName, match
             if inStatementContext then
                 patternName, match = testAllPatterns(statementPatternList)
@@ -545,11 +548,13 @@ return function(plume)
             end
 
             if patternName then
+
                 captureBeginPos = pos
                 pos = pos + match.length
                 captureEndPos = pos-1
                 
                 popText()
+
                 statementHandler[patternName](match)
 
                 if inStatementContext then
@@ -559,9 +564,11 @@ return function(plume)
                 end
             else
                 captureEndPos = pos
+
                 pushText(tokens[pos].content)
                 pos = pos + 1
             end
+
         end
 
         popText()
@@ -969,8 +976,8 @@ return function(plume)
         ---@return table List of generated code lines
         local function transpileChildren (node, wrapInFunction, shouldInitAccumulator, forceReturn)
 
-            if #node.children == 0 and contains("LIST_ITEM HASH_ITEM TEXT VALUE RETURN", node.kind) then
-                return {"nil"}
+            if #node.children == 0 and contains("LIST_ITEM HASH_ITEM TEXT VALUE RETURN ASSIGNMENT", node.kind) then
+                return {'""'}
             end
 
             local infos, onlyValues, valueCount = parseChildren(node)
@@ -994,23 +1001,32 @@ return function(plume)
                     insert(result, "{")
                 end
 
-                local sep
                 if directConcat then
-                    sep = " .. "
-                else
-                    sep = ", "
+                    insert(result, "(")
+                    insert(result, newline())
                 end
 
                 if wrapInTable then
                     insert(result, newline())
                 end
+
                 for i, content in ipairs(infos[1].content) do
                     insertAll(result, transpileToLua(content))
                     if i < #infos[1].content then
-                        insert(result, sep)
-                        insert(result, newline())
+                        if directConcat then     
+                            insert(result, newline())
+                            insert(result, ".. ")
+                        else
+                            insert(result, ", ")
+                            insert(result, newline())
+                        end
                     end
                 end
+
+                if directConcat then
+                    insert(result, newline())
+                    insert(result, ")")
+                 end
 
                 if wrapInTable then
                     insert(result, newline())
@@ -1076,7 +1092,7 @@ return function(plume)
                                 end
                                 insert(result, newline())
                                 insert(result, "}")
-                            elseif valueCount ~= 0 then
+                            elseif valueCount ~= 0 and (valueCount == -1 or #values > 0) then
                                 firstValueFound = true
                                 if node.returnType ~= "VALUE" then
                                     insert(result, newline())
@@ -1267,7 +1283,7 @@ return function(plume)
             end,
 
             HASH_ITEM = function (node)
-                local result = {newline(), node.content, " = "}
+                local result = {node.content, " = "}
                 use(node)
                 insertAll(result, transpileChildren (node, true, true))
                 return result
@@ -1717,7 +1733,7 @@ return function (plume)
             end
 
             -- Fail if tokens exhausted before pattern completion
-            if not token then
+            if not token and not infos.optional then
                 return false
             end
 
@@ -1727,16 +1743,17 @@ return function (plume)
             if infos.multipleCapture then
                 local captureList = {}
                 -- Consume all consecutive matching tokens
-                while plume.checkPattern(token, infos) do
+                while token and plume.checkPattern(token, infos) do
                     table.insert(captureList, token)
                     tokenPos = tokenPos + 1
                     token = tokens[tokenPos]
-                end
-                tokenPos = tokenPos - 1  -- Adjust for last non-matching token
+                end 
 
                 captureCount = #captureList
                 -- Fail if mandatory capture has zero matches
-                if captureCount == 0 and not infos.optional then
+                if captureCount > 0 then
+                    tokenPos = tokenPos - 1  -- Adjust for last non-matching token
+                elseif not infos.optional then
                     return false
                 end
 
