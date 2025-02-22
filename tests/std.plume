@@ -1,0 +1,5 @@
+/// Test "VERSION"
+$(plume._VERSION)
+/// Result
+Plume🪶 0.20
+/// End

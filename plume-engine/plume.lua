@@ -1,5 +1,5 @@
 return function(plume)
-    plume.plumeStdLib = {table={}}
+    plume.plumeStdLib = {table={}, _VERSION = plume._VERSION}
 
     if table.move then
         function plume.plumeStdLib.table.merge(...)
