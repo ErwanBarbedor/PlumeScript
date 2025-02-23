@@ -89,7 +89,6 @@ setTimeout(function() {
         local function require (path)
             return plume_files[path] ()
         end
-
         {{PLUME}}
     </script>
 
@@ -98,70 +97,47 @@ setTimeout(function() {
         global = js.global
         local document = global.document
 
-        local function escape(s)
-            return (s or ""):gsub("&", "&amp;")
-                        :gsub("<", "&lt;")
-                        :gsub(">", "&gt;")
-                        :gsub('"', "&quot;")
-                        :gsub("'", "&#039;")
-        end
-
+        local codeRunning = false
         local function updateOutput()
+            if codeRunning then
+                cancelRunning ()
+            else
+                codeRunning = true
+            end
+
             local renderElement = document:getElementById("rendered-output")
 
-            local code = global.editor:getValue()
-            local sucess, result
+            local inputCode = global.editor:getValue()
+            local success, code, map, result
 
-            sucess, result = pcall(plume.tokenize, code, "<plume>")
-            if sucess then
-                sucess, result = pcall(plume.parse, result)
-                if sucess then
-                    sucess, result = pcall(plume.makeAST, result)
-                    if sucess then
-                        sucess, result, map = pcall(plume.transpileToLua, result)
-                        if sucess then
-                            code = plume.beautifier(result)
-                            local env = setmetatable({
-                                plume = plume.plumeStdLib
-                            }, {__index = _G})
-
-                            local f, msg = load(code, "@<plume>", nil, env)
-                            if f then
-                                sucess, result = pcall(f)
-                            else
-                                sucess = false
-                                result = msg
-                            end
-
-                            if not sucess then
-                                result = plume.convertLuaError(result, map)
-                            end
-                            
-                        end
-                    end
-                end
-            end
-
-            presult = (result or ""):gsub('\n', '<br>'):gsub('    ', '&nbsp;&nbsp;')
-
-            if not sucess then
-                presult = "<p style='color:red'>" .. presult .. "</p>"
-            end
-            
-            renderElement.innerHTML =  presult 
-            
+            success, code, map = pcall (plume.transpile, inputCode)
             global.luaCode:setValue(code)
+
+            if success then
+                success, result = pcall(plume.execute, code, map)
+            else
+                result = code
+            end
+
+            result = (result or ""):gsub('\n', '<br>'):gsub('    ', '&nbsp;&nbsp;')
+
+            if not success then
+                result = "<p style='color:red'>" .. result .. "</p>"
+            end
+            
+            renderElement.innerHTML =  result
+            codeRunning = false
         end
 
         global.editor:on("change", updateOutput)
 
-         global.editor:setValue [[sentences =
+        global.editor:setValue (([[sentences =
     colorEven: red
     colorOdd: blue
     - Welcome to $(plume._VERSION)!
     - Plume🪶 is a lightweight templating language.
     - Plume🪶 transpile to Lua.
-
+         
 <ul>
 for i, sentence in ipairs(sentences)
     local color =
@@ -176,7 +152,7 @@ def fact(n)
         return 1
     else
         return $(n*fact(n-1))
-
-10! = $fact(10)]]:gsub('    ', '\t')
+         
+10! = $fact(10)]]):gsub('    ', '\t'))
     </script>
 </body>

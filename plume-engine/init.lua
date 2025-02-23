@@ -34,50 +34,82 @@ require "plume-engine/error"         (plume)
 require "plume-engine/beautifier"    (plume)
 require "plume-engine/plumeDebug"    (plume)
 
---- Execute Plume code through full processing pipeline
---- @param text string Input Plume code to execute
---- @return any Result of executed code
-function plume.execute(text, filename)
-    -- Pipeline stages: Text -> Tokens -> AST -> Lua code -> Formatted code
-    local tokens, ast, code, map
-    filename = filename or "@<string>"
+--- Transpiles Plume code to Lua code.
+---@param text string The Plume code to transpile.
+---@param filename string Optional filename for error reporting. Defaults to "@<string>".
+---@return string, table The transpiled Lua code and the source map.
+function plume.transpile(text, filename)
+    local filename = filename or "@<string>"
 
-    tokens    = plume.tokenize(text, filename)
-    tokens    = plume.parse(tokens)
-    ast       = plume.makeAST(tokens)
-    code, map = plume.transpileToLua(ast)
-    code      = plume.beautifier(code)
+    local sucess, tokens, ast, code, map
+    -- Lexical Analysis
+    -- plume.tokenize should never raise an exception
+    sucess, tokens = pcall(plume.tokenize, text, filename)
+    if not sucess then
+        error("Unexpected error during tokenization:\n" .. tokens)
+    end
 
-    -- Compile generated Lua code with custom environment
-    -- And create isolated environment that falls back to global namespace
-    -- while exposing plume standard library explicitly
+    -- Syntax Analysis
+    tokens = plume.parse (tokens)
 
+    -- Abstract Syntax Tree Construction
+    ast = plume.makeAST(tokens)
+
+    -- Code Generation and Source Map Creation
+    -- (plume.transpileToLua should never raise an exception
+    sucess, code, map = pcall(plume.transpileToLua, ast)
+    if not sucess then
+        error("Unexpected error during transpilation:\n" .. code)
+    end
+
+    code = plume.beautifier(code)
+
+    return code, map
+end
+
+--- Executes the given Lua code in a sandboxed environment.
+---@param code string The Lua code to execute.
+---@param map table The source map.
+---@return any The result of the Lua code execution.
+function plume.execute(code, map)
+    -- Compilation and Execution in a Sandboxed Environment
+    local env = setmetatable({ plume = plume.plumeStdLib }, { __index = _G })
     local compiledFunction, errorMessage
-    local env = setmetatable({
-        plume = plume.plumeStdLib
-    }, {__index = _G})
 
+    -- Lua 5.2+ compatible compilation using loadstring and setfenv
     if setfenv then
         compiledFunction, errorMessage = loadstring(code, filename)
-
         if compiledFunction then
-            setfenv(compiledFunction, setmetatable({}, {__index = env}))
+            setfenv(compiledFunction, setmetatable({}, { __index = env }))
         end
-    else
+    else  -- Lua 5.1 compatible compilation using load and a custom environment
         compiledFunction, errorMessage = load(code, filename, nil, env)
     end
-    
+
+    -- Error Handling during Compilation
     if not compiledFunction then
-        error(plume.convertLuaError(errorMessage, map), -1)
+        -- Catch error and try to find the plume line
+        -- corresponding to the lua line of the error
+        error(plume.convertLuaError(errorMessage, map), 0) 
     end
 
-    local sucess, result = pcall(compiledFunction)
-    
-    if sucess then
+    -- Execution and Error Handling
+    local success, result = pcall(compiledFunction)
+
+    if success then
         return result
     else
-        error(plume.convertLuaError(result, map), -1)
+        error(plume.convertLuaError(result, map), 0)
     end
+end
+
+--- Runs Plume code by transpiling and executing it.
+---@param text string The Plume code to run.
+---@param filename string Optional filename for error reporting.
+---@return any The result of the Plume code execution.
+function plume.run(text, filename)
+    local code, map = plume.transpile(text, filename)
+    return plume.execute(code, map)
 end
 
 return plume

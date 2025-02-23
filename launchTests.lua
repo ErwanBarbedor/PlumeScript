@@ -53,7 +53,7 @@ end
 local function passTests(tests)
     local successCount = 0
     for _, test in ipairs(tests) do
-        local success, result = pcall(plume.execute, test.code)
+        local success, result = pcall(plume.run, test.code)
         result = tostring(result)  -- Normalize output for comparison
 
         if test.resultKind == "Result" then
