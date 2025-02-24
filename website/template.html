@@ -93,6 +93,33 @@ setTimeout(function() {
     </script>
 
     <script type="application/lua">
+        -- Protection against infinite while loop and other blocking stuff
+        function watchdog(timeout)
+            local startTime = os.clock()
+
+            local function hookfunc(event, line)
+                if os.clock() - startTime > timeout then
+                    debug.sethook()
+                    error("Timeout")
+                end
+            end
+
+            local function wrapper(f, ...)
+                debug.sethook(hookfunc, "", 1)
+                local success, result  = pcall(f, ...)
+                debug.sethook()
+
+                -- Strange behavior occuring only with Fengari :
+                -- Obtained this erreur instead of Timeout
+                if not success and result == "attempt to index a nil value" then
+                    result = "Timeout. Check for infinite loops."
+                end
+                return success, result
+            end
+
+            return wrapper
+        end
+
         js = require("js")
         global = js.global
         local document = global.document
@@ -112,9 +139,9 @@ setTimeout(function() {
 
             success, code, map = pcall (plume.transpile, inputCode)
             global.luaCode:setValue(code)
-
+            
             if success then
-                success, result = pcall(plume.execute, code, map)
+                success, result = watchdog(0.5) (plume.execute, code, map)
             else
                 result = code
             end
