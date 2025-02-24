@@ -63,11 +63,92 @@
             [activeTab, hiddenTab] = [hiddenTab, activeTab]
         }
 
-        // setTimeout(100, switchTable);
+        CodeMirror.defineMode("plume", function() {
+            return {
+                startState: function() { 
+                    return {
+                        mode: "command",
+                        fdeep: 0
+                    }; 
+                },
+                token: function(stream, state) {
+
+                    if (stream.sol()) {
+                        state.mode = "command";
+                        state.fdeep = 0
+                    }
+
+                    if (stream.match("//")) {
+                        stream.skipToEnd();
+                        return "comment";
+                    }
+
+                    if (state.mode == "lua"){
+                        if (stream.match(/\b[0-9]+(\.[0.9+])?\b/)){
+                            return "number"
+                        }
+                        if (stream.match(/[+-/*]/)){
+                            return "keyword"
+                        }
+                        if (state.fdeep>0 & stream.match('\(')) {
+                            state.fdeep = state.fdeep + 1
+                            return "call";
+                        }
+                        if (state.fdeep>0 & stream.match('\)')) {
+                            state.fdeep = state.fdeep - 1
+                            if (state.fdeep == 0)
+                                state.mode = "text";
+                            return "call";
+                        }
+                    }
+                    else {
+                        if (state.mode == "command") {
+                            if (stream.match(/(for|while|if|elseif)/)) {
+                                state.mode = "lua"
+                                return "keyword";
+                            }
+                            state.mode = "texte";
+                        }
+    
+                        if (state.fdeep>0 & stream.match('\(')) {
+                            state.fdeep = state.fdeep + 1
+                            return "call";
+                        }
+                        if (state.fdeep>0 & stream.match('\)')) {
+                            state.fdeep = state.fdeep - 1
+                            return "call";
+                        }
+                        
+                        if (stream.match(/[\w]+\s*=/)) {
+                            state.fdeep = state.fdeep + 1
+                            return "variable";
+                        }
+
+                        if (stream.match(/\$[\w]+\(/)) {
+                            state.fdeep = state.fdeep + 1
+                            return "call";
+                        }
+
+                        if (stream.match(/\$\(/)) {
+                            state.fdeep = state.fdeep + 1
+                            state.mode = "lua"
+                            return "call";
+                        }
+    
+                        if (stream.match(/\$[\w]+/)) {
+                            return "variable";
+                        } 
+                    }
+                    stream.next();
+                    return null;
+                }
+                
+              };
+        });
 
         var editor = CodeMirror.fromTextArea(document.getElementById("code-input-content"), {
           lineNumbers: true,
-          mode: "javascript",
+          mode: "plume",
           autofocus: true,  
           indentWithTabs: true,
           tabSize: 4,
@@ -80,11 +161,11 @@
           readOnly: true
         });
 
-setTimeout(function() {
-    editor.refresh();
-    luaCode.refresh()
-    switchTable();
-}, 100);
+        setTimeout(function() {
+            editor.refresh();
+            luaCode.refresh()
+            switchTable();
+        }, 100);
     </script>
 
     <script type="application/lua">
@@ -154,28 +235,26 @@ setTimeout(function() {
 
         global.editor:on("change", updateOutput)
 
-        global.editor:setValue (([[sentences =
-    colorEven: red
-    colorOdd: blue
-    - Welcome to $(plume._VERSION)!
-    - Plume🪶 is a lightweight templating language.
-    - Plume🪶 transpile to Lua.
-         
-<ul>
-for i, sentence in ipairs(sentences)
-    local color =
-        if i%2 == 0
-            $sentences.colorEven
-        else
-            $sentences.colorOdd
-    <li style='color: $color'>$sentence</li>
-</ul>
-def fact(n)
-    if n == 0
-        return 1
-    else
-        return $(n*fact(n-1))
-         
-10! = $fact(10)]]):gsub('    ', '\t'))
+        global.editor:setValue (([[// A comment
+Simple text
+
+\n // Line break must be explicits
+
+// Assignment
+name = John
+
+// Control structures
+for i=1, 3
+    Hello $name! ($i times)\n
+    local j = Foo// Variable local to the loop
+    
+$j // Do nothing : Foo was registered inside the for loop
+    
+// Table
+friends =
+    - John
+    - Carol
+        
+My best friend is $(friends[1]).]]):gsub('    ', '\t'))
     </script>
 </body>

@@ -149,3 +149,11 @@ body {
     -moz-box-shadow: var(--shadow);
     box-shadow: var(--shadow);
 }
+
+/* Paper  */
+.CodeMirror .cm-variable { color: #47f!important;}
+.CodeMirror .cm-comment { color: #4a7!important; font-style: italic; }
+.CodeMirror .cm-keyword { color:black!important; font-weight: bold; }
+.CodeMirror .cm-number { color:#870058!important;}
+.CodeMirror .cm-string { color:black!important;background:#fef9df!important;}
+.CodeMirror .cm-call { color:#0D00A4!important;}
