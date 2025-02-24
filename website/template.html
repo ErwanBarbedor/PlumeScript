@@ -15,7 +15,7 @@
 
 <body>
     <div id="head">
-        <img src="../logo.svg">
+        <img src="../plume_logo.svg">
         Version {{VERSION}}
     </div>
     <div id="main">
@@ -56,6 +56,9 @@
             document.getElementById(activeTab).classList.remove("active");
             document.getElementById(hiddenTab+"-label").classList.add("active");
             document.getElementById(activeTab+"-label").classList.remove("active");
+
+            editor.refresh();
+            luaCode.refresh();
 
             [activeTab, hiddenTab] = [hiddenTab, activeTab]
         }
@@ -124,14 +127,7 @@ setTimeout(function() {
         global = js.global
         local document = global.document
 
-        local codeRunning = false
         local function updateOutput()
-            if codeRunning then
-                cancelRunning ()
-            else
-                codeRunning = true
-            end
-
             local renderElement = document:getElementById("rendered-output")
 
             local inputCode = global.editor:getValue()
