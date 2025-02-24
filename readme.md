@@ -1,4 +1,4 @@
-<p align="center"><img src="plume-logo.svg" width="600" height="300"></p>
+<p align="center"><img src="plume_logo.svg" width="600" height="300"></p>
 
 ![Version](https://img.shields.io/badge/version-0.20-blue.svg) [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 
