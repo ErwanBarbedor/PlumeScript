@@ -2,139 +2,126 @@
 
 ![Version](https://img.shields.io/badge/version-0.20-blue.svg) [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 
-# Plume🪶 - A Minimalist Templating Language
 
-Plume is a lightweight and expressive templating language that transpiles to Lua. It's designed for clear syntax and seamless Lua integration, making it ideal for generating text-based output, such as HTML, configuration files, or documents. Plume leverages indentation for structure and minimizes special characters, resulting in clean and readable templates.
+## Plume🪶 - An Expressive Templating Language
 
-You can test it [in your browser](https://app.barbedor.bzh/plume.html)
+- ✨ **Lightweight Syntax:** Minimal special characters and indentation-based structure make Plume easy to write and read.
+- 📖 **Expressive and Readable:** Inspired by YAML for lists and hashes, and common programming languages for the rest, Plume offers a clear and concise syntax.
+- ⚙️ **Versatile and Extensible:** While well-suited for rich text generation with macros, Plume allows you to achieve virtually anything possible with a general-purpose programming language, with almost no special syntax. This makes it highly adaptable to various use cases.
+- 🔗 **Lua Integration:** Written in and transpiling to Lua, seamlessly integrate Plume into your existing Lua projects (5.x and LuaJIT). Also, easily benefit from the decent performance of LuaJIT.
 
-
-## Introduction
-
-Plume offers several key advantages:
-
-* **Minimalist Syntax:** Reduces boilerplate and visual clutter for improved readability. Indentation defines code blocks, eliminating the need for braces or other delimiters.
-* **Seamless Lua Integration:** Leverages the power and flexibility of Lua directly within templates.
-* **Clear and Concise:** Designed for clarity and ease of use, making template creation and maintenance straightforward.
+Test it now [in your browser](https://app.barbedor.bzh/plume.html)!
 
 ## Quick Start
+Download `plume-engine` folder. Then, in a Lua file:
 
+``` lua
+-- Lua 5.1, 5.2 & LuaJIT
+local plume = require("plume-engine/init")
+-- Lua 5.3 & 5.4
+local plume = require("plume-engine")
 
-## Syntax and Features
+print(plume.run [[
+a = 5
+a is $(a)
+]])
 
-### Text Output
+```
 
-By default, text written in a Plume file is treated as raw text and will be output directly.
+## Overview
 
-Comments are delimited with `//`.
+### Basics
 
-```plume
+``` Plume
 // A comment
-Hello World
-```
-Output `Hello World`
 
-### Indentation
+Hello World! // Simple text
 
-All sucessives lines with the same indentation level as teated as a `block`. Almost* all block have it's own scope and return value. (see [Return values](#blocks-with-return-values))
+name = John Doe // Variable assignment
+Hello $name! // Variable interpolation
 
-\* Except control structures block, see [Control Structures](#Control-Structures).
+// Only "<identifier> = ..." will be seen as assignment
+1 + 1 = ? // So this is raw text
 
-### Variables
+1 + 1 = $(1+1) // Can insert the returned value of a computation
+cos(0.5) = $(math.cos(0.5)) // Or any Lua expression
 
-```plume
-a = Foo
-local b =
-    Foo
-    Bar
-    Baz
-```
+i = 100 // Plume sees that 100 is a number and not a string
+while i>0 // Classic control structure without special syntax
+    i = $(i-1)
+    i is now $i.
+// while, for, if, and elseif must be followed by a Lua expression
 
-### Whitespace
+Hum, while you... // "while" isn't at the beginning of the line
+// so it's seen as a simple word
 
-Except for spaces between expressions, Plume does not preserve whitespace.
+// List
+friends =
+    - Bob
+    - Clara
+    - John
+My best friend is $(friends[1]) // Yes, I know you love 1-based arrays
 
-To add whitespace in the output, use `\n` for a newline, `\t` for a tab, and `\s` for a single space.
+// Hash
+costs =
+    item_A: 50
+    item_B: 120
 
-### Interpolation
+The price of item_A is $costs.item_A
 
-The `$` symbol is used for interpolating Lua values. `$(Lua expression)` evaluates the expression and returns the result. `$name` is a shortcut for `$(name)`.
-
-```plume
-a = $(1+2)
-The value of a is $a //-> The value of a is 3
-```
-
-### Macros
-
-Macros are defined using `def macro_name(parameters)`. The indented block following the definition forms the macro's body. Use `$macro_name(...)` to call it.
-
-```plume
+// Macro
 def double(x)
     $x $x
 
-$double(Hello) //-> Hello Hello
+$double(foo) // foo foo
+
 ```
 
-### Multiline Macro Arguments
+### Advanced
+```Plume
+// Extended macro parameter: 3 ways to call ntimes
+def ntimes(n, content)
+    for i=1, n
+        $content\n
 
-Indentation allows function arguments to be written on multiple lines, enhancing readability.
+$ntimes(4, A very long content)
+$ntimes(4)
+    A very long content
+$ntimes()
+    - 4
+    - A very long content
 
-```plume
-def double(x)
-    $x $x
-
-$double()
-    Foo
-```
-
-```plume
-def concat(x, y)
-    $x$y
-
-$concat()
-    - First argument
-    - Second argument
-```
-
-### Control Structures
-
-Plume uses the keywords `if`, `elseif`, `else`, `for`, `while`, and `break`. Except for `else` and `break`, these keywords must be followed by a Lua expression.
-
-```plume
-for i=1, 10
-    This line will be repeated 10 times
-
-if 1+1 == 2
-    The computer is good at math
-else
-    The computer is bad at math
-```
-
-### Blocks with Return Values
-
-Each indented block has a return value of `NIL`, `TEXT`, `TABLE`, or `VALUE`. The return type is implicitly determined by the block's content.
-
-```plume
-text_variable =
-    Hello
-    a = 5 // you can write any statement inside the block
-    World
-
-table_variable =
-    for i=1, 10
-        - item $i // for, while, if, and elseif blocks do not have a return value;
-                  // they add content to the parent block
-    - A last item
+// Lists and hashes are both Lua tables, so you can mix it
+mixed =
+    - item
     key: value
 
-value_variable =
-    local i = 5
-    return $(i*2)
+// "-" is not a static syntax element, but the statement "add this to the current table"
+mul_table =
+    local x = 3 // each indented block has its own scope
+    for y=1, 10
+        - $(x*y)
+
+// Plume will ignore all newlines and will trim lines.
+// So if you need spaces in the output, you can add them with:
+\n // newline
+\s // single space
+\t // tabulation
 ```
+
+### Escaping
+
+*What do I have to do to ensure that “while” is understood as a simple word, and not a keyword?*
+
+I haven't yet decided how to handle escaping.
+
+Currently, `$("while")` and ` while` work, but that's not necessarily very satisfactory.
+
+For the symbols `-`, `:`, and `=`, they can be escaped with `\`.
+
 
 ## Performance
 
-On my i5 12600k, transpilation of a 10,000-line file takes less than 200ms.
+On my 12600k, transpilation of a 10,000-line file takes less than 200ms; this should be more than sufficient for small projects.
 
-Transpiled code executes at between 70% and 100% of Lua's performance.
+Transpiled code executes at between 70% and 100% of Lua's performance. So with LuaJIT, this makes it possible to include relatively costly calculations in templates.
