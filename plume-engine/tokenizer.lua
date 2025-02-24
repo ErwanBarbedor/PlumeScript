@@ -18,18 +18,18 @@ If not, see <https://www.gnu.org/licenses/>.
 -- Patterns use Lua string patterns with following notable behaviors:
 local tokenPatterns = {
     -- Structural tokens (order-sensitive syntax elements)
-    {name = "EVAL",    pattern = "%$"},    -- Expression evaluation marker
-    {name = "NEWLINE", pattern = "\r?\n"}, -- Line endings (CRLF or LF)
-    {name = "SPACE",   pattern = "[ \t]"}, -- Individual whitespace character
-    {name = "DASH",    pattern = "%-"},    -- List item identifier
-    {name = "COLON",   pattern = ":"},     -- Type/Value separator
-    {name = "EQUAL",   pattern = "="},     -- Assignment operator
-    {name = "ENDLINE", pattern = ";"},     -- Statement terminator
-    {name = "COMMA",   pattern = ","},     -- List/item separator
-    {name = "LPAR",    pattern = "%("},    -- Expression group start
-    {name = "RPAR",    pattern = "%)"},    -- Expression group end
-    {name = "QUOTE",   pattern = '"'},     -- String literal delimiter
-    {name = "COMMENT", pattern = '//'},    -- Line comment
+    {name = "EVAL",    pattern = "%$"},      -- Expression evaluation marker
+    {name = "NEWLINE", pattern = "\r?\n"},   -- Line endings (CRLF or LF)
+    {name = "SPACE",   pattern = "[ \t]"},   -- Individual whitespace character
+    {name = "DASH",    pattern = "%-"},      -- List item identifier
+    {name = "COLON",   pattern = ":"},       -- Type/Value separator
+    {name = "EQUAL",   pattern = "="},       -- Assignment operator
+    {name = "ENDLINE", pattern = ";"},       -- Statement terminator
+    {name = "COMMA",   pattern = ",[ \t]*"}, -- Argument list separator
+    {name = "LPAR",    pattern = "%("},      -- Expression group start
+    {name = "RPAR",    pattern = "%)"},      -- Expression group end
+    {name = "QUOTE",   pattern = '"'},       -- String literal delimiter
+    {name = "COMMENT", pattern = '//'},      -- Line comment
     -- Value tokens
     {name = "ESCAPE", pattern = "\\\\"},  
     {name = "ESCAPE", pattern = "\\[-:=;,%(%)/snt]"},    -- Escaped character (any following character)

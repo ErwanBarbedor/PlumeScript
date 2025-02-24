@@ -134,3 +134,13 @@ foo
 /// Result
 foo
 /// End
+
+/// Test "Space in argument list"
+def id(x, y)
+    $x\n
+    $y
+$id(foo, bar)
+/// Result
+foo
+bar
+/// End
