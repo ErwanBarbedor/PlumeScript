@@ -123,21 +123,31 @@ return function(plume)
                 }
             end
 
+            local mode = "name"
+
             while pos < #tokens do
                 pos = pos + 1
                 token = tokens[pos]
 
-                if token.kind == "SPACE" or token.kind == "COMMA" then
-                    -- Skip separators
-                elseif token.kind == "TEXT" then
+                if token.kind == "RPAR" then
+                    break
+                elseif token.kind == "SPACE" then
+                elseif mode == "name" then
+                    if token.kind ~= "TEXT" then
+                        plume.unexpectedTokenError (token.source, "parameter name", token.content)
+                    end
+
                     pushToken {
                         kind = "LIST_ITEM",
                         content = token.content
                     }
-                elseif token.kind == "RPAR" then
-                    break
+
+                    mode = "comma"
                 else
-                    error("Unexpected '" .. token.kind .. "' inside arg list")
+                    if token.kind ~= "COMMA" then
+                        plume.unexpectedTokenError (token.source, "a comma", token.content)
+                    end
+                    mode = "name"
                 end
             end
 

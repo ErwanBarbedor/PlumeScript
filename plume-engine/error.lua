@@ -44,6 +44,8 @@ return function (plume)
         error (msg .. "\n" .. line, -1)  -- -1 level hides this function from stack trace
     end
 
+    -- AST errors
+
     ---Handles type mismatch errors within blocks
     ---@param source table Source metadata
     ---@param expectedType string Expected expression type
@@ -54,6 +56,8 @@ return function (plume)
             expectedType, givenType
         ))
     end
+
+    -- Syntax and runtime errors
 
     function plume.convertLuaError(msg, map)
         local result = {}
@@ -80,5 +84,13 @@ return function (plume)
         end
         
         return table.concat(result)
+    end
+
+    -- parser errors
+    function plume.unexpectedTokenError (source, expected, given)
+        plume.error(source, string.format(
+            "Syntax error : expected %s, not \"%s\".",
+            expected, given
+        ))
     end
 end
