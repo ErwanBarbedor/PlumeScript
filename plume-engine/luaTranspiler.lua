@@ -289,7 +289,12 @@ return function(plume)
                         insert(result, "return __plume_concat (__plume_temp)") -- Concatenate text values
                     end
                 -- Handle other return types (except NIL and VALUE)
-                elseif node.returnType ~= "NIL" and node.returnType ~= "VALUE" then
+                elseif node.returnType == "NIL" then
+                    if forceReturn then
+                        insert(result, newline())
+                        insert(result, "return nil")
+                    end
+                elseif node.returnType ~= "VALUE" then
                     insert(result, newline())
                     if valueCount == 0 then
                         insert(result, "return {}")
@@ -594,7 +599,9 @@ return function(plume)
             LUA_EXPRESSION = function (node)
                 use(node)
                 if #node.content > 0 then
-                    return {node.content}
+                    -- Parenthesis force Lua to give the
+                    -- good error message in cas of syntax error
+                    return {"(", node.content, ")"}
                 else
                     return {"nil"}
                 end

@@ -40,7 +40,7 @@ File <string>, line n°1 :
 /// Test "Syntax Error"
 a = $(1+)
 /// Error
-Error : unexpected symbol near '<eof>'
+Error : unexpected symbol near ')'
 File <string>, line n°1 :
     a = $(1+)
 (Error handling is still under development, so locating the lua error in the Plume code may be imprecise.)
