@@ -40,3 +40,10 @@ for _, x in ipairs(evens)
 /// Result
 246810
 /// End
+
+/// Test "comment with loop"
+for i=1, 2 // A comment
+    $i
+/// Result
+12
+/// End

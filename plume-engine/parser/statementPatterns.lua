@@ -81,6 +81,10 @@ return {
                 kind = "TEXT",
                 name = "statement",
                 content = {"for", "if", "elseif", "while" }
+            },{
+                neg = {kind = {"ENDLINE", "NEWLINE", "COMMENT"}},
+                multipleCapture = true,
+                name = "line"
             }
         }
     },

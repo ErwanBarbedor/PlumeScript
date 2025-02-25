@@ -225,9 +225,14 @@ return function(plume)
                 }
             end,
             LINE_STATEMENT = function(match)
+                local line = {}
+                for _, token in ipairs(match.line) do
+                    table.insert(line, token.content)
+                end
+                
                 pushToken {
                     kind = match.statement.content:upper(),
-                    content = captureLine()
+                    content = table.concat(line)
                 }
             end,
             ELSE = function(match)
