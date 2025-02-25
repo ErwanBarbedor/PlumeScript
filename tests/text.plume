@@ -96,3 +96,9 @@ Hello, world!
 /// Result
 Hello, world!
 /// End
+
+/// Test "Comment capture ';'"
+// A comment;foo
+/// Result
+nil
+/// End
