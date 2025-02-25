@@ -67,7 +67,7 @@ return {
     {
         name = "COMMA",
         pattern = {
-            {kind = "COMMA"},
+            {kind = "COMMA", name="token"},
         }
     },
     {

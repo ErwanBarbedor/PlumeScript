@@ -90,3 +90,9 @@ a! = 5
 /// Result
 a! = 5
 /// End
+
+/// Test "Comma with space"
+Hello, world!
+/// Result
+Hello, world!
+/// End

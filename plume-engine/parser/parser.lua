@@ -320,7 +320,7 @@ return function(plume)
             COMMA = function(match)
                 pushToken {
                     kind    = "COMMA",
-                    content = ""
+                    content = match.token.content
                 }
             end
         }

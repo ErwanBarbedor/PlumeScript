@@ -204,7 +204,7 @@ return function (plume)
                     popContext(-1, 1)  -- Close current list item
                     pushContext(token, "LIST_ITEM", currentIndent+1)  -- New parameter
                 else
-                    pushChild(token, "TEXT", ",")
+                    pushChild(token, "TEXT", token.content)
                 end
 
             -- Variable assignment constructs
