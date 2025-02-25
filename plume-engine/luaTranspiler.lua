@@ -319,8 +319,12 @@ return function(plume)
         ---@return table List of generated code lines
         local function transpileChildren (node, wrapInFunction, shouldInitAccumulator, forceReturn)
 
-            if #node.children == 0 and contains("LIST_ITEM HASH_ITEM TEXT VALUE RETURN ASSIGNMENT", node.kind) then
-                return {'""'}
+            if #node.children == 0 then
+                if contains("LIST_ITEM HASH_ITEM TEXT VALUE RETURN ", node.kind) then
+                    return {'""'}
+                elseif contains("ASSIGNMENT LOCAL_ASSIGNMENT", node.kind) then
+                    return
+                end
             end
 
             local infos, onlyValues, valueCount = parseChildren(node)
@@ -449,14 +453,29 @@ return function(plume)
             ASSIGNMENT = function (node)
                 local result = {newline(), node.content, " = "}
                 use(node)
-                insertAll(result, transpileChildren (node, true, true))
+
+                local value = transpileChildren (node, true, true)
+
+                if value then
+                    insertAll(result, value)
+                else
+                    insert(result, "nil")
+                end
+
                 return result
             end,
 
             LOCAL_ASSIGNMENT = function (node)
-                local result = {newline(), "local ", node.content, " = "}
+                local result = {newline(), "local ", node.content}
                 use(node)
-                insertAll(result, transpileChildren (node, true, true))
+
+                local value = transpileChildren (node, true, true)
+
+                if value then
+                    insert(result, " = ")
+                    insertAll(result, value)
+                end
+
                 return result
             end,
 
