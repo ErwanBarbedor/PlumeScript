@@ -18,6 +18,8 @@ return {
             {kind = "EVAL"},
             {kind = "TEXT", name = "variable"},
             {kind = "LPAR"},
+            -- {kind = "SPACE", optional = true},
+            -- {kind = "RPAR",  optional = true, name = "rpar"}
         }
     },
     {
@@ -62,6 +64,12 @@ return {
         name = "RPAR",
         pattern = {
             {kind = "RPAR"},
+        }
+    },
+    {
+        name = "LPAR",
+        pattern = {
+            {kind = "LPAR"},
         }
     },
     {

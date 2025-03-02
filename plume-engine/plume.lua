@@ -34,4 +34,22 @@ return function(plume)
             return result
         end
     end
+
+    function plume.plumeStdLib:getFunctionInfo(fname)
+        return self.store.f[fname]
+    end
+
+    function plume.initRuntime ()
+        local result = {}
+
+        for k, v in pairs(plume.plumeStdLib) do
+            result[k] = v
+        end
+
+        result.store = {f=setmetatable({}, {__mode = "k"})}
+
+        return result
+    end
+
+    
 end

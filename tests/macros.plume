@@ -59,6 +59,22 @@ $(double("foo"))
 foo foo
 /// End
 
+/// Test "Macro with default value 1"
+def foo(x: bar)
+    $x
+$foo()
+/// Result
+bar
+/// End
+
+/// Test "Macro with default value 2"
+def foo(x: bar)
+    $x
+$foo(x: baz)
+/// Result
+baz
+/// End
+
 /// Test "Extended Parameters - single value"
 def double(x)
     $x $x
@@ -78,6 +94,24 @@ $keyvalue()
 Foo = Bar
 /// End
 
+/// Test "Extended Parameters - hash value 1"
+def foo(x: bar)
+    $x
+$foo()
+    baz
+/// Result
+baz
+/// End
+
+/// Test "Extended Parameters - hash value 2"
+def foo(x: bar)
+    $x
+$foo()
+    x: baz
+/// Result
+baz
+/// End
+
 /// Test "Extended Parameters - mixed args 1"
 def concat(x, y)
     $x$y
@@ -94,6 +128,27 @@ $concat(Foo)
     - Bar
 /// Result
 FooBar
+/// End
+
+/// Test "Extended Parameters - mixed args 3"
+def concat(x, y, sep: -)
+    $x$sep$y
+$concat()
+    - Foo
+    - Bar
+/// Result
+Foo-Bar
+/// End
+
+/// Test "Extended Parameters - mixed args 4"
+def concat(x, y, sep: -)
+    $x$sep$y
+$concat()
+    - Foo
+    - Bar
+    sep: =
+/// Result
+Foo=Bar
 /// End
 
 /// Test "Nested Call"

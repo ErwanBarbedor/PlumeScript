@@ -25,8 +25,10 @@ return function(plume)
     plume.parse = function(tokens)
         local pos = 1
         local inStatementContext = true -- Flag for structural token recognition
-        local textAccumulator  -- Buffer for text fragments between structural tokens
-        local result = {} -- Final structured token collection
+        local textAccumulator           -- Buffer for text fragments between structural tokens
+        local result = {}               -- Final structured token collection
+
+        local macroDefDeep = 0
 
         local captureBeginPos
         local captureTextEndPos
@@ -101,61 +103,63 @@ return function(plume)
             return table.concat(lineContent)
         end
 
-        --- Processes macro definition syntax
-        local function captureMacro(macroName, islocal)
-
-            if macroName then
-                if islocal then
-                    pushToken {
-                        kind = "LOCAL_MACRO",
-                        content = macroName,
-                    }
-                else
-                    pushToken {
-                        kind = "MACRO",
-                        content = macroName,
-                    }
-                end
+        function handleMacroDef (match, isLocal)
+            if match.macroName and match.macroName.content then
+                pushToken {
+                    kind = "MACRO_DEFINITION",
+                    content = match.macroName.content,
+                    isLocal = isLocal
+                }  
             else
                 pushToken {
-                    kind = "INLINE_MACRO",
-                    content = "",
-                }
+                    kind = "INLINE_MACRO_DEFINITION",
+                    content = ""
+                }  
             end
+             
 
-            local mode = "name"
+            -- if match.rpar.kind == "EMPTY" then
+            --     macroDefDeep = 1
+            -- else
+            --     pushToken {
+            --         kind = "MACRO_ARG_END",
+            --         content = ""
+            --     }
+            -- end
 
-            while pos < #tokens do
-                pos = pos + 1
-                token = tokens[pos]
-
-                if token.kind == "RPAR" then
-                    break
-                elseif token.kind == "SPACE" then
-                elseif mode == "name" then
-                    if token.kind ~= "TEXT" then
-                        plume.unexpectedTokenError (token.source, "parameter name", token.content)
-                    end
-
-                    pushToken {
-                        kind = "LIST_ITEM",
-                        content = token.content
-                    }
-
-                    mode = "comma"
-                else
-                    if token.kind ~= "COMMA" then
-                        plume.unexpectedTokenError (token.source, "a comma", token.content)
-                    end
-                    mode = "name"
-                end
-            end
-
-            pushToken {
-                kind = "MACRO_ARG_END",
-                content = ""
-            }
+            inStatementContext = false
         end
+
+        function handleMacroCall (match)
+            pushToken {
+                kind = "MACRO_CALL_BEGIN",
+                content = match.variable.content
+            }
+            -- if match.rpar.kind == "EMPTY" then
+            --     macroCallDeep = 1
+            -- else
+            --     pushToken {
+            --         kind = "MACRO_ARG_END",
+            --         content = ""
+            --     }
+            -- end
+
+            inStatementContext = false
+        end
+
+        -- function updateMacroDefDeep(delta)
+        --     if macroDefDeep > 0 then
+        --         macroDefDeep = macroDefDeep + delta
+        --         if macroDefDeep == 0 then
+        --             pushToken {
+        --                 kind = "MACRO_ARG_END",
+        --                 content = ""
+        --             }
+        --             return true
+        --         end
+        --     end
+        -- end
+
 
         local statementHandler
         statementHandler = {
@@ -204,19 +208,13 @@ return function(plume)
                 }
             end,
             LOCAL_MACRO_DEFINITION = function(match)
-                pos = pos - 1
-                captureMacro(match.macroName.content, true)
-                pos = pos + 1
+                handleMacroDef(match, true)
             end,
             MACRO_DEFINITION = function(match)
-                pos = pos - 1
-                captureMacro(match.macroName.content)
-                pos = pos + 1
+                handleMacroDef(match)
             end,
             INLINE_MACRO_DEFINITION = function(match)
-                pos = pos - 1
-                captureMacro()
-                pos = pos + 1
+                handleMacroDef(match)
             end,
             RETURN = function(match)
                 pushToken {
@@ -269,10 +267,7 @@ return function(plume)
                 inStatementContext = true
             end,
             MACRO_CALL_BEGIN = function(match)
-                pushToken {
-                    kind = "MACRO_CALL_BEGIN",
-                    content = match.variable.content
-                }
+                handleMacroCall(match)
             end,
             VARIABLE = function(match)
                 pushToken {
@@ -317,10 +312,19 @@ return function(plume)
                 }
             end,
             RPAR = function(match)
+                -- if not updateMacroDefDeep(-1) then
+                    pushToken {
+                        kind    = "RPAR",
+                        content = ""
+                    }
+                -- end
+            end,
+            LPAR = function(match)
                 pushToken {
-                    kind    = "RPAR",
+                    kind    = "LPAR",
                     content = ""
                 }
+                -- updateMacroDefDeep(1)
             end,
             COMMA = function(match)
                 pushToken {

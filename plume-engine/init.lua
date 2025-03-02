@@ -73,7 +73,7 @@ end
 ---@return any The result of the Lua code execution.
 function plume.execute(code, map)
     -- Compilation and Execution in a Sandboxed Environment
-    local env = setmetatable({ plume = plume.plumeStdLib }, { __index = _G })
+    local env = setmetatable({ plume = plume.initRuntime() }, { __index = _G })
     local compiledFunction, errorMessage
 
     -- Lua 5.2+ compatible compilation using loadstring and setfenv

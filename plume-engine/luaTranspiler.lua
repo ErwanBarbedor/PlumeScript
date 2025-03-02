@@ -15,8 +15,8 @@ If not, see <https://www.gnu.org/licenses/>.
 
 return function(plume)
 
-    local contains           = plume.utils.containsWord
-    local STATEMENTS         = "FOR ASSIGNMENT LOCAL_ASSIGNMENT IF ELSE ELSEIF WHILE MACRO LOCAL_MACRO RETURN BREAK"
+    local contains   = plume.utils.containsWord
+    local STATEMENTS = "FOR ASSIGNMENT LOCAL_ASSIGNMENT IF ELSE ELSEIF WHILE MACRO LOCAL_MACRO RETURN BREAK"
 
     local transpileToLua
 
@@ -68,8 +68,6 @@ return function(plume)
 
         local insert = table.insert
 
-
-        
         ---Parses the children of a given node.
         ---@param node table The node whose children are to be parsed.
         ---@return table result A table containing the parsed children. Each element can be a node or a list of nodes.
@@ -163,7 +161,14 @@ return function(plume)
             end
 
             for i, content in ipairs(infos[1].content) do
+                if directConcat and content.kind ~= "TEXT" then
+                    insert(result, "(")
+                end
                 insertAll(result, transpileToLua(content))
+                if directConcat and content.kind ~= "TEXT" then
+                    insert(result, " or \"\")")
+                end
+
                 if i < #infos[1].content then
                     if directConcat then     
                         insert(result, newline())
@@ -187,7 +192,6 @@ return function(plume)
 
             return result
         end
-
 
         --- Transpiles mixed-case children of a node to Lua code.
         ---@param node table The AST node whose children are being transpiled.
@@ -313,8 +317,6 @@ return function(plume)
             return result
         end
 
-
-
         ---Transpiles child nodes of an AST element into executable Lua code
         ---Handles value accumulation and control flow wrapping
         ---@param node AST node to process
@@ -341,10 +343,23 @@ return function(plume)
             end        
         end
 
+        local function handleMacroDefinition (node, islocal, addNewline)
 
-        local function handlerMACRO (node, islocal, addNewline)
             local parameters = node.children[1]
             local body       = node.children[2]
+        
+            local parametersList = {}
+            local parametersHash =  {}
+
+            for _, param in ipairs(parameters.children) do
+                if param.kind == "LIST_ITEM" then
+                    table.insert(parametersList, param.children[1].content)
+
+                else
+                    table.insert(parametersList, param.content)
+                    table.insert(parametersHash, param)
+                end
+            end
 
             local result = {}
             
@@ -364,18 +379,123 @@ return function(plume)
             end
 
             insert(result, "function (")
-            for i, child in ipairs(parameters.children) do
-                if child.kind == "LIST_ITEM" then
-                    table.insert(result, child.content)
-                    if i < #parameters.children then
-                        table.insert(result, ",")
-                    end
+            for i, argName in ipairs(parametersList) do
+                insert(result, argName)
+                if i < #parametersList then
+                    insert(result, ", ")
                 end
             end
             insert(result, ")")
+
+            if #parametersHash > 0 then
+                for _, param in ipairs(parametersHash) do
+                    insertAll(result, {
+                        newline(),
+                        "if ", param.content, " == nil then",
+                        newline(),
+                        param.content, " = "
+                    })
+
+                    insertAll(result, transpileChildren(param, false, true, false))
+                    insert(result, newline())
+                    insert(result, "end")
+                end
+            end
+
             insertAll(result, transpileChildren (body, false, true, true))
             insert(result, newline())
             insert(result, "end")
+
+            if node.content and #node.content > 0 then
+                insert(result, newline())
+                insert(result, "plume.store.f[")
+                insert(result, node.content)
+                insert(result, "] = {")
+                insert(result, newline())
+                insert(result, "pos = {")
+                for i, param in ipairs(parameters.children) do
+                    if param.kind == "HASH_ITEM" then
+                        insert(result, newline())
+                        insert(result, param.content)
+                        insert(result, " = ")
+                        insert(result, i)
+                        insert(result, ", ")
+                    end
+                end
+                if #parameters.children > 0 then
+                    insert(result, newline())
+                end
+                insert(result, "},")
+                insert(result, newline())
+                insert(result, "n = ")
+                insert(result, #parametersList)
+                insert(result, newline())
+                insert(result, "}")
+            end
+            
+
+            return result
+        end
+
+        local function handleMacroCallWithoutExtension(node)
+            local result = {}
+            argList = node.children[1].children
+            
+            insert(result, newline())
+            for index, arg in ipairs(argList) do
+                insertAll(result, transpileToLua(arg))
+
+                if index < #argList then
+                    insert(result, ",")
+                    insert(result, newline())
+                end
+            end
+
+            insert(result, newline())
+            insert(result, ")")
+
+            return result
+        end
+
+        local function handleMacroArguments(node, argList)
+            local result = {}
+
+            insert(result, newline())
+            insert(result, "(function ()")
+                insert(result, newline())
+                insert(result, "local __plume_args = {}")
+                insert(result, newline())
+                insert(result, "local __plume_infos = plume:getFunctionInfo(")
+                insert(result, node.content)
+                insert(result, ")")
+
+                for i, arg in ipairs(argList) do
+                    if arg.kind == "LIST_ITEM" or arg.kind == "TEXT" then
+                        insert(result, newline())
+                        insert(result, "__plume_args[")
+                        insert(result, i)
+                        insert(result, "] = ")
+                        insertAll(result, transpileToLua(arg))
+                    else
+                        insert(result, newline())
+                        insert(result, "__plume_args[__plume_infos.pos.")
+                        insert(result, arg.content)
+                        insert(result, "] = ")
+
+                        if arg.kind == "HASH_ITEM" then
+                            insertAll(result, transpileChildren(arg, false, true))
+                        else
+                            insertAll(result, transpileToLua(arg))
+                        end
+                    end
+                end
+
+            insert(result, newline())
+            insert(result, "return __plume_unpack(__plume_args, 1, __plume_infos.n)")
+            insert(result, newline())
+            insert(result, "end)()")
+            insert(result, newline())
+            insert(result, ")")
 
             return result
         end
@@ -392,67 +512,21 @@ return function(plume)
 
             MACRO_CALL = function (node)
                 local inlineArgs   = node.children[1]
-                local extendedArgs = node.children[2]
+                local extendedArgs = node.children[2] or {children={}}
+                use(node)
+                local result = {node.content, "("}
+                local argList = {}
 
-                if #inlineArgs.children==0 then
-                    inlineArgs = nil
-                end
+                insertAll(argList, inlineArgs.children)
+                insertAll(argList, extendedArgs.children)
 
-                if extendedArgs and #extendedArgs.children==0 then
-                    extendedArgs = nil
-                end
-
-                if not inlineArgs and not extendedArgs then
-                    return {node.content, "()"}
-                elseif not extendedArgs then
-                    local result = {node.content, "(__plume_unpack("}
-                    insert(result, newline())
-                    insertAll(result, transpileChildren (inlineArgs, true, true))
-                    insert(result, newline())
-                    insert(result, "))")
-                    return result
-                elseif not inlineArgs then
-                    if extendedArgs.returnType == "TABLE" then
-                        local result = {node.content, "(__plume_unpack(", newline()}
-                        insertAll(result, transpileChildren (extendedArgs, true, true))
-                        insert(result, newline())
-                        insert(result, "))")
-                        return result
-                    else
-                        local result = {node.content, "(", newline()}
-                        insertAll(result, transpileChildren (extendedArgs, true, true))
-                        insert(result, newline())
-                        insert(result, ")")
-                        return result
-                    end
-                else
-                    local inline   = transpileChildren (inlineArgs, true, true)
-                    local extended = transpileChildren (extendedArgs, true, true)
-
-                    local result = {newline(), node.content, "(__plume_unpack("}
-                    insert(result, newline())
-                    insert(result, "plume.table.merge(")
-                    insert(result, newline())
-                    insertAll(result, inline)
-                    insert(result, ",")
-                    insert(result, newline())
-                    if extendedArgs.returnType == "TEXT" then
-                        insert(result, "{")
-                    end
-                    insertAll(result, extended)
-                    if extendedArgs.returnType == "TEXT" then
-                        insert(result, newline())
-                        insert(result, "}")
-                    end
-
-                    insert(result, newline())
+                if #extendedArgs.children == 0 and #inlineArgs.children == 0 then
                     insert(result, ")")
-                    insert(result, newline())
-                    insert(result, "))")
-
-                    return  result
-                    
+                else
+                    insertAll(result, handleMacroArguments(node, argList))
                 end
+                
+                return result
             end,
 
             ASSIGNMENT = function (node)
@@ -490,16 +564,12 @@ return function(plume)
             --     return "__plume_void = " .. table.concat(result, "\n")
             -- end,
 
-            MACRO = function (node)
-                return handlerMACRO(node, false, true)
+            MACRO_DEFINITION = function (node)
+                return handleMacroDefinition(node, false, true)
             end,
 
-            LOCAL_MACRO = function (node)
-                return handlerMACRO(node, true, true)
-            end,
-
-            INLINE_MACRO = function (node)
-                return handlerMACRO(node)
+            INLINE_MACRO_DEFINITION = function (node)
+                return handleMacroDefinition(node)
             end,
 
             LIST_ITEM = function (node)
@@ -607,23 +677,22 @@ return function(plume)
                 end
             end
         }
-
     
         function transpileToLua(ast)
             if tokenHandlers[ast.kind] then
                 return tokenHandlers[ast.kind](ast)
             else
-                error("NIY " .. ast.kind)
+                error("NIY " .. (ast.kind or "???"))
             end
         end
 
         local result = {"local __plume_concat = table.concat"}
 
-        table.insert(result, newline())
+        insert(result, newline())
         if contains("5.1 JIT", luaVersion) then
-            table.insert(result, "local __plume_unpack = unpack")
+            insert(result, "local __plume_unpack = unpack")
         else
-            table.insert(result, "local __plume_unpack = table.unpack")
+            insert(result, "local __plume_unpack = table.unpack")
         end
 
         insertAll(result, transpileToLua(ast))

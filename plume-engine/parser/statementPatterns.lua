@@ -62,7 +62,9 @@ return {
             {kind = "TEXT",  content = "def"},
             {kind = "SPACE", multipleCapture = true},
             {kind = "TEXT",  name = "macroName", optional = true},
-            {kind = "LPAR"}
+            {kind = "LPAR"},
+            -- {kind = "SPACE", optional = true},
+            -- {kind = "RPAR",  optional = true, name = "rpar"}
         }
     },
     {
@@ -71,7 +73,9 @@ return {
             {kind = "TEXT",  content = "def"},
             {kind = "SPACE", multipleCapture = true},
             {kind = "TEXT",  name = "macroName"},
-            {kind = "LPAR"}
+            {kind = "LPAR"},
+            -- {kind = "SPACE", optional = true},
+            -- {kind = "RPAR",  optional = true, name = "rpar"}
         }
     },
     {

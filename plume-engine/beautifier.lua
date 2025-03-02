@@ -28,7 +28,7 @@ return function(plume)
                 { pattern = "end"       },  -- End of block
                 { pattern = "return $"  },  -- Return statement (simplistic match)
                 { pattern = "^else"     },  -- Else/elseif keyword at line start
-                { pattern = "^%)+$"     }   -- Lines ending with closing parentheses
+                { pattern = "^%)+,?%s*$"     }   -- Lines ending with closing parentheses
             },
             increment = {  -- Rules for increasing indentation AFTER processing line 
                 { pattern = "{$"        },  -- Opening brace
