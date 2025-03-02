@@ -18,7 +18,9 @@ If not, see <https://www.gnu.org/licenses/>.
 return function (plume)
     local contains = plume.utils.containsWord
 
-    -- Main parser function
+    ---@brief Main parser function that constructs an Abstract Syntax Tree from a token stream
+    ---@param tokens table Array of lexical tokens to be processed
+    ---@return table Root node of the constructed AST
     plume.makeAST = function(tokens)
         local context         = {} -- Node hierarchy stack (path from root to current node)
         local pos             = 0  -- Current position in token stream
@@ -28,7 +30,7 @@ return function (plume)
         --- Propagates return type constraints through parent scopes
         --- Enforces type consistency in code generation paths
         ---@param token table Trigger token for error reporting
-        ---@param kind string Expected return type ('TEXT' or 'TABLE')
+        ---@param kind string Expected return type ('TEXT' or 'TABLE' or 'VALUE')
         ---@param context table Current context stack
         local function setReturnType(token, kind)
             for i=#context, 1, -1 do
@@ -120,6 +122,8 @@ return function (plume)
             end
         end
 
+        --- Validates macro argument syntax
+        ---@brief Checks if macro arguments follow correct naming conventions
         local function checkMacroArgument ()
             local current = context[#context]
 
@@ -144,40 +148,22 @@ return function (plume)
                 local name, over = content:match('%s*([a-zA-Z_][a-zA-Z0-9_]*)%s*(%S*)')
 
                 if not name then
-                    plume.unexpectedTokenError (token.sourceToken.source, "parameter name", content)
+                    plume.unexpectedTokenError(token.sourceToken.source, "parameter name", content)
                 else
                     if not over and (#arg.children > 1 and arg.kind == "LIST_ITEM") then
                         over = arg.children[2].content
                     end
 
                     if #over > 0 then
-                        plume.unexpectedTokenError (token.sourceToken.source, "a comma", over)
+                        plume.unexpectedTokenError(token.sourceToken.source, "a comma", over)
                     end
                 end
             end
-
         end
 
-        --- Closes inline macro parameter contexts when encountering RPAR
-        local function closeMacroInlineParameters()
-            local antelast = context[#context-1]
-            
-            -- Handle inline parameter lists like macro(arg1, arg2)
-            if antelast and antelast.kind == "MACRO_CALL_INLINE_PARAMETERS" then
-                local lastArg = context[#context]
-
-                -- Remove empty list items
-                if #lastArg.children == 0 then
-                    table.remove(context)
-                else
-                    popContext(-1, 1)
-                end
-
-                popContext(-1, 1)  -- Close MACRO_CALL_INLINE_PARAMETERS
-                insideMacroCall = insideMacroCall-1
-            end
-        end
-
+        --- Checks if current context is inside a specific node type
+        ---@param kind string Node type to look for
+        ---@return boolean True if inside the specified node type
         local function isInside(kind)
             for i=#context, 1, -1 do
                 if context[i].kind == kind then
@@ -187,7 +173,9 @@ return function (plume)
             return false
         end
 
-        local function popMacroArgument ()
+        --- Finalizes a macro argument and determines if it's a named parameter
+        ---@brief Converts list items to hash items when they use key:value syntax
+        local function popMacroArgument()
             local antecurrent = context[#context-1]
             local current     = context[#context]
 
@@ -203,6 +191,7 @@ return function (plume)
                 local text = current.children[1].content
 
                 if text then
+                    -- Detect key:value pattern for named parameters
                     local lft1, key, lft2 = text:match('(%s*)([a-zA-Z_][a-zA-Z_0-9]*)(:%s*)')
 
                     if key then
@@ -216,7 +205,8 @@ return function (plume)
             popContext(-1, 1)
         end
 
-        local function pushMacroArgument ()
+        --- Creates a new macro argument context
+        local function pushMacroArgument()
             pushContext(nil, "LIST_ITEM", currentIndent)
         end
 
@@ -236,10 +226,10 @@ return function (plume)
 
             -- Macro definitions
             elseif contains("MACRO_DEFINITION", token.kind) then
-                pushContext (token, token.kind, currentIndent+1, token.content)
-                pushContext (token, "MACRO_ARG_TABLE", currentIndent+1)
+                pushContext(token, token.kind, currentIndent+1, token.content)
+                pushContext(token, "MACRO_ARG_TABLE", currentIndent+1)
 
-                pushMacroArgument ()
+                pushMacroArgument()
 
             -- Inline macros definitions
             elseif contains("INLINE_MACRO_DEFINITION", token.kind) then
@@ -247,35 +237,34 @@ return function (plume)
                 pushContext(token, token.kind, currentIndent+1, token.content)
                 setReturnType(token, "VALUE")
 
-                pushContext (token, "MACRO_ARG_TABLE", currentIndent+1)
-                pushMacroArgument ()
+                pushContext(token, "MACRO_ARG_TABLE", currentIndent+1)
+                pushMacroArgument()
 
             -- Macro call initiation
             elseif contains("MACRO_CALL_BEGIN", token.kind) then
                 insideMacroCall = insideMacroCall + 1
                 setReturnType(token, "TEXT")
                 
-                pushContext  (token, "MACRO_CALL", currentIndent+1, token.content)
+                pushContext(token, "MACRO_CALL", currentIndent+1, token.content)
                 setReturnType(token, "TEXT")
                 
-                pushContext  (token, "MACRO_ARG_TABLE", currentIndent+1)
-                pushMacroArgument ()
+                pushContext(token, "MACRO_ARG_TABLE", currentIndent+1)
+                pushMacroArgument()
                 
-
             -- Right parenthesis handling
             elseif contains("RPAR", token.kind) then
                 if isInside("MACRO_DEFINITION") or isInside("INLINE_MACRO_DEFINITION") then
-                    popMacroArgument ()
-                    checkMacroArgument ()
+                    popMacroArgument()
+                    checkMacroArgument()
                     popContext(-1, 1) -- pop MACRO_ARG_TABLE
-                    pushContext (token, "MACRO_BODY", currentIndent+1)
+                    pushContext(token, "MACRO_BODY", currentIndent+1)
 
                 elseif isInside("MACRO_CALL") then
-                    popMacroArgument ()
+                    popMacroArgument()
                     popContext(-1, 1) -- pop MACRO_ARG_TABLE
                     -- Detect extended parameters (multi-line)
                     if tokens[pos+1] and tokens[pos+1].kind == "ENDLINE" then
-                        pushContext  (token, "MACRO_EXTENDED_ARG_TABLE", currentIndent+1)
+                        pushContext(token, "MACRO_EXTENDED_ARG_TABLE", currentIndent+1)
                     else
                         popContext(-1, 1)
                     end
@@ -285,10 +274,9 @@ return function (plume)
 
             -- Parameter list comma handling
             elseif contains("COMMA", token.kind) then
-
                 if isInside("MACRO_DEFINITION") or isInside("MACRO_CALL") or isInside("INLINE_MACRO_DEFINITION") then
-                    popMacroArgument ()
-                    pushMacroArgument ()
+                    popMacroArgument()
+                    pushMacroArgument()
                 else
                     pushChild(token, "TEXT", token.content)
                 end
@@ -303,12 +291,10 @@ return function (plume)
             -- List and hash structures
             elseif token.kind == "LIST_ITEM" then
                 setReturnType(token, "TABLE")
-
                 pushContext(token, "LIST_ITEM", currentIndent+1)
 
             elseif token.kind == "HASH_ITEM" then
                 setReturnType(token, "TABLE")
-
                 pushContext(token, "HASH_ITEM", currentIndent+1, token.content)
             
             -- Line ending processing

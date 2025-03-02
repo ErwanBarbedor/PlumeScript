@@ -20,7 +20,11 @@ return function(plume)
 
     local transpileToLua
 
-    ---Main transpilation entry point
+    ---Main transpilation entry point - converts an AST to Lua code
+    ---@param ast table Abstract Syntax Tree to transpile
+    ---@param luaVersion string Optional Lua version to target. If nil, detects from environment
+    ---@return string Transpiled Lua code
+    ---@return table Mapping information for the generated code
     plume.transpileToLua = function(ast, luaVersion)
 
         local luaVersion
@@ -126,12 +130,12 @@ return function(plume)
             return result, onlyValues, valueCount
         end
 
-        --- Transpiles a node's children, handling different return types and value counts.
-        -- @param node The node whose children are being transpiled.
-        -- @param infos Table containing information about the node's children.
-        -- @param valueCount The number of values being returned by the children.
-        ---@param forceReturn boolean Whether to force a return statement even if not wrapped in a function.
-        -- @return A table containing the generated Lua code snippets.
+        --- Transpiles a node's children when they only contain values.
+        ---@param node table The node whose children are being transpiled
+        ---@param infos table Information about the node's children
+        ---@param valueCount number Number of values being returned
+        ---@param forceReturn boolean Whether to force a return statement
+        ---@return table A table containing Lua code fragments
         local function transpileChildrenOnlyValuesCase(node, infos, valueCount, forceReturn)
             local result = {}
             local wrapInTable  = (node.returnType == "TABLE") or valueCount>2
@@ -319,10 +323,10 @@ return function(plume)
 
         ---Transpiles child nodes of an AST element into executable Lua code
         ---Handles value accumulation and control flow wrapping
-        ---@param node AST node to process
-        ---@param wrapInFunction boolean Whether to wrap the generated code in an anonymous function.
-        ---@param shouldInitAccumulator boolean Whether an accumulator variable should be initialized.
-        ---@param forceReturn boolean Whether to force a return statement even if not wrapped in a function.
+        ---@param node table AST node to process
+        ---@param wrapInFunction boolean Whether to wrap the generated code in an anonymous function
+        ---@param shouldInitAccumulator boolean Whether an accumulator variable should be initialized
+        ---@param forceReturn boolean Whether to force a return statement even if not wrapped in a function
         ---@return table List of generated code lines
         local function transpileChildren (node, wrapInFunction, shouldInitAccumulator, forceReturn)
 
@@ -343,6 +347,11 @@ return function(plume)
             end        
         end
 
+        ---Handles macro definition transpilation
+        ---@param node table The macro definition node
+        ---@param islocal boolean Whether this is a local macro
+        ---@param addNewline boolean Whether to add a newline at the beginning
+        ---@return table Transpiled Lua code fragments
         local function handleMacroDefinition (node, islocal, addNewline)
 
             local parameters = node.children[1]
@@ -437,6 +446,9 @@ return function(plume)
             return result
         end
 
+        ---Handles macro call without extended arguments
+        ---@param node table The macro call node
+        ---@return table Transpiled Lua code fragments
         local function handleMacroCallWithoutExtension(node)
             local result = {}
             argList = node.children[1].children
@@ -457,6 +469,10 @@ return function(plume)
             return result
         end
 
+        ---Handles macro arguments, supporting both positional and named parameters
+        ---@param node table The macro call node
+        ---@param argList table List of arguments to process
+        ---@return table Transpiled Lua code fragments
         local function handleMacroArguments(node, argList)
             local result = {}
 
@@ -502,6 +518,8 @@ return function(plume)
 
         -- AST node type to handler mapping
         local tokenHandlers = {
+            ---Handles block nodes, which contain multiple statements
+            ---@param node table The block node to process
             BLOCK = function (node)
                 use(node)
                 local mainBlock = (node.indent or 0) >= 0
@@ -510,6 +528,8 @@ return function(plume)
                 return result
             end,
 
+            ---Handles macro calls, processing both inline and extended arguments
+            ---@param node table The macro call node to process
             MACRO_CALL = function (node)
                 local inlineArgs   = node.children[1]
                 local extendedArgs = node.children[2] or {children={}}
@@ -529,6 +549,8 @@ return function(plume)
                 return result
             end,
 
+            ---Handles variable assignment
+            ---@param node table The assignment node to process
             ASSIGNMENT = function (node)
                 local result = {newline(), node.content, " = "}
                 use(node)
@@ -544,6 +566,8 @@ return function(plume)
                 return result
             end,
 
+            ---Handles local variable assignment
+            ---@param node table The local assignment node to process
             LOCAL_ASSIGNMENT = function (node)
                 local result = {newline(), "local ", node.content}
                 use(node)
@@ -558,25 +582,27 @@ return function(plume)
                 return result
             end,
 
-            -- VOID = function (node)
-            --     local result = transpileChildren (node, true, true)
-
-            --     return "__plume_void = " .. table.concat(result, "\n")
-            -- end,
-
+            ---Handles macro definition
+            ---@param node table The macro definition node to process
             MACRO_DEFINITION = function (node)
                 return handleMacroDefinition(node, false, true)
             end,
 
+            ---Handles inline macro definition
+            ---@param node table The inline macro definition node to process
             INLINE_MACRO_DEFINITION = function (node)
                 return handleMacroDefinition(node)
             end,
 
+            ---Handles list items (positional arguments/parameters)
+            ---@param node table The list item node to process
             LIST_ITEM = function (node)
                 use(node)
                 return transpileChildren (node, true, true)
             end,
 
+            ---Handles hash items (named arguments/parameters)
+            ---@param node table The hash item node to process
             HASH_ITEM = function (node)
                 local result = {node.content, " = "}
                 use(node)
@@ -584,6 +610,8 @@ return function(plume)
                 return result
             end,
 
+            ---Handles return statements
+            ---@param node table The return node to process
             RETURN = function (node)
                 local result = {newline(), "return "}
                 use(node)
@@ -591,6 +619,8 @@ return function(plume)
                 return result
             end,
 
+            ---Handles for loops
+            ---@param node table The for loop node to process
             FOR = function (node)
                 local result = {newline()}
                 use(node)
@@ -601,6 +631,8 @@ return function(plume)
                 return result
             end,
 
+            ---Handles while loops
+            ---@param node table The while loop node to process
             WHILE = function (node)
                 local result = {newline()}
                 use(node)
@@ -611,6 +643,8 @@ return function(plume)
                 return result
             end,
 
+            ---Handles if statements
+            ---@param node table The if statement node to process
             IF = function (node)
                 local result = {newline()}
                 use(node)
@@ -623,6 +657,8 @@ return function(plume)
                 return result
             end,
 
+            ---Handles elseif statements
+            ---@param node table The elseif statement node to process
             ELSEIF = function (node)
                 local result = {newline()}
                 use(node)
@@ -635,6 +671,8 @@ return function(plume)
                 return result
             end,
 
+            ---Handles else statements
+            ---@param node table The else statement node to process
             ELSE = function (node)
                 local result = {newline()}
                 use(node)
@@ -645,6 +683,8 @@ return function(plume)
                 return result
             end,
 
+            ---Handles break statements
+            ---@param node table The break statement node to process
             BREAK = function (node)
                 local result = {newline()}
                 use(node)
@@ -652,6 +692,8 @@ return function(plume)
                 return result
             end,
 
+            ---Handles text literals
+            ---@param node table The text node to process
             TEXT = function (node)
                 use(node)
                 if tonumber(node.content) then
@@ -661,11 +703,15 @@ return function(plume)
                 end
             end,
 
+            ---Handles variable references
+            ---@param node table The variable node to process
             VARIABLE = function (node)
                 use(node)
                 return {node.content}
             end,
 
+            ---Handles raw Lua expressions
+            ---@param node table The Lua expression node to process
             LUA_EXPRESSION = function (node)
                 use(node)
                 if #node.content > 0 then
@@ -678,6 +724,9 @@ return function(plume)
             end
         }
     
+        ---Main transpilation function for individual AST nodes
+        ---@param ast table AST node to transpile
+        ---@return table Transpiled code fragments
         function transpileToLua(ast)
             if tokenHandlers[ast.kind] then
                 return tokenHandlers[ast.kind](ast)
