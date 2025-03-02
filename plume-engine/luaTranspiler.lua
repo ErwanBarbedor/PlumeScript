@@ -197,6 +197,8 @@ return function(plume)
             return result
         end
 
+        local transpileChildren
+
         --- Transpiles mixed-case children of a node to Lua code.
         ---@param node table The AST node whose children are being transpiled.
         ---@param infos table A table containing information about the children to transpile.
@@ -255,9 +257,17 @@ return function(plume)
                         if firstValueFound or (not shouldInitAccumulator) then
                             for _, value in ipairs(values) do
                                 insert(result, newline())
-                                insert(result, "table.insert(__plume_temp, ")
-                                insertAll(result, transpileToLua(value))
-                                insert(result, ")")
+                                if info.content.kind == "HASH_ITEM" then
+                                    use(info.content)
+                                    insert(result, "__plume_temp[\"")
+                                    insert(result, info.content.content)
+                                    insert(result, "\"] = ")
+                                    insertAll(result, transpileChildren(info.content, false, true, false))
+                                else
+                                    insert(result, "table.insert(__plume_temp, ")
+                                    insertAll(result, transpileToLua(value))
+                                    insert(result, ")")
+                                end
                             end
                         -- Initialize accumulator table with first set of values
                         elseif #values > 0 then
@@ -328,7 +338,7 @@ return function(plume)
         ---@param shouldInitAccumulator boolean Whether an accumulator variable should be initialized
         ---@param forceReturn boolean Whether to force a return statement even if not wrapped in a function
         ---@return table List of generated code lines
-        local function transpileChildren (node, wrapInFunction, shouldInitAccumulator, forceReturn)
+        function transpileChildren (node, wrapInFunction, shouldInitAccumulator, forceReturn)
 
             if #node.children == 0 then
                 if contains("LIST_ITEM HASH_ITEM TEXT VALUE RETURN ", node.kind) then

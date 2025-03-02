@@ -38,9 +38,19 @@ $(a[1])
 Foo
 /// End
 
-/// Test "Mixed table"
+/// Test "Mixed table 1"
 a =
     - item
+    key: value
+$(a[1]) $(a.key)
+/// Result
+item value
+/// End
+
+/// Test "Mixed table 2"
+a =
+    - item
+    local foo = bar
     key: value
 $(a[1]) $(a.key)
 /// Result
