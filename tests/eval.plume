@@ -11,3 +11,9 @@ $a
 /// Result
 nil
 /// End
+
+/// Test "Parenthesis in eval"
+$(math.cos(0))
+/// Result
+1
+/// End

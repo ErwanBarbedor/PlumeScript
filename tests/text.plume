@@ -102,3 +102,9 @@ Hello, world!
 /// Result
 nil
 /// End
+
+/// Test "Parenthesis"
+cos(1)
+/// Result
+cos(1)
+/// End

@@ -25,7 +25,7 @@ return function (plume)
         local context         = {} -- Node hierarchy stack (path from root to current node)
         local pos             = 0  -- Current position in token stream
         local currentIndent   = 0  -- Track indentation for block scoping (Python-like)
-        local insideMacroCall = 0  -- Track nested macro call depth
+        local parenthesisDeep = 0 -- Track nested macro call depth
 
         --- Propagates return type constraints through parent scopes
         --- Enforces type consistency in code generation paths
@@ -242,7 +242,6 @@ return function (plume)
 
             -- Macro call initiation
             elseif contains("MACRO_CALL_BEGIN", token.kind) then
-                insideMacroCall = insideMacroCall + 1
                 setReturnType(token, "TEXT")
                 
                 pushContext(token, "MACRO_CALL", currentIndent+1, token.content)
@@ -251,9 +250,17 @@ return function (plume)
                 pushContext(token, "MACRO_ARG_TABLE", currentIndent+1)
                 pushMacroArgument()
                 
+            -- Left parenthesis handling
+            elseif contains("LPAR", token.kind) then
+                parenthesisDeep = parenthesisDeep+1
+                pushChild(token, "TEXT", "(")
+
             -- Right parenthesis handling
             elseif contains("RPAR", token.kind) then
-                if isInside("MACRO_DEFINITION") or isInside("INLINE_MACRO_DEFINITION") then
+                if parenthesisDeep > 0 then
+                    parenthesisDeep = parenthesisDeep - 1
+                    pushChild(token, "TEXT", ")")
+                elseif isInside("MACRO_DEFINITION") or isInside("INLINE_MACRO_DEFINITION") then
                     popMacroArgument()
                     checkMacroArgument()
                     popContext(-1, 1) -- pop MACRO_ARG_TABLE
@@ -301,7 +308,7 @@ return function (plume)
             elseif token.kind == "ENDLINE" then
                 -- Todo: Check if last context must
                 -- be closed before endline, line macro argument list
-
+                parenthesisDeep = 0
                 currentIndent = token.indent or currentIndent
                 popContext(currentIndent)  -- Close completed contexts
 
