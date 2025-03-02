@@ -127,3 +127,8 @@ For the symbols `-`, `:`, and `=`, they can be escaped with `\`.
 On my 12600k, transpilation of a 10,000-line file takes less than 200ms; this should be more than sufficient for small projects.
 
 Transpiled code executes at between 70% and 100% of Lua's performance. So with LuaJIT, this makes it possible to include relatively costly calculations in templates.
+
+## Changelog
+
+### 0.20 (Initial Commit)
+Project restarted from scratch.
