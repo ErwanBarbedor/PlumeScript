@@ -30,6 +30,8 @@ a is $(a)
 
 ## Overview
 
+*(the best way to get a feel for Plume is to follow the tutorials available on the link given above)*
+
 ### Basics
 
 ``` Plume
