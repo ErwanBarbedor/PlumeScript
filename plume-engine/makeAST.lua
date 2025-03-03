@@ -281,7 +281,7 @@ return function (plume)
 
             -- Parameter list comma handling
             elseif contains("COMMA", token.kind) then
-                if isInside("MACRO_DEFINITION") or isInside("MACRO_CALL") or isInside("INLINE_MACRO_DEFINITION") then
+                if isInside("MACRO_ARG_TABLE") then
                     popMacroArgument()
                     pushMacroArgument()
                 else
