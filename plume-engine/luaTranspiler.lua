@@ -456,36 +456,8 @@ return function(plume)
             return result
         end
 
-        ---Handles macro call without extended arguments
-        ---@param node table The macro call node
-        ---@return table Transpiled Lua code fragments
-        local function handleMacroCallWithoutExtension(node)
+        local function handleMacroArgumentWithHash(node, argList)
             local result = {}
-            argList = node.children[1].children
-            
-            insert(result, newline())
-            for index, arg in ipairs(argList) do
-                insertAll(result, transpileToLua(arg))
-
-                if index < #argList then
-                    insert(result, ",")
-                    insert(result, newline())
-                end
-            end
-
-            insert(result, newline())
-            insert(result, ")")
-
-            return result
-        end
-
-        ---Handles macro arguments, supporting both positional and named parameters
-        ---@param node table The macro call node
-        ---@param argList table List of arguments to process
-        ---@return table Transpiled Lua code fragments
-        local function handleMacroArguments(node, argList)
-            local result = {}
-
             insert(result, newline())
             insert(result, "(function ()")
                 insert(result, newline())
@@ -524,6 +496,43 @@ return function(plume)
             insert(result, ")")
 
             return result
+        end
+
+        local function handleMacroArgumentWithoutHash (node, argList)
+            local result = {}
+
+            insert(result, "\n")
+            for i, arg in ipairs(argList) do
+                insertAll(result, transpileToLua(arg))
+                if i < #argList then
+                    insert(result, ",\n")
+                end
+            end
+
+            insert(result, "\n)")
+
+            return result
+        end
+
+        ---Handles macro arguments, supporting both positional and named parameters
+        ---@param node table The macro call node
+        ---@param argList table List of arguments to process
+        ---@return table Transpiled Lua code fragments
+        local function handleMacroArguments(node, argList)
+            local containsHash = false
+
+            for _, arg in ipairs(argList) do
+                if arg.kind == "HASH_ITEM" then
+                    containsHash = true
+                    break
+                end
+            end
+
+            if containsHash then
+                return handleMacroArgumentWithHash(node, argList)
+            else
+                return handleMacroArgumentWithoutHash(node, argList)
+            end
         end
 
         -- AST node type to handler mapping

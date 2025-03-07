@@ -130,8 +130,12 @@ Transpiled code executes at between 70% and 100% of Lua's performance. So with L
 
 ## Changelog
 
-### 0.21 (Bugfix)
+### 0.21
 
+#### Enhancement
+- Enhance macro call transpilation in case without named parameter
+
+#### Bugfix
 - Fix an error occuring when writting comma inside macro body
 
 ### 0.20 (Initial Commit)
