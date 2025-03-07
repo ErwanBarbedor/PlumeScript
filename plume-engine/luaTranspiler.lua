@@ -397,14 +397,34 @@ return function(plume)
                 insert(result, " = ")
             end
 
+            local varposarg
+            local varnamearg
             insert(result, "function (")
             for i, argName in ipairs(parametersList) do
+                if argName:sub(1, 1) == "*" then
+                    -- Todo: check if in last position
+                    if argName:sub(2, 2) == "*" then
+                        argName = argName:sub(3, -1)
+                        varnamearg = argName
+                    else
+                        varposarg = argName:sub(2, -1)
+                        argName = "..."
+                    end
+                end
+
                 insert(result, argName)
                 if i < #parametersList then
                     insert(result, ", ")
                 end
             end
             insert(result, ")")
+
+            if varposarg then
+                insert(result, newline())
+                insert(result, "local ")
+                insert(result, varposarg)
+                insert(result, " = {...}")
+            end
 
             if #parametersHash > 0 then
                 for _, param in ipairs(parametersHash) do
@@ -419,6 +439,17 @@ return function(plume)
                     insert(result, newline())
                     insert(result, "end")
                 end
+            end
+
+            if varnamearg then
+                insertAll(result, {
+                        newline(),
+                        "if ", varnamearg, " == nil then",
+                        newline(),
+                        varnamearg, " = {}",
+                        newline(),
+                        "end"
+                    })
             end
 
             insertAll(result, transpileChildren (body, false, true, true))
@@ -447,7 +478,11 @@ return function(plume)
                 insert(result, "},")
                 insert(result, newline())
                 insert(result, "n = ")
-                insert(result, #parametersList)
+                if varnamearg then
+                    insert(result, #parametersList-1)
+                else
+                    insert(result, #parametersList)
+                end
                 insert(result, newline())
                 insert(result, "}")
             end
@@ -466,6 +501,9 @@ return function(plume)
                 insert(result, "local __plume_infos = plume:getFunctionInfo(")
                 insert(result, node.content)
                 insert(result, ")")
+                insert(result, newline())
+                insert(result, "__plume_args[__plume_infos.n+1] = {}")
+                insert(result, newline())
 
                 for i, arg in ipairs(argList) do
                     if arg.kind == "LIST_ITEM" or arg.kind == "TEXT" then
@@ -476,20 +514,35 @@ return function(plume)
                         insertAll(result, transpileToLua(arg))
                     else
                         insert(result, newline())
-                        insert(result, "__plume_args[__plume_infos.pos.")
-                        insert(result, arg.content)
-                        insert(result, "] = ")
+                        insert(result, "local __plume_arg = ")
 
                         if arg.kind == "HASH_ITEM" then
                             insertAll(result, transpileChildren(arg, false, true))
                         else
                             insertAll(result, transpileToLua(arg))
                         end
+
+                        insert(result, newline())
+                        insert(result, "if __plume_infos.pos.")
+                        insert(result, arg.content)
+                        insert(result, " then")
+                        insert(result, newline())
+                        insert(result, "__plume_args[__plume_infos.pos.")
+                        insert(result, arg.content)
+                        insert(result, "] = __plume_arg")
+                        insert(result, newline())
+                        insert(result, "else")
+                        insert(result, newline())
+                        insert(result, "__plume_args[__plume_infos.n+1][\"")
+                        insert(result, arg.content)
+                        insert(result, "\"] = __plume_arg")
+                        insert(result, newline())
+                        insert(result, "end")
                     end
                 end
 
             insert(result, newline())
-            insert(result, "return __plume_unpack(__plume_args, 1, __plume_infos.n)")
+            insert(result, "return __plume_unpack(__plume_args, 1, __plume_infos.n+1)")
             insert(result, newline())
             insert(result, "end)()")
             insert(result, newline())

@@ -1,0 +1,41 @@
+/// Test "Positionnal vararg 1"
+def foo(*arg)
+    $(#arg)
+$foo()\n
+$foo(1)\n
+$foo(1, 2)
+/// Result
+0
+1
+2
+/// End
+
+/// Test "Positionnal vararg 2"
+def foo(bar, *arg)
+    $(#arg)
+$foo()\n
+$foo(1)\n
+$foo(1, 2)
+/// Result
+0
+0
+1
+/// End
+
+/// Test "Named vararg 1"
+def foo(**kw)
+    $(kw.x or "")
+$foo()
+$foo(x: 5)
+/// Result
+5
+/// End
+
+/// Test "Named vararg 2"
+def foo(foo, **kw)
+    $(kw.x or "")
+$foo(foo)
+$foo(foo, x: 5)
+/// Result
+5
+/// End
