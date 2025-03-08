@@ -199,3 +199,13 @@ $id(foo, bar)
 foo
 bar
 /// End
+
+/// Test "Method Call"
+t =
+    foo: macro (self)
+        self.x = 4
+$t:foo()
+$t.x
+/// Result
+4
+/// End

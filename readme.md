@@ -138,6 +138,7 @@ def foo(*args, **kwargs)
     ...
 ```
 - `def` keyword replaced by `macro`
+- Can call "class method" in lua way (`foo:bar()`)
 
 #### Enhancement
 - Enhance macro call transpilation in case without named parameter
