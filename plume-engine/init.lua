@@ -1,5 +1,5 @@
 --[[
-Plume🪶 0.21
+Plume🪶 0.22
 Copyright (C) 2024-2025 Erwan Barbedor
 
 Check https://github.com/ErwanBarbedor/Plume
@@ -20,7 +20,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 local plume = {}
 
-plume._VERSION = "Plume🪶 0.21"
+plume._VERSION = "Plume🪶 0.22"
 
 -- Load core components using dependency injection pattern
 require "plume-engine/utils"         (plume)
