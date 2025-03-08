@@ -58,7 +58,6 @@ return function (plume)
     end
 
     -- Syntax and runtime errors
-
     function plume.convertLuaError(msg, map)
         local result = {}
         local filename, noline, message = msg:match('(.-):(.-):%s*(.*)')
@@ -84,6 +83,17 @@ return function (plume)
         end
         
         return table.concat(result)
+    end
+
+    function plume.unclosedContextError(source, kind)
+        if kind == "MACRO_ARG_TABLE" then
+            plume.error(source,"Syntax error : \")\" expected to close argument list.")
+        else
+            plume.error(source, string.format(
+                "Syntax error : block '%s' never closed.",
+                kind
+            ))
+        end
     end
 
     -- parser errors

@@ -37,6 +37,14 @@ File <string>, line n°1 :
 (Error handling is still under development, so locating the lua error in the Plume code may be imprecise.)
 /// End
 
+/// Test "Missing ')'"
+def foo(
+/// Error
+Syntax error : ")" expected to close argument list.
+File <string>, line n°1 :
+    def foo(
+/// End"
+
 /// Test "Syntax Error"
 a = $(1+)
 /// Error

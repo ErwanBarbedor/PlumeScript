@@ -83,10 +83,19 @@ return function (plume)
             })
         end
 
+        --- Check if context could be popped by endline
+        ---@param context table
+        local function checkPoppedContext (context)
+            if contains("MACRO_ARG_TABLE", context.kind) then
+                plume.unclosedContextError(context.sourceToken.source, context.kind)
+            end
+        end
+
         --- Pops contexts when exiting scopes based on indentation
         ---@param indent integer Current indentation level after ENDLINE
         ---@param limit integer|nil Maximum contexts to pop (optional)
-        local function popContext(indent, limit)
+        ---@param endline bool It is endline context pop?
+        local function popContext(indent, limit, endline)
             -- Close over-indented contexts when returning to outer scope
             for i=#context, 1, -1 do
                 if context[i].indent > indent then
@@ -105,6 +114,11 @@ return function (plume)
                     -- Force list and hash item to have a type
                     elseif contains("LIST_ITEM HASH_ITEM", lastContext.kind) and lastContext.returnType == "NIL" then
                          lastContext.returnType = "TEXT" 
+                    end
+
+                    -- Somme context must be closed before endline
+                    if endline then
+                        checkPoppedContext(lastContext)
                     end
 
                     -- Move closed context to parent's children
@@ -306,11 +320,9 @@ return function (plume)
             
             -- Line ending processing
             elseif token.kind == "ENDLINE" then
-                -- Todo: Check if last context must
-                -- be closed before endline, line macro argument list
                 parenthesisDeep = 0
                 currentIndent = token.indent or currentIndent
-                popContext(currentIndent)  -- Close completed contexts
+                popContext(currentIndent, nil, true)  -- Close completed contexts
 
             -- Control flow constructs
             elseif contains("FOR IF ELSEIF ELSE WHILE", token.kind) then
@@ -331,10 +343,8 @@ return function (plume)
             end
         end
 
-        -- Todo: error if #context != 1
-
         -- Finalize root node
-        popContext(-1)
+        popContext(-1, nil, true)
 
         return context[1]
     end

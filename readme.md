@@ -140,6 +140,7 @@ def foo(*args, **kwargs)
 
 #### Enhancement
 - Enhance macro call transpilation in case without named parameter
+- New error message: unclosed argument list
 
 #### Bugfix
 - Fix an error occuring when writting comma inside macro body
