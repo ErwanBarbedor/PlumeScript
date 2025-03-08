@@ -1,23 +1,23 @@
 /// Test "Missing comma"
-def foo(x y)
+macro foo(x y)
 /// Error
 Syntax error : expected a comma, not "y".
 File <string>, line n°1 :
-    def foo(x y)
+    macro foo(x y)
 /// End
 
 /// Test "Expecting a name 1"
-def foo($)
+macro foo($)
 /// Error
 Syntax error : expected parameter name, not "$".
 File <string>, line n°1 :
-    def foo($)
+    macro foo($)
 /// End
 
 /// Test "Expecting a name 2"
-def foo(x, $)
+macro foo(x, $)
 /// Error
 Syntax error : expected parameter name, not "$".
 File <string>, line n°1 :
-    def foo(x, $)
+    macro foo(x, $)
 /// End

@@ -1,5 +1,5 @@
 /// Test "Simple macro and call"
-def foo()
+macro foo()
     bar
 $foo()
 /// Result
@@ -7,7 +7,7 @@ bar
 /// End
 
 /// Test "Simple local macro and call"
-local def foo()
+local macro foo()
     bar
 $foo()
 /// Result
@@ -15,7 +15,7 @@ bar
 /// End
 
 /// Test "Alternative declaration"
-foo = def ()
+foo = macro ()
     bar
 $foo()
 /// Result
@@ -23,7 +23,7 @@ bar
 /// End
 
 /// Test "Alternative declaration - local"
-local foo = def ()
+local foo = macro ()
     bar
 $foo()
 /// Result
@@ -31,7 +31,7 @@ bar
 /// End
 
 /// Test "Macro return"
-def foo()
+macro foo()
     return bar
 
 $foo()
@@ -40,7 +40,7 @@ bar
 /// End
 
 /// Test "Factorial"
-def fact(n)
+macro fact(n)
     if n==0
         return 1
     else
@@ -52,7 +52,7 @@ def fact(n)
 /// End
 
 /// Test "Macro with parameters"
-def double(x)
+macro double(x)
     $x $x
 $(double("foo"))
 /// Result
@@ -60,7 +60,7 @@ foo foo
 /// End
 
 /// Test "Macro with default value 1"
-def foo(x: bar)
+macro foo(x: bar)
     $x
 $foo()
 /// Result
@@ -68,7 +68,7 @@ bar
 /// End
 
 /// Test "Macro with default value 2"
-def foo(x: bar)
+macro foo(x: bar)
     $x
 $foo(x: baz)
 /// Result
@@ -76,7 +76,7 @@ baz
 /// End
 
 /// Test "Extended Parameters - single value"
-def double(x)
+macro double(x)
     $x $x
 $double()
     Foo
@@ -85,7 +85,7 @@ Foo Foo
 /// End
 
 /// Test "Extended Parameters - double value"
-def keyvalue(key, value)
+macro keyvalue(key, value)
     $key \= $value
 $keyvalue()
     - Foo
@@ -95,7 +95,7 @@ Foo = Bar
 /// End
 
 /// Test "Extended Parameters - hash value 1"
-def foo(x: bar)
+macro foo(x: bar)
     $x
 $foo()
     baz
@@ -104,7 +104,7 @@ baz
 /// End
 
 /// Test "Extended Parameters - hash value 2"
-def foo(x: bar)
+macro foo(x: bar)
     $x
 $foo()
     x: baz
@@ -113,7 +113,7 @@ baz
 /// End
 
 /// Test "Extended Parameters - mixed args 1"
-def concat(x, y)
+macro concat(x, y)
     $x$y
 $concat(Foo)
     Bar
@@ -122,7 +122,7 @@ FooBar
 /// End
 
 /// Test "Extended Parameters - mixed args 2"
-def concat(x, y)
+macro concat(x, y)
     $x$y
 $concat(Foo)
     - Bar
@@ -131,7 +131,7 @@ FooBar
 /// End
 
 /// Test "Extended Parameters - mixed args 3"
-def concat(x, y, sep: -)
+macro concat(x, y, sep: -)
     $x$sep$y
 $concat()
     - Foo
@@ -141,7 +141,7 @@ Foo-Bar
 /// End
 
 /// Test "Extended Parameters - mixed args 4"
-def concat(x, y, sep: -)
+macro concat(x, y, sep: -)
     $x$sep$y
 $concat()
     - Foo
@@ -152,7 +152,7 @@ Foo=Bar
 /// End
 
 /// Test "Nested Call"
-def double(x)
+macro double(x)
     $x $x
 $double($double(Foo))
 /// Result
@@ -160,7 +160,7 @@ Foo Foo Foo Foo
 /// End
 
 /// Test "Extended Parameters & Affectation"
-def double(x)
+macro double(x)
     $x $x
 a = $double()
     Foo
@@ -171,7 +171,7 @@ Foo Foo
 
 /// Test "Void capture"
 local x = 0
-def inc()
+macro inc()
     x = $(x+1)
     Foo
 
@@ -184,14 +184,14 @@ Foo
 /// End
 
 /// Test "Empty Macro"
-def void()
+macro void()
 foo
 /// Result
 foo
 /// End
 
 /// Test "Space in argument list"
-def id(x, y)
+macro id(x, y)
     $x\n
     $y
 $id(foo, bar)

@@ -7,7 +7,7 @@ FooBar
 /// End
 
 /// Test "Issue 2"
-def foo(x, y)
+macro foo(x, y)
     $x, $y
 $foo(bar, baz)
 /// Result

@@ -69,10 +69,10 @@ a[2] = baz
 
 /// Test "Macro in table"
 lib =
-    foo: def ()
+    foo: macro ()
         bar
 
-    double: def (x)
+    double: macro (x)
         $x $x
 $(lib.foo())
 /// Result
@@ -81,7 +81,7 @@ bar
 
 /// Test "Macro in table 2"
 lib =
-    init: def (self, x)
+    init: macro (self, x)
         self.x = $x
 void = $(lib:init(3))
 $(lib.x)

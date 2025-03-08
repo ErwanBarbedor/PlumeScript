@@ -131,12 +131,13 @@ Transpiled code executes at between 70% and 100% of Lua's performance. So with L
 ## Changelog
 
 ### 0.21
-#### Features
+#### Changes
 - Implement variable parameters syntax (python-like)
 ```
 def foo(*args, **kwargs)
     ...
 ```
+- `def` keyword replaced by `macro`
 
 #### Enhancement
 - Enhance macro call transpilation in case without named parameter

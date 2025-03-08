@@ -7,7 +7,7 @@ return {
     {
         name = "INLINE_MACRO_DEFINITION",
         pattern = {
-            {kind = "TEXT",  content = "def"},
+            {kind = "TEXT",  content = "macro"},
             {kind = "SPACE", multipleCapture = true, optional=true},
             {kind = "LPAR"}
         }

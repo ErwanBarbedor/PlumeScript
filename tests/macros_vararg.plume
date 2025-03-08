@@ -1,5 +1,5 @@
 /// Test "Positionnal vararg 1"
-def foo(*arg)
+macro foo(*arg)
     $(#arg)
 $foo()\n
 $foo(1)\n
@@ -11,7 +11,7 @@ $foo(1, 2)
 /// End
 
 /// Test "Positionnal vararg 2"
-def foo(bar, *arg)
+macro foo(bar, *arg)
     $(#arg)
 $foo()\n
 $foo(1)\n
@@ -23,7 +23,7 @@ $foo(1, 2)
 /// End
 
 /// Test "Named vararg 1"
-def foo(**kw)
+macro foo(**kw)
     $(kw.x or "")
 $foo()
 $foo(x: 5)
@@ -32,7 +32,7 @@ $foo(x: 5)
 /// End
 
 /// Test "Named vararg 2"
-def foo(foo, **kw)
+macro foo(foo, **kw)
     $(kw.x or "")
 $foo(foo)
 $foo(foo, x: 5)

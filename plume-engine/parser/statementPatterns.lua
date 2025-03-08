@@ -59,7 +59,7 @@ return {
         pattern = {
             {kind = "TEXT",  content = "local"},
             {kind = "SPACE", multipleCapture = true},
-            {kind = "TEXT",  content = "def"},
+            {kind = "TEXT",  content = "macro"},
             {kind = "SPACE", multipleCapture = true},
             {kind = "TEXT",  name = "macroName", optional = true},
             {kind = "LPAR"},
@@ -70,7 +70,7 @@ return {
     {
         name = "MACRO_DEFINITION",
         pattern = {
-            {kind = "TEXT",  content = "def"},
+            {kind = "TEXT",  content = "macro"},
             {kind = "SPACE", multipleCapture = true},
             {kind = "TEXT",  name = "macroName"},
             {kind = "LPAR"},

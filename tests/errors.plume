@@ -38,11 +38,11 @@ File <string>, line n°1 :
 /// End
 
 /// Test "Missing ')'"
-def foo(
+macro foo(
 /// Error
 Syntax error : ")" expected to close argument list.
 File <string>, line n°1 :
-    def foo(
+    macro foo(
 /// End"
 
 /// Test "Syntax Error"
