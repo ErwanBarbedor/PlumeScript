@@ -145,6 +145,7 @@ def foo(*args, **kwargs)
 
 #### Bugfix
 - Fix an error occuring when writting comma inside macro body
+- Fix an error occuring when sending an empty argument to a macro
 
 ### 0.20 (Initial Commit)
 Project restarted from scratch.

@@ -201,7 +201,7 @@ return function (plume)
             if #current.children == 0 and #antecurrent.children == 0 then
                 table.remove(context)
                 return
-            else
+            elseif #current.children > 0 then
                 local text = current.children[1].content
 
                 if text then
