@@ -108,3 +108,9 @@ cos(1)
 /// Result
 cos(1)
 /// End
+
+/// Test "Nil index"
+$a 5 $a
+/// Result
+5
+/// End

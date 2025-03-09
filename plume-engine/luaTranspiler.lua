@@ -165,11 +165,11 @@ return function(plume)
             end
 
             for i, content in ipairs(infos[1].content) do
-                if directConcat and content.kind ~= "TEXT" then
+                if (directConcat or concat) and content.kind ~= "TEXT" then
                     insert(result, "(")
                 end
                 insertAll(result, transpileToLua(content))
-                if directConcat and content.kind ~= "TEXT" then
+                if (directConcat or concat) and content.kind ~= "TEXT" then
                     insert(result, " or \"\")")
                 end
 
@@ -187,7 +187,7 @@ return function(plume)
             if directConcat then
                 insert(result, newline())
                 insert(result, ")")
-             end
+            end
 
             if wrapInTable then
                 insert(result, newline())

@@ -133,6 +133,9 @@ Transpiled code executes at between 70% and 100% of Lua's performance. So with L
 #### Changes
 - `$a = 1+1` is a syntax sugar for `a = $(1+1)`
 
+#### Bugfix
+- Fix an error occuring when add nil value to block output
+
 ### 0.21
 #### Changes
 - Implement variable parameters syntax (python-like)
