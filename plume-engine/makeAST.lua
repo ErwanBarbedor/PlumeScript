@@ -219,6 +219,19 @@ return function (plume)
             popContext(-1, 1)
         end
 
+        -- Put rest of the line a new context
+        local function captureLineExpression(token)
+            pushContext(nil, "LUA_EXPRESSION", currentIndent)
+            setReturnType(token, "TEXT")
+            local content = {}
+            while tokens[pos+1] and tokens[pos+1].kind ~= "ENDLINE" do
+                table.insert(content, tokens[pos+1].content)
+                pos = pos + 1
+            end
+            context[#context].content = table.concat(content)
+            popContext(-1, 1)
+        end
+
         --- Creates a new macro argument context
         local function pushMacroArgument()
             pushContext(nil, "LIST_ITEM", currentIndent)
@@ -309,6 +322,10 @@ return function (plume)
             elseif token.kind == "LOCAL_ASSIGNMENT" then
                 pushContext(token, "LOCAL_ASSIGNMENT", currentIndent+1, token.content)
             
+            -- Rest of the line is an expressoin
+            elseif token.kind == "BEGIN_LINE_EXPRESSION" then
+                captureLineExpression(token)
+
             -- List and hash structures
             elseif token.kind == "LIST_ITEM" then
                 setReturnType(token, "TABLE")

@@ -1,0 +1,13 @@
+/// Test "Simple affectation 1"
+$a = 1+1
+$a
+/// Result
+2
+/// End
+
+/// Test "Simple affectation 2"
+$a = math.cos(0)
+$a
+/// Result
+1
+/// End

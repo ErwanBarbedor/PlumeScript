@@ -130,6 +130,8 @@ Transpiled code executes at between 70% and 100% of Lua's performance. So with L
 
 ## Changelog
 ### 0.22
+#### Changes
+- `$a = 1+1` is a syntax sugar for `a = $(1+1)`
 
 ### 0.21
 #### Changes

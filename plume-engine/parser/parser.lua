@@ -200,12 +200,25 @@ return function(plume)
                     kind = "LOCAL_ASSIGNMENT",
                     content = match.variable.content
                 }
+                if #match.evalmode.content>0 then
+                    pushToken {
+                        kind = "BEGIN_LINE_EXPRESSION",
+                        content = ""
+                    }
+                end
             end,
             ASSIGNMENT = function(match)
                 pushToken {
                     kind = "ASSIGNMENT",
                     content = match.variable.content
                 }
+
+                if #match.evalmode.content>0 then
+                    pushToken {
+                        kind = "BEGIN_LINE_EXPRESSION",
+                        content = ""
+                    }
+                end
             end,
             LOCAL_MACRO_DEFINITION = function(match)
                 handleMacroDef(match, true)
@@ -315,14 +328,14 @@ return function(plume)
                 -- if not updateMacroDefDeep(-1) then
                     pushToken {
                         kind    = "RPAR",
-                        content = ""
+                        content = ")"
                     }
                 -- end
             end,
             LPAR = function(match)
                 pushToken {
                     kind    = "LPAR",
-                    content = ""
+                    content = "("
                 }
                 -- updateMacroDefDeep(1)
             end,
