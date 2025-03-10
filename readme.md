@@ -135,6 +135,7 @@ Transpiled code executes at between 70% and 100% of Lua's performance. So with L
 
 #### Bugfix
 - Fix an error occuring when add nil value to block output
+- Fix an inconsistency concerning spaces before parenthesis in a macro call.
 
 ### 0.21
 #### Changes

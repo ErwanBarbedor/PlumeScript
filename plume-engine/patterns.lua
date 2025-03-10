@@ -98,9 +98,9 @@ return function (plume)
 
                 captureCount = #captureList
                 -- Fail if mandatory capture has zero matches
-                if captureCount > 0 then
+                if captureCount > 0 or infos.optional then
                     tokenPos = tokenPos - 1  -- Adjust for last non-matching token
-                elseif not infos.optional then
+                else
                     return false
                 end
 

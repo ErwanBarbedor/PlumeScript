@@ -89,6 +89,18 @@ $(lib.x)
 3
 /// End
 
+/// Test "Macro in table 2"
+lib =
+    foo: macro()
+        bar
+
+    double: macro(x)
+        $x $x
+$(lib.foo())
+/// Result
+bar
+/// End
+
 /// Test "Nested table 1"
 t =
     -
