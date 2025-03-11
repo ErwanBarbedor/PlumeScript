@@ -161,9 +161,12 @@ return function (plume)
                 -- todo: check #arg.children == 0
                 local name, over = content:match('%s*([a-zA-Z_][a-zA-Z0-9_]*)%s*(%S*)')
 
+
+
                 if not name then
                     plume.unexpectedTokenError(token.sourceToken.source, "parameter name", content)
                 else
+                    plume.checkParameterName(token.sourceToken.source, name)
                     if not over and (#arg.children > 1 and arg.kind == "LIST_ITEM") then
                         over = arg.children[2].content
                     end

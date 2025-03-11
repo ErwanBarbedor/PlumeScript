@@ -35,4 +35,17 @@ return function (plume)
         end
         return false
     end
+
+    --- Check if a given token contains a valid lua name
+    function plume.checkVariableName(source, name)
+        if plume.utils.containsWord("for while do repeat until if elseif else then function in end", name) then
+            plume.invalidLuaNameError(source, name)
+        end
+    end
+    function plume.checkParameterName(source, name)
+        if not name:match('^[a-zA-Z_][a-zA-Z_0-9]*$')
+           or plume.utils.containsWord("for while do repeat until if elseif else then function in end", name) then
+            plume.invalidLuaNameError(source, name)
+        end
+    end
 end

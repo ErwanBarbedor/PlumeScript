@@ -131,6 +131,7 @@ return function(plume)
         end
 
         function handleMacroCall (match)
+            plume.checkVariableName(match.variable.source, match.variable.content)
             pushToken {
                 kind = "MACRO_CALL_BEGIN",
                 content = match.variable.content
@@ -196,6 +197,7 @@ return function(plume)
                 statementHandler.ENDLINE(match)
             end,
             LOCAL_ASSIGNMENT = function(match)
+                plume.checkVariableName(match.variable.source, match.variable.content)
                 pushToken {
                     kind = "LOCAL_ASSIGNMENT",
                     content = match.variable.content
@@ -208,6 +210,7 @@ return function(plume)
                 end
             end,
             ASSIGNMENT = function(match)
+                plume.checkVariableName(match.variable.source, match.variable.content)
                 pushToken {
                     kind = "ASSIGNMENT",
                     content = match.variable.content
@@ -290,6 +293,7 @@ return function(plume)
                 handleMacroCall(match)
             end,
             VARIABLE = function(match)
+                plume.checkVariableName(match.variable.source, match.variable.content)
                 pushToken {
                     kind = "VARIABLE",
                     content = match.variable.content

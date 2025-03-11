@@ -134,6 +134,9 @@ Transpiled code executes at between 70% and 100% of Lua's performance. So with L
 - `$a = 1+1` is a syntax sugar for `a = $(1+1)`
 - `$return 1+1` is a syntax sugar for `return $(1+1)`
 
+#### Enhancement
+- New error message: invalid lua name as variable, parameter name or macro call
+
 #### Bugfix
 - Fix an error occuring when add nil value to block output
 - Fix an inconsistency concerning spaces before parenthesis in a macro call.

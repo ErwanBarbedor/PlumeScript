@@ -53,3 +53,27 @@ File <string>, line n°1 :
     a = $(1+)
 (Error handling is still under development, so locating the lua error in the Plume code may be imprecise.)
 /// End
+
+/// Test "Invalid lua name 1"
+$for
+/// Error
+Syntax error : 'for' isn't a valid name.
+File <string>, line n°1 :
+    $for
+/// End
+
+/// Test "Invalid lua name 2"
+$for()
+/// Error
+Syntax error : 'for' isn't a valid name.
+File <string>, line n°1 :
+    $for()
+/// End
+
+/// Test "Invalid lua name 3"
+macro foo(for)
+/// Error
+Syntax error : 'for' isn't a valid name.
+File <string>, line n°1 :
+    macro foo(for)
+/// End

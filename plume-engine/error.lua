@@ -57,6 +57,13 @@ return function (plume)
         ))
     end
 
+    function plume.invalidLuaNameError(source, name)
+        plume.error(source, string.format(
+            "Syntax error : '%s' isn't a valid name.",
+            name
+        ))
+    end
+
     -- Syntax and runtime errors
     function plume.convertLuaError(msg, map)
         local result = {}
