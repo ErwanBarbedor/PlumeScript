@@ -53,3 +53,11 @@ Hello $name!
 /// Result
 Hello John!
 /// End
+
+/// Test "Compound"
+a = 1
+a += 1
+$a
+/// Result
+2
+/// End

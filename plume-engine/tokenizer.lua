@@ -30,6 +30,8 @@ local tokenPatterns = {
     {name = "RPAR",    pattern = "%)"},      -- Expression group end
     {name = "QUOTE",   pattern = '"'},       -- String literal delimiter
     {name = "COMMENT", pattern = '//'},      -- Line comment
+    {name = "OPERATOR",pattern = "[%+%-%*%/]"},  -- */-+ operator
+    {name = "OPERATOR",pattern = "%.%."},  -- .. operator
     -- Value tokens
     {name = "ESCAPE", pattern = "\\\\"},  
     {name = "ESCAPE", pattern = "\\[-:=;,%(%)/snt]"},    -- Escaped character (any following character)

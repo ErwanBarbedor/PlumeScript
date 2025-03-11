@@ -192,16 +192,22 @@ return function(plume)
             HASH_ITEM_ENDLINE = function(match)
                 pushToken {
                     kind = "HASH_ITEM",
-                    content = match.key.content
+                    content = match.key.content,
                 }
+                
                 statementHandler.ENDLINE(match)
             end,
             LOCAL_ASSIGNMENT = function(match)
                 plume.checkVariableName(match.variable.source, match.variable.content)
-                pushToken {
+                local tokenInfos = {
                     kind = "LOCAL_ASSIGNMENT",
-                    content = match.variable.content
+                    content = match.variable.content,
                 }
+                if match.compound_operator.kind ~= "EMPTY" then
+                    tokenInfos.compound_operator = match.compound_operator.content
+                end
+
+                pushToken (tokenInfos)
                 if #match.evalmode.content>0 then
                     pushToken {
                         kind = "BEGIN_LINE_EXPRESSION",
@@ -211,11 +217,15 @@ return function(plume)
             end,
             ASSIGNMENT = function(match)
                 plume.checkVariableName(match.variable.source, match.variable.content)
-                pushToken {
+                local tokenInfos = {
                     kind = "ASSIGNMENT",
-                    content = match.variable.content
+                    content = match.variable.content,
                 }
+                if match.compound_operator.kind ~= "EMPTY" then
+                    tokenInfos.compound_operator = match.compound_operator.content
+                end
 
+                pushToken (tokenInfos)
                 if #match.evalmode.content>0 then
                     pushToken {
                         kind = "BEGIN_LINE_EXPRESSION",

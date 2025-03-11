@@ -627,6 +627,15 @@ return function(plume)
                 local result = {newline(), node.content, " = "}
                 use(node)
 
+                local compound = node.sourceToken.compound_operator
+
+                if compound then
+                    insert(result, node.content)
+                    insert(result, " ")
+                    insert(result, compound)
+                    insert(result, " ")
+                end
+
                 local value = transpileChildren (node, true, true)
 
                 if value then
@@ -649,6 +658,15 @@ return function(plume)
                 if value then
                     insert(result, " = ")
                     insertAll(result, value)
+
+                    local compound = node.sourceToken.compound_operator
+
+                    if compound then
+                        insert(result, node.content)
+                        insert(result, " ")
+                        insert(result, compound)
+                        insert(result, " ")
+                    end
                 end
 
                 return result

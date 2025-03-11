@@ -44,6 +44,7 @@ return {
             {kind = "EVAL", name = "evalmode", optional=true},
             {kind = "TEXT", name = "variable"},
             {kind = "SPACE", multipleCapture = true},
+            {kind = "OPERATOR", name = "compound_operator", optional=true},
             {kind = "EQUAL"}
         }
     },
@@ -53,6 +54,7 @@ return {
             {kind = "EVAL", name = "evalmode", optional=true},
             {kind = "TEXT", name = "variable"},
             {kind = "SPACE", multipleCapture = true},
+            {kind = "OPERATOR", name = "compound_operator", optional=true},
             {kind = "EQUAL"}
         }
     },
