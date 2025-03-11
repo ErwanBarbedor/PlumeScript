@@ -234,6 +234,13 @@ return function(plume)
                     kind = "RETURN",
                     content = ""
                 }
+
+                if #match.evalmode.content>0 then
+                    pushToken {
+                        kind = "BEGIN_LINE_EXPRESSION",
+                        content = ""
+                    }
+                end
             end,
             LINE_STATEMENT = function(match)
                 local line = {}

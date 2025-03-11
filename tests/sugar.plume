@@ -11,3 +11,11 @@ $a
 /// Result
 1
 /// End
+
+/// Test "Return"
+local macro foo()
+    $return 1+1
+$foo()
+/// Result
+2
+/// End
