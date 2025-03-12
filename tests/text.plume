@@ -112,5 +112,5 @@ cos(1)
 /// Test "Nil index"
 $a 5 $a
 /// Result
-5
+ 5 
 /// End

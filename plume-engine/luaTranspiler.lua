@@ -786,11 +786,7 @@ return function(plume)
             ---@param node table The text node to process
             TEXT = function (node)
                 use(node)
-                if tonumber(node.content) then
-                    return {node.content}
-                else
-                    return {'"', node.content:gsub('"', '\\"'), '"'}
-                end
+                return {'"', node.content:gsub('"', '\\"'), '"'}
             end,
 
             ---Handles variable references
