@@ -17,3 +17,9 @@ $(math.cos(0))
 /// Result
 1
 /// End
+
+/// Test "Number eval"
+$1
+/// Result
+1
+/// End
