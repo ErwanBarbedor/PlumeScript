@@ -2,7 +2,9 @@ return {
     {
         name = "ENDLINE",
         pattern = {
-            {kind = {"NEWLINE", "ENDLINE"}, name = "tokens", multipleCapture = true}}
+            {kind = "SPACE", multipleCapture = true, optional=true},
+            {kind = {"NEWLINE", "ENDLINE"}, name = "tokens", multipleCapture = true}},
+            {kind = "SPACE", multipleCapture = true, optional=true},
     },
     {
         name = "INLINE_MACRO_DEFINITION",

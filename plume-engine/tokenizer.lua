@@ -19,7 +19,8 @@ If not, see <https://www.gnu.org/licenses/>.
 local tokenPatterns = {
     -- Structural tokens (order-sensitive syntax elements)
     {name = "EVAL",    pattern = "%$"},      -- Expression evaluation marker
-    {name = "NEWLINE", pattern = "\r?\n"},   -- Line endings (CRLF or LF)
+    -- Line endings (CRLF or LF)
+    {name = "NEWLINE", pattern = "\r?\n"},
     {name = "SPACE",   pattern = "[ \t]"},   -- Individual whitespace character
     {name = "DASH",    pattern = "%-"},      -- List item identifier
     {name = "COLON",   pattern = ":"},       -- Type/Value separator

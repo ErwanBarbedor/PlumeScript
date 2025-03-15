@@ -136,6 +136,7 @@ Transpiled code executes at between 70% and 100% of Lua's performance. So with L
 - Add compound assignment operator
 - Remove number interpolation. Must now use `$a = 1` or `a = $1` to declare a number-variable.
 - Rewrite macro call: all argument will be stored in a table before call (minor -1% performance lose).
+- The lines are now trimmed
 
 #### Enhancement
 - New error message: invalid lua name as variable, parameter name or macro call

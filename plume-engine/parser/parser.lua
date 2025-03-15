@@ -377,6 +377,16 @@ return function(plume)
             end
         end
 
+        -- skip first spaces
+        while tokens[pos] and tokens[pos].kind == "SPACE" do
+            pos = pos + 1
+        end
+
+        -- skip last spaces
+        while #tokens>0 and tokens[#tokens].kind == "SPACE" do
+            table.remove(tokens)
+        end
+
         -- Main parsing loop
         while pos <= #tokens do
             local patternName, match

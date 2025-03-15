@@ -242,7 +242,7 @@ return function (plume)
 
         -- Initialize with root block
         pushContext(nil, "BLOCK", -1)
-
+        
         -- Begin token processing loop
         while pos < #tokens do
             pos = pos + 1

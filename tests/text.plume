@@ -114,3 +114,29 @@ $a 5 $a
 /// Result
  5 
 /// End
+
+/// Test "Trim line 1"
+foo 
+/// Result
+foo
+/// End
+
+/// Test "Trim line 2"
+ foo
+/// Result
+foo
+/// End
+
+/// Test "Trim line 3"
+
+foo 
+/// Result
+foo
+/// End
+
+/// Test "Trim line 4"
+
+ foo
+/// Result
+foo
+/// End
