@@ -1,5 +1,31 @@
+local function importFunction (f)
+    return function(...) return f((unpack or table.unpack)(...)) end
+end
+
+local function importAllFunction (t, tcache, tcacheNames)
+    local result = {}
+    tcache = tcache or {}
+    tcacheNames = tcacheNames or {}
+
+    for k, v in pairs(t) do
+        if type(v) == "function" then
+            result[k] = importFunction(v)
+        elseif type(v) == "table" then
+            if not tcacheNames[v] then
+                tcacheNames[v] = true
+                tcache[v] = importAllFunction (v, tcache, tcacheNames)
+            end
+            result[k] = tcache[v]
+        end
+    end
+
+    return result
+end
+
 return function(plume)
     plume.plumeStdLib = {table={}, _VERSION = plume._VERSION}
+
+    plume.luaStdLib = importAllFunction(_G)
 
     if table.move then
         function plume.plumeStdLib.table.merge(...)
@@ -35,21 +61,17 @@ return function(plume)
         end
     end
 
-    function plume.plumeStdLib:getFunctionInfo(fname)
-        return self.store.f[fname]
-    end
-
     function plume.initRuntime ()
-        local result = {}
+        local result = {plume = {}, __lua = _G}
 
         for k, v in pairs(plume.plumeStdLib) do
+            result.plume[k] = v
+        end
+
+        for k, v in pairs(plume.luaStdLib) do
             result[k] = v
         end
 
-        result.store = {f=setmetatable({}, {__mode = "k"})}
-
         return result
     end
-
-    
 end

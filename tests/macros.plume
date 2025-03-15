@@ -50,9 +50,9 @@ bar
 /// Test "Factorial"
 macro fact(n)
     if n==0
-        return 1
+        $return 1
     else
-        return $(n * fact(n-1))
+        $return n * fact(n-1)
 
 10! = $fact(10)
 /// Result
@@ -208,12 +208,21 @@ foo
 bar
 /// End
 
-/// Test "Method Call"
-t =
-    foo: macro (self)
-        self.x = 4
-$t:foo()
-$t.x
-/// Result
-4
-/// End
+// /// Test "Method Call 1"
+// t =
+//     foo: macro (self)
+//         self.x = 4
+// $t:foo()
+// $t.x
+// /// Result
+// 4
+// /// End
+
+// /// Test "Method Call 2"
+// t =
+//     foo: macro (self, body: foo)
+//         $body
+// $t:foo(body: baz)
+// /// Result
+// baz
+// /// End

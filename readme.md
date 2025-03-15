@@ -135,9 +135,13 @@ Transpiled code executes at between 70% and 100% of Lua's performance. So with L
 - `$return 1+1` is a syntax sugar for `return $(1+1)`
 - Add compound assignment operator
 - Remove number interpolation. Must now use `$a = 1` to declare a number-variable.
+- Rewrite macro call: all argument will be stored in a table before call (minor -1% performance lose).
 
 #### Enhancement
 - New error message: invalid lua name as variable, parameter name or macro call
+
+#### Regression
+- Varargs and method calls are temporarily broken off
 
 #### Bugfix
 - Fix an error occuring when add nil value to block output
