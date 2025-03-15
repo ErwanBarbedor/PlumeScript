@@ -143,6 +143,7 @@ Transpiled code executes at between 70% and 100% of Lua's performance. So with L
 
 #### Regression
 - Varargs and method calls are temporarily broken off
+- Unmactched parenthesis in lua code (with string, for exemple) will cause errors.
 
 #### Bugfix
 - Fix an error occuring when add nil value to block output
