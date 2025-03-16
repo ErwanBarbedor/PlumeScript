@@ -152,7 +152,7 @@ return function (plume)
         ---@brief Checks if macro arguments follow correct naming conventions
         local function checkMacroArgument ()
             local current = context[#context]
-            for _, arg in ipairs(current.children) do
+            for i, arg in ipairs(current.children) do
 
                 local token = arg.children[1]
                 local content
@@ -164,7 +164,12 @@ return function (plume)
                     -- not supposed to happen. Raise error?
                 end
 
-                local inner, name, over = content:match('^(%S-)%s*%*?([a-zA-Z_][a-zA-Z0-9_]*)%s*(%S*)$')
+                local inner, star, name, over = content:match('^(%S-)%s*(%*?)([a-zA-Z_][a-zA-Z0-9_]*)%s*(%S*)$')
+
+                if star and #star > 0 and i < #current.children then
+                    plume.unexpectedVarargError(token.sourceToken.source, "vararg must be in last position.")
+                end
+
                 if not name then
                     plume.unexpectedTokenError(token.sourceToken.source, "parameter name", content)
                 else

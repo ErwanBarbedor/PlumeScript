@@ -39,3 +39,11 @@ $foo(foo, x: 5)
 /// Result
 5
 /// End
+
+/// Test "vararg not last"
+macro foo(*kw, foo)
+/// Error
+vararg must be in last position.
+File <string>, line n°1 :
+    macro foo(*kw, foo)
+/// End

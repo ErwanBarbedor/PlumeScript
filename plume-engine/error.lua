@@ -110,4 +110,8 @@ return function (plume)
             expected, given
         ))
     end
+
+    function plume.unexpectedVarargError(source)
+        plume.error(source, "vararg must be in last position.")
+    end
 end
