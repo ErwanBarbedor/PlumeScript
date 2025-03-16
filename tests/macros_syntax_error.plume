@@ -21,3 +21,11 @@ Syntax error : expected parameter name, not "$".
 File <string>, line n°1 :
     macro foo(x, $)
 /// End
+
+/// Test "Expecting a name 3"
+macro foo(x, !x)
+/// Error
+Syntax error : expected parameter name, not "!".
+File <string>, line n°1 :
+    macro foo(x, !x)
+/// End

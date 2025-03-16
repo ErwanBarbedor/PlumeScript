@@ -129,6 +129,17 @@ On my 12600k, transpilation of a 10,000-line file takes less than 200ms; this sh
 Transpiled code executes at between 70% and 100% of Lua's performance. So with LuaJIT, this makes it possible to include relatively costly calculations in templates.
 
 ## Changelog
+### 0.23
+
+#### Changes
+- Use one vararg syntax `macro foo(*args)` for both positionnal and named args.
+
+#### Enhancement
+- New error message: invalid lua name as parameter name using text token
+
+#### Bugfix
+- Restore varargs
+
 ### 0.22
 #### Changes
 - `$a = 1+1` is a syntax sugar for `a = $(1+1)`

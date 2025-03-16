@@ -91,6 +91,16 @@ return function (plume)
             end
         end
 
+        local function checkMacroParameterNames (context)
+            local paramTable = context.children[1]
+
+            -- for _, child in ipairs(paramTable.children) do
+            --     for childContent in ipairs(child.children[1].children) do
+            --     end
+            --     print(">", paramName)
+            -- end
+        end
+
         --- Pops contexts when exiting scopes based on indentation
         ---@param indent integer Current indentation level after ENDLINE
         ---@param limit integer|nil Maximum contexts to pop (optional)
@@ -101,7 +111,6 @@ return function (plume)
                 if context[i].indent > indent then
                     local lastContext = context[i]
                     local parentContext = context[i-1]
-                    
                     -- Validate control flow structure
                     if contains("ELSE ELSEIF", lastContext.kind) then
                         local lastChildren = parentContext.children[#parentContext.children]
@@ -114,6 +123,9 @@ return function (plume)
                     -- Force list and hash item to have a type
                     elseif contains("LIST_ITEM HASH_ITEM", lastContext.kind) and lastContext.returnType == "NIL" then
                          lastContext.returnType = "TEXT" 
+
+                    elseif contains("MACRO_DEFINITION INLINE_MACRO_DEFINITION", lastContext.kind) then
+                        checkMacroParameterNames(lastContext)
                     end
 
                     -- Somme context must be closed before endline
@@ -140,13 +152,7 @@ return function (plume)
         ---@brief Checks if macro arguments follow correct naming conventions
         local function checkMacroArgument ()
             local current = context[#context]
-
-            -- todo :
-            -- if not contains("MACRO_ARG_TABLE", current.kind) then
-                -- error...
-
             for _, arg in ipairs(current.children) do
-                -- arg.kind is LIST_ITEM or HASH_ITEM
 
                 local token = arg.children[1]
                 local content
@@ -158,11 +164,7 @@ return function (plume)
                     -- not supposed to happen. Raise error?
                 end
 
-                -- todo: check #arg.children == 0
-                local name, over = content:match('%s*([a-zA-Z_][a-zA-Z0-9_]*)%s*(%S*)')
-
-
-
+                local inner, name, over = content:match('^(%S-)%s*%*?([a-zA-Z_][a-zA-Z0-9_]*)%s*(%S*)$')
                 if not name then
                     plume.unexpectedTokenError(token.sourceToken.source, "parameter name", content)
                 else
@@ -173,6 +175,9 @@ return function (plume)
 
                     if #over > 0 then
                         plume.unexpectedTokenError(token.sourceToken.source, "a comma", over)
+                    end
+                    if #inner > 0 then
+                        plume.unexpectedTokenError(token.sourceToken.source, "parameter name", inner)
                     end
                 end
             end

@@ -410,31 +410,50 @@ return function(plume)
             insert(result, "local __plume_pos = 0")
 
             for i, argName in ipairs(parametersList) do
-                insertAll(result, {
-                    newline(),
-                    "local ", argName, " = __plume_args.", argName,
-                    newline(),
-                    "if not ", argName, " then",
-                        newline(),
-                        "__plume_pos = __plume_pos + 1",
-                        newline(),
-                        argName, " = __plume_args[__plume_pos]",
-                        newline(),
-                    "end"
-                })
+                if argName:sub(1, 1) == "*" then
+                    argName = argName:sub(2, -1)
 
-                if defaultValues[argName] then
                     insertAll(result, {
                         newline(),
-                        "if not ", argName, " then",
+                        "local ", argName, " = __plume_args",
                         newline(),
-                        argName, " = "
+                        "for i=1, __plume_pos do",
+                            newline(),
+                            "__plume_remove(", argName, ", 1)",
+                            newline(),
+                        "end",
+                    })
+                else
+                    insertAll(result, {
+                        newline(),
+                        "local ", argName, " = __plume_args.", argName,
+                        newline(),
+                        "if ", argName, " then",
+                            newline(),
+                            "__plume_args.", argName, " = nil",
+                            newline(),
+                        "else",
+                            newline(),
+                            "__plume_pos = __plume_pos + 1",
+                            newline(),
+                            argName, " = __plume_args[__plume_pos]",
+                            newline(),
+                        "end"
                     })
 
-                    insertAll(result, transpileChildren(defaultValues[argName], false, true))
-                    
-                    insert(result, newline())
-                    insert(result, "end")
+                    if defaultValues[argName] then
+                        insertAll(result, {
+                            newline(),
+                            "if not ", argName, " then",
+                            newline(),
+                            argName, " = "
+                        })
+
+                        insertAll(result, transpileChildren(defaultValues[argName], false, true))
+                        
+                        insert(result, newline())
+                        insert(result, "end")
+                    end
                 end
             end
 
@@ -688,6 +707,8 @@ return function(plume)
         local result = {"local __plume_concat = __lua.table.concat"}
         insert(result, newline())
         insert(result, "local __plume_insert = __lua.table.insert")
+        insert(result, newline())
+        insert(result, "local __plume_remove = __lua.table.remove")
 
         insert(result, newline())
         if contains("5.1 JIT", luaVersion) then
