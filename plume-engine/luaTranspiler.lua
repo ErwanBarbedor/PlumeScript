@@ -494,7 +494,7 @@ return function(plume)
 
                 -- Dirty temp fix
                 local t, name = node.content:match('^(.-):([^:]*)$')
-                if t then
+                if  t then
                     name = t .. "." .. name
                 else
                     name = node.content
@@ -508,13 +508,13 @@ return function(plume)
 
                 if #extendedArgs.children == 0 and #inlineArgs.children == 0 then
                     if t then
-                        insert(result, "{"..name.."}")
+                        insert(result, "{"..t.."}")
                     else
                         insert(result, "{}")
                     end
                 else
                     if t then
-                        insert(children, {kind="LIST_ITEM", children={{kind="TEXT", "self"}}})
+                        insert(children, {kind="LIST_ITEM", children={{kind="TEXT", t}}})
                     end
                     insertAll(result, transpileChildren({kind="TABLE", children=argList, returnType="TABLE"}, true, true))
                 end
