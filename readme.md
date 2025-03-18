@@ -140,6 +140,7 @@ Transpiled code executes at between 70% and 100% of Lua's performance. So with L
 
 #### Bugfix
 - Restore varargs
+- Restore macro call (in a temp dirty way)
 
 ### 0.22
 #### Changes

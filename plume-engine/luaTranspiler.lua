@@ -22,8 +22,17 @@ return function(plume)
 
     -- Dirty emp function waiting for a full script parsing
     local function editLuaCode(code)
-        code = code:gsub('([a-zA-Z_][a-zA-Z_0-9]*)(%b())', function(f, p)
-            return f .. "({" .. p:sub(2, -2) .. "})"
+        code = code:gsub('([a-zA-Z_][a-zA-Z_0-9%.]*):([a-zA-Z_][a-zA-Z_0-9]*)%s*(%b())', function(f, m, p)
+            if #p>2 then
+                p = ", " .. p:sub(2, -2)
+            else
+                p = ""
+            end
+            return f .. "." .. m .. "(" .. f .. p .. ")"
+        end)
+
+        code = code:gsub('([a-zA-Z_][a-zA-Z_0-9]*)%s*(%b())', function(f, p)
+            return f .. " {" .. p:sub(2, -2) .. "}"
         end)
 
         return code
@@ -482,17 +491,32 @@ return function(plume)
                 local inlineArgs   = node.children[1]
                 local extendedArgs = node.children[2] or {children={}}
                 use(node)
-                local result = {node.content, " "}
+
+                -- Dirty temp fix
+                local t, name = node.content:match('^(.-):([^:]*)$')
+                if t then
+                    name = t .. "." .. name
+                else
+                    name = node.content
+                end
+
+                local result = {name, " "}
                 local argList = {}
 
                 insertAll(argList, inlineArgs.children)
                 insertAll(argList, extendedArgs.children)
 
                 if #extendedArgs.children == 0 and #inlineArgs.children == 0 then
-                    insert(result, "({})")
+                    if t then
+                        insert(result, "{"..name.."}")
+                    else
+                        insert(result, "{}")
+                    end
                 else
+                    if t then
+                        insert(children, {kind="LIST_ITEM", children={{kind="TEXT", "self"}}})
+                    end
                     insertAll(result, transpileChildren({kind="TABLE", children=argList, returnType="TABLE"}, true, true))
-                    -- insertAll(result, handleMacroArguments(node, argList))
                 end
 
                 insert(result, newline())

@@ -79,15 +79,15 @@ $(lib.foo())
 bar
 /// End
 
-// // / Test "Macro in table 2"
-// lib =
-//     init: macro (self, x)
-//         self.x = $x
-// void = $(lib:init(3))
-// $(lib.x)
-// /// Result
-// 3
-// /// End
+/// Test "Macro in table 2"
+lib =
+    init: macro (self, x)
+        self.x = $x
+void = $(lib:init(3))
+$(lib.x)
+/// Result
+3
+/// End
 
 /// Test "Macro in table 3"
 lib =
