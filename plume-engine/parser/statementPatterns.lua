@@ -16,6 +16,7 @@ return {
     {
         name = "HASH_ITEM",
         pattern = {
+            {kind = "EVAL", name = "evalmode", optional=true},
             {kind = "TEXT", name = "key"},
             {kind = "COLON"},
             {kind = "SPACE"}

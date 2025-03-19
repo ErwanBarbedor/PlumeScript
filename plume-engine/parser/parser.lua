@@ -188,6 +188,13 @@ return function(plume)
                     kind = "HASH_ITEM",
                     content = match.key.content
                 }
+
+                if #match.evalmode.content>0 then
+                    pushToken {
+                        kind = "BEGIN_LINE_EXPRESSION",
+                        content = ""
+                    }
+                end
             end,
             HASH_ITEM_ENDLINE = function(match)
                 pushToken {

@@ -46,6 +46,7 @@ Transpiled code executes at between 70% and 100% of Lua's performance. So with L
 
 #### Changes
 - Use one vararg syntax `macro foo(*args)` for both positionnal and named args.
+- `$a: 1+1` is a syntax sugar for `a: $(1+1)`
 
 #### Enhancement
 - New error message: invalid lua name as parameter name using text token
