@@ -386,14 +386,14 @@ return function(plume)
             local body       = node.children[2]
             
             local parametersList = {}
-            local defaultValues  =  {}
+            local namedParameterValues  =  {}
 
             for _, param in ipairs(parameters.children) do
                 if param.kind == "LIST_ITEM" then
                     table.insert(parametersList, param.children[1].content)
                 else
                     table.insert(parametersList, param.content)
-                    defaultValues[param.content] =  param
+                    namedParameterValues[param.content] =  param
                 end
             end
 
@@ -418,51 +418,37 @@ return function(plume)
             insert(result, newline())
             insert(result, "local __plume_pos = 0")
 
+            local pos = 0
+
             for i, argName in ipairs(parametersList) do
                 if argName:sub(1, 1) == "*" then
                     argName = argName:sub(2, -1)
 
-                    insertAll(result, {
-                        newline(),
-                        "local ", argName, " = __plume_args",
-                        newline(),
-                        "for i=1, __plume_pos do",
-                            newline(),
-                            "__plume_remove(", argName, ", 1)",
-                            newline(),
-                        "end",
-                    })
-                else
+                    insertAll(result, {newline(), "local ", argName, " = __plume_args"})
+
+                    for i=1, pos do
+                        insertAll(result, {newline(), "__plume_remove(", argName, ", 1)"})
+                    end
+                elseif namedParameterValues[argName] then
                     insertAll(result, {
                         newline(),
                         "local ", argName, " = __plume_args.", argName,
                         newline(),
-                        "if ", argName, " then",
-                            newline(),
-                            "__plume_args.", argName, " = nil",
-                            newline(),
-                        "else",
-                            newline(),
-                            "__plume_pos = __plume_pos + 1",
-                            newline(),
-                            argName, " = __plume_args[__plume_pos]",
-                            newline(),
-                        "end"
+                        "if ", argName, " == nil then",
+                        newline(),
+                        argName, " = "
                     })
 
-                    if defaultValues[argName] then
-                        insertAll(result, {
-                            newline(),
-                            "if not ", argName, " then",
-                            newline(),
-                            argName, " = "
-                        })
-
-                        insertAll(result, transpileChildren(defaultValues[argName], false, true))
-                        
-                        insert(result, newline())
-                        insert(result, "end")
-                    end
+                    insertAll(result, transpileChildren(namedParameterValues[argName], false, true))
+                    
+                    insert(result, newline())
+                    insert(result, "end")
+                else
+                    pos = pos + 1
+                    insertAll(result, {
+                        newline(),
+                        argName, " = __plume_args[", pos, "]",
+                    })
                 end
             end
 

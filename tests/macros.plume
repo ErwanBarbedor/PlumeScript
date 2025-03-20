@@ -102,15 +102,6 @@ $keyvalue()
 Foo = Bar
 /// End
 
-/// Test "Extended Parameters - hash value 1"
-macro foo(x: bar)
-    $x
-$foo()
-    baz
-/// Result
-baz
-/// End
-
 /// Test "Extended Parameters - hash value 2"
 macro foo(x: bar)
     $x

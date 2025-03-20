@@ -32,12 +32,21 @@ $foo(x: 5)
 /// End
 
 /// Test "Named vararg 2"
-macro foo(foo, *kw)
+macro foo(*kw)
     $(kw.x or "")
-$foo(foo)
-$foo(foo, x: 5)
+$foo()
+$foo(x: 5)
 /// Result
 5
+/// End
+
+/// Test "Vararg capture"
+macro foo(x:foo, *args)
+    $(args[1])
+$foo()
+    - Bar
+/// Result
+Bar
 /// End
 
 /// Test "vararg not last"
