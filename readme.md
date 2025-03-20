@@ -51,6 +51,7 @@ Transpiled code executes at between 70% and 100% of Lua's performance. So with L
 #### Enhancement
 - New error message: invalid lua name as parameter name using text token
 - New error message: check if vararg is in last position
+- New error message: Code after a `return` statement
 
 #### Bugfix
 - Restore varargs

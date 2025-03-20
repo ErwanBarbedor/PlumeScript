@@ -133,6 +133,12 @@ return function (plume)
                         checkPoppedContext(lastContext)
                     end
 
+                    -- "RETURN" must be final node of a context
+                    local prev = parentContext.children[#parentContext.children]
+                    if prev and prev.kind == "RETURN" then
+                       plume.followedReturnError(lastContext.children[1].sourceToken.source)
+                    end
+
                     -- Move closed context to parent's children
                     table.insert(parentContext.children, lastContext)
                     table.remove(context)

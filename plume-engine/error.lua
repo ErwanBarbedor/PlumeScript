@@ -114,4 +114,8 @@ return function (plume)
     function plume.unexpectedVarargError(source)
         plume.error(source, "vararg must be in last position.")
     end
+
+    function plume.followedReturnError(source)
+        plume.error(source, "Syntax error : expected block end. Return must be the last statement of a block.")
+    end
 end
