@@ -415,8 +415,6 @@ return function(plume)
             end
 
             insert(result, "function (__plume_args)")
-            insert(result, newline())
-            insert(result, "local __plume_pos = 0")
 
             local pos = 0
 
