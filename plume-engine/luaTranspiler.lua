@@ -439,8 +439,14 @@ return function(plume)
 
                     insertAll(result, transpileChildren(namedParameterValues[argName], false, true))
                     
-                    insert(result, newline())
-                    insert(result, "end")
+                    insertAll(result,{
+                        newline(),
+                        "else",
+                        newline(),
+                        "__plume_args.", argName, " = nil",
+                        newline(),
+                        "end"
+                    })
                 else
                     pos = pos + 1
                     insertAll(result, {
