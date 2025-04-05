@@ -25,6 +25,7 @@ return {
     {
         name = "HASH_ITEM_ENDLINE",
         pattern = {
+            {kind = "EVAL", name = "evalmode", optional=true},
             {kind = "TEXT", name = "key"},
             {kind = "COLON"},
             {kind = {"NEWLINE", "ENDLINE"}, name = "tokens", multipleCapture = true}
@@ -46,7 +47,8 @@ return {
             {kind = "TEXT", name = "variable"},
             {kind = "SPACE", multipleCapture = true},
             {kind = "OPERATOR", name = "compound_operator", optional=true},
-            {kind = "EQUAL"}
+            {kind = "EQUAL"},
+            {kind = {"NEWLINE", "ENDLINE"}, name = "endline", optional = true}
         }
     },
     {
@@ -56,7 +58,8 @@ return {
             {kind = "TEXT", name = "variable"},
             {kind = "SPACE", multipleCapture = true},
             {kind = "OPERATOR", name = "compound_operator", optional=true},
-            {kind = "EQUAL"}
+            {kind = "EQUAL"},
+            {kind = {"NEWLINE", "ENDLINE"}, name = "endline", optional = true}
         }
     },
     {

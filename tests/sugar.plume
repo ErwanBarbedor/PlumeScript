@@ -35,3 +35,30 @@ $foo()
 /// Result
 2
 /// End
+
+/// Test "invalid sugar hash"
+$a:
+    - foo
+/// Error
+Syntax error : '$var:' syntax cannot be followed by a line break.
+File <string>, line n°1 :
+    $a:
+/// End
+
+/// Test "invalid sugar assignement"
+$a =
+    - foo
+/// Error
+Syntax error : '$var =' syntax cannot be followed by a line break.
+File <string>, line n°1 :
+    $a =
+/// End
+
+/// Test "invalid sugar local assignement"
+local $a =
+    - foo
+/// Error
+Syntax error : '$var =' syntax cannot be followed by a line break.
+File <string>, line n°1 :
+    local $a =
+/// End

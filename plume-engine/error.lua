@@ -120,4 +120,8 @@ return function (plume)
     function plume.followedReturnError(source)
         plume.error(source, "Syntax error : expected block end. Return must be the last statement of a block.")
     end
+
+    function plume.multilineEvalError(source, sep)
+        plume.error(source, "Syntax error : '$var" .. sep .. "' syntax cannot be followed by a line break.")
+    end
 end

@@ -197,6 +197,10 @@ return function(plume)
                 end
             end,
             HASH_ITEM_ENDLINE = function(match)
+                if #match.evalmode.content>0 then
+                    plume.multilineEvalError(match.key.source, ":")
+                end
+
                 pushToken {
                     kind = "HASH_ITEM",
                     content = match.key.content,
@@ -205,6 +209,11 @@ return function(plume)
                 statementHandler.ENDLINE(match)
             end,
             LOCAL_ASSIGNMENT = function(match)
+
+                if #match.evalmode.content>0 and #match.endline.content>0 then
+                    plume.multilineEvalError(match.variable.source, " =")
+                end
+
                 plume.checkVariableName(match.variable.source, match.variable.content)
                 local tokenInfos = {
                     kind = "LOCAL_ASSIGNMENT",
@@ -221,8 +230,21 @@ return function(plume)
                         content = ""
                     }
                 end
+
+                if #match.endline.content>0 then
+                    pushToken {
+                        kind = "ENDLINE",
+                        content = "",
+                        indent = match.endline.indent
+                    }
+                end
             end,
             ASSIGNMENT = function(match)
+
+                if #match.evalmode.content>0 and #match.endline.content>0 then
+                    plume.multilineEvalError(match.variable.source, " =")
+                end
+
                 plume.checkVariableName(match.variable.source, match.variable.content)
                 local tokenInfos = {
                     kind = "ASSIGNMENT",
@@ -237,6 +259,14 @@ return function(plume)
                     pushToken {
                         kind = "BEGIN_LINE_EXPRESSION",
                         content = ""
+                    }
+                end
+
+                if #match.endline.content>0 then
+                    pushToken {
+                        kind = "ENDLINE",
+                        content = "",
+                        indent = match.endline.indent
                     }
                 end
             end,

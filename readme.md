@@ -44,6 +44,9 @@ Transpiled code executes at between 70% and 100% of Lua's performance. So with L
 ## Changelog
 ### 0.25
 
+#### Changes
+- Cannot use `$var =` and `$var: ` syntax sugar followed by a newline
+
 ### 0.24
 
 #### Changes
