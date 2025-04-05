@@ -378,6 +378,12 @@ return function(plume)
                     kind    = "EXPAND",
                     content = "*"
                 }
+            end,
+            COMMAND_EXPAND = function(match)
+                pushToken {
+                    kind    = "COMMAND_EXPAND",
+                    content = match.variable.content
+                }
             end
         }
 

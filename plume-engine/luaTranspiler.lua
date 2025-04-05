@@ -16,7 +16,7 @@ If not, see <https://www.gnu.org/licenses/>.
 return function(plume)
 
     local contains   = plume.utils.containsWord
-    local STATEMENTS = "FOR ASSIGNMENT LOCAL_ASSIGNMENT IF ELSE ELSEIF WHILE MACRO LOCAL_MACRO RETURN BREAK"
+    local STATEMENTS = "FOR ASSIGNMENT LOCAL_ASSIGNMENT IF ELSE ELSEIF WHILE MACRO LOCAL_MACRO RETURN BREAK COMMAND_EXPAND"
 
     local transpileToLua
 
@@ -118,7 +118,7 @@ return function(plume)
                     table.insert(result, {store=false, kind="node", content=child})
 
                     -- Cannot count inside control structure
-                    if contains("IF ELSEIF ELSE FOR WHILE", child.kind) then
+                    if contains("IF ELSEIF ELSE FOR WHILE COMMAND_EXPAND", child.kind) then
                         valueCount = -1    
                     end
 
@@ -308,7 +308,29 @@ return function(plume)
                             end
                         end
                     end
-                  -- If it is not a stored value then recursively call transpileToLua 
+
+                -- special case: expand
+                elseif info.content.kind == "COMMAND_EXPAND" then
+                    insertAll(result, {
+                        newline(),
+                        "for k, v in __lua.ipairs(", info.content.content, ") do",
+                            newline(),
+                            "__plume_insert(__plume_temp, v)",
+                            newline(),
+                        "end",
+                        newline(),
+                        "for k, v in __lua.pairs(", info.content.content, ") do",
+                            newline(),
+                            "if not __lua.tonumber(k) then",
+                                newline(),
+                                "__plume_temp[k] = v",
+                                newline(),
+                            "end",
+                            newline(),
+                        "end"
+
+                    })
+                -- If it is not a stored value then recursively call transpileToLua 
                 else
                     insertAll(result, transpileToLua(info.content))
                 end
@@ -685,6 +707,11 @@ return function(plume)
             ---Handles variable references
             ---@param node table The variable node to process
             VARIABLE = function (node)
+                use(node)
+                return {node.content}
+            end,
+
+            COMMAND_EXPAND = function (node)
                 use(node)
                 return {node.content}
             end,

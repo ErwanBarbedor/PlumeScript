@@ -338,6 +338,10 @@ return function (plume)
             elseif contains("EXPAND", token.kind) then
                 pushChild(token, "TEXT", "*")
 
+            elseif contains("COMMAND_EXPAND", token.kind) then
+                setReturnType(token, "TABLE")
+                pushChild(token, "COMMAND_EXPAND", token.content)
+
             -- Variable assignment constructs
             elseif token.kind == "ASSIGNMENT" then
                 pushContext(token, "ASSIGNMENT", currentIndent+1, token.content)

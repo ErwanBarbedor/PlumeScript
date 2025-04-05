@@ -130,3 +130,71 @@ $(t[1].x)
 /// Result
 5
 /// End
+
+/// Test "Expand 1"
+a =
+    - foo
+    - bar
+
+b =
+    - baz
+    *a
+$(b[2])
+/// Result
+foo
+/// End
+
+/// Test "Expand 2"
+a =
+    - foo
+    - bar
+
+b =
+    *a
+    - baz
+$(b[2])
+/// Result
+bar
+/// End
+
+/// Test "Expand 3"
+a =
+    - foo
+    - bar
+    foo: bar
+
+b =
+    *a
+    bar: foo
+$b.foo $b.bar
+/// Result
+bar foo
+/// End
+
+/// Test "Expand 3"
+a =
+    - foo
+    - bar
+    foo: bar
+
+b =
+    *a
+    foo: foo
+$b.foo
+/// Result
+foo
+/// End
+
+/// Test "Expand 3"
+a =
+    - foo
+    - bar
+    foo: bar
+
+b =
+    foo: foo
+    *a
+$b.foo
+/// Result
+bar
+/// End

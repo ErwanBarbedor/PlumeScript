@@ -101,4 +101,8 @@ return {
     }},
     {name = "ELSE",   pattern = {{kind = "TEXT", content = "else"}}},
     {name = "BREAK",  pattern = {{kind = "TEXT", content = "break"}}},
+    {name = "COMMAND_EXPAND",  pattern = {
+        {kind = "OPERATOR", content = "*"},
+        {kind = "TEXT", name = "variable"}
+    }},
 }
