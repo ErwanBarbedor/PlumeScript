@@ -372,6 +372,12 @@ return function(plume)
                     kind    = "COMMA",
                     content = match.token.content
                 }
+            end,
+            EXPAND = function(match)
+                pushToken {
+                    kind    = "EXPAND",
+                    content = "*"
+                }
             end
         }
 

@@ -334,6 +334,10 @@ return function (plume)
                     pushChild(token, "TEXT", token.content)
                 end
 
+            -- Expand operator
+            elseif contains("EXPAND", token.kind) then
+                pushChild(token, "TEXT", "*")
+
             -- Variable assignment constructs
             elseif token.kind == "ASSIGNMENT" then
                 pushContext(token, "ASSIGNMENT", currentIndent+1, token.content)

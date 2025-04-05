@@ -94,5 +94,6 @@ return {
             {neg={kind = {"NEWLINE"}}, multipleCapture = true, optional=true},
             {kind = {"NEWLINE"}, name = "tokens", multipleCapture = true, optional=true}
         }
-    }
+    },
+    {name = "EXPAND",  pattern = {{kind = "OPERATOR", content = "*"}}},
 }
