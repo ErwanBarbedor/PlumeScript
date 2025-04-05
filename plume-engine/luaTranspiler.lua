@@ -473,7 +473,7 @@ return function(plume)
                     pos = pos + 1
                     insertAll(result, {
                         newline(),
-                        argName, " = __plume_args[", pos, "]",
+                        "local ", argName, " = __plume_args[", pos, "]",
                     })
                 end
             end

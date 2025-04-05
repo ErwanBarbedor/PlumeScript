@@ -46,6 +46,9 @@ Transpiled code executes at between 70% and 100% of Lua's performance. So with L
 #### Enhancement
 - Rewrite vararg related code in a cleaner way
 
+#### Bugfix
+- Fix a case when wacro parameter arn't local to the macro
+
 ### 0.23
 
 #### Changes
