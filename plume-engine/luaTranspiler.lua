@@ -528,7 +528,9 @@ return function(plume)
                     if t then
                         insert(children, {kind="LIST_ITEM", children={{kind="TEXT", t}}})
                     end
+                    insert(result, "(")
                     insertAll(result, transpileChildren({kind="TABLE", children=argList, returnType="TABLE"}, true, true))
+                    insert(result, ")")
                 end
 
                 insert(result, newline())

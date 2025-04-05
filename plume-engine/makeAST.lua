@@ -212,12 +212,12 @@ return function (plume)
             local antecurrent = context[#context-1]
             local current     = context[#context]
 
-            -- todo :
-            -- if not contains("LIST_ITEM", current.kind) then
-                -- error...
+            if not isInside("LIST_ITEM", 1) then
+                error("[Internal unexpected error]: try to close an non-existent LIST_ITEM.")
+            end
 
-            -- Remove empty parameter, if first
-            if #current.children == 0 and #antecurrent.children == 0 then
+            -- Remove empty parameter, if can be empty
+            if #current.children == 0 and (#antecurrent.children == 0 or current.canBeEmpty) then
                 table.remove(context)
                 return
             elseif #current.children > 0 then
@@ -252,8 +252,9 @@ return function (plume)
         end
 
         --- Creates a new macro argument context
-        local function pushMacroArgument()
+        local function pushMacroArgument(canBeEmpty)
             pushContext(nil, "LIST_ITEM", currentIndent)
+            context[#context].canBeEmpty = canBeEmpty
         end
 
         -- Initialize with root block
@@ -340,6 +341,9 @@ return function (plume)
                     if isInside("MACRO_DEFINITION") then
                         pushChild(token, "VARARG", token.content)
                     else
+                        popMacroArgument()
+                        pushChild(token, "COMMAND_EXPAND", token.content)
+                        pushMacroArgument(true)
                     end
                 else
                     pushChild(token, "TEXT", "*"..token.content)

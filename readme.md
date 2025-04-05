@@ -43,6 +43,9 @@ Transpiled code executes at between 70% and 100% of Lua's performance. So with L
 
 ## Changelog
 ### 0.24
+#### Changes
+- New operator "expand". Can also be used in macro call parameters.
+
 #### Enhancement
 - Rewrite vararg related code in a cleaner way
 
