@@ -207,6 +207,29 @@ $x
 
 /// End
 
+/// Test "Macro expand 1"
+macro id(x, y)
+    $x - $y
+t =
+    - foo
+    - bar
+$id(*t)
+/// Result
+foo - bar
+/// End
+
+/// Test "Macro expand 1"
+macro id(x, y)
+    $x - $y
+t =
+    - foo
+    - bar
+$id()
+    *t
+/// Result
+foo - bar
+/// End
+
 // /// Test "Method Call 1"
 // t =
 //     foo: macro (self)
