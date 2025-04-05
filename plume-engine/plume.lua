@@ -61,6 +61,10 @@ return function(plume)
         end
     end
 
+    plume.plumeStdLib.setk = importFunction (function (t, k, v)
+        t[k] = v
+    end)
+
     function plume.initRuntime ()
         local result = {plume = {}, __lua = _G}
 
@@ -71,6 +75,8 @@ return function(plume)
         for k, v in pairs(plume.luaStdLib) do
             result[k] = v
         end
+
+        result._G = result
 
         return result
     end
