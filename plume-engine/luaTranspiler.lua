@@ -184,7 +184,7 @@ return function(plume)
 
             for i, content in ipairs(infos[1].content) do
                 if (directConcat or concat) and content.kind ~= "TEXT" then
-                    insert(result, "(")
+                    insert(result, "__lua.tostring(")
                 end
                 insertAll(result, transpileToLua(content))
                 if (directConcat or concat) and content.kind ~= "TEXT" then

@@ -45,6 +45,7 @@ Transpiled code executes at between 70% and 100% of Lua's performance. So with L
 ### 0.24
 #### Changes
 - New operator "expand". Can also be used in macro call parameters.
+- Call `tostring` on all items before concat.
 
 #### Enhancement
 - Rewrite vararg related code in a cleaner way
