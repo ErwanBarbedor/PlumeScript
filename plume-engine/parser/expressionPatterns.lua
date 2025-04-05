@@ -95,5 +95,8 @@ return {
             {kind = {"NEWLINE"}, name = "tokens", multipleCapture = true, optional=true}
         }
     },
-    {name = "EXPAND",  pattern = {{kind = "OPERATOR", content = "*"}}},
+    {name = "EXPAND",  pattern = {
+        {kind = "OPERATOR", content = "*"},
+        {kind = "TEXT", name = "variable"}
+    }},
 }

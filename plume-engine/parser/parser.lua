@@ -376,7 +376,7 @@ return function(plume)
             EXPAND = function(match)
                 pushToken {
                     kind    = "EXPAND",
-                    content = "*"
+                    content = match.variable.content
                 }
             end,
             COMMAND_EXPAND = function(match)

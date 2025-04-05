@@ -43,6 +43,8 @@ Transpiled code executes at between 70% and 100% of Lua's performance. So with L
 
 ## Changelog
 ### 0.24
+#### Enhancement
+- Rewrite vararg related code in a cleaner way
 
 ### 0.23
 

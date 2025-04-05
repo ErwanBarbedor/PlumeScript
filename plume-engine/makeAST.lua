@@ -170,9 +170,9 @@ return function (plume)
                     -- not supposed to happen. Raise error?
                 end
 
-                local inner, star, name, over = content:match('^(%S-)%s*(%*?)([a-zA-Z_][a-zA-Z0-9_]*)%s*(%S*)$')
-
-                if star and #star > 0 and i < #current.children then
+                local inner, name, over = content:match('^(%S-)%s*([a-zA-Z_][a-zA-Z0-9_]*)%s*(%S*)$')
+                
+                if token.kind == "VARARG" and i < #current.children then
                     plume.unexpectedVarargError(token.sourceToken.source, "vararg must be in last position.")
                 end
 
@@ -336,7 +336,14 @@ return function (plume)
 
             -- Expand operator
             elseif contains("EXPAND", token.kind) then
-                pushChild(token, "TEXT", "*")
+                if isInside("MACRO_ARG_TABLE") then
+                    if isInside("MACRO_DEFINITION") then
+                        pushChild(token, "VARARG", token.content)
+                    else
+                    end
+                else
+                    pushChild(token, "TEXT", "*"..token.content)
+                end
 
             elseif contains("COMMAND_EXPAND", token.kind) then
                 setReturnType(token, "TABLE")

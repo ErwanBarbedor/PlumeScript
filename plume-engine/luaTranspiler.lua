@@ -412,9 +412,9 @@ return function(plume)
 
             for _, param in ipairs(parameters.children) do
                 if param.kind == "LIST_ITEM" then
-                    table.insert(parametersList, param.children[1].content)
+                    table.insert(parametersList, param.children[1])
                 else
-                    table.insert(parametersList, param.content)
+                    table.insert(parametersList, param)
                     namedParameterValues[param.content] =  param
                 end
             end
@@ -440,9 +440,9 @@ return function(plume)
 
             local pos = 0
 
-            for i, argName in ipairs(parametersList) do
-                if argName:sub(1, 1) == "*" then
-                    argName = argName:sub(2, -1)
+            for i, arg in ipairs(parametersList) do
+                argName = arg.content
+                if arg.kind == "VARARG" then
 
                     insertAll(result, {newline(), "local ", argName, " = __plume_args"})
 
