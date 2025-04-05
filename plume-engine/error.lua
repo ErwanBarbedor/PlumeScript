@@ -75,13 +75,15 @@ return function (plume)
 
         local lineFound = false
 
-        for _, token in ipairs(tokens) do
-            if token.sourceToken and token.sourceToken.source then
-                table.insert(result, "\n")
-                table.insert(result, getLine(token.sourceToken.source))
-                table.insert(result, "\n(Error handling is still under development, so locating the lua error in the Plume code may be imprecise.)")
-                lineFound = true
-                break
+        if tokens then
+            for _, token in ipairs(tokens) do
+                if token.sourceToken and token.sourceToken.source then
+                    table.insert(result, "\n")
+                    table.insert(result, getLine(token.sourceToken.source))
+                    table.insert(result, "\n(Error handling is still under development, so locating the lua error in the Plume code may be imprecise.)")
+                    lineFound = true
+                    break
+                end
             end
         end
 

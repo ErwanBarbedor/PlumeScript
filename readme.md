@@ -48,6 +48,7 @@ Transpiled code executes at between 70% and 100% of Lua's performance. So with L
 
 #### Bugfix
 - Fix a case when wacro parameter arn't local to the macro
+- Fix an error in error handling
 
 ### 0.23
 
