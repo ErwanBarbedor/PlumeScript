@@ -1,6 +1,6 @@
 <p align="center"><img src="plume_logo.svg" width="600" height="300"></p>
 
-![Version](https://img.shields.io/badge/version-0.24-blue.svg) [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
+![Version](https://img.shields.io/badge/version-0.25-blue.svg) [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 
 
 ## Plume🪶 - An Expressive Templating Language
@@ -42,7 +42,10 @@ On my 12600k, transpilation of a 10,000-line file takes less than 200ms; this sh
 Transpiled code executes at between 70% and 100% of Lua's performance. So with LuaJIT, this makes it possible to include relatively costly calculations in templates.
 
 ## Changelog
+### 0.25
+
 ### 0.24
+
 #### Changes
 - New operator "expand". Can also be used in macro call parameters.
 - Call `tostring` on all items before concat.
