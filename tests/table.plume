@@ -198,3 +198,31 @@ $b.foo
 /// Result
 bar
 /// End
+
+/// Test "Index 1"
+a =
+    - foo
+    - bar
+
+$a[1]
+/// Result
+foo
+/// End
+
+/// Test "Index 2"
+a =
+    - foo
+    - bar
+
+$a[1+1]
+/// Result
+bar
+/// End
+
+/// Test "Index 3"
+a = 5
+
+$a [1+1]
+/// Result
+5 [1+1]
+/// End

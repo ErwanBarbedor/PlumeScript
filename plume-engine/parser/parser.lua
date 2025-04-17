@@ -346,10 +346,22 @@ return function(plume)
             end,
             VARIABLE = function(match)
                 plume.checkVariableName(match.variable.source, match.variable.content)
+
+                local index
+                if match.index then
+                    index = {}
+                    for _, token in ipairs(match.index) do
+                        table.insert(index, token.content)
+                    end
+                    index = table.concat(index, "", 2, #index-1) -- remove brackets
+                end
+
                 pushToken {
-                    kind = "VARIABLE",
-                    content = match.variable.content
+                    kind    = "VARIABLE",
+                    content = match.variable.content,
+                    index   = index
                 }
+
             end,
             LUA_EXPRESSION = function(match)
                 local content = {}

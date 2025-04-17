@@ -29,6 +29,8 @@ local tokenPatterns = {
     {name = "COMMA",   pattern = ",[ \t]*"}, -- Argument list separator
     {name = "LPAR",    pattern = "%("},      -- Expression group start
     {name = "RPAR",    pattern = "%)"},      -- Expression group end
+    {name = "LBRK",    pattern = "%["},      -- Index start
+    {name = "RBRK",    pattern = "%]"},      -- Index end
     {name = "QUOTE",   pattern = '"'},       -- String literal delimiter
     {name = "COMMENT", pattern = '//'},      -- Line comment
     {name = "OPERATOR",pattern = "[%+%-%*%/]"},  -- */-+ operator

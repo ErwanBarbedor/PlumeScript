@@ -109,43 +109,44 @@ return function (plume)
                 end
             elseif infos.braced then
                 -- Handle nested bracket structures
-                if not plume.checkPattern(token, infos.braced.open) then
-                    return false
-                end
+                if plume.checkPattern(token, infos.braced.open) then
+                    local captureList = {}
+                    local depth = 0    -- Bracket nesting level
+                    local offset = 0   -- Token lookahead offset
 
-                local captureList = {}
-                local depth = 0    -- Bracket nesting level
-                local offset = 0   -- Token lookahead offset
+                    -- Capture until matching closing bracket
+                    while tokens[tokenPos + offset] do
+                        local current_token = tokens[tokenPos + offset]
 
-                -- Capture until matching closing bracket
-                while tokens[tokenPos + offset] do
-                    local current_token = tokens[tokenPos + offset]
+                        if plume.checkPattern(current_token, infos.braced.open) then
+                            depth = depth + 1
+                        elseif plume.checkPattern(current_token, infos.braced.close) then
+                            depth = depth - 1
+                        end
 
-                    if plume.checkPattern(current_token, infos.braced.open) then
-                        depth = depth + 1
-                    elseif plume.checkPattern(current_token, infos.braced.close) then
-                        depth = depth - 1
+                        table.insert(captureList, current_token)
+
+                        if depth == 0 then
+                            break
+                        end
+                        offset = offset + 1
                     end
 
-                    table.insert(captureList, current_token)
-
-                    if depth == 0 then
-                        break
+                    -- Check for unbalanced brackets
+                    if depth > 0 then
+                        return false
                     end
-                    offset = offset + 1
-                end
 
-                -- Check for unbalanced brackets
-                if depth > 0 then
+                    if infos.name then
+                        capture[infos.name] = captureList
+                    end
+
+                    captureCount = #captureList
+                    tokenPos = tokenPos + offset
+                elseif infos.optional then
+                else
                     return false
                 end
-
-                if infos.name then
-                    capture[infos.name] = captureList
-                end
-
-                captureCount = #captureList
-                tokenPos = tokenPos + offset
             else
                 -- Single token matching logic
                 local found = plume.checkPattern(token, infos)

@@ -60,11 +60,7 @@ return function(plume)
             return result
         end
     end
-
-    plume.plumeStdLib.setk = importFunction (function (t, k, v)
-        t[k] = v
-    end)
-
+    
     function plume.initRuntime ()
         local result = {plume = {}, __lua = _G}
 

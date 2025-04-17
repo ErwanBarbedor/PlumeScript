@@ -28,7 +28,15 @@ return {
         name = "VARIABLE",
         pattern = {
             {kind = "EVAL"},
-            {kind = "TEXT", name = "variable"}
+            {kind = "TEXT", name = "variable"},
+            {
+                braced = {
+                    open  = {kind = "LBRK"},
+                    close = {kind = "RBRK"}
+                },
+                name = "index",
+                optional = true
+            }
         }
     },
     {

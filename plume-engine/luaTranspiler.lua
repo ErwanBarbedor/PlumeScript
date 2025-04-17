@@ -724,7 +724,11 @@ return function(plume)
             ---@param node table The variable node to process
             VARIABLE = function (node)
                 use(node)
-                return {node.content}
+                if node.sourceToken.index then
+                    return {node.content, "[", editLuaCode (node.sourceToken.index),"]"}
+                else
+                    return {node.content}
+                end
             end,
 
             COMMAND_EXPAND = function (node)

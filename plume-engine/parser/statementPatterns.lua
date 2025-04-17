@@ -56,6 +56,14 @@ return {
         pattern = {
             {kind = "EVAL", name = "evalmode", optional=true},
             {kind = "TEXT", name = "variable"},
+            -- {
+            --     braced = {
+            --         open  = {kind = "LBRK"},
+            --         close = {kind = "RBRK"}
+            --     },
+            --     name = "index",
+            --     optional = true
+            -- },
             {kind = "SPACE", multipleCapture = true},
             {kind = "OPERATOR", name = "compound_operator", optional=true},
             {kind = "EQUAL"},

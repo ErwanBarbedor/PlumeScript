@@ -3,11 +3,3 @@ $(plume._VERSION)
 /// Result
 Plume🪶 0.25
 /// End
-
-/// Test "setk"
-t = $({})
-$plume.setk($t, x, foo)
-$t.x
-/// Result
-foo
-/// End
