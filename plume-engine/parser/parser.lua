@@ -210,9 +210,13 @@ return function(plume)
             end,
             LOCAL_ASSIGNMENT = function(match)
 
-                if #match.evalmode.content>0 and #match.endline.content>0 then
-                    plume.multilineEvalError(match.variable.source, " =")
+                if #match.evalmode.content>0 then
+                    plume.error(match.variable.source, "Syntax forbiden for now")
                 end
+
+                -- if #match.evalmode.content>0 and #match.endline.content>0 then
+                --     plume.multilineEvalError(match.variable.source, " =")
+                -- end
 
                 plume.checkVariableName(match.variable.source, match.variable.content)
                 local tokenInfos = {
@@ -240,10 +244,13 @@ return function(plume)
                 end
             end,
             ASSIGNMENT = function(match)
-
-                if #match.evalmode.content>0 and #match.endline.content>0 then
-                    plume.multilineEvalError(match.variable.source, " =")
+                if #match.evalmode.content>0 then
+                    plume.error(match.variable.source, "Syntax forbiden for now")
                 end
+
+                -- if #match.evalmode.content>0 and #match.endline.content>0 then
+                --     plume.multilineEvalError(match.variable.source, " =")
+                -- end
 
                 plume.checkVariableName(match.variable.source, match.variable.content)
                 local tokenInfos = {
@@ -285,12 +292,10 @@ return function(plume)
                     content = ""
                 }
 
-                if #match.evalmode.content>0 then
-                    pushToken {
-                        kind = "BEGIN_LINE_EXPRESSION",
-                        content = ""
-                    }
-                end
+                pushToken {
+                    kind = "BEGIN_LINE_EXPRESSION",
+                    content = ""
+                }
             end,
             LINE_STATEMENT = function(match)
                 local line = {}

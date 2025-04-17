@@ -99,7 +99,7 @@ return {
         }
     },
     {name = "RETURN", pattern = {
-        {kind = "EVAL", name = "evalmode", optional=true},
+        -- {kind = "EVAL", name = "evalmode", optional=true},
         {kind = "TEXT", content = "return"}
     }},
     {name = "ELSE",   pattern = {{kind = "TEXT", content = "else"}}},
