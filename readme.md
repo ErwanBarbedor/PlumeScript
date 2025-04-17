@@ -47,7 +47,11 @@ Transpiled code executes at between 70% and 100% of Lua's performance. So with L
 #### Changes
 - Remove `$a = ...` and `$a: ...`  syntax sugar
 - `return` evaluate expression by default.
+- Cannot anymore implicitly convert `tables` if they do not have a `__tostring` field.
 - New temp function `plume.setk`.
+
+#### Bugfix
+- In certain case, item for concat will not be converted to strings
 
 ### 0.24
 

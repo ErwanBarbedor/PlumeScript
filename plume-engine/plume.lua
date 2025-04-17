@@ -80,4 +80,19 @@ return function(plume)
 
         return result
     end
+
+    function plume.plumeStdLib.checkConcat(x)
+        local t = type(x)
+        if t == "nil" then
+            return ""
+        elseif t == "table" then
+            if type(getmetatable(t).__tostring) == "function" then
+                return tostring(t)
+            else
+                error("Cannot convert table to string implicitly.", 2)
+            end
+        else
+            return x
+        end
+    end
 end

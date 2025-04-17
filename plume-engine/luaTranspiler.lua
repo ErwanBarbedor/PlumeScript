@@ -184,11 +184,11 @@ return function(plume)
 
             for i, content in ipairs(infos[1].content) do
                 if (directConcat or concat) and content.kind ~= "TEXT" then
-                    insert(result, "__lua.tostring(")
+                    insert(result, "__plume_check(")
                 end
                 insertAll(result, transpileToLua(content))
                 if (directConcat or concat) and content.kind ~= "TEXT" then
-                    insert(result, " or \"\")")
+                    insert(result, ")")
                 end
 
                 if i < #infos[1].content then
@@ -228,6 +228,8 @@ return function(plume)
         local function transpileChildrenMixedCase(node, infos, valueCount, shouldInitAccumulator, wrapInFunction, forceReturn)
             local result = {}
 
+            local concat = (node.returnType == "TEXT")
+
             -- Wrap the output in a function if required
             if wrapInFunction then
                 insert(result, "(function()")
@@ -262,7 +264,7 @@ return function(plume)
                             insert(result, "{")
                             insert(result, newline())
                         end
-
+                        
                         insertAll(result, transpileToLua(values[1]))
 
                         if node.returnType == "TABLE" then
@@ -283,7 +285,13 @@ return function(plume)
                                     insertAll(result, transpileChildren(info.content, false, true, false))
                                 else
                                     insert(result, "__plume_insert (__plume_temp, ")
+                                    if concat and value.kind ~= "TEXT" then
+                                        insert(result, "__plume_check(")
+                                    end
                                     insertAll(result, transpileToLua(value))
+                                    if concat and value.kind ~= "TEXT" then
+                                        insert(result, ")")
+                                    end
                                     insert(result, ")")
                                 end
                             end
@@ -294,7 +302,13 @@ return function(plume)
                             insert(result, "local __plume_temp = {")
                             for _, value in ipairs(values) do
                                 insert(result, newline())
+                                if concat and value.kind ~= "TEXT" then
+                                    insert(result, "__plume_check(")
+                                end
                                 insertAll(result, transpileToLua(value))
+                                if concat and value.kind ~= "TEXT" then
+                                    insert(result, ")")
+                                end
                                 insert(result, ", ")
                             end
                             insert(result, newline())
@@ -747,7 +761,9 @@ return function(plume)
             end
         end
 
-        local result = {"local __plume_concat = __lua.table.concat"}
+        local result = {"local __plume_check = plume.checkConcat"}
+        insert(result, newline())
+        insert(result, "local __plume_concat = __lua.table.concat")
         insert(result, newline())
         insert(result, "local __plume_insert = __lua.table.insert")
         insert(result, newline())

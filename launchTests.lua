@@ -122,6 +122,6 @@ function showTestsResult(tests, successCount)
 end
 
 -- Main execution flow
-local tests = loadTests("block errors eval if loops macros macros_syntax_error macros_vararg std table text variables issues")
+local tests = loadTests("block convert errors eval if loops macros macros_syntax_error macros_vararg std table text variables issues")
 local successCount = passTests(tests)
 showTestsResult(tests, successCount)

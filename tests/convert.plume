@@ -1,0 +1,81 @@
+/// Test "concat 1"
+macro foo()
+    $5 a
+a = $foo()
+$(type(a))
+/// Result
+string
+/// End
+
+
+/// Test "concat 2"
+macro foo()
+    local b = 4
+    $5 a
+a = $foo()
+$(type(a))
+/// Result
+string
+/// End
+
+
+/// Test "concat 3"
+t =
+    - a
+    - b
+macro foo()
+    local b = 4
+    $t
+a = $foo()
+$(type(a))
+/// Result
+table
+/// End
+
+/// Test "concat 4"
+t =
+    - a
+    - b
+macro foo()
+    $t a
+a = $foo()
+$(type(a))
+/// Error
+Error : Cannot convert table to string implicitly.
+File <string>, line n°5 :
+    $t a
+(Error handling is still under development, so locating the lua error in the Plume code may be imprecise.)
+/// End
+
+
+/// Test "concat 5"
+t =
+    - a
+    - b
+macro foo()
+    local b = 4
+    $t a
+a = $foo()
+$(type(a))
+/// Error
+Error : Cannot convert table to string implicitly.
+File <string>, line n°6 :
+    $t a
+(Error handling is still under development, so locating the lua error in the Plume code may be imprecise.)
+/// End
+
+/// Test "concat 6"
+t =
+    - a
+    - b
+macro foo()
+    local b = 4
+    a $t
+a = $foo()
+$(type(a))
+/// Error
+Error : Cannot convert table to string implicitly.
+File <string>, line n°6 :
+    a $t
+(Error handling is still under development, so locating the lua error in the Plume code may be imprecise.)
+/// End
