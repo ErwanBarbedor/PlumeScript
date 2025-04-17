@@ -555,7 +555,15 @@ return function(plume)
             ---Handles variable assignment
             ---@param node table The assignment node to process
             ASSIGNMENT = function (node)
-                local result = {newline(), node.content, " = "}
+                local result = {newline()}
+                
+                if node.sourceToken.index then
+                    insertAll(result, {node.content, "[", editLuaCode (node.sourceToken.index),"]"})
+                else
+                    insert(result, node.content)
+                end
+
+                insert(result, " = ")
                 use(node)
 
                 local compound = node.sourceToken.compound_operator

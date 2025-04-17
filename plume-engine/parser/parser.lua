@@ -253,9 +253,20 @@ return function(plume)
                 -- end
 
                 plume.checkVariableName(match.variable.source, match.variable.content)
+
+                local index
+                if match.index then
+                    index = {}
+                    for _, token in ipairs(match.index) do
+                        table.insert(index, token.content)
+                    end
+                    index = table.concat(index, "", 2, #index-1) -- remove brackets
+                end
+
                 local tokenInfos = {
-                    kind = "ASSIGNMENT",
+                    kind    = "ASSIGNMENT",
                     content = match.variable.content,
+                    index   = index
                 }
                 if match.compound_operator.kind ~= "EMPTY" then
                     tokenInfos.compound_operator = match.compound_operator.content

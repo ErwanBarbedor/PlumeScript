@@ -62,7 +62,7 @@ a =
     - bar
 
     - baz
-a[2] = $(a[2])
+a[2] \= $(a[2])
 /// Result
 a[2] = baz
 /// End
@@ -199,7 +199,7 @@ $b.foo
 bar
 /// End
 
-/// Test "Index 1"
+/// Test "Index read 1"
 a =
     - foo
     - bar
@@ -209,7 +209,7 @@ $a[1]
 foo
 /// End
 
-/// Test "Index 2"
+/// Test "Index read 2"
 a =
     - foo
     - bar
@@ -219,10 +219,22 @@ $a[1+1]
 bar
 /// End
 
-/// Test "Index 3"
+/// Test "Index read 3"
 a = 5
 
 $a [1+1]
 /// Result
 5 [1+1]
+/// End
+
+/// Test "Index write 1"
+a =
+    - Foo
+    - Bar
+
+a[1] = Baz
+
+$table.concat($a, -)
+/// Result
+Baz-Bar
 /// End

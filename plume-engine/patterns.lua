@@ -144,6 +144,7 @@ return function (plume)
                     captureCount = #captureList
                     tokenPos = tokenPos + offset
                 elseif infos.optional then
+                    tokenPos = tokenPos - 1  -- Maintain position
                 else
                     return false
                 end
