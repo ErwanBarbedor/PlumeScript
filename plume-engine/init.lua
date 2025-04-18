@@ -31,7 +31,7 @@ require "plume-engine/makeAST"       (plume)
 require "plume-engine/plume"         (plume)
 require "plume-engine/luaTranspiler" (plume)
 require "plume-engine/error"         (plume)
-require "plume-engine/beautifier"    (plume)
+require "plume-engine/luaBuilder"    (plume)
 require "plume-engine/plumeDebug"    (plume)
 
 --- Transpiles Plume code to Lua code.
@@ -62,7 +62,7 @@ function plume.transpile(text, filename)
         error("Unexpected error during transpilation:\n" .. code)
     end
 
-    code = plume.beautifier(code)
+    -- code = plume.beautifier(code)
 
     return code, map
 end

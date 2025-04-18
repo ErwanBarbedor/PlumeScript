@@ -20,7 +20,7 @@ return function(plume)
 
     local transpileToLua
 
-    -- Dirty emp function waiting for a full script parsing
+    -- Dirty temp function waiting for a full script parsing
     local function editLuaCode(code)
         code = code:gsub('([a-zA-Z_][a-zA-Z_0-9%.]*):([a-zA-Z_][a-zA-Z_0-9]*)%s*(%b())', function(f, m, p)
             if #p>2 then
@@ -54,8 +54,10 @@ return function(plume)
             end
         end
 
-        local map = {{}}
+        local map    = {{}}
+        local result = {}
 
+        local builder = plume.Builder (map)
         --- Inserts a new line in the map.
         ---@return string New line character.
         local function newline ()
@@ -68,27 +70,6 @@ return function(plume)
         local function use (token)
             table.insert(map[#map], token)
         end
-
-        --- Inserts all elements from t2 into t1.
-        ---@param t1 table The table to insert into.
-        ---@param t2 table The table to insert from.
-        local insertAll
-
-
-        -- table.move is more efficient, but not available in all versions
-        if table.move then
-            function insertAll(t1, t2)
-                table.move(t2, 1, #t2, #t1 + 1, t1)
-            end
-        else
-            function insertAll(t1, t2)
-                for i = 1, #t2 do
-                    table.insert(t1, t2[i])
-                end
-            end
-        end
-
-        local insert = table.insert
 
         ---Parses the children of a given node.
         ---@param node table The node whose children are to be parsed.
@@ -155,64 +136,53 @@ return function(plume)
         ---@param forceReturn boolean Whether to force a return statement
         ---@return table A table containing Lua code fragments
         local function transpileChildrenOnlyValuesCase(node, infos, valueCount, forceReturn)
-            local result = {}
             local wrapInTable  = (node.returnType == "TABLE") or valueCount>2
             local concat       = (node.returnType == "TEXT") and valueCount>2
             local directConcat = (node.returnType == "TEXT") and valueCount==2
 
             if forceReturn then
-                insert(result, newline())
-                insert(result, "return ")
+                builder:emitRETURN()
             end
 
             if concat then
-                insert(result, "__plume_concat ")
+                builder:write("__plume_concat ")
             end
 
             if wrapInTable then
-                insert(result, "{")
+                builder:emitOPEN("{")
             end
 
             if directConcat then
-                insert(result, "(")
-                insert(result, newline())
-            end
-
-            if wrapInTable then
-                insert(result, newline())
+                builder:emitOPEN("(")
             end
 
             for i, content in ipairs(infos[1].content) do
                 if (directConcat or concat) and content.kind ~= "TEXT" then
-                    insert(result, "__plume_check(")
+                    builder:write("__plume_check(")
                 end
-                insertAll(result, transpileToLua(content))
+                transpileToLua(content)
                 if (directConcat or concat) and content.kind ~= "TEXT" then
-                    insert(result, ")")
+                    builder:write(")")
                 end
 
                 if i < #infos[1].content then
                     if directConcat then     
-                        insert(result, newline())
-                        insert(result, ".. ")
+                        builder:newline()
+                        builder:write(".. ")
                     else
-                        insert(result, ", ")
-                        insert(result, newline())
+                        builder:write(", ")
+                        builder:newline()
                     end
                 end
             end
 
             if directConcat then
-                insert(result, newline())
-                insert(result, ")")
+                builder:emitCLOSE(")")
             end
 
             if wrapInTable then
-                insert(result, newline())
-                insert(result, "}")
+                builder:emitCLOSE("}")
             end
-
-            return result
         end
 
         local transpileChildren
@@ -226,13 +196,12 @@ return function(plume)
         ---@param forceReturn boolean Whether to force a return statement even if not wrapped in a function.
         ---@return table A table containing the generated Lua code strings.
         local function transpileChildrenMixedCase(node, infos, valueCount, shouldInitAccumulator, wrapInFunction, forceReturn)
-            local result = {}
 
             local concat = (node.returnType == "TEXT")
 
             -- Wrap the output in a function if required
             if wrapInFunction then
-                insert(result, "(function()")
+                builder:emitOPEN("(function()")
             end
 
             local firstValueFound = false
@@ -251,102 +220,79 @@ return function(plume)
                         -- Return statement for last value
                         if index == #infos then
                             alreadyReturn = true
-                            insert(result, newline())
-                            insert(result, "return ")
+                            builder:emitRETURN()
                         -- Initialize accumulator variable if not the last value and not a simple "VALUE" return type
                         elseif node.returnType ~= "VALUE" then
-                            insert(result, newline())
-                            insert(result, "local __plume_temp = ")
+                            builder:emitASSIGNMENT(nil, "__plume_temp", nil, true)
                         end
 
                         -- Wrap in table constructor if return type is "TABLE"
                         if node.returnType == "TABLE" then
-                            insert(result, "{")
-                            insert(result, newline())
+                            builder:emitOPEN("{")
                         end
                         
-                        insertAll(result, transpileToLua(values[1]))
+                        transpileToLua(values[1])
 
                         if node.returnType == "TABLE" then
-                            insert(result, newline())
-                            insert(result, "}")
+                            builder:emitCLOSE("}")
                         end
                     -- Handle multiple values
                     else
                         -- Append values to accumulator table
                         if firstValueFound or (not shouldInitAccumulator) then
                             for _, value in ipairs(values) do
-                                insert(result, newline())
+                                builder:newline()
                                 if info.content.kind == "HASH_ITEM" then
-                                    use(info.content)
-                                    insert(result, "__plume_temp[\"")
-                                    insert(result, info.content.content)
-                                    insert(result, "\"] = ")
-                                    insertAll(result, transpileChildren(info.content, false, true, false))
+                                    builder:emitASSIGNMENT(info.content,
+                                        "__plume_temp[\"" .. info.content.content .. "\"]",
+                                        nil
+                                    )
+                                    transpileChildren(info.content, false, true, false)
                                 else
-                                    insert(result, "__plume_insert (__plume_temp, ")
+                                    builder:emitOPEN("__plume_insert (__plume_temp, ")
                                     if concat and value.kind ~= "TEXT" then
-                                        insert(result, "__plume_check(")
+                                        builder:emitOPEN("__plume_check(")
                                     end
-                                    insertAll(result, transpileToLua(value))
+                                    transpileToLua(value)
                                     if concat and value.kind ~= "TEXT" then
-                                        insert(result, ")")
+                                        builder:emitCLOSE(")")
                                     end
-                                    insert(result, ")")
+                                    builder:emitCLOSE(")")
                                 end
                             end
                         -- Initialize accumulator table with first set of values
                         elseif #values > 0 then
                             firstValueFound = true
-                            insert(result, newline())
-                            insert(result, "local __plume_temp = {")
+                            builder:emitASSIGNMENT(nil, "__plume_temp", nil, true)
+                            builder:emitOPEN("{")
                             for _, value in ipairs(values) do
-                                insert(result, newline())
                                 if concat and value.kind ~= "TEXT" then
-                                    insert(result, "__plume_check(")
+                                    builder:emitOPEN("__plume_check(")
                                 end
-                                insertAll(result, transpileToLua(value))
+                                transpileToLua(value)
                                 if concat and value.kind ~= "TEXT" then
-                                    insert(result, ")")
+                                    builder:emitCLOSE(")")
                                 end
-                                insert(result, ", ")
+                                builder:write(", ")
                             end
-                            insert(result, newline())
-                            insert(result, "}")
+                            builder:emitCLOSE("}")
                         -- Initialize empty accumulator if necessary
                         elseif valueCount ~= 0 and (valueCount == -1 or #values > 0) then
                             firstValueFound = true
                             if node.returnType ~= "VALUE" then
-                                insert(result, newline())
-                                insert(result, "local __plume_temp = {}")
+                                builder:newline()
+                                builder:insert("local __plume_temp = {}")
                             end
                         end
                     end
 
                 -- special case: expand
                 elseif info.content.kind == "COMMAND_EXPAND" then
-                    insertAll(result, {
-                        newline(),
-                        "for k, v in __lua.ipairs(", info.content.content, ") do",
-                            newline(),
-                            "__plume_insert(__plume_temp, v)",
-                            newline(),
-                        "end",
-                        newline(),
-                        "for k, v in __lua.pairs(", info.content.content, ") do",
-                            newline(),
-                            "if not __lua.tonumber(k) then",
-                                newline(),
-                                "__plume_temp[k] = v",
-                                newline(),
-                            "end",
-                            newline(),
-                        "end"
-
-                    })
+                    builder:chunckEXPAND(info.content.content)
+                    
                 -- If it is not a stored value then recursively call transpileToLua 
                 else
-                    insertAll(result, transpileToLua(info.content))
+                    transpileToLua(info.content)
                 end
             end
 
@@ -354,35 +300,32 @@ return function(plume)
             if (wrapInFunction or forceReturn) and not alreadyReturn then
                 -- Handle TEXT return type
                 if node.returnType == "TEXT" and (valueCount ~= 1 or not shouldInitAccumulator) then
-                    insert(result, newline())
+                    builder:newline()
                     if valueCount == 0 then
-                        insert(result, "return \"\"")
+                        builder:insert("return \"\"")
                     else
-                        insert(result, "return __plume_concat (__plume_temp)") -- Concatenate text values
+                        builder:insert("return __plume_concat (__plume_temp)") -- Concatenate text values
                     end
                 -- Handle other return types (except NIL and VALUE)
                 elseif node.returnType == "NIL" then
                     if forceReturn then
-                        insert(result, newline())
-                        insert(result, "return nil")
+                        builder:newline()
+                        builder:insert("return nil")
                     end
                 elseif node.returnType ~= "VALUE" then
-                    insert(result, newline())
+                    builder:newline()
                     if valueCount == 0 then
-                        insert(result, "return {}")
+                        builder:insert("return {}")
                     else
-                        insert(result, "return __plume_temp") -- Return accumulated values
+                        builder:insert("return __plume_temp") -- Return accumulated values
                     end
                 end
             end
 
             -- Close the wrapping function if necessary
             if wrapInFunction then
-                insert(result, newline())
-                insert(result, "end)()")
+                builder:emitCLOSE("end)()")
             end
-
-            return result
         end
 
         ---Transpiles child nodes of an AST element into executable Lua code
@@ -405,9 +348,9 @@ return function(plume)
             local infos, onlyValues, valueCount = parseChildren(node)
 
             if onlyValues and shouldInitAccumulator then
-                return transpileChildrenOnlyValuesCase(node, infos, valueCount, forceReturn)
+                transpileChildrenOnlyValuesCase(node, infos, valueCount, forceReturn)
             else
-                return transpileChildrenMixedCase(node, infos, valueCount, shouldInitAccumulator, wrapInFunction, forceReturn)
+                transpileChildrenMixedCase(node, infos, valueCount, shouldInitAccumulator, wrapInFunction, forceReturn)
             end        
         end
 
@@ -416,87 +359,45 @@ return function(plume)
         ---@param islocal boolean Whether this is a local macro
         ---@param addNewline boolean Whether to add a newline at the beginning
         ---@return table Transpiled Lua code fragments
-        local function handleMacroDefinition (node, islocal, addNewline)
+        local function handleMacroDefinition (node, islocal, inline)
 
             local parameters = node.children[1]
             local body       = node.children[2]
             
             local parametersList = {}
             local namedParameterValues  =  {}
-
+            local vararg = false
             for _, param in ipairs(parameters.children) do
                 if param.kind == "LIST_ITEM" then
                     table.insert(parametersList, param.children[1])
+                    if param.children[1].kind == "VARARG" then
+                        vararg = true
+                    end
                 else
                     table.insert(parametersList, param)
                     namedParameterValues[param.content] =  param
                 end
             end
 
-            local result = {}
-            
-            if addNewline then
-                insert(result, newline())
-            end
-
-            use(node)
-
-            if islocal then
-                insert(result, "local ")
-            end
-
-            if node.content and #node.content > 0 then
-                insert(result, node.content)
-                insert(result, " = ")
-            end
-
-            insert(result, "function (__plume_args)")
+            builder:emitDEFINITION(node, node.content, islocal, inline)
 
             local pos = 0
-
             for i, arg in ipairs(parametersList) do
                 argName = arg.content
                 if arg.kind == "VARARG" then
-
-                    insertAll(result, {newline(), "local ", argName, " = __plume_args"})
-
-                    for i=1, pos do
-                        insertAll(result, {newline(), "__plume_remove(", argName, ", 1)"})
-                    end
+                    builder:chunckINIT_VARARG(argName, pos)
                 elseif namedParameterValues[argName] then
-                    insertAll(result, {
-                        newline(),
-                        "local ", argName, " = __plume_args.", argName,
-                        newline(),
-                        "if ", argName, " == nil then",
-                        newline(),
-                        argName, " = "
-                    })
-
-                    insertAll(result, transpileChildren(namedParameterValues[argName], false, true))
-                    
-                    insertAll(result,{
-                        newline(),
-                        "else",
-                        newline(),
-                        "__plume_args.", argName, " = nil",
-                        newline(),
-                        "end"
-                    })
+                    builder:chunckINIT_NAMED_PARAM(argName, function()
+                        transpileChildren(namedParameterValues[argName], false, true)
+                    end)
                 else
                     pos = pos + 1
-                    insertAll(result, {
-                        newline(),
-                        "local ", argName, " = __plume_args[", pos, "]",
-                    })
+                    builder:chunckINIT_PARAM(argName, pos, vararg)
                 end
             end
 
-            insertAll(result, transpileChildren (body, false, true, true))
-            insert(result, newline())
-            insert(result, "end")
-
-            return result
+            transpileChildren (body, false, true, true)
+            builder:emitEND()
         end
 
         -- AST node type to handler mapping
@@ -504,261 +405,185 @@ return function(plume)
             ---Handles block nodes, which contain multiple statements
             ---@param node table The block node to process
             BLOCK = function (node)
-                use(node)
+                -- use(node)
                 local mainBlock = (node.indent or 0) >= 0
-                local result = transpileChildren (node, mainBlock, true, true)
-
-                return result
+                transpileChildren (node, mainBlock, true, true)
             end,
 
             ---Handles macro calls, processing both inline and extended arguments
             ---@param node table The macro call node to process
             MACRO_CALL = function (node)
-                local inlineArgs   = node.children[1]
-                local extendedArgs = node.children[2] or {children={}}
-                use(node)
-
                 -- Dirty temp fix
                 local t, name = node.content:match('^(.-):([^:]*)$')
-                if  t then
+                if t then
                     name = t .. "." .. name
                 else
                     name = node.content
                 end
 
-                local result = {name, " "}
+                local inlineArgs   = node.children[1]
+                local extendedArgs = node.children[2] or {children={}}
+
                 local argList = {}
 
-                insertAll(argList, inlineArgs.children)
-                insertAll(argList, extendedArgs.children)
+                plume.insertAll(argList, inlineArgs.children)
+                plume.insertAll(argList, extendedArgs.children)
 
+                builder:emitCALL(node, name)
                 if #extendedArgs.children == 0 and #inlineArgs.children == 0 then
-                    if t then
-                        insert(result, "{"..t.."}")
-                    else
-                        insert(result, "{}")
-                    end
+                    builder:emitEMPTY_ARGS(node, t)
                 else
                     if t then
                         insert(children, {kind="LIST_ITEM", children={{kind="TEXT", t}}})
                     end
-                    insert(result, "(")
-                    insertAll(result, transpileChildren({kind="TABLE", children=argList, returnType="TABLE"}, true, true))
-                    insert(result, ")")
+                    builder:write('(')
+                    transpileChildren({kind="TABLE", children=argList, returnType="TABLE"}, true, true)
+                    builder:write(')')
                 end
-
-                insert(result, newline())
-                
-                return result
             end,
 
             ---Handles variable assignment
             ---@param node table The assignment node to process
             ASSIGNMENT = function (node)
-                local result = {newline()}
-                
+                local variable
                 if node.sourceToken.index then
-                    insertAll(result, {node.content, "[", editLuaCode (node.sourceToken.index),"]"})
+                    variable = node.content .. "[" .. editLuaCode (node.sourceToken.index) .. "]"
                 else
-                    insert(result, node.content)
+                    variable = node.content
                 end
 
-                insert(result, " = ")
-                use(node)
+                builder:emitASSIGNMENT(node, variable, node.sourceToken.compound_operator)
 
-                local compound = node.sourceToken.compound_operator
-
-                if compound then
-                    insert(result, node.content)
-                    insert(result, " ")
-                    insert(result, compound)
-                    insert(result, " ")
-                end
-
-                local value = transpileChildren (node, true, true)
-
-                if value then
-                    insertAll(result, value)
-                else
-                    insert(result, "nil")
-                end
-
-                return result
+                transpileChildren (node, true, true)
             end,
 
             ---Handles local variable assignment
             ---@param node table The local assignment node to process
             LOCAL_ASSIGNMENT = function (node)
-                local result = {newline(), "local ", node.content}
-                use(node)
-
-                local value = transpileChildren (node, true, true)
-
-                if value then
-                    insert(result, " = ")
-                    insertAll(result, value)
-
-                    local compound = node.sourceToken.compound_operator
-
-                    if compound then
-                        insert(result, node.content)
-                        insert(result, " ")
-                        insert(result, compound)
-                        insert(result, " ")
-                    end
+                local variable
+                if node.sourceToken.index then
+                    variable = node.content .. "[" .. editLuaCode (node.sourceToken.index) .. "]"
+                else
+                    variable = node.content
                 end
 
-                return result
+                builder:emitASSIGNMENT(node, variable, node.sourceToken.compound_operator, true)
+
+                transpileChildren (node, true, true)
             end,
 
             ---Handles macro definition
             ---@param node table The macro definition node to process
             MACRO_DEFINITION = function (node)
-                return handleMacroDefinition(node, false, true)
+                handleMacroDefinition(node)
             end,
 
             ---Handles inline macro definition
             ---@param node table The inline macro definition node to process
             INLINE_MACRO_DEFINITION = function (node)
-                return handleMacroDefinition(node)
+                handleMacroDefinition(node, false, true)
             end,
 
             ---Handles list items (positional arguments/parameters)
             ---@param node table The list item node to process
             LIST_ITEM = function (node)
                 use(node)
-                return transpileChildren (node, true, true)
+                transpileChildren (node, true, true)
             end,
 
             ---Handles hash items (named arguments/parameters)
             ---@param node table The hash item node to process
             HASH_ITEM = function (node)
-                local result = {node.content, " = "}
+                builder:insertAll({node.content, " = "})
                 use(node)
-                insertAll(result, transpileChildren (node, true, true))
-                return result
+                transpileChildren (node, true, true)
             end,
 
             ---Handles return statements
             ---@param node table The return node to process
             RETURN = function (node)
-                local result = {newline(), "return "}
+                builder:emitRETURN()
                 use(node)
-                insertAll(result, transpileChildren (node, true, true))
-                return result
+                transpileChildren (node, true, true)
             end,
 
             ---Handles for loops
             ---@param node table The for loop node to process
             FOR = function (node)
-                local result = {newline()}
-                use(node)
-                insertAll(result, {"for", editLuaCode(node.content), " do"})
-                insertAll(result, transpileChildren (node, false, false))
-                insert(result, newline())
-                insert(result, "end")
-                return result
+                builder:emitFOR(node, editLuaCode(node.content))
+                transpileChildren (node, false, false)
+                builder:emitEND()
             end,
 
             ---Handles while loops
             ---@param node table The while loop node to process
             WHILE = function (node)
-                local result = {newline()}
-                use(node)
-                insertAll(result, {"while", editLuaCode(node.content), " do"})
-                insertAll(result, transpileChildren (node, false, false))
-                insert(result, newline())
-                insert(result, "end")
-                return result
+                builder:emitWHILE(node, editLuaCode(node.content))
+                transpileChildren (node, false, false)
+                builder:emitEND()
             end,
 
             ---Handles if statements
             ---@param node table The if statement node to process
             IF = function (node)
-                local result = {newline()}
-                use(node)
-                insertAll(result, {"if", editLuaCode(node.content), " then"})
-                insertAll(result, transpileChildren (node, false, false))
+                builder:emitIF(node, editLuaCode(node.content))
+                transpileChildren (node, false, false)
                 if not node.noend then
-                    insert(result, newline())
-                    insert(result, "end")
+                    builder:emitEND()
                 end
-                return result
             end,
 
             ---Handles elseif statements
             ---@param node table The elseif statement node to process
             ELSEIF = function (node)
-                local result = {newline()}
-                use(node)
-                insertAll(result, {"elseif", editLuaCode(node.content), " then"})
-                insertAll(result, transpileChildren (node, false, false))
+                builder:emitELSEIF(node, editLuaCode(node.content))
+                transpileChildren (node, false, false)
                 if not node.noend then
-                    insert(result, newline())
-                    insert(result, "end")
+                    builder:emitEND()
                 end
-                return result
             end,
 
             ---Handles else statements
             ---@param node table The else statement node to process
             ELSE = function (node)
-                local result = {newline()}
-                use(node)
-                insertAll(result, {"else"})
-                insertAll(result, transpileChildren (node, false, false))
-                insert(result, newline())
-                insert(result, "end")
-                return result
+                builder:emitELSE()
+                transpileChildren (node, false, false)
+                builder:emitEND()
             end,
 
             ---Handles break statements
             ---@param node table The break statement node to process
             BREAK = function (node)
-                local result = {newline()}
-                use(node)
-                insert(result, "break")
-                return result
+                builder:emitBREAK()
             end,
 
             ---Handles text literals
             ---@param node table The text node to process
             TEXT = function (node)
-                use(node)
-                return {'"', node.content:gsub('"', '\\"'), '"'}
+                builder:emitTEXT(node, node.content)
             end,
 
             ---Handles variable references
             ---@param node table The variable node to process
             VARIABLE = function (node)
-                use(node)
+                local variable
                 if node.sourceToken.index then
-                    return {node.content, "[", editLuaCode (node.sourceToken.index),"]"}
+                    variable = node.content .. "[" .. editLuaCode (node.sourceToken.index) .. "]"
                 else
-                    return {node.content}
+                    variable = node.content
                 end
+                builder:emitVARIABLE(node, variable)
             end,
 
             COMMAND_EXPAND = function (node)
-                use(node)
-                return {node.content}
+                builder:emitVARIABLE(node, node.content)
             end,
 
             ---Handles raw Lua expressions
             ---@param node table The Lua expression node to process
             LUA_EXPRESSION = function (node)
                 use(node)
-                local content = node.content
-
-                content = editLuaCode (content)
-
-                if #node.content > 0 then
-                    -- Parenthesis force Lua to give the
-                    -- good error message in cas of syntax error
-                    return {"(", content, ")"}
-                else
-                    return {"nil"}
-                end
+                builder:emitLUA(node, editLuaCode (node.content))
             end
         }
     
@@ -767,28 +592,28 @@ return function(plume)
         ---@return table Transpiled code fragments
         function transpileToLua(ast)
             if tokenHandlers[ast.kind] then
-                return tokenHandlers[ast.kind](ast)
+                tokenHandlers[ast.kind](ast)
             else
                 error("NIY " .. (ast.kind or "???"))
             end
         end
 
-        local result = {"local __plume_check = plume.checkConcat"}
-        insert(result, newline())
-        insert(result, "local __plume_concat = __lua.table.concat")
-        insert(result, newline())
-        insert(result, "local __plume_insert = __lua.table.insert")
-        insert(result, newline())
-        insert(result, "local __plume_remove = __lua.table.remove")
+        builder:insert("local __plume_check = plume.checkConcat")
+        builder:newline()
+        builder:insert("local __plume_concat = __lua.table.concat")
+        builder:newline()
+        builder:insert("local __plume_insert = __lua.table.insert")
+        builder:newline()
+        builder:insert("local __plume_remove = __lua.table.remove")
 
-        insert(result, newline())
+        builder:newline()
         if contains("5.1 JIT", luaVersion) then
-            insert(result, "local __plume_unpack = __lua.unpack")
+            builder:insert("local __plume_unpack = __lua.unpack")
         else
-            insert(result, "local __plume_unpack = __lua.table.unpack")
+            builder:insert("local __plume_unpack = __lua.table.unpack")
         end
 
-        insertAll(result, transpileToLua(ast))
-        return table.concat(result), map
+        transpileToLua(ast)
+        return table.concat(builder.code), map
     end
 end
