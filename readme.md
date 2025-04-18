@@ -50,6 +50,7 @@ Transpiled code executes at between 70% and 100% of Lua's performance. So with L
 - Cannot anymore implicitly convert `tables` if they do not have a `__tostring` field.
 - Implement the standard syntax `$a[i]/a[i] = ...` to read/write the `ith` element of the table `a`.
 - Improved operation of luaTranspiler and major rewrite, removal of beautifier.lua.
+- Dynamic affectation: if `a = foo`, then `$a = bar` affect `bar` to the (global) variable `foo`. Work also for hash and with expression (ex: `$("foo" .. i): bar`)
 
 #### Bugfix
 - In certain case, item for concat will not be converted to strings

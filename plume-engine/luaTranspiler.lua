@@ -445,14 +445,17 @@ return function(plume)
             ---Handles variable assignment
             ---@param node table The assignment node to process
             ASSIGNMENT = function (node)
-                local variable
-                if node.sourceToken.index then
-                    variable = node.content .. "[" .. editLuaCode (node.sourceToken.index) .. "]"
-                else
-                    variable = node.content
+                local variable = node.content
+
+                if node.sourceToken.eval then
+                    variable = "_G[" .. variable .. "]"
                 end
 
-                builder:emitASSIGNMENT(node, variable, node.sourceToken.compound_operator)
+                if node.sourceToken.index then
+                    variable = variable .. "[" .. editLuaCode (node.sourceToken.index) .. "]"
+                end
+
+                builder:emitASSIGNMENT(node, variable, node.sourceToken.compound_operator, false)
 
                 transpileChildren (node, true, true)
             end,
@@ -494,8 +497,14 @@ return function(plume)
             ---Handles hash items (named arguments/parameters)
             ---@param node table The hash item node to process
             HASH_ITEM = function (node)
-                builder:insertAll({node.content, " = "})
-                use(node)
+                local name = node.content
+
+                if node.sourceToken and node.sourceToken.eval then
+                    name = "[" .. name .. "]"
+                end
+
+                builder:emitASSIGNMENT(node, name)
+
                 transpileChildren (node, true, true)
             end,
 

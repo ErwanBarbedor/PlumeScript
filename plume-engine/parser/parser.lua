@@ -186,15 +186,9 @@ return function(plume)
             HASH_ITEM = function(match)
                 pushToken {
                     kind = "HASH_ITEM",
-                    content = match.key.content
+                    content = match.key.content,
+                    eval    = #match.evalmode.content>0
                 }
-
-                if #match.evalmode.content>0 then
-                    pushToken {
-                        kind = "BEGIN_LINE_EXPRESSION",
-                        content = ""
-                    }
-                end
             end,
             HASH_ITEM_ENDLINE = function(match)
                 if #match.evalmode.content>0 then
@@ -211,7 +205,7 @@ return function(plume)
             LOCAL_ASSIGNMENT = function(match)
 
                 if #match.evalmode.content>0 then
-                    plume.error(match.variable.source, "Syntax forbiden for now")
+                    plume.error(match.variable.source, "Syntax forbiden") -- todo: better error message
                 end
 
                 -- if #match.evalmode.content>0 and #match.endline.content>0 then
@@ -244,10 +238,6 @@ return function(plume)
                 end
             end,
             ASSIGNMENT = function(match)
-                if #match.evalmode.content>0 then
-                    plume.error(match.variable.source, "Syntax forbiden for now")
-                end
-
                 -- if #match.evalmode.content>0 and #match.endline.content>0 then
                 --     plume.multilineEvalError(match.variable.source, " =")
                 -- end
@@ -266,19 +256,14 @@ return function(plume)
                 local tokenInfos = {
                     kind    = "ASSIGNMENT",
                     content = match.variable.content,
-                    index   = index
+                    index   = index,
+                    eval    = #match.evalmode.content>0
                 }
                 if match.compound_operator.kind ~= "EMPTY" then
                     tokenInfos.compound_operator = match.compound_operator.content
                 end
 
                 pushToken (tokenInfos)
-                if #match.evalmode.content>0 then
-                    pushToken {
-                        kind = "BEGIN_LINE_EXPRESSION",
-                        content = ""
-                    }
-                end
 
                 if #match.endline.content>0 then
                     pushToken {

@@ -238,3 +238,15 @@ $table.concat($a, -)
 /// Result
 Baz-Bar
 /// End
+
+/// Test "Dynamic 1"
+name = foo
+a =
+    $name: bar
+
+$a.foo
+
+$table.concat($a, -)
+/// Result
+bar
+/// End
