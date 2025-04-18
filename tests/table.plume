@@ -245,8 +245,15 @@ a =
     $name: bar
 
 $a.foo
+/// Result
+bar
+/// End
 
-$table.concat($a, -)
+/// Test "Dynamic 2"
+a =
+    $("name" .. 1): bar
+
+$a.name1
 /// Result
 bar
 /// End

@@ -23,6 +23,21 @@ return {
         }
     },
     {
+        name = "HASH_ITEM",
+        pattern = {
+            {kind = "EVAL", name = "evalmode"},
+            {
+                braced = {
+                    open  = {kind = "LPAR"},
+                    close = {kind = "RPAR"}
+                },
+                name = "keyExpression"
+            },
+            {kind = "COLON"},
+            {kind = "SPACE"}
+        }
+    },
+    {
         name = "HASH_ITEM_ENDLINE",
         pattern = {
             {kind = "EVAL", name = "evalmode", optional=true},
@@ -56,6 +71,31 @@ return {
         pattern = {
             {kind = "EVAL", name = "evalmode", optional=true},
             {kind = "TEXT", name = "variable"},
+            {
+                braced = {
+                    open  = {kind = "LBRK"},
+                    close = {kind = "RBRK"}
+                },
+                name = "index",
+                optional = true
+            },
+            {kind = "SPACE", multipleCapture = true},
+            {kind = "OPERATOR", name = "compound_operator", optional=true},
+            {kind = "EQUAL"},
+            {kind = {"NEWLINE", "ENDLINE"}, name = "endline", optional = true}
+        }
+    },
+    {
+        name = "ASSIGNMENT",
+        pattern = {
+            {kind = "EVAL", name = "evalmode"},
+            {
+                braced = {
+                    open  = {kind = "LPAR"},
+                    close = {kind = "RPAR"}
+                },
+                name = "variableExpression"
+            },
             {
                 braced = {
                     open  = {kind = "LBRK"},

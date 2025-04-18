@@ -184,9 +184,19 @@ return function(plume)
                 }
             end,
             HASH_ITEM = function(match)
+                local key = match.key and match.key.content
+
+                if not key then
+                    local t = {}
+                    for _, token in ipairs(match.keyExpression) do
+                        table.insert(t, token.content)
+                    end
+                    key = table.concat(t, "", 2, #t-1)
+                end
+
                 pushToken {
                     kind = "HASH_ITEM",
-                    content = match.key.content,
+                    content = key,
                     eval    = #match.evalmode.content>0
                 }
             end,
@@ -242,7 +252,18 @@ return function(plume)
                 --     plume.multilineEvalError(match.variable.source, " =")
                 -- end
 
-                plume.checkVariableName(match.variable.source, match.variable.content)
+                local variable = match.variable and match.variable.content
+
+                -- If not variable, use variableExpression field
+                if variable then
+                    plume.checkVariableName(match.variable.source, variable)
+                else
+                    local t = {}
+                    for _, token in ipairs(match.variableExpression) do
+                        table.insert(t, token.content)
+                    end
+                    variable = table.concat(t, "", 2, #t-1)
+                end
 
                 local index
                 if match.index then
@@ -255,7 +276,7 @@ return function(plume)
 
                 local tokenInfos = {
                     kind    = "ASSIGNMENT",
-                    content = match.variable.content,
+                    content = variable,
                     index   = index,
                     eval    = #match.evalmode.content>0
                 }

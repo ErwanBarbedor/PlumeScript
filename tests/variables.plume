@@ -70,3 +70,11 @@ $foo
 /// Result
 bar
 /// End
+
+/// Test "Dynamic 2"
+$("name" .. 5) = foo
+
+$name5
+/// Result
+foo
+/// End
