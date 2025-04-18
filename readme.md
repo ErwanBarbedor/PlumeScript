@@ -55,6 +55,7 @@ Transpiled code executes at between 70% and 100% of Lua's performance. So with L
 #### Bugfix
 - Fixed: in certain case, item for concat will not be converted to strings
 - Fixed: line not trimmed if ends with a comment
+- Fixed: cannot use vararg in inline macro
 
 ### 0.24
 

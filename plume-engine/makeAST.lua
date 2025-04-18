@@ -158,6 +158,7 @@ return function (plume)
         ---@brief Checks if macro arguments follow correct naming conventions
         local function checkMacroArgument ()
             local current = context[#context]
+            
             for i, arg in ipairs(current.children) do
 
                 local token = arg.children[1]
@@ -338,7 +339,7 @@ return function (plume)
             -- Expand operator
             elseif contains("EXPAND", token.kind) then
                 if isInside("MACRO_ARG_TABLE") then
-                    if isInside("MACRO_DEFINITION") then
+                    if isInside("MACRO_DEFINITION") or isInside("INLINE_MACRO_DEFINITION") then
                         pushChild(token, "VARARG", token.content)
                     else
                         popMacroArgument()

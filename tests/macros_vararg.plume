@@ -56,3 +56,9 @@ vararg must be in last position.
 File <string>, line n°1 :
     macro foo(*kw, foo)
 /// End
+
+/// Test "Vararg inline"
+foo = macro(*x)
+/// Result
+nil
+/// End
