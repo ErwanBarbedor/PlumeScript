@@ -1,5 +1,5 @@
 --[[
-Plume🪶 0.25
+Plume🪶 0.26
 Copyright (C) 2024-2025 Erwan Barbedor
 
 Check https://github.com/ErwanBarbedor/Plume
@@ -20,7 +20,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 local plume = {}
 
-plume._VERSION = "Plume🪶 0.25"
+plume._VERSION = "Plume🪶 0.26"
 
 -- Load core components using dependency injection pattern
 require "plume-engine/utils"         (plume)
@@ -70,19 +70,22 @@ end
 --- Executes the given Lua code in a sandboxed environment.
 ---@param code string The Lua code to execute.
 ---@param map table The source map.
+---@param env table Optional environnement to use
 ---@return any The result of the Lua code execution.
-function plume.execute(code, map)
+function plume.execute(code, map, env)
     -- Compilation and Execution in a Sandboxed Environment
-    local env = plume.initRuntime()
+    local env = env or plume.initRuntime()
     local compiledFunction, errorMessage
 
-    -- Lua 5.2+ compatible compilation using loadstring and setfenv
+    
+    -- Lua 5.1 compatible compilation using load and a custom environment
     if setfenv then
         compiledFunction, errorMessage = loadstring(code, filename)
         if compiledFunction then
-            setfenv(compiledFunction, setmetatable({}, { __index = env }))
+            setfenv(compiledFunction, env)
         end
-    else  -- Lua 5.1 compatible compilation using load and a custom environment
+    -- Lua 5.2+ compatible compilation using loadstring and setfenv
+    else  
         compiledFunction, errorMessage = load(code, filename, nil, env)
     end
 
@@ -106,10 +109,11 @@ end
 --- Runs Plume code by transpiling and executing it.
 ---@param text string The Plume code to run.
 ---@param filename string Optional filename for error reporting.
+---@param env table Optional environnement to use
 ---@return any The result of the Plume code execution.
-function plume.run(text, filename)
+function plume.run(text, filename, env)
     local code, map = plume.transpile(text, filename)
-    return plume.execute(code, map)
+    return plume.execute(code, map, env)
 end
 
 return plume

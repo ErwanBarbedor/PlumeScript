@@ -47,6 +47,9 @@ Transpiled code executes at between 70% and 100% of Lua's performance. So with L
 ### 0.25
 
 #### Changes
+- Function `require` can load `plume` and `lua` files.
+
+#### Changes
 - Remove `$a = ...` and `$a: ...`  syntax sugar
 - `return` evaluate expression by default.
 - Cannot anymore implicitly convert `tables` if they do not have a `__tostring` field.

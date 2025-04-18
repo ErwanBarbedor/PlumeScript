@@ -1,0 +1,17 @@
+/// Test "Load plume"
+$require(tests/toImport/lib) // relative to launchTests.lua
+/// Result
+plume loaded
+/// End
+
+/// Test "Load lua 1"
+$require(tests/toImport/lib, ext: lua)
+/// Result
+lua loaded
+/// End
+
+/// Test "Load lua 2"
+$require(tests/toImport/lualib)
+/// Result
+lua loaded
+/// End

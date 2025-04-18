@@ -26,6 +26,7 @@ return function(plume)
     plume.plumeStdLib = {table={}, _VERSION = plume._VERSION}
 
     plume.luaStdLib = importAllFunction(_G)
+    plume.envStdLib    = {}
 
     if table.move then
         function plume.plumeStdLib.table.merge(...)
@@ -72,6 +73,15 @@ return function(plume)
             result[k] = v
         end
 
+        for k, v in pairs(plume.envStdLib) do
+            result[k] = function (...) return v(result, ...) end
+        end
+
+        result.plume.package = {
+            loaded = {},
+            path   = {"./<name>.<ext>"}
+        }
+
         result._G = result
 
         return result
@@ -89,6 +99,60 @@ return function(plume)
             end
         else
             return x
+        end
+    end
+
+    function plume.envStdLib.require(env, __plume_args)
+        local libname     = __plume_args[1]
+        local exts        = __plume_args[2] or __plume_args.ext or 'plume lua'
+        local triedPath   = {}
+        local file, filename, fileext
+
+        for ext in exts:gmatch "%S+" do
+            for _, basepath in ipairs(env.plume.package.path) do
+                local path = basepath:gsub('<name>', libname):gsub('<ext>', ext)
+                file = io.open(path)
+
+                if file then
+                    filename, fileext = path, ext
+                    break
+                else
+                    table.insert(triedPath, path)
+                end
+            end
+
+            if file then
+                break
+            end
+        end
+
+        if file then
+            if fileext == "plume" then
+                local code = file:read("*a")
+                file:close()
+                return plume.run(code, filename.."."..fileext, env)
+            elseif fileext == "lua" then
+                file:close()
+                local code, err
+                local path = filename .. "." .. fileext
+                if _VERSION == "Lua 5.1" or jit then
+                    chunk, err = loadfile(filename)
+                    if not chunk then
+                        error("Error when loading '" .. path .. "': " .. tostring(err))
+                    end
+                    setfenv(chunk, env)
+                    return chunk()
+                -- Lua 5.2+
+                else
+                    chunk, err = loadfile(filename, "t", env)
+                    if not chunk then
+                        error("Error when loading '" .. path .. "': " .. tostring(err))
+                    end
+                    return chunk()
+                end
+            else
+                -- error
+            end
         end
     end
 end
