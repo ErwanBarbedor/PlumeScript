@@ -53,7 +53,8 @@ Transpiled code executes at between 70% and 100% of Lua's performance. So with L
 - Dynamic affectation: if `a = foo`, then `$a = bar` affect `bar` to the (global) variable `foo`. Work also for hash and with expression (ex: `$("foo" .. i): bar`)
 
 #### Bugfix
-- In certain case, item for concat will not be converted to strings
+- Fixed: in certain case, item for concat will not be converted to strings
+- Fixed: line not trimmed if ends with a comment
 
 ### 0.24
 

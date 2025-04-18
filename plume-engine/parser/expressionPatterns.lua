@@ -98,6 +98,7 @@ return {
     {
         name = "COMMENT",
         pattern = {
+            {kind = "SPACE", multipleCapture = true, optional=true},
             {kind = "COMMENT"},
             {neg={kind = {"NEWLINE"}}, multipleCapture = true, optional=true},
             {kind = {"NEWLINE"}, name = "tokens", multipleCapture = true, optional=true}
