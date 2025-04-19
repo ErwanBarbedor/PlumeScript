@@ -104,7 +104,7 @@ return function(plume)
 
     function plume.envStdLib.require(env, __plume_args)
         local libname     = __plume_args[1]
-        local exts        = __plume_args[2] or __plume_args.ext or 'plume lua'
+        local exts        = __plume_args.ext or 'plume lua'
         local triedPath   = {}
         local file, filename, fileext
 
@@ -133,7 +133,7 @@ return function(plume)
                 return plume.run(code, filename, env)
             elseif fileext == "lua" then
                 file:close()
-                local code, err
+                local chunk, err
                 
                 if _VERSION == "Lua 5.1" or jit then
                     chunk, err = loadfile(filename)
@@ -151,11 +151,10 @@ return function(plume)
                     return chunk()
                 end
             else
-                -- error
                 error("File '" .. filename .. "' found, but plume doesn't know how to handle '" .. fileext .. "' files.")
             end
         else
-            msg = {"Module '" .. libname .. "' not found:"}
+            local msg = {"Module '" .. libname .. "' not found:"}
             for _, path in ipairs(triedPath) do
                 table.insert(msg, "    no file '" .. path .. "'")
             end
