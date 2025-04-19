@@ -108,6 +108,14 @@ File ./tests/toImport/badlib2.plume, line n°2:
     a = $(a+1)
 /// End
 
+/// Test "Error in lualib (imported)"
+$require(tests/toImport/badlib2, ext: lua)
+a = $foo()
+/// Error
+./tests/toImport/badlib2.lua:2: attempt to call global 'bar' (a nil value)
+/// End
+
+
 /// Test "Wrong ext"
 $require(tests/toImport/lib, ext: foo)
 a = $foo()
