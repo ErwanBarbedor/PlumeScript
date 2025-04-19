@@ -125,10 +125,53 @@ return function (plume)
         error(table.concat(customMessage), -1)
     end
 
+    --- Error handler to enhance error messages with variable scope context.
+    -- @param err The error message or error object to process.
+    -- @param env The environment table to introspect for globals.
+    -- @return Enhanced error message or object, with suggestions and improved traceback.
+    function plume.errorHandler(err, env)
+        -- Visible variables, collected from globals and local stack frames
+        local visiblesVariables = {}
+        -- Capture all global variables from env
+        for k, v in pairs(env) do
+            if not tonumber(k) then
+                visiblesVariables[k] = true
+            end
+        end
 
-    function plume.errorHandler (err, env)
-        return plume.convertLuaTraceback (err, debug.traceback(), env)
+        -- Also capture all local variables in the call stack
+        local j = 2
+        local sourceName = debug.getinfo(j).source
+        while true do
+            local info = debug.getinfo(j)
+            -- Stop traversing if there are no more stack frames,
+            -- or if we have reached a function from a different source file
+            if not info or info.source ~= sourceName then
+                break
+            end
+
+            local i = 0
+            while true do
+                i = i + 1
+                -- Name of the local variable at stack level j, position i
+                local name = debug.getlocal(j, i)
+                if not name then break end
+                if not name:match('%(') then
+                    if not visiblesVariables[name] then
+                        visiblesVariables[name] = true
+                    end
+                end
+            end
+            j = j + 1
+        end
+
+        -- Suggest variable name in case of "a nil value" error
+        err = plume.makeSuggestion(err, visiblesVariables)
+
+        -- Return enhanced error string, with improved traceback
+        return plume.convertLuaTraceback(err, debug.traceback(), env)
     end
+
 
     -- AST errors
 

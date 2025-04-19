@@ -12,6 +12,8 @@
 
 Test it now [in your browser](https://app.barbedor.bzh/plume.html)!
 
+**Warning:** currently only compatible with `5.1/jit`. Compatibility with `5.2+` planned.
+
 ## Quick Start
 Download `plume-engine` folder. Then, in a Lua file:
 
@@ -43,6 +45,10 @@ Transpiled code executes at between 70% and 100% of Lua's performance. So with L
 
 ## Changelog
 ### 0.27
+
+#### Changes
+- Temporarily remove compatibility with lua 5.2+ to focus on development.
+- When a `nil value` error is raised, Plume will suggest valid variable names.
 
 ### 0.26
 
