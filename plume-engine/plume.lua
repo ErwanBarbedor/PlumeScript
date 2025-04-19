@@ -130,15 +130,15 @@ return function(plume)
             if fileext == "plume" then
                 local code = file:read("*a")
                 file:close()
-                return plume.run(code, filename.."."..fileext, env)
+                return plume.run(code, filename, env)
             elseif fileext == "lua" then
                 file:close()
                 local code, err
-                local path = filename .. "." .. fileext
+                
                 if _VERSION == "Lua 5.1" or jit then
                     chunk, err = loadfile(filename)
                     if not chunk then
-                        error("Error when loading '" .. path .. "': " .. tostring(err))
+                        error("Error when loading '" .. filename .. "': " .. tostring(err))
                     end
                     setfenv(chunk, env)
                     return chunk()
@@ -146,13 +146,20 @@ return function(plume)
                 else
                     chunk, err = loadfile(filename, "t", env)
                     if not chunk then
-                        error("Error when loading '" .. path .. "': " .. tostring(err))
+                        error("Error when loading '" .. filename .. "': " .. tostring(err))
                     end
                     return chunk()
                 end
             else
                 -- error
+                error("File '" .. filename .. "' found, but plume doesn't know how to handle '" .. fileext .. "' files.")
             end
+        else
+            msg = {"Module '" .. libname .. "' not found:"}
+            for _, path in ipairs(triedPath) do
+                table.insert(msg, "    no file '" .. path .. "'")
+            end
+            error(table.concat(msg, "\n"))
         end
     end
 end
