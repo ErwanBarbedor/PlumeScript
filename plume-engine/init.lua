@@ -86,7 +86,7 @@ function plume.execute(code, env, filename)
     if not compiledFunction then
         -- Catch error and try to find the plume line
         -- corresponding to the lua line of the error
-        error(plume.convertLuaError(errorMessage, env.plume.package.map[filename], true, true), 0) 
+        error(plume.convertLuaError(nil, nil, errorMessage, env.plume.package.map[filename], true, true), 0) 
     end
 
     -- Execution and Error Handling

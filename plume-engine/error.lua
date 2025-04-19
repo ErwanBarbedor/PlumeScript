@@ -18,7 +18,7 @@ return function (plume)
     --- @param source table Source metadata containing sourceFile, absolutePosition, and filename
     --- @param includeLine boolean Whether to include the line contents in the output
     --- @return string Formatted error context string with filename, line number, and line content
-    local function getLine(source, includeLine)
+    local function getSourceLine(source, includeLine)
         local pos = 0
         local lineCount = 0
         local capturedLine
@@ -40,46 +40,60 @@ return function (plume)
         return string.format("File %s, line n°%i:%s", source.filename:sub(2, -1), lineCount, capturedLine)
     end
 
+    local function getLineInfos(line)
+        return line:match('%s*(.-):(.-):%s*(.*)')
+    end
+
     --- Handles and formats errors, mapping them to source context if possible
     --- @param err string The original error message from Lua
     --- @param env table Runtime
     --- @param fullTraceback boolean Whether or not to show full stack trace including internal
     --- @return string The final formatted error message
     function plume.errorHandler (err, env, fullTraceback)
-        local result    = {}
-        local firstLine = false
-        for line in debug.traceback(err, 2):gmatch('[^\n\r]+') do
-            local filename, noline, message = line:match('%s*(.-):(.-):%s*(.*)')
-            local map
-            if filename then
-                map = env.plume.package.map["@"..filename]
-            end
+        local mainFilename, mainNoline, mainMessage = getLineInfos(err)
 
-            if not firstLine then
-                firstLine = true
-                -- Convert if debug info is available, else just store the line
-                if map then
-                    table.insert(result, plume.convertLuaError(line, map, true, true))
-                else
-                    table.insert(result, line)
+        if not mainFilename then
+            mainMessage = err
+        end
+
+        local rawTraceback = debug.traceback("", 2)
+        rawTraceback = rawTraceback:gsub('^%s*stack traceback:\n%s*', ''):gsub('\n%s+', '\n')
+        -- print(rawTraceback)
+        local traceback = {}
+        
+        for line in rawTraceback:gmatch('[^\n\r]+') do
+
+            filename, noline, message = getLineInfos(line)
+
+            if message == "in main chunk" then
+                if not mainFilename then
+                    mainFilename, mainNoline = filename, noline
                 end
-            elseif line:match('^%s*%[C%]:') and not fullTraceback then
-                break -- Hide C/debug internals unless explicitly wanted
-            elseif filename and map then
-                -- Provide mapped error for non-initial lines
-                table.insert(result, "    " .. plume.convertLuaError(line, map) .. message)
-            elseif not line:match "^%s*$" then
-                table.insert(result, line)
+            elseif filename and (filename ~= mainFilename or noline ~= mainNoline) then
+                table.insert(traceback, {filename=filename, noline=noline, message=message, raw=line})
+            elseif (message or line):match('^%[C%]') then
+                break
+            end
+        end
+
+        local result = {}
+
+        local mainMap = env.plume.package.map['@'..mainFilename]
+        table.insert(result, plume.convertLuaError(mainFilename, mainNoline, mainMessage, mainMap, true, true))
+
+        if #traceback > 0 then
+            table.insert(result, "Traceback:")
+        end
+
+        for _, lineInfos in ipairs(traceback) do
+            local map = env.plume.package.map['@'..lineInfos.filename]
+            if map then
+                table.insert(result, "   " .. plume.convertLuaError(lineInfos.filename, lineInfos.noline, lineInfos.message, mainMap))
+            else
+                table.insert(result, "   " .. lineInfos.raw)
             end
         end
         
-        -- Remove ending "stack traceback" for short backtraces
-        if (#result == 2 or #result == 3) and not fullTraceback then
-            for i=1, #result-1 do
-                table.remove(result)
-            end
-        end
-
         return table.concat(result, "\n")
     end
 
@@ -87,7 +101,7 @@ return function (plume)
     --- @param source table Source metadata
     --- @param msg string Error message to display
     function plume.error (source, msg)
-        local line = getLine(source, true)
+        local line = getSourceLine(source, true)
         error (msg .. "\n" .. line, -1)  -- Level -1 hides this function from stack trace
     end
 
@@ -122,10 +136,13 @@ return function (plume)
     --- @param includeLine boolean Optional; if true, include line text (default: false)
     --- @param includeMessage boolean Optional; if true, prepend error message (default: false)
     --- @return string Formatted error message with contextual info
-    function plume.convertLuaError(msg, map, includeLine, includeMessage)
+    function plume.convertLuaError(filename, noline, message, map, includeLine, includeMessage)
         local result = {}
 
-        local filename, noline, message = msg:match('%s*(.-):(.-):%s*(.*)')
+        if not filename or not noline then
+            filename, noline, message = getLineInfos(message)
+        end
+
         local tokens = map[tonumber(noline)]
 
         if includeMessage then
@@ -141,7 +158,7 @@ return function (plume)
         if tokens then
             for _, token in ipairs(tokens) do
                 if token.sourceToken and token.sourceToken.source then
-                    table.insert(result, getLine(token.sourceToken.source, includeLine))
+                    table.insert(result, getSourceLine(token.sourceToken.source, includeLine))
                     lineFound = true
                     break
                 end

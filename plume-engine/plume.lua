@@ -167,7 +167,7 @@ return function(plume)
             for _, path in ipairs(triedPath) do
                 table.insert(msg, "    no file '" .. path .. "'")
             end
-            error(table.concat(msg, "\n"))
+            error(table.concat(msg, "\n"), 0)
         end
     end
 
