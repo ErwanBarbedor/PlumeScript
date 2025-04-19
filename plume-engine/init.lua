@@ -36,11 +36,9 @@ require "plume-engine/plumeDebug"    (plume)
 
 --- Transpiles Plume code to Lua code.
 ---@param text string The Plume code to transpile.
----@param filename string Optional filename for error reporting. Defaults to "@<string>".
+---@param filename string filename for error reporting.
 ---@return string, table The transpiled Lua code and the source map.
 function plume.transpile(text, filename)
-    local filename = filename or "@<string>"
-
     local sucess, tokens, ast, code, map
     -- Lexical Analysis
     -- plume.tokenize should never raise an exception
@@ -62,22 +60,17 @@ function plume.transpile(text, filename)
         error("Unexpected error during transpilation:\n" .. code)
     end
 
-    -- code = plume.beautifier(code)
-
-    return code, map
+    return code, map, filename
 end
 
 --- Executes the given Lua code in a sandboxed environment.
 ---@param code string The Lua code to execute.
----@param map table The source map.
----@param env table Optional environnement to use
+---@param env table environnement to use
+---@param filename string
 ---@return any The result of the Lua code execution.
-function plume.execute(code, map, env)
+function plume.execute(code, env, filename)
     -- Compilation and Execution in a Sandboxed Environment
-    local env = env or plume.initRuntime()
     local compiledFunction, errorMessage
-
-    
     -- Lua 5.1 compatible compilation using load and a custom environment
     if setfenv then
         compiledFunction, errorMessage = loadstring(code, filename)
@@ -93,16 +86,15 @@ function plume.execute(code, map, env)
     if not compiledFunction then
         -- Catch error and try to find the plume line
         -- corresponding to the lua line of the error
-        error(plume.convertLuaError(errorMessage, map), 0) 
+        error(plume.convertLuaError(errorMessage, env.plume.package.map[filename], true, true), 0) 
     end
 
     -- Execution and Error Handling
-    local success, result = pcall(compiledFunction)
-
+    local success, result = xpcall(compiledFunction, function (err) return plume.errorHandler (err, env, false) end)
     if success then
         return result
     else
-        error(plume.convertLuaError(result, map), 0)
+        error(result, 0)
     end
 end
 
@@ -112,8 +104,16 @@ end
 ---@param env table Optional environnement to use
 ---@return any The result of the Plume code execution.
 function plume.run(text, filename, env)
-    local code, map = plume.transpile(text, filename)
-    return plume.execute(code, map, env)
+    local env = env or plume.initRuntime()
+
+    if not filename then
+        env.plume.package.anonymous = env.plume.package.anonymous + 1
+        filename = "@<string_" .. env.plume.package.anonymous .. ">"
+    end
+
+    local code, map, filename = plume.transpile(text, filename)
+    env.plume.package.map[filename] = map
+    return plume.execute(code, env, filename)
 end
 
 return plume

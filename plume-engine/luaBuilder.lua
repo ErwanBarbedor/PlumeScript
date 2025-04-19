@@ -79,12 +79,7 @@ return function (plume)
             self:write("local ")
         end
 
-        if name and #name>0 then
-            self:write(name)
-            self:write(" = ")
-        end
-
-        self:write("function (__plume_args)")
+        self:write("function " .. (name or "") .. "(__plume_args)")
         self.deep = self.deep + 1
     end
 

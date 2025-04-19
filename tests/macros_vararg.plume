@@ -53,7 +53,7 @@ Bar
 macro foo(*kw, foo)
 /// Error
 vararg must be in last position.
-File <string>, line n°1 :
+File <string_1>, line n°1:
     macro foo(*kw, foo)
 /// End
 

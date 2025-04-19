@@ -26,7 +26,7 @@ return function(plume)
     plume.plumeStdLib = {table={}, _VERSION = plume._VERSION}
 
     plume.luaStdLib = importAllFunction(_G)
-    plume.envStdLib    = {}
+    plume.envStdLib = {}
 
     if table.move then
         function plume.plumeStdLib.table.merge(...)
@@ -63,28 +63,30 @@ return function(plume)
     end
     
     function plume.initRuntime ()
-        local result = {plume = {}, __lua = _G}
+        local env = {plume = {}, __lua = _G}
 
         for k, v in pairs(plume.plumeStdLib) do
-            result.plume[k] = v
+            env.plume[k] = v
         end
 
         for k, v in pairs(plume.luaStdLib) do
-            result[k] = v
+            env[k] = v
         end
 
         for k, v in pairs(plume.envStdLib) do
-            result[k] = function (...) return v(result, ...) end
+            env[k] = function (...) return v(env, ...) end
         end
 
-        result.plume.package = {
-            loaded = {},
-            path   = {"./<name>.<ext>"}
+        env.plume.package = {
+            loaded    = {},
+            path      = {"./<name>.<ext>"},
+            map       = {},
+            anonymous = 0
         }
 
-        result._G = result
+        env._G = env
 
-        return result
+        return env
     end
 
     function plume.plumeStdLib.checkConcat(x)
@@ -102,17 +104,22 @@ return function(plume)
         end
     end
 
+    --- Loads a library/module into the given environment, searching for 'plume' or 'lua' files.
+    -- @param env Table The environment to use for loading the module.
+    -- @param __plume_args Table Table of arguments. __plume_args[1] is the module name. __plume_args.ext (optional) is a space-separated list of extensions to search for (default 'plume lua').
+    -- @return Any The result of loading/executing the module file.
+    -- @error Raises an error if the module cannot be found or loaded.
     function plume.envStdLib.require(env, __plume_args)
         local libname     = __plume_args[1]
         local exts        = __plume_args.ext or 'plume lua'
         local triedPath   = {}
         local file, filename, fileext
 
+        -- Attempt to find and open the module file with the specified extensions and paths
         for ext in exts:gmatch "%S+" do
             for _, basepath in ipairs(env.plume.package.path) do
                 local path = basepath:gsub('<name>', libname):gsub('<ext>', ext)
                 file = io.open(path)
-
                 if file then
                     filename, fileext = path, ext
                     break
@@ -120,7 +127,6 @@ return function(plume)
                     table.insert(triedPath, path)
                 end
             end
-
             if file then
                 break
             end
@@ -128,10 +134,12 @@ return function(plume)
 
         if file then
             if fileext == "plume" then
+                -- Handle Plume files: read and execute within custom environment
                 local code = file:read("*a")
                 file:close()
                 return plume.run(code, filename, env)
             elseif fileext == "lua" then
+                -- Handle Lua files: load using Lua's standard loading mechanisms
                 file:close()
                 local chunk, err
                 
@@ -140,10 +148,10 @@ return function(plume)
                     if not chunk then
                         error("Error when loading '" .. filename .. "': " .. tostring(err))
                     end
-                    setfenv(chunk, env)
+                    setfenv(chunk, env) -- Lua 5.1 only
                     return chunk()
-                -- Lua 5.2+
                 else
+                    -- Lua 5.2+
                     chunk, err = loadfile(filename, "t", env)
                     if not chunk then
                         error("Error when loading '" .. filename .. "': " .. tostring(err))
@@ -154,6 +162,7 @@ return function(plume)
                 error("File '" .. filename .. "' found, but plume doesn't know how to handle '" .. fileext .. "' files.")
             end
         else
+            -- Construct detailed error message with all paths attempted
             local msg = {"Module '" .. libname .. "' not found:"}
             for _, path in ipairs(triedPath) do
                 table.insert(msg, "    no file '" .. path .. "'")
@@ -161,4 +170,5 @@ return function(plume)
             error(table.concat(msg, "\n"))
         end
     end
+
 end

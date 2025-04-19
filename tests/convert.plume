@@ -41,10 +41,9 @@ macro foo()
 a = $foo()
 $(type(a))
 /// Error
-Error : Cannot convert table to string implicitly.
-File <string>, line n°5 :
+Error: Cannot convert table to string implicitly.
+File <string_1>, line n°5:
     $t a
-(Error handling is still under development, so locating the lua error in the Plume code may be imprecise.)
 /// End
 
 
@@ -58,10 +57,9 @@ macro foo()
 a = $foo()
 $(type(a))
 /// Error
-Error : Cannot convert table to string implicitly.
-File <string>, line n°6 :
+Error: Cannot convert table to string implicitly.
+File <string_1>, line n°6:
     $t a
-(Error handling is still under development, so locating the lua error in the Plume code may be imprecise.)
 /// End
 
 /// Test "concat 6"
@@ -74,8 +72,7 @@ macro foo()
 a = $foo()
 $(type(a))
 /// Error
-Error : Cannot convert table to string implicitly.
-File <string>, line n°6 :
+Error: Cannot convert table to string implicitly.
+File <string_1>, line n°6:
     a $t
-(Error handling is still under development, so locating the lua error in the Plume code may be imprecise.)
 /// End

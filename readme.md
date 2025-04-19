@@ -44,10 +44,12 @@ Transpiled code executes at between 70% and 100% of Lua's performance. So with L
 ## Changelog
 ### 0.26
 
-### 0.25
-
 #### Changes
 - Function `require` can load `plume` and `lua` files.
+- Implement an error traceback.
+- `macro foo()` will be transpiled to `function foo()`, not `foo = function ()`
+
+### 0.25
 
 #### Changes
 - Remove `$a = ...` and `$a: ...`  syntax sugar
