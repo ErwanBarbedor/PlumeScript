@@ -1,0 +1,2 @@
+$require(tests/toImport/badlib)
+foo

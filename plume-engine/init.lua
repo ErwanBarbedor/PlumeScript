@@ -34,42 +34,23 @@ require "plume-engine/error"         (plume)
 require "plume-engine/luaBuilder"    (plume)
 require "plume-engine/plumeDebug"    (plume)
 
---- Transpiles Plume code to Lua code.
----@param text string The Plume code to transpile.
----@param filename string filename for error reporting.
----@return string, table The transpiled Lua code and the source map.
-function plume.transpile(text, filename)
-    local sucess, tokens, ast, code, map
+function plume.execute(code, filename, env)
     -- Lexical Analysis
-    -- plume.tokenize should never raise an exception
-    sucess, tokens = pcall(plume.tokenize, text, filename)
-    if not sucess then
-        error("Unexpected error during tokenization:\n" .. tokens)
-    end
+    local tokens = plume.tokenize(code, filename)
 
-    -- Syntax Analysis
-    tokens = plume.parse (tokens)
+    -- Parsing
+    tokens = plume.parse(tokens)
 
-    -- Abstract Syntax Tree Construction
-    ast = plume.makeAST(tokens)
+    -- makeAST
+    tokens = plume.makeAST(tokens)
 
-    -- Code Generation and Source Map Creation
-    -- (plume.transpileToLua should never raise an exception
-    sucess, code, map = pcall(plume.transpileToLua, ast)
-    if not sucess then
-        error("Unexpected error during transpilation:\n" .. code)
-    end
+    -- transpile
+    local code, map = plume.transpileToLua(tokens)
 
-    return code, map, filename
-end
+    -- save map for debugging
+    env.plume.package.map[filename] = map
 
---- Executes the given Lua code in a sandboxed environment.
----@param code string The Lua code to execute.
----@param env table environnement to use
----@param filename string
----@return any The result of the Lua code execution.
-function plume.execute(code, env, filename)
-    -- Compilation and Execution in a Sandboxed Environment
+    -- loadings and sandboxing
     local compiledFunction, errorMessage
     -- Lua 5.1 compatible compilation using load and a custom environment
     if setfenv then
@@ -82,41 +63,40 @@ function plume.execute(code, env, filename)
         compiledFunction, errorMessage = load(code, filename, nil, env)
     end
 
-    -- Error Handling during Compilation
     if not compiledFunction then
-        -- Catch error and try to find the plume line
-        -- corresponding to the lua line of the error
-        error(plume.convertLuaError(nil, nil, errorMessage, env.plume.package.map[filename], true, true), 0) 
+        error(errorMessage, -1)
     end
 
-    -- Execution and Error Handling
-    local success, result = xpcall(compiledFunction, function (err) return plume.errorHandler (err, env, false) end)
-    if success then
-        return result
-    else
-        error(result, 0)
-    end
+    return compiledFunction()
 end
 
---- Runs Plume code by transpiling and executing it.
----@param text string The Plume code to run.
----@param filename string Optional filename for error reporting.
----@param env table Optional environnement to use
----@return any The result of the Plume code execution.
-function plume.run(text, filename, env)
-    local env = env or plume.initRuntime()
+-- Sandbox and run plume code
+function plume.run(code, filename)
+    local env = plume.initRuntime()
 
     if not filename then
         env.plume.package.anonymous = env.plume.package.anonymous + 1
         filename = "@<string_" .. env.plume.package.anonymous .. ">"
     end
 
-    local code, map, filename = plume.transpile(text, filename)
-    env.plume.package.map[filename] = map
-
     table.insert(env.plume.package.fileTrace, filename)
-    local result = plume.execute(code, env, filename)
-    -- table.remove(env.plume.package.fileTrace)
+
+    --  Capture error to show it in the plume context
+    local success, result = xpcall(
+        function()
+            return plume.execute(code, filename, env)
+        end,
+        function (err)
+            return plume.errorHandler(err, env)
+        end
+    )
+
+    if not success then
+        error(result, -1)
+    end
+    
+    table.remove(env.plume.package.fileTrace)
+
     return result
 end
 

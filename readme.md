@@ -45,8 +45,9 @@ Transpiled code executes at between 70% and 100% of Lua's performance. So with L
 ### 0.26
 
 #### Changes
-- Function `require` can load `plume` and `lua` files.
+- Function `require` can load `plume` and `lua` files. Custom behavior, dont relly on lua `package`.
 - Implement an error traceback.
+- Error behavior rewritten to take multiple files into account.
 - `macro foo()` will be transpiled to `function foo()`, not `foo = function ()`
 
 ### 0.25

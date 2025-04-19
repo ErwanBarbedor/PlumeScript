@@ -36,6 +36,8 @@ return function (plume)
 
         if includeLine then
             capturedLine = "\n    " .. capturedLine
+        else
+            capturedLine = ""
         end
         -- Compose the context string (skip leading '@' on filename)
         return string.format("File %s, line n°%i:%s", source.filename:sub(2, -1), lineCount, capturedLine)
@@ -48,19 +50,14 @@ return function (plume)
         return line:match('%s*(.-):(.-):%s*(.*)')
     end
 
-    --- Handles and formats errors, mapping and annotating source context when possible.
-    --- @param err string The original error message from Lua
-    --- @param env table Runtime context/environment
-    --- @param fullTraceback boolean Whether or not to show full stack trace, including internal frames
-    --- @return string The final formatted error message
-    function plume.errorHandler (err, env, fullTraceback)
+
+    function plume.convertLuaTraceback (err, rawTraceback, env)
         local mainFilename, mainNoline, mainMessage = getLineInfos(err)
 
         if not mainMessage then
             mainMessage = err
         end
 
-        local rawTraceback = debug.traceback("", 2)
         -- Clean header and whitespace from traceback, leaving one line per frame
         rawTraceback = rawTraceback:gsub('^%s*stack traceback:\n%s*', ''):gsub('\n%s+', '\n')
         local traceback = {}
@@ -73,15 +70,11 @@ return function (plume)
                 if not mainFilename then
                     mainFilename, mainNoline = filename, noline
                 end
-            elseif (not stopRecording) and filename and (filename ~= mainFilename or noline ~= mainNoline) then
-                table.insert(traceback, {filename=filename, noline=noline, message=message, raw=line})
-            elseif (message or line):match('^%[C%]') then
-                -- Indicates entry into compiled/C functions: stop trace here to avoid clutter
-                stopRecording = true
-            end
-
-            if stopRecording and mainFilename then
-                break
+            elseif filename and (filename ~= mainFilename or noline ~= mainNoline) then
+                local map = env.plume.package.map['@'..filename]
+                if map then
+                    table.insert(traceback, {filename=filename, noline=noline, message=message, raw=line, map=map})
+                end
             end
         end
 
@@ -91,6 +84,7 @@ return function (plume)
         local mainMap
         if mainFilename then
             mainMap = env.plume.package.map['@'..mainFilename]
+
             if mainMap then
                 table.insert(result, plume.convertLuaError(mainFilename, mainNoline, mainMessage, mainMap, true, true))
             else
@@ -105,15 +99,15 @@ return function (plume)
         end
 
         for _, lineInfos in ipairs(traceback) do
-            local map = env.plume.package.map['@'..lineInfos.filename]
-            if map then
-                table.insert(result, "   " .. plume.convertLuaError(lineInfos.filename, lineInfos.noline, lineInfos.message, mainMap))
-            else
-                table.insert(result, "   " .. lineInfos.raw)
-            end
+            table.insert(result, "    " .. plume.convertLuaError(
+                lineInfos.filename,
+                lineInfos.noline,
+                lineInfos.message,
+                lineInfos.map
+            ) .. " " .. lineInfos.message)
         end
 
-        -- Special fallback: no info, but files were loading; note which file
+        -- -- Special fallback: no info, but files were loading; note which file
         local fileTrace = env.plume.package.fileTrace
         if #traceback == 0 and not mainFilename and #fileTrace > 0 then
             table.insert(result, "Occuring when loading '" .. fileTrace[#fileTrace] .. "'.")
@@ -122,13 +116,18 @@ return function (plume)
         return table.concat(result, "\n")
     end
 
-    --- Throws a contextual error from a source location (immediately stops execution).
-    --- @param source table Source metadata
-    --- @param msg string Error message to display
-    function plume.error (source, msg)
-        local line = getSourceLine(source, true)
-        -- Use error at level -1 so this function is omitted from the stack trace
-        error (msg .. "\n" .. line, -1)
+    function plume.sourcedError(source, err)
+        local customMessage = {
+            err,
+            "\n",
+            getSourceLine(source, true)
+        }
+        error(table.concat(customMessage), -1)
+    end
+
+
+    function plume.errorHandler (err, env)
+        return plume.convertLuaTraceback (err, debug.traceback(), env)
     end
 
     -- AST errors
@@ -138,7 +137,7 @@ return function (plume)
     --- @param expectedType string The expected type
     --- @param givenType string The supplied type
     function plume.mixedBlockError (source, expectedType, givenType)
-        plume.error(source, string.format(
+        plume.sourcedError(source, string.format(
             "mixedBlockError: Given the previous expressions in this block, it was expected to be of type %s, but a %s expression has been supplied",
             expectedType, givenType
         ))
@@ -148,7 +147,7 @@ return function (plume)
     --- @param source table Source metadata
     --- @param name string The identifier name
     function plume.invalidLuaNameError(source, name)
-        plume.error(source, string.format(
+        plume.sourcedError(source, string.format(
             "Syntax error: '%s' isn't a valid name.",
             name
         ))
@@ -207,9 +206,9 @@ return function (plume)
     --- @param kind string The kind of block or context
     function plume.unclosedContextError(source, kind)
         if kind == "MACRO_ARG_TABLE" then
-            plume.error(source, 'Syntax error: ")" expected to close argument list.')
+            plume.sourcedError(source, 'Syntax error: ")" expected to close argument list.')
         else
-            plume.error(source, string.format(
+            plume.sourcedError(source, string.format(
                 "Syntax error : block '%s' never closed.",
                 kind
             ))
@@ -223,7 +222,7 @@ return function (plume)
     --- @param expected string The expected value/type
     --- @param given string The token encountered
     function plume.unexpectedTokenError (source, expected, given)
-        plume.error(source, string.format(
+        plume.sourcedError(source, string.format(
             "Syntax error: expected %s, not \"%s\".",
             expected, given
         ))
@@ -232,19 +231,19 @@ return function (plume)
     --- Throws error if vararg is in the wrong position.
     --- @param source table Source metadata
     function plume.unexpectedVarargError(source)
-        plume.error(source, "vararg must be in last position.")
+        plume.sourcedError(source, "vararg must be in last position.")
     end
 
     --- Throws error if a return statement is not last in a block.
     --- @param source table Source metadata
     function plume.followedReturnError(source)
-        plume.error(source, "Syntax error: expected block end. Return must be the last statement of a block.")
+        plume.sourcedError(source, "Syntax error: expected block end. Return must be the last statement of a block.")
     end
 
     --- Throws error if multiline eval syntax is followed by a newline.
     --- @param source table Source metadata
     --- @param sep string The separator/identifier in $var...
     function plume.multilineEvalError(source, sep)
-        plume.error(source, "Syntax error: '$var" .. sep .. "' syntax cannot be followed by a line break.")
+        plume.sourcedError(source, "Syntax error: '$var" .. sep .. "' syntax cannot be followed by a line break.")
     end
 end

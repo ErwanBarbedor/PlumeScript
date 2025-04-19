@@ -78,3 +78,41 @@ Module 'azag' not found:
     no file './azag.lua'
 Occuring when loading '@<string_1>'.
 /// End
+
+/// Test "Error in lib"
+$require(tests/toImport/badlib)
+foo
+/// Error
+Error: attempt to perform arithmetic on global 'a' (a nil value)
+File ./tests/toImport/badlib.plume, line n°1:
+    $(a+1)
+/// End
+
+/// Test "Error in lib (chained)"
+$require(tests/toImport/lib2)
+foo
+/// Error
+Error: attempt to perform arithmetic on global 'a' (a nil value)
+File ./tests/toImport/badlib.plume, line n°1:
+    $(a+1)
+Traceback:
+    File ./tests/toImport/lib2.plume, line n°1: in function 'require'
+/// End
+
+/// Test "Error in lib (imported)"
+$require(tests/toImport/badlib2)
+a = $foo()
+/// Error
+Error: attempt to perform arithmetic on global 'a' (a nil value)
+File ./tests/toImport/badlib2.plume, line n°2:
+    a = $(a+1)
+/// End
+
+/// Test "Wrong ext"
+$require(tests/toImport/lib, ext: foo)
+a = $foo()
+/// Error
+Error: File './tests/toImport/lib.foo' found, but plume doesn't know how to handle 'foo' files.
+File <string_1>, line n°1:
+    $require(tests/toImport/lib, ext: foo)
+/// End

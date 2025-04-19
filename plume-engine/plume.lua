@@ -63,7 +63,7 @@ return function(plume)
     end
     
     function plume.initRuntime ()
-        local env = {plume = {}, __lua = _G}
+        local env = {plume = {engine={state=""}}, __lua = _G}
 
         for k, v in pairs(plume.plumeStdLib) do
             env.plume[k] = v
@@ -135,13 +135,9 @@ return function(plume)
 
         if file then
             if fileext == "plume" then
-                -- Handle Plume files: read and execute within custom environment
-                local code = file:read("*a")
+                code = file:read("*a")
                 file:close()
-                table.insert(env.plume.package.fileTrace, filename)
-                local result = plume.run(code, filename, env)
-                table.remove(env.plume.package.fileTrace)
-                return result
+                return plume.execute(code, '@'..filename, env)
             elseif fileext == "lua" then
                 -- Handle Lua files: load using Lua's standard loading mechanisms
                 file:close()
@@ -165,7 +161,7 @@ return function(plume)
                 table.remove(env.plume.package.fileTrace)
                 return result
             else
-                error("File '" .. filename .. "' found, but plume doesn't know how to handle '" .. fileext .. "' files.", 2)
+                error("File '" .. filename .. "' found, but plume doesn't know how to handle '" .. fileext .. "' files.", -1)
             end
         else
             -- Construct detailed error message with all paths attempted
@@ -173,7 +169,7 @@ return function(plume)
             for _, path in ipairs(triedPath) do
                 table.insert(msg, "    no file '" .. path .. "'")
             end
-            error(table.concat(msg, "\n"), 2)
+            error(table.concat(msg, "\n"), -1)
         end
     end
 

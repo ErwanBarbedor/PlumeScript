@@ -55,6 +55,7 @@ macro foo(*kw, foo)
 vararg must be in last position.
 File <string_1>, line n°1:
     macro foo(*kw, foo)
+Occuring when loading '@<string_1>'.
 /// End
 
 /// Test "Vararg inline"
