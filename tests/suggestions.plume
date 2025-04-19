@@ -17,3 +17,13 @@ Error: attempt to perform arithmetic on global 'azert' (a nil value). Perhaps yo
 File <string_1>, line n°3:
     $(azert+1)
 /// End
+
+/// Test "call (local)"
+local macro azerty ()
+
+$azert()
+/// Error
+Error: attempt to call global 'azert' (a nil value). Perhaps you mean 'assert' or 'azerty'?
+File <string_1>, line n°3:
+    $azert()
+/// End
