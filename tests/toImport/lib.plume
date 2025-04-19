@@ -1,1 +1,4 @@
+globalVar = plume loaded (global)
+local localVar = plume loaded (local)
+
 plume loaded
