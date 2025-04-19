@@ -113,7 +113,11 @@ function plume.run(text, filename, env)
 
     local code, map, filename = plume.transpile(text, filename)
     env.plume.package.map[filename] = map
-    return plume.execute(code, env, filename)
+
+    table.insert(env.plume.package.fileTrace, filename)
+    local result = plume.execute(code, env, filename)
+    -- table.remove(env.plume.package.fileTrace)
+    return result
 end
 
 return plume

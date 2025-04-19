@@ -81,7 +81,8 @@ return function(plume)
             loaded    = {},
             path      = {"./<name>.<ext>"},
             map       = {},
-            anonymous = 0
+            anonymous = 0,
+            fileTrace = {}
         }
 
         env._G = env
@@ -137,7 +138,10 @@ return function(plume)
                 -- Handle Plume files: read and execute within custom environment
                 local code = file:read("*a")
                 file:close()
-                return plume.run(code, filename, env)
+                table.insert(env.plume.package.fileTrace, filename)
+                local result = plume.run(code, filename, env)
+                table.remove(env.plume.package.fileTrace)
+                return result
             elseif fileext == "lua" then
                 -- Handle Lua files: load using Lua's standard loading mechanisms
                 file:close()
@@ -149,17 +153,19 @@ return function(plume)
                         error("Error when loading '" .. filename .. "': " .. tostring(err))
                     end
                     setfenv(chunk, env) -- Lua 5.1 only
-                    return chunk()
-                else
-                    -- Lua 5.2+
+                else -- Lua 5.2+
                     chunk, err = loadfile(filename, "t", env)
                     if not chunk then
                         error("Error when loading '" .. filename .. "': " .. tostring(err))
                     end
-                    return chunk()
                 end
+
+                table.insert(env.plume.package.fileTrace, filename)
+                local result = chunk()
+                table.remove(env.plume.package.fileTrace)
+                return result
             else
-                error("File '" .. filename .. "' found, but plume doesn't know how to handle '" .. fileext .. "' files.")
+                error("File '" .. filename .. "' found, but plume doesn't know how to handle '" .. fileext .. "' files.", 2)
             end
         else
             -- Construct detailed error message with all paths attempted
@@ -167,7 +173,7 @@ return function(plume)
             for _, path in ipairs(triedPath) do
                 table.insert(msg, "    no file '" .. path .. "'")
             end
-            error(table.concat(msg, "\n"), 0)
+            error(table.concat(msg, "\n"), 2)
         end
     end
 
