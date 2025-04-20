@@ -22,17 +22,32 @@ return function(plume)
 
     -- Dirty temp function waiting for a full script parsing
     local function editLuaCode(code)
-        code = code:gsub('([a-zA-Z_][a-zA-Z_0-9%.]*):([a-zA-Z_][a-zA-Z_0-9]*)%s*(%b())', function(f, m, p)
-            if #p>2 then
-                p = ", " .. p:sub(2, -2)
-            else
-                p = ""
-            end
-            return f .. "." .. m .. "(" .. f .. p .. ")"
-        end)
+        -- code = code:gsub('([a-zA-Z_][a-zA-Z_0-9%.]*):([a-zA-Z_][a-zA-Z_0-9]*)%s*(%b())', function(f, m, p)
+        --     if #p>2 then
+        --         p = ", " .. p:sub(2, -2)
+        --     else
+        --         p = ""
+        --     end
+        --     return f .. "." .. m .. "(" .. f .. p .. ")"
+        -- end)
 
-        code = code:gsub('([a-zA-Z_][a-zA-Z_0-9]*)%s*(%b())', function(f, p)
-            return f .. " {" .. p:sub(2, -2) .. "}"
+        -- code = code:gsub('([a-zA-Z_][a-zA-Z_0-9]*)%s*(%b())', function(f, p)
+        --     return f .. " {" .. p:sub(2, -2) .. "}"
+        -- end)
+
+        code = code:gsub('([a-zA-Z_][a-zA-Z_0-9%.%:]*)%s*(%b())', function(name, params)
+            params = params:sub(2, -2)
+            -- hard replace ":". Will lead to an error when we get a real lua parser
+            name = name:gsub(':', '.')
+            local tableName, methodName = name:match("^(.-)%.([^%.]+)$")
+
+            if tableName then
+                return name .. "{self=" ..tableName .. ", " .. params .. "}"
+            else
+                return name .. "{" .. params .. "}"
+            end
+
+
         end)
 
         return code
@@ -171,7 +186,7 @@ return function(plume)
                         builder:write(".. ")
                     else
                         builder:write(", ")
-                        builder:newline()
+                        builder.forceBreak = true
                     end
                 end
             end
@@ -357,7 +372,7 @@ return function(plume)
         ---Handles macro definition transpilation
         ---@param node table The macro definition node
         ---@param islocal boolean Whether this is a local macro
-        ---@param addNewline boolean Whether to add a newline at the beginning
+        ---@param inline boolean
         ---@return table Transpiled Lua code fragments
         local function handleMacroDefinition (node, islocal, inline)
 
@@ -396,6 +411,8 @@ return function(plume)
                 end
             end
 
+            builder:chunckINIT_SELF_PARAM("self")
+
             transpileChildren (body, false, true, true)
             builder:emitEND()
         end
@@ -413,13 +430,10 @@ return function(plume)
             ---Handles macro calls, processing both inline and extended arguments
             ---@param node table The macro call node to process
             MACRO_CALL = function (node)
-                -- Dirty temp fix
-                local t, name = node.content:match('^(.-):([^:]*)$')
-                if t then
-                    name = t .. "." .. name
-                else
-                    name = node.content
-                end
+                local name = node.content
+
+                -- check "method call"
+                local tableName, methodName = name:match("^(.-)%.([^%.]+)$")
 
                 local inlineArgs   = node.children[1]
                 local extendedArgs = node.children[2] or {children={}}
@@ -431,10 +445,15 @@ return function(plume)
 
                 builder:emitCALL(node, name)
                 if #extendedArgs.children == 0 and #inlineArgs.children == 0 then
-                    builder:emitEMPTY_ARGS(node, t)
+                    builder:emitEMPTY_ARGS(node, tableName)
                 else
-                    if t then
-                        insert(children, {kind="LIST_ITEM", children={{kind="TEXT", t}}})
+                    if tableName then
+                        table.insert(argList, {
+                            kind="HASH_ITEM", content="self",
+                            children={
+                                {kind="VARIABLE", content=tableName, sourceToken={}
+                            }}
+                        })
                     end
                     builder:write('(')
                     transpileChildren({kind="TABLE", children=argList, returnType="TABLE"}, true, true)

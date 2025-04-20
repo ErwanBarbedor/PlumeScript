@@ -1,15 +1,19 @@
 local function importFunction (f)
-    return function(...) return f((unpack or table.unpack)(...)) end
+    return function(__plume_args)
+        return f((unpack or table.unpack)(__plume_args))
+    end
 end
 
 local function importAllFunction (t, tcache, tcacheNames)
     local result = {}
     tcache = tcache or {}
     tcacheNames = tcacheNames or {}
-
     for k, v in pairs(t) do
         if type(v) == "function" then
             result[k] = importFunction(v)
+            if tname == "string" then
+                print(tname, k, result[k])
+            end
         elseif type(v) == "table" then
             if not tcacheNames[v] then
                 tcacheNames[v] = true

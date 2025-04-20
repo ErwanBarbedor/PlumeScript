@@ -81,9 +81,9 @@ bar
 
 /// Test "Macro in table 2"
 lib =
-    init: macro (self, x)
+    init: macro (x)
         self.x = $x
-void = $(lib:init(3))
+void = $(lib.init(3))
 $(lib.x)
 /// Result
 3

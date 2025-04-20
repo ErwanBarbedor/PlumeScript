@@ -38,8 +38,6 @@ return function (plume)
         insert(self.map, {})
         self:write("\n")
         self:write(("  "):rep(self.deep))
-
-        
     end
 
     -- Add code to the output
@@ -88,10 +86,10 @@ return function (plume)
         self:write(name)
     end
 
-    function Builder:emitEMPTY_ARGS(node, name)
+    function Builder:emitEMPTY_ARGS(node, tableName)
         self:write('{')
-        if name then
-            self:write(name)
+        if tableName then
+            self:write("self = " .. tableName)
         end
         self:write('}')
     end
@@ -212,6 +210,13 @@ return function (plume)
         self:emitASSIGNMENT(nil, "__plume_args." .. argName)
         self:write("nil")
         self:emitEND()
+    end
+
+    function Builder:chunckINIT_SELF_PARAM(argName, callback)
+        self:emitASSIGNMENT(nil, "self", nil, true)
+        self:write("__plume_args.self")
+        self:emitASSIGNMENT(nil, "__plume_args.self")
+        self:write("nil")
     end
 
     function Builder:chunckINIT_PARAM(argName, pos, vararg)
