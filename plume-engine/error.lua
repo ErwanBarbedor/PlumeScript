@@ -135,7 +135,7 @@ return function (plume)
         -- Capture all global variables from env
         for k, v in pairs(env) do
             if not tonumber(k) then
-                visiblesVariables[k] = true
+                visiblesVariables[k] = type(v)
             end
         end
 
@@ -154,11 +154,11 @@ return function (plume)
             while true do
                 i = i + 1
                 -- Name of the local variable at stack level j, position i
-                local name = debug.getlocal(j, i)
+                local name, value = debug.getlocal(j, i)
                 if not name then break end
                 if not name:match('%(') then
                     if not visiblesVariables[name] then
-                        visiblesVariables[name] = true
+                        visiblesVariables[name] = type(value)
                     end
                 end
             end

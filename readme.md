@@ -49,6 +49,7 @@ According some quick benchmark simulating standard use-cases, transpiled code ex
 #### Changes
 - Temporarily remove compatibility with lua 5.2+ to focus on development.
 - When a `nil value` error is raised, Plume will suggest valid variable names.
+- Plume will only suggest variables of a type consistent with the error.
 
 ### 0.26
 

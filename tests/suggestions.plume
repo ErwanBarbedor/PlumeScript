@@ -1,20 +1,34 @@
 /// Test "call"
 macro azerty ()
+azerti = 1
 
 $azert()
 /// Error
 Error: attempt to call global 'azert' (a nil value). Perhaps you mean 'assert' or 'azerty'?
-File <string_1>, line n°3:
+File <string_1>, line n°4:
     $azert()
 /// End
 
 /// Test "add"
-azerty = 1
+azerty = $1
+azerti = 1
 
 $(azert+1)
 /// Error
-Error: attempt to perform arithmetic on global 'azert' (a nil value). Perhaps you mean 'assert' or 'azerty'?
-File <string_1>, line n°3:
+Error: attempt to perform arithmetic on global 'azert' (a nil value). Perhaps you mean 'azerty'?
+File <string_1>, line n°4:
+    $(azert+1)
+/// End
+
+/// Test "add table"
+azerty = $1
+azerti = 1
+azert = $({})
+
+$(azert+1)
+/// Error
+Error: attempt to perform arithmetic on global 'azert' (a table value). Perhaps you mean 'azerty'?
+File <string_1>, line n°5:
     $(azert+1)
 /// End
 
@@ -26,4 +40,26 @@ $azert()
 Error: attempt to call global 'azert' (a nil value). Perhaps you mean 'assert' or 'azerty'?
 File <string_1>, line n°3:
     $azert()
+/// End
+
+/// Test "concat"
+azerty = foo
+macro azerti()
+
+$(azert.."bar")
+/// Error
+Error: attempt to concatenate global 'azert' (a nil value). Perhaps you mean 'azerty'?
+File <string_1>, line n°4:
+    $(azert.."bar")
+/// End
+
+/// Test "length"
+azerty = $({})
+azerti = $1
+
+$(#azert)
+/// Error
+Error: attempt to get length of global 'azert' (a nil value). Perhaps you mean 'azerty'?
+File <string_1>, line n°4:
+    $(#azert)
 /// End

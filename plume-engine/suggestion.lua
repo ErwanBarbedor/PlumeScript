@@ -50,12 +50,14 @@ return function(plume)
         return sortedTable
     end
 
-    local function searchWord(target, words)
+    local function searchWord(target, words, types)
         local suggestions = {}
 
-        for word in pairs(words) do
-            if word_distance (word, target) <= math.max(1, #target/2) then
-                suggestions["'"..word.."'"] = true
+        for word, wordType in pairs(words) do
+            if types:match(wordType) then
+                if word_distance (word, target) <= math.max(1, #target/2) then
+                    suggestions["'"..word.."'"] = true
+                end
             end
         end
 
@@ -63,10 +65,30 @@ return function(plume)
     end
 
     function plume.makeSuggestion(message, t)
-        local variable = message:match("'(.-)'")
+        local error, variable = message:match("attempt to (.-) global '(.-)' %(a .- value%)")
+        if not variable then
+            error, variable = message:match("attempt to (.-) local '(.-)' %(a .- value%)")
+        end
+
         local suggestions = {}
-        if variable and message:match("a nil value") then
-            suggestions = searchWord(variable, t)
+        if variable then
+            local types = "table string number function"
+
+            if error:match("perform arithmetic on") then
+                types = "number"
+            elseif error:match("call") then
+                types = "function"
+            elseif error:match("index a") then
+                types = "table"
+            elseif error:match("concatenate") then
+                types = "string"
+            elseif error:match("get length of") then
+                types = "string table"
+            end
+
+            if message:match("%(a %w+ value%)") then
+                suggestions = searchWord(variable, t, types)
+            end
         end
 
         if #suggestions > 0 then
