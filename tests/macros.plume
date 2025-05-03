@@ -158,6 +158,13 @@ $double($double(Foo))
 Foo Foo Foo Foo
 /// End
 
+/// Test "Nested Call 2"
+macro double(x)
+    $foo($a.x)
+/// Result
+nil
+/// End
+
 /// Test "Extended Parameters & Affectation"
 macro double(x)
     $x $x

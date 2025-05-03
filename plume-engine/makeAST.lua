@@ -198,8 +198,8 @@ return function (plume)
         --- Checks if current context is inside a specific node type
         ---@param kind string Node type to look for
         ---@return boolean True if inside the specified node type
-        local function isInside(kind)
-            for i=#context, 1, -1 do
+        local function isInside(kind, deep)
+            for i=#context, #context - (deep or #context)+1, -1 do
                 if context[i].kind == kind then
                     return true
                 end
@@ -308,7 +308,7 @@ return function (plume)
                 if parenthesisDeep > 0 then
                     parenthesisDeep = parenthesisDeep - 1
                     pushChild(token, "TEXT", ")")
-                elseif isInside("MACRO_DEFINITION") or isInside("INLINE_MACRO_DEFINITION") then
+                elseif isInside("MACRO_DEFINITION", 3) or isInside("INLINE_MACRO_DEFINITION", 3) then
                     popMacroArgument()
                     checkMacroArgument()
                     popContext(-1, 1) -- pop MACRO_ARG_TABLE
