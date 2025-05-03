@@ -47,8 +47,9 @@ According some quick benchmark simulating standard use-cases, transpiled code ex
 ### 0.28
 
 #### Bugfix
-- Fixed an error occuring when declaring empty variable.
+- Fixed an error occurring when declaring empty variable.
 - Fixed an error occurring when calling a macro declaration, causing the parameters of the sub-macro to be taken into account as arguments to the parent macro.
+- Fixed an error that caused the default value of some parameters to be concatenated with `""`.
 - `local foo` is not anymore a text block, but a variable declaration.
 
 #### Enhancement

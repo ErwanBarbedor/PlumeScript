@@ -235,6 +235,9 @@ return function (plume)
                         current.kind = "HASH_ITEM"
                         current.content = key
                         current.children[1].content = text:gsub(lft1 .. key .. lft2, "", 1)
+                        if #current.children[1].content == 0 then
+                            table.remove(current.children, 1)
+                        end
                     end
                 end
             end
