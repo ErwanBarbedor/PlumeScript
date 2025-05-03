@@ -107,6 +107,13 @@ $name
 
 /// End
 
+/// Test "Empty variable 5"
+local name
+$name
+/// Result
+
+/// End
+
 /// Test "Table 1"
 name =
     - Foo

@@ -67,6 +67,15 @@ return {
         }
     },
     {
+        name = "LOCAL_ASSIGNMENT",
+        pattern = {
+            {kind = "TEXT", content = "local"},
+            {kind = "SPACE", multipleCapture = true},
+            {kind = "EVAL", name = "evalmode", optional=true},
+            {kind = "TEXT", name = "variable", neg={content="macro"}}
+        }
+    },
+    {
         name = "ASSIGNMENT",
         pattern = {
             {kind = "EVAL", name = "evalmode", optional=true},

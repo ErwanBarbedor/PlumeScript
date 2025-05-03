@@ -227,7 +227,7 @@ return function(plume)
                     kind = "LOCAL_ASSIGNMENT",
                     content = match.variable.content,
                 }
-                if match.compound_operator.kind ~= "EMPTY" then
+                if match.compound_operator and match.compound_operator.kind ~= "EMPTY" then
                     tokenInfos.compound_operator = match.compound_operator.content
                 end
 
@@ -239,7 +239,7 @@ return function(plume)
                     }
                 end
 
-                if #match.endline.content>0 then
+                if match.endline and #match.endline.content>0 then
                     pushToken {
                         kind = "ENDLINE",
                         content = "",

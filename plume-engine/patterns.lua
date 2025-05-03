@@ -47,14 +47,10 @@ return function (plume)
     ---@param patternInfos table Combined pattern specifications
     ---@return boolean
     function plume.checkPattern(token, patternInfos)
-        -- Handle negation through recursive call
-        if patternInfos.neg then
-            return not plume.checkPattern(token, patternInfos.neg)
-        else
-            -- Must satisfy both field constraints
-            return plume.checkFieldPattern(token, patternInfos, "kind")
-               and plume.checkFieldPattern(token, patternInfos, "content")
-        end
+        -- Must satisfy both field constraints
+        return plume.checkFieldPattern(token, patternInfos, "kind")
+           and plume.checkFieldPattern(token, patternInfos, "content")
+           and not (patternInfos.neg and plume.checkPattern(token, patternInfos.neg))
     end
 
     --- Matches token sequence against complex pattern structure
