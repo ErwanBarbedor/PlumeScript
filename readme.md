@@ -46,6 +46,9 @@ According some quick benchmark simulating standard use-cases, transpiled code ex
 ## Changelog
 ### 0.28
 
+#### Changes
+- Transpile to `return` instead of `return nil` in most cases.
+
 #### Bugfix
 - Fixed an error occurring when declaring empty variable.
 - Fixed an error occurring when calling a macro declaration, causing the parameters of the sub-macro to be taken into account as arguments to the parent macro.

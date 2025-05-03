@@ -211,7 +211,6 @@ return function(plume)
         ---@param forceReturn boolean Whether to force a return statement even if not wrapped in a function.
         ---@return table A table containing the generated Lua code strings.
         local function transpileChildrenMixedCase(node, infos, valueCount, shouldInitAccumulator, wrapInFunction, forceReturn)
-
             local concat = (node.returnType == "TEXT")
 
             -- Wrap the output in a function if required
@@ -325,7 +324,7 @@ return function(plume)
                 elseif node.returnType == "NIL" then
                     if forceReturn then
                         builder:newline()
-                        builder:insert("return nil")
+                        builder:insert("return")
                     end
                 elseif node.returnType ~= "VALUE" then
                     builder:newline()
@@ -539,8 +538,12 @@ return function(plume)
             ---@param node table The return node to process
             RETURN = function (node)
                 builder:emitRETURN()
-                use(node)
-                transpileChildren (node, true, true)
+
+                -- Return always as one child
+                if #node.children[1].content > 0 then
+                    use(node)
+                    transpileChildren (node, true, true)
+                end
             end,
 
             ---Handles for loops
