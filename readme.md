@@ -51,6 +51,9 @@ According some quick benchmark simulating standard use-cases, transpiled code ex
 - Fixed an error occurring when calling a macro declaration, causing the parameters of the sub-macro to be taken into account as arguments to the parent macro.
 - `local foo` is not anymore a text block, but a variable declaration.
 
+#### Enhancement
+- New error message is case of missing parameter name in macro declaration.
+
 ### 0.27
 
 #### Changes

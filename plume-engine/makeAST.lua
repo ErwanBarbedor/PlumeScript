@@ -163,6 +163,9 @@ return function (plume)
 
                 local token = arg.children[1]
                 local content
+                if not token then
+                    plume.unexpectedTokenError(current.sourceToken.source, "parameter name after \",\"", ")")
+                end
                 if arg.kind == "LIST_ITEM" then
                     content = token.content
                 elseif arg.kind == "HASH_ITEM" then

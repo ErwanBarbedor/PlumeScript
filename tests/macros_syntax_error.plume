@@ -29,3 +29,19 @@ Syntax error: expected parameter name, not "!".
 File <string_1>, line n°1:
     macro foo(x, !x)
 /// End
+
+/// Test "Expecting a name 4"
+macro foo(x,)
+/// Error
+Syntax error: expected parameter name after ",", not ")".
+File <string_1>, line n°1:
+    macro foo(x,)
+/// End
+
+/// Test "Expecting a name 5"
+macro foo(x, )
+/// Error
+Syntax error: expected parameter name after ",", not ")".
+File <string_1>, line n°1:
+    macro foo(x, )
+/// End
