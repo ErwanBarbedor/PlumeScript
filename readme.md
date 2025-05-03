@@ -46,6 +46,8 @@ According some quick benchmark simulating standard use-cases, transpiled code ex
 ## Changelog
 ### 0.28
 
+#### Bugfix
+- Fix error occuring when declaring empty variable
 
 ### 0.27
 

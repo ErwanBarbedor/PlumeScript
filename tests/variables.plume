@@ -78,3 +78,58 @@ $name5
 /// Result
 foo
 /// End
+
+/// Test "Empty variable 1"
+name =     
+$name
+/// Result
+
+/// End
+
+/// Test "Empty variable 2"
+name =
+$name
+/// Result
+
+/// End
+
+/// Test "Empty variable 3"
+name = //Foo
+$name
+/// Result
+
+/// End
+
+/// Test "Empty variable 4"
+local name = //Foo
+$name
+/// Result
+
+/// End
+
+/// Test "Table 1"
+name =
+    - Foo
+    - Bar
+$name[1]
+/// Result
+Foo
+/// End
+
+/// Test "Table 2"
+name =//Foo
+    - Foo
+    - Bar
+$name[1]
+/// Result
+Foo
+/// End
+
+/// Test "Table 3"
+name =      
+    - Foo
+    - Bar
+$name[1]
+/// Result
+Foo
+/// End

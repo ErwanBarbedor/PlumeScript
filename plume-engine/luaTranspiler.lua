@@ -476,7 +476,11 @@ return function(plume)
 
                 builder:emitASSIGNMENT(node, variable, node.sourceToken.compound_operator, false)
 
-                transpileChildren (node, true, true)
+                if #node.children > 0 then   
+                    transpileChildren (node, true, true)
+                else
+                    builder:write('""')
+                end
             end,
 
             ---Handles local variable assignment
@@ -491,7 +495,11 @@ return function(plume)
 
                 builder:emitASSIGNMENT(node, variable, node.sourceToken.compound_operator, true)
 
-                transpileChildren (node, true, true)
+                if #node.children > 0 then   
+                    transpileChildren (node, true, true)
+                else
+                    builder:write('""')
+                end
             end,
 
             ---Handles macro definition
