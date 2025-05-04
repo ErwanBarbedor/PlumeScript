@@ -73,8 +73,11 @@ return function (plume)
             elseif filename then
                 local map = env.plume.package.map['@'..filename]
                 if map then
-                    message = message:gsub('^in function', 'in macro')
-                    table.insert(traceback, {filename=filename, noline=noline, message=message, raw=line, map=map})
+                    local convertedMessage =  plume.convertLuaError(filename, noline, message, map, false, false, true)
+                    if convertedMessage then
+                        convertedMessage = convertedMessage .. " " .. message:gsub('^in function', 'in macro')
+                        table.insert(traceback, convertedMessage)
+                    end
                 end
             end
         end
@@ -99,16 +102,11 @@ return function (plume)
             table.insert(result, "Traceback:")
         end
 
-        for _, lineInfos in ipairs(traceback) do
-            table.insert(result, "    " .. plume.convertLuaError(
-                lineInfos.filename,
-                lineInfos.noline,
-                lineInfos.message,
-                lineInfos.map
-            ) .. " " .. lineInfos.message)
+        for _, err in ipairs(traceback) do
+            table.insert(result, "    " .. err)
         end
 
-        -- -- Special fallback: no info, but files were loading; note which file
+        -- Special fallback: no info, but files were loading; note which file
         local fileTrace = env.plume.package.fileTrace
         if #traceback == 0 and not mainFilename and #fileTrace > 0 then
             table.insert(result, "Occuring when loading '" .. fileTrace[#fileTrace] .. "'.")
@@ -206,8 +204,9 @@ return function (plume)
     --- @param map table The map from line numbers to token sources
     --- @param includeLine boolean? If true, include the line text (default: false)
     --- @param includeMessage boolean? If true, prepend error message (default: false)
+    --- @param ignoreNotFound boolean? Should return nil instead of "Unable to locate..."
     --- @return string Formatted error message with context
-    function plume.convertLuaError(filename, noline, message, map, includeLine, includeMessage)
+    function plume.convertLuaError(filename, noline, message, map, includeLine, includeMessage, ignoreNotFound)
         local result = {}
 
         -- Allow fallback parsing if not split yet
@@ -239,6 +238,9 @@ return function (plume)
         end
 
         if not lineFound then
+            if ignoreNotFound then
+                return nil
+            end
             table.insert(result, "\nUnable to locate the error in a Plume file.")
         end
         

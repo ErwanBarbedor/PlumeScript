@@ -208,7 +208,7 @@ bar
 
 /// Test "Macro params are local"
 macro id(x, y)
-$id(foo)
+$id(foo, bar)
 $x
 /// Result
 
@@ -254,4 +254,49 @@ t =
 $t.foo(body: baz)
 /// Result
 baz
+/// End
+
+/// Test "Method wrong argument number 1"
+macro foo()
+$foo(x)
+/// Error
+Error: Wrong number of arguments, 1 instead of 0.
+File <string_1>, line n°2:
+    $foo(x)
+/// End
+
+/// Test "Method wrong argument number 2"
+macro foo(x)
+$foo()
+/// Error
+Error: Wrong number of arguments, 0 instead of 1.
+File <string_1>, line n°2:
+    $foo()
+/// End
+
+/// Test "Method wrong argument number 3"
+macro foo(x, y: foo)
+$foo()
+/// Error
+Error: Wrong number of arguments, 0 instead of 1.
+File <string_1>, line n°2:
+    $foo()
+/// End
+
+/// Test "Method wrong argument number 4"
+macro foo(x, y: foo)
+$foo(x, y)
+/// Error
+Error: Wrong number of arguments, 2 instead of 1.
+File <string_1>, line n°2:
+    $foo(x, y)
+/// End
+
+/// Test "Method wrong argument number 5"
+macro foo(x, *args)
+$foo()
+/// Error
+Error: Wrong number of arguments, 0 instead of 1.
+File <string_1>, line n°2:
+    $foo()
 /// End

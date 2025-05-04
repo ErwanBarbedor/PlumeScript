@@ -378,14 +378,17 @@ return function(plume)
             local parameters = node.children[1]
             local body       = node.children[2]
             
-            local parametersList = {}
-            local namedParameterValues  =  {}
+            local parametersList       = {}
+            local namedParameterValues =  {}
+            positionalParameterCount   = 0
             local vararg = false
             for _, param in ipairs(parameters.children) do
                 if param.kind == "LIST_ITEM" then
                     table.insert(parametersList, param.children[1])
                     if param.children[1].kind == "VARARG" then
                         vararg = true
+                    else
+                        positionalParameterCount = positionalParameterCount + 1
                     end
                 else
                     table.insert(parametersList, param)
@@ -393,7 +396,7 @@ return function(plume)
                 end
             end
 
-            builder:emitDEFINITION(node, node.content, islocal, inline)
+            builder:emitDEFINITION(node, node.content, islocal, inline, positionalParameterCount, vararg)
 
             local pos = 0
             for i, arg in ipairs(parametersList) do

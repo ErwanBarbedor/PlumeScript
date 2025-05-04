@@ -66,7 +66,7 @@ return function (plume)
         end
     end
 
-    function Builder:emitDEFINITION(node, name, islocal, inline)
+    function Builder:emitDEFINITION(node, name, islocal, inline, nargs, vararg)
         if not inline then
             self:newline()
         end
@@ -79,6 +79,15 @@ return function (plume)
 
         self:write("function " .. (name or "") .. "(__plume_args)")
         self.deep = self.deep + 1
+
+        if vararg then
+            self:emitIF(node, " #__plume_args < " .. nargs)
+        else
+            self:emitIF(node, " #__plume_args ~= " .. nargs)
+        end
+        self:newline()
+        self:write(" __lua.error('Wrong number of arguments, ' .. #__plume_args .. ' instead of " .. nargs .. ".', 2)")
+        self:emitEND()
     end
 
     function Builder:emitCALL(node, name)
