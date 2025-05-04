@@ -70,7 +70,7 @@ return function (plume)
                 if not mainFilename then
                     mainFilename, mainNoline = filename, noline
                 end
-            elseif filename and (filename ~= mainFilename or noline ~= mainNoline) then
+            elseif filename then
                 local map = env.plume.package.map['@'..filename]
                 if map then
                     table.insert(traceback, {filename=filename, noline=noline, message=message, raw=line, map=map})

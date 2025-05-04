@@ -75,6 +75,8 @@ foo
 Error: attempt to perform arithmetic on global 'a' (a nil value)
 File ./tests/toImport/badlib.plume, line n°1:
     $(a+1)
+Traceback:
+    File ./tests/toImport/badlib.plume, line n°1: in function 'require'
 /// End
 
 /// Test "Error in lib (chained)"
@@ -85,6 +87,7 @@ Error: attempt to perform arithmetic on global 'a' (a nil value)
 File ./tests/toImport/badlib.plume, line n°1:
     $(a+1)
 Traceback:
+    File ./tests/toImport/badlib.plume, line n°1: in function 'require'
     File ./tests/toImport/lib2.plume, line n°1: in function 'require'
 /// End
 
@@ -95,6 +98,8 @@ a = $foo()
 Error: attempt to perform arithmetic on global 'a' (a nil value)
 File ./tests/toImport/badlib2.plume, line n°2:
     a = $(a+1)
+Traceback:
+    File ./tests/toImport/badlib2.plume, line n°2: in function 'foo'
 /// End
 
 /// Test "Error in lualib (imported)"

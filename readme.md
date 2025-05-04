@@ -56,6 +56,7 @@ According some quick benchmark simulating standard use-cases, transpiled code ex
 
 #### Enhancement
 - New error message is case of missing parameter name in macro declaration.
+- Full traceback given in case of error, even the calling function.
 
 ### 0.27
 
