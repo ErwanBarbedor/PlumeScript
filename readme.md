@@ -12,16 +12,13 @@
 
 Test it now [in your browser](https://app.barbedor.bzh/plume.html)!
 
-**Warning:** currently only compatible with `5.1/jit`. Compatibility with `5.2+` planned.
+**Warning:** currently only compatible with `luajit`. Compatibility with `5.2+`  under consideration.
 
 ## Quick Start
 Download `plume-engine` folder. Then, in a Lua file:
 
 ``` lua
--- Lua 5.1, 5.2 & LuaJIT
 local plume = require("plume-engine/init")
--- Lua 5.3 & 5.4
-local plume = require("plume-engine")
 
 print(plume.run [[
 a = 5
