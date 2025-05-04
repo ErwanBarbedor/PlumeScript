@@ -45,7 +45,7 @@ Error: Cannot convert table to string implicitly.
 File <string_1>, line n°5:
     $t a
 Traceback:
-    File <string_1>, line n°5: in function 'foo'
+    File <string_1>, line n°5: in macro 'foo'
 /// End
 
 
@@ -63,7 +63,7 @@ Error: Cannot convert table to string implicitly.
 File <string_1>, line n°6:
     $t a
 Traceback:
-    File <string_1>, line n°6: in function 'foo'
+    File <string_1>, line n°6: in macro 'foo'
 /// End
 
 /// Test "concat 6"
@@ -80,5 +80,5 @@ Error: Cannot convert table to string implicitly.
 File <string_1>, line n°6:
     a $t
 Traceback:
-    File <string_1>, line n°6: in function 'foo'
+    File <string_1>, line n°6: in macro 'foo'
 /// End

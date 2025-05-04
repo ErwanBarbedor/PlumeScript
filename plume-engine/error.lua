@@ -73,6 +73,7 @@ return function (plume)
             elseif filename then
                 local map = env.plume.package.map['@'..filename]
                 if map then
+                    message = message:gsub('^in function', 'in macro')
                     table.insert(traceback, {filename=filename, noline=noline, message=message, raw=line, map=map})
                 end
             end

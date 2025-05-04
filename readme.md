@@ -47,6 +47,7 @@ According some quick benchmark simulating standard use-cases, transpiled code ex
 - Transpile to `return` instead of `return nil` in most cases.
 - New `plume.importLuaFunction`.
 - When transpiling, avoid lua tailcall. Loss of situational optimization for more precise error messages.
+- Replace `in function ...` by `in macro ...` in error traceback.
 
 #### Bugfix
 - Fixed an error occurring when declaring empty variable.
