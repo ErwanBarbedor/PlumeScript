@@ -1,25 +1,20 @@
-local function importFunction (f)
+local function importLuaFunction (f)
     return function(__plume_args)
         return f((unpack or table.unpack)(__plume_args))
     end
 end
 
-local function importAllFunction (t, tcache, tcacheNames)
+local function importLuaStdLib ()
     local result = {}
-    tcache = tcache or {}
-    tcacheNames = tcacheNames or {}
-    for k, v in pairs(t) do
+    
+    for k, v in pairs(_G) do
         if type(v) == "function" then
-            result[k] = importFunction(v)
-            if tname == "string" then
-                print(tname, k, result[k])
-            end
+            result[k] = importLuaFunction (v)
         elseif type(v) == "table" then
-            if not tcacheNames[v] then
-                tcacheNames[v] = true
-                tcache[v] = importAllFunction (v, tcache, tcacheNames)
+            result[k] = {}
+            for kk, vv in pairs(v) do
+                result[k][kk] = importLuaFunction (vv)
             end
-            result[k] = tcache[v]
         end
     end
 
@@ -29,7 +24,7 @@ end
 return function(plume)
     plume.plumeStdLib = {table={}, _VERSION = plume._VERSION}
 
-    plume.luaStdLib = importAllFunction(_G)
+    plume.luaStdLib = importLuaStdLib()
     plume.envStdLib = {}
 
     if table.move then
@@ -108,6 +103,8 @@ return function(plume)
             return x
         end
     end
+
+    plume.plumeStdLib.importLuaFunction = importLuaFunction(importLuaFunction)
 
     --- Loads a library/module into the given environment, searching for 'plume' or 'lua' files.
     -- @param env Table The environment to use for loading the module.

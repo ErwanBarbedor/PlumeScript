@@ -48,6 +48,7 @@ According some quick benchmark simulating standard use-cases, transpiled code ex
 
 #### Changes
 - Transpile to `return` instead of `return nil` in most cases.
+- New `plume.importLuaFunction`.
 
 #### Bugfix
 - Fixed an error occurring when declaring empty variable.
