@@ -68,17 +68,6 @@ File <string_1>, line n°1:
     void = $require(azag)
 /// End
 
-/// Test "File not found"
-// Very specific case: transpiled to "return require('azar')",
-// with tailcalls require will be executed after "forgot" the file.
-$require(azag)
-/// Error
-Module 'azag' not found:
-    no file './azag.plume'
-    no file './azag.lua'
-Occuring when loading '@<string_1>'.
-/// End
-
 /// Test "Error in lib"
 $require(tests/toImport/badlib)
 foo

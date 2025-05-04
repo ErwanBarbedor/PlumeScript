@@ -156,7 +156,8 @@ return function(plume)
             local directConcat = (node.returnType == "TEXT") and valueCount==2
 
             if forceReturn then
-                builder:emitRETURN()
+                -- builder:newline()
+                builder:emitASSIGNMENT(nil, "__plume_temp", nil, true)
             end
 
             if concat then
@@ -198,6 +199,11 @@ return function(plume)
             if wrapInTable then
                 builder:emitCLOSE("}")
             end
+
+            if forceReturn then
+                builder:newline()
+                builder:write("return __plume_temp")
+            end
         end
 
         local transpileChildren
@@ -231,14 +237,8 @@ return function(plume)
 
                     -- Handle single value case with accumulator initialization
                     if valueCount == 1 and shouldInitAccumulator and #values > 0 then
-                        -- Return statement for last value
-                        if index == #infos then
-                            alreadyReturn = true
-                            builder:emitRETURN()
-                        -- Initialize accumulator variable if not the last value and not a simple "VALUE" return type
-                        elseif node.returnType ~= "VALUE" then
-                            builder:emitASSIGNMENT(nil, "__plume_temp", nil, true)
-                        end
+                        -- Initialize accumulator variable
+                        builder:emitASSIGNMENT(nil, "__plume_temp", nil, true)
 
                         -- Wrap in table constructor if return type is "TABLE"
                         if node.returnType == "TABLE" then
@@ -537,13 +537,16 @@ return function(plume)
             ---Handles return statements
             ---@param node table The return node to process
             RETURN = function (node)
-                builder:emitRETURN()
-
+                
+                builder:emitASSIGNMENT(nil, "__plume_temp", nil, true)
                 -- Return always as one child
                 if #node.children[1].content > 0 then
                     use(node)
                     transpileChildren (node, true, true)
                 end
+
+                builder:emitRETURN()
+                builder:write("__plume_temp")
             end,
 
             ---Handles for loops
@@ -637,7 +640,7 @@ return function(plume)
             end
         end
 
-        builder:insert("local __plume_check = plume.checkConcat")
+        builder:insert("local __plume_check  = plume.checkConcat")
         builder:newline()
         builder:insert("local __plume_concat = __lua.table.concat")
         builder:newline()
