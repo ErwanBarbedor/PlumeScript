@@ -248,7 +248,12 @@ return function(plume, transpiler)
         -- @param node table The text node to process.
         -- @return nil
         TEXT = function (node)
-            transpiler:emitTEXT(node, node.content)
+            -- tonumber(" 1") return 1
+            if tonumber(node.content) and not node.content:match('%s') then
+                transpiler:insert(node.content)
+            else
+                transpiler:emitTEXT(node, node.content)
+            end
         end,
 
         --- Handles variable references, including indexed access.
