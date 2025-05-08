@@ -400,6 +400,11 @@ return function(plume, transpiler)
         -- Initialize `self` if applicable (for table field call).
         transpiler:chunkINIT_SELF_PARAM() 
 
+        -- Raises an error if a named parameter is unknown, except in case of vararg
+        if not vararg then
+            transpiler:chunckCHECK_UNUSED_NAMED_PARAM(namedParameterValues)
+        end
+
         -- Transpile the macro body.
         transpiler.transpileChildren (body_node, false, true, true)
         transpiler:emitEND()

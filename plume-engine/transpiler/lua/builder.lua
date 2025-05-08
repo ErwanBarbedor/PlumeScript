@@ -395,5 +395,20 @@ return function ()
         self:emitEND()
     end
 
+    function builder:chunckCHECK_UNUSED_NAMED_PARAM(parameterNames)
+        local t = {}
+        for name, _ in pairs(parameterNames) do
+            table.insert(t, name .. ' = true' )
+        end
+        local tnames = "{" .. table.concat(t, ", ") .. "}"
+
+        self:emitFOR(nil, " name, _ in __lua.pairs(__plume_args)")
+            self:emitIF(nil,  " not __lua.tonumber(name)")
+                self:newline()
+                self:insert("__lua.raiseWrongParameterName(name, " .. tnames .. ")")
+            self:emitEND()
+        self:emitEND()
+    end
+
     return builder
 end

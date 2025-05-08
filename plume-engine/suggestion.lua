@@ -70,16 +70,16 @@ return function(plume)
     --- Similarity is determined using Damerau-Levenshtein distance with a dynamic threshold.
     ---@param target string The word to find suggestions for.
     ---@param words table A dictionary where keys are words (string) and values are their types (string).
-    ---@param types string A string containing space-separated type names (e.g., "function table").
-    ---                 A word from the `words` dictionary is considered if its type is found as a substring in this `types` string.
+    ---@param types|nil string A string containing space-separated type names (e.g., "function table").
+    ---                 A word from the `words` dictionary is considered if its type is found as a substring in this `types` string. If nil, accept any type.
     ---@return table A numerically-indexed, alphabetically sorted table of suggested words (strings, single-quoted).
-    local function searchWord(target, words, types)
+    function plume.searchWord(target, words, types)
         local suggestions = {} -- Using a table as a set to store unique suggestions
 
         for word, wordType in pairs(words) do
             -- Check if the word's type is among the allowed types.
             -- string.match is used for a simple substring check.
-            if types:match(wordType) then
+            if not types or types:match(wordType) then
                 -- Calculate Damerau-Levenshtein distance.
                 -- The threshold for similarity is the maximum of 1 or half the target word's length (integer division).
                 -- This allows more typos for longer words, providing a flexible matching criterion.
@@ -128,7 +128,7 @@ return function(plume)
             -- Further refine the search only if the error message confirms a type mismatch or nil value access context.
             -- The pattern "%(a %w+ value%)" matches phrases like "(a nil value)", "(a boolean value)", etc.
             if message:match("%(a %w+ value%)") then
-                suggestions = searchWord(variable, t, expected_types)
+                suggestions = plume.searchWord(variable, t, expected_types)
             end
         end
 

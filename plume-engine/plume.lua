@@ -79,9 +79,29 @@ return function(plume)
             return result
         end
     end
+
+    local function raiseWrongParameterName(name, t)
+        local message = "Unknow named parameter '" .. name .. "'."
+        local suggestions = plume.searchWord(name, t)
+
+        if #suggestions > 0 then
+            local suggestion_str = table.concat(suggestions, ", ")
+            suggestion_str = suggestion_str:gsub(',([^,]*)$', " or%1") 
+            message = message
+                .. " Perhaps you mean "
+                .. suggestion_str
+                .. "?"
+        end
+
+        error(message, 3)
+    end
     
+    -- Visibles from Plume:
+        -- table plume: methods/table exposed to user
+        -- all _G methods, to be use with Plume calling convention.
+        -- table __lua: use Lua calling convention, cannot be used by user.
     function plume.initRuntime ()
-        local env = {plume = {engine={state=""}}, __lua = _G}
+        local env = {plume = {}, __lua = _G}
 
         for k, v in pairs(plume.plumeStdLib) do
             env.plume[k] = v
@@ -104,6 +124,8 @@ return function(plume)
         }
 
         env._G = env
+
+        env.__lua.raiseWrongParameterName = raiseWrongParameterName
 
         return env
     end

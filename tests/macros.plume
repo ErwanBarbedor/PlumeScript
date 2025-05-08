@@ -300,3 +300,12 @@ Error: Wrong number of arguments, 0 instead of 1.
 File <string_1>, line n°2:
     $foo()
 /// End
+
+/// Test "Method wrong argument number 6"
+macro foo(foo: bar)
+$foo(fooz: baz)
+/// Error
+Error: Unknow named parameter 'fooz'. Perhaps you mean 'foo'?
+File <string_1>, line n°2:
+    $foo(fooz: baz)
+/// End
