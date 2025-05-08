@@ -89,7 +89,8 @@ end
 --- Display formatted test results with diff highlighting
 ---@param tests table Processed test cases
 ---@param successCount integer Number of successful tests
-function showTestsResult(tests, successCount)
+---@param maxErrorsShown integer|nil if given, limit the number of shown errors.
+function showTestsResult(tests, successCount, maxErrorsShown)
     local _VERSION = _VERSION
     if jit then  -- Detect LuaJIT runtime
         _VERSION = "Lua JIT"
@@ -98,10 +99,12 @@ function showTestsResult(tests, successCount)
     print(plume._VERSION .. ' (' .. _VERSION .. ") : " 
         .. successCount .. "/" .. #tests 
         .. " tests passed.")
-
+    
+    local errorCount = 0
     if arg[1] ~= "silent" then
         for _, test in ipairs(tests) do
             if not test.success then
+                errorCount = errorCount + 1
                 -- Format expected/actual with error type annotations
                 local expected = test.result
                 local obtained = test.failInfos.result or ""
@@ -116,6 +119,10 @@ function showTestsResult(tests, successCount)
                 print("\t\t" .. expected:gsub("\n", "\n\t\t"))
                 print("\tObtained:")
                 print("\t\t" .. obtained:gsub("\n", "\n\t\t"))
+
+                if maxErrorsShown and maxErrorsShown == errorCount then
+                    break
+                end
             end
         end
     end

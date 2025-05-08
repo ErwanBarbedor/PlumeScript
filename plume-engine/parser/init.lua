@@ -12,6 +12,14 @@ See the GNU General Public License for more details.
 You should have received a copy of the GNU General Public License along with Plume🪶.
 If not, see <https://www.gnu.org/licenses/>.
 ]]
+
+-- This module is a semantic parser that processes a flat list of tokens generated
+-- by the lexer. It applies a series of predefined patterns (from
+-- `statementPatterns.lua` and `expressionPatterns.lua`) to identify higher-level
+-- language constructs like statements, expressions, and macro definitions.
+-- The output is a refined stream of tokens with enhanced semantic meaning,
+-- which serves as input for the AST (Abstract Syntax Tree) construction.
+
 return function(plume)
     local trim = plume.utils.trim
     local contains = plume.utils.containsWord
@@ -116,16 +124,6 @@ return function(plume)
                     content = ""
                 }  
             end
-             
-
-            -- if match.rpar.kind == "EMPTY" then
-            --     macroDefDeep = 1
-            -- else
-            --     pushToken {
-            --         kind = "MACRO_ARG_END",
-            --         content = ""
-            --     }
-            -- end
 
             inStatementContext = false
         end
@@ -136,31 +134,9 @@ return function(plume)
                 kind = "MACRO_CALL_BEGIN",
                 content = match.variable.content
             }
-            -- if match.rpar.kind == "EMPTY" then
-            --     macroCallDeep = 1
-            -- else
-            --     pushToken {
-            --         kind = "MACRO_ARG_END",
-            --         content = ""
-            --     }
-            -- end
 
             inStatementContext = false
         end
-
-        -- function updateMacroDefDeep(delta)
-        --     if macroDefDeep > 0 then
-        --         macroDefDeep = macroDefDeep + delta
-        --         if macroDefDeep == 0 then
-        --             pushToken {
-        --                 kind = "MACRO_ARG_END",
-        --                 content = ""
-        --             }
-        --             return true
-        --         end
-        --     end
-        -- end
-
 
         local statementHandler
         statementHandler = {
@@ -218,10 +194,6 @@ return function(plume)
                     plume.error(match.variable.source, "Syntax forbiden") -- todo: better error message
                 end
 
-                -- if #match.evalmode.content>0 and #match.endline.content>0 then
-                --     plume.multilineEvalError(match.variable.source, " =")
-                -- end
-
                 plume.checkVariableName(match.variable.source, match.variable.content)
                 local tokenInfos = {
                     kind = "LOCAL_ASSIGNMENT",
@@ -248,9 +220,6 @@ return function(plume)
                 end
             end,
             ASSIGNMENT = function(match)
-                -- if #match.evalmode.content>0 and #match.endline.content>0 then
-                --     plume.multilineEvalError(match.variable.source, " =")
-                -- end
 
                 local variable = match.variable and match.variable.content
 
@@ -417,19 +386,16 @@ return function(plume)
                 }
             end,
             RPAR = function(match)
-                -- if not updateMacroDefDeep(-1) then
                     pushToken {
                         kind    = "RPAR",
                         content = ")"
                     }
-                -- end
             end,
             LPAR = function(match)
                 pushToken {
                     kind    = "LPAR",
                     content = "("
                 }
-                -- updateMacroDefDeep(1)
             end,
             COMMA = function(match)
                 pushToken {

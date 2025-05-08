@@ -13,6 +13,8 @@ You should have received a copy of the GNU General Public License along with Plu
 If not, see <https://www.gnu.org/licenses/>.
 ]]
 
+--- Somme utility functions for debugging during developpement
+
 return function(plume)
     local function formatContent(content)
         return "'" .. content:gsub("\n", "\\n") .. "'"

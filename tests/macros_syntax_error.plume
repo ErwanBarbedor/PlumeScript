@@ -1,7 +1,7 @@
 /// Test "Missing comma"
 macro foo(x y)
 /// Error
-Syntax error: expected a comma, not "y".
+Syntax error: expected a comma or closing parenthesis, not "y".
 File <string_1>, line n°1:
     macro foo(x y)
 /// End

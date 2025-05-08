@@ -46,6 +46,9 @@ According some quick benchmark simulating standard use-cases, transpiled code ex
 #### Changes
 - Calling a macro with the wrong number of arguments (wip: or incorrectly named arguments) will now raise an error.
 
+#### Internal changes
+- A lot of code cleaning, commentary writting, code re-organisation...
+
 ### 0.28
 
 #### Changes

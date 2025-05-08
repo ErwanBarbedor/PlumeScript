@@ -1,3 +1,23 @@
+--[[This file is part of Plume
+
+Plume🪶 is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, version 3 of the License.
+
+Plume🪶 is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+See the GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License along with Plume🪶.
+If not, see <https://www.gnu.org/licenses/>.
+]]
+
+-- This module provides a list of patterns used by `parser.lua` to identify
+-- statement-level constructs and other structural elements at the beginning of
+-- lines or within blocks. These patterns have higher precedence when the parser
+-- is in a "statement context".
+
 return {
     {
         name = "LIST_ITEM",
@@ -46,13 +66,6 @@ return {
             {kind = {"NEWLINE", "ENDLINE"}, name = "tokens", multipleCapture = true}
         }
     },
-    -- {
-    --     name = "VOID_LINE",
-    --     pattern = {
-    --         {kind = "AT"},
-    --         {kind = "SPACE"}
-    --     }
-    -- },
     {
         name = "LOCAL_ASSIGNMENT",
         pattern = {
@@ -156,7 +169,6 @@ return {
         }
     },
     {name = "RETURN", pattern = {
-        -- {kind = "EVAL", name = "evalmode", optional=true},
         {kind = "TEXT", content = "return"}
     }},
     {name = "ELSE",   pattern = {{kind = "TEXT", content = "else"}}},

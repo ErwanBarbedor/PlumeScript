@@ -3,7 +3,7 @@ a =
     - Foo
     Bar
 /// Error
-mixedBlockError: Given the previous expressions in this block, it was expected to be of type TABLE, but a TEXT expression has been supplied
+mixedBlockError: Given the previous expressions in this block, it was expected to be of type TABLE, but a TEXT expression has been supplied.
 File <string_1>, line n°3:
     Bar
 /// End
@@ -13,7 +13,7 @@ a =
     Foo
     - Bar
 /// Error
-mixedBlockError: Given the previous expressions in this block, it was expected to be of type TEXT, but a TABLE expression has been supplied
+mixedBlockError: Given the previous expressions in this block, it was expected to be of type TEXT, but a TABLE expression has been supplied.
 File <string_1>, line n°3:
     - Bar
 /// End
@@ -23,7 +23,7 @@ a =
     Foo
     return Bar
 /// Error
-mixedBlockError: Given the previous expressions in this block, it was expected to be of type TEXT, but a VALUE expression has been supplied
+mixedBlockError: Given the previous expressions in this block, it was expected to be of type TEXT, but a VALUE expression has been supplied.
 File <string_1>, line n°3:
     return Bar
 /// End
@@ -81,7 +81,7 @@ macro foo()
     return 1
     a = 2
 /// Error
-Syntax error: expected block end. Return must be the last statement of a block.
+Syntax error: no statements can follow a 'return' statement in the same block.
 File <string_1>, line n°3:
     a = 2
 /// End

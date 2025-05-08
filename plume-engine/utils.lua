@@ -16,13 +16,6 @@ If not, see <https://www.gnu.org/licenses/>.
 return function (plume)
     plume.utils = {}
 
-    --- Trims leading and trailing whitespace from a string
-    ---@param s string The input string to process
-    ---@return string The trimmed string
-    plume.utils.trim = function (s)
-       return s:match "^%s*(.-)%s*$"
-    end
-
     --- Checks if a space-separated string contains a specific word
     ---@param s string The space-separated string to search
     ---@param x string The word to look for

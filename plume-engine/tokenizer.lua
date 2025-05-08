@@ -12,7 +12,26 @@ See the GNU General Public License for more details.
 You should have received a copy of the GNU General Public License along with Plume🪶.
 If not, see <https://www.gnu.org/licenses/>.
 ]]
---- Lexical analyzer module for Plume language processing
+
+-- This module is responsible for breaking down a raw Plume source code string
+-- into a sequence of tokens. Each token represents a fundamental syntactical
+-- element (e.g., keyword, operator, identifier, literal). The tokenizer uses
+-- a prioritized list of regular expression patterns to identify these elements.
+-- It also handles indentation tracking for newline tokens, which is crucial for
+-- Plume's block structuring.
+
+--- @class token
+--- @field kind string The `name` from the matched `tokenPattern`.
+--- @field content string The actual matched substring.
+--- @field source @source
+--- @field indent number|nil (for "NEWLINE" tokens only) The level of indentation on the
+--         subsequent line, calculated based on a detected standard indent unit.
+
+--- @class source
+--- @field filename string
+--- @field sourceFile string
+--- @field absolutePosition
+--- @field length
 
 -- Ordered list of token patterns with match priority (first match takes precedence)
 -- Patterns use Lua string patterns with following notable behaviors:
@@ -70,7 +89,7 @@ return function(plume)
         local source = function(length)
             return {
                 filename = filename,
-                sourceFile = text, -- NOTE: Storing entire text may be memory-intensive for large files
+                sourceFile = text,
                 absolutePosition = pos, -- Starting position of token
                 length = length -- Token content length
             }

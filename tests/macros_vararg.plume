@@ -50,10 +50,9 @@ Bar
 /// Test "vararg not last"
 macro foo(*kw, foo)
 /// Error
-vararg must be in last position.
+Syntax error: vararg ('...') must be the last parameter in a parameter list.
 File <string_1>, line n°1:
     macro foo(*kw, foo)
-Occuring when loading '@<string_1>'.
 /// End
 
 /// Test "Vararg inline"

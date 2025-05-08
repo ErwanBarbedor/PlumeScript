@@ -1,3 +1,24 @@
+--[[This file is part of Plume
+
+Plume🪶 is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, version 3 of the License.
+
+Plume🪶 is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+See the GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License along with Plume🪶.
+If not, see <https://www.gnu.org/licenses/>.
+]]
+
+-- This module provides a list of patterns used by `parser.lua` to identify
+-- various expression-level constructs within a token stream. These patterns
+-- are typically applied when the parser is not in a statement-expecting context
+-- (e.g., after an operator, within parentheses, or as part of an assignment's
+-- right-hand side).
+
 return {
     {
         name = "ENDLINE",
@@ -20,8 +41,6 @@ return {
             {kind = "EVAL"},
             {kind = "TEXT", name = "variable"},
             {kind = "LPAR"},
-            -- {kind = "SPACE", optional = true},
-            -- {kind = "RPAR",  optional = true, name = "rpar"}
         }
     },
     {
