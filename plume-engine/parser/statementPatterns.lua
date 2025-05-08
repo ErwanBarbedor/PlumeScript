@@ -161,16 +161,25 @@ return {
                 kind = "TEXT",
                 name = "statement",
                 content = {"for", "if", "elseif", "while" }
-            },{
+            },
+            {
                 neg = {kind = {"ENDLINE", "NEWLINE", "COMMENT"}},
                 multipleCapture = true,
                 name = "line"
             }
         }
     },
-    {name = "RETURN", pattern = {
-        {kind = "TEXT", content = "return"}
-    }},
+    {
+        name = "RETURN",
+        pattern = {
+            {kind = "TEXT", content = "return"},
+            {
+                neg = {kind = {"ENDLINE", "NEWLINE", "COMMENT"}},
+                multipleCapture = true,
+                name = "line"
+            }
+        }
+    },
     {name = "ELSE",   pattern = {{kind = "TEXT", content = "else"}}},
     {name = "BREAK",  pattern = {{kind = "TEXT", content = "break"}}},
     {name = "COMMAND_EXPAND",  pattern = {

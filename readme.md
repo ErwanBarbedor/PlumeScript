@@ -47,6 +47,9 @@ According some quick benchmark simulating standard use-cases, transpiled code ex
 - Calling a macro with the wrong number of arguments or incorrectly named arguments will now raise an error.
 - In the code `a = 1`, `1` will be interpreted as a number.
 
+#### Bugfix
+- Correct parsing of the lua expression following a `return` statement.
+
 #### Internal changes
 - A lot of code cleaning, commentary writting, code re-organisation...
 

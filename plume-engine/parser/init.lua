@@ -273,14 +273,19 @@ return function(plume)
                 handleMacroDef(match)
             end,
             RETURN = function(match)
+                local line = {}
+                for _, token in ipairs(match.line) do
+                    table.insert(line, token.content)
+                end
+
                 pushToken {
                     kind = "RETURN",
                     content = ""
                 }
 
                 pushToken {
-                    kind = "BEGIN_LINE_EXPRESSION",
-                    content = ""
+                    kind = "LUA_EXPRESSION",
+                    content = table.concat(line):gsub('^%s*', ''):gsub('%s*$', '')
                 }
             end,
             LINE_STATEMENT = function(match)
