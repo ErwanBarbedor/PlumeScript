@@ -24,6 +24,16 @@ $i
 99
 /// End
 
+/// Test "Break outside loop"
+local i = 100
+break
+$i
+/// Error
+Syntax error: 'break' cannot be use outside of a loop.
+File <string_1>, line n°2:
+    break
+/// End
+
 // // / Test "gmatch for"
 // for m in ("foo bar"):gmatch("%S+")
 //     $m

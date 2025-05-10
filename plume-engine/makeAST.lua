@@ -440,8 +440,11 @@ return function (plume)
                 pushContext(token, token.kind, currentIndent+1, token.content)
 
             elseif contains("BREAK", token.kind) then
-                -- TODO: Check if 'BREAK' is inside a loop construct.
-                pushChild(token, "BREAK", "") -- BREAK is a simple statement.
+                if not (isInside("FOR") or isInside("WHILE")) then
+                    plume.breakOutsideLoopError(token.source)
+                end
+
+                pushChild(token, "BREAK", "")
 
             else
                 -- This indicates a token type that the parser doesn't know how to handle.

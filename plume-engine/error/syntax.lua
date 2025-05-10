@@ -78,4 +78,10 @@ return function (plume)
         plume.sourcedError(source, "Syntax error: command '" .. name .."' can be followed by text or by an indented block, but not both." )
     end
 
+    --- Throws an error when a 'break' statement is used outside of a loop.
+    --- @param source table Source metadata, as expected by `getSourceLine`.
+    function plume.breakOutsideLoopError(source)
+        -- Error when 'break' is used outside a loop.
+        plume.sourcedError(source, "Syntax error: 'break' cannot be use outside of a loop." )
+    end
 end

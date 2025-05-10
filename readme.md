@@ -46,6 +46,7 @@ According some quick benchmark simulating standard use-cases, transpiled code ex
 #### Changes
 - Macro named parameters default value can be empty.
 - With a few exceptions, it is now impossible to have a command that is followed by both text AND an indented block.
+- `break` can no longer be used outside a loop.
 
 #### Bugfix
 - Fixed a bug where each line of an extended call was considered as an individual argument.
