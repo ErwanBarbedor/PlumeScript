@@ -1,6 +1,6 @@
 <p align="center"><img src="plume_logo.svg" width="600" height="300"></p>
 
-![Version](https://img.shields.io/badge/version-0.30-blue.svg) [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
+![Version](https://img.shields.io/badge/version-0.31-blue.svg) [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 
 
 ## Plume🪶 - An Expressive Templating Language
@@ -41,18 +41,6 @@ On my 12600k, transpilation of a 100ko file takes less than 200ms, up to 2s for 
 According some quick benchmark simulating standard use-cases, transpiled code executes at between 80% and 100% of Lua's performance. So with LuaJIT, this makes it possible to include relatively costly calculations in templates.
 
 ## Changelog
-### 0.30 (last version)
+### 0.31
 
-#### Changes
-- Macro named parameters default value can be empty.
-- With a few exceptions, it is now impossible to have a command that is followed by both text AND an indented block.
-- `break` can no longer be used outside a loop.
-- When using one-line macro definition, trim macro body.
-- Instead of the first one detected, Plume takes now the smallest indentation in the file. Raises an error if tab and space are mixed.
-- New syntax sugar for giving flags to macro call `$foo(:flag)` -> `$foo(flag: $true)`.
-
-#### Bugfix
-- Fixed a bug where each line of an extended call was considered as an individual argument.
-- Fixed a bug where the dynamic table key was not transpiled correctly in certains cases.
-
-[Older versions]#(doc/changelog.md)
+[Older versions](#doc/changelog.md)
