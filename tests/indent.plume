@@ -68,7 +68,7 @@ Foo
 /// End
 
 /// Test "Cannot chain commands exception: macros 2"
-a = macro()Foo
+a = macro() Foo
 $a()
 /// Result
 Foo

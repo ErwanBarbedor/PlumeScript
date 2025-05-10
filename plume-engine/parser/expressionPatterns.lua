@@ -28,14 +28,6 @@ return {
             {kind = "SPACE", multipleCapture = true, optional=true},
     },
     {
-        name = "INLINE_MACRO_DEFINITION",
-        pattern = {
-            {kind = "TEXT",  content = "macro"},
-            {kind = "SPACE", multipleCapture = true, optional=true},
-            {kind = "LPAR"}
-        }
-    },
-    {
         name = "MACRO_CALL_BEGIN",
         pattern = {
             {kind = "EVAL"},
@@ -100,6 +92,7 @@ return {
         name = "RPAR",
         pattern = {
             {kind = "RPAR"},
+            {kind = "SPACE", multipleCapture = true, optional=true, name="spaces"},
         }
     },
     {

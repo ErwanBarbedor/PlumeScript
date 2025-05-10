@@ -473,10 +473,16 @@ return function(plume)
                 }
             end,
             RPAR = function(match)
-                    pushToken {
-                        kind    = "RPAR",
-                        content = ")"
-                    }
+                local spaces = {}
+
+                for k, v in ipairs(match.spaces) do
+                    table.insert(spaces, v.content)
+                end
+                
+                pushToken {
+                    kind    = "RPAR",
+                    content = ")" .. table.concat(spaces)
+                }
             end,
             LPAR = function(match)
                 pushToken {

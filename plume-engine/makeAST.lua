@@ -367,7 +367,7 @@ return function (plume)
                     end
                 else
                     -- RPAR not part of a recognized syntactic structure, treat as literal text.
-                    pushChild(token, "TEXT", ")")
+                    pushChild(token, "TEXT", token.content)
                 end
 
             -- Parameter list comma handling.

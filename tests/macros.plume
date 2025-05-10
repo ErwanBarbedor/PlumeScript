@@ -7,7 +7,7 @@ bar
 /// End
 
 /// Test "Simple macro and call - inline"
-macro foo()bar
+macro foo() bar
 $foo()
 /// Result
 bar
