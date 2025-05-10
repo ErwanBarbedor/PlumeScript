@@ -258,6 +258,10 @@ return function (plume)
                         currentArgContext.content = key -- Store the key in the HASH_ITEM's content.
                         -- Remove the `key:` part from the first child's content.
                         currentArgContext.children[1].content = textContent:gsub(lft1 .. key .. lft2, "", 1)
+                        if #currentArgContext.children[1].content == 0
+                           and #currentArgContext.children > 1 then
+                            table.remove(currentArgContext.children, 1) -- Remove child if it becomes empty.
+                        end
                     end
                 end
             end

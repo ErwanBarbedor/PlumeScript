@@ -96,7 +96,7 @@ macro foo(x: $nil)
     $x
 $foo()
 /// Result
-
+nil
 /// End
 
 /// Test "Extended Parameters - single value"
