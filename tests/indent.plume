@@ -89,5 +89,5 @@ t =
 	- bar
     - foo
 /// Error
-Bar
+Error: mixed tabs and spaces for indentation.
 /// End
