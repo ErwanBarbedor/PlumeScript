@@ -71,6 +71,32 @@ for _, tp in ipairs(tokenPatterns) do
     tp.anchored = "^" .. tp.pattern
 end
 
+local function getFileIndent(text)
+    local tabs, spaces
+    local indent = text
+    local noline = 0
+    for s in ("\n"..text):gmatch("\n([ \t]+)") do
+        noline = noline + 1
+
+        if s:match(' ') then
+            space = true
+        end
+        if s:match('\t') then
+            tabs = true
+        end
+        
+        if space and tabs then
+            error("Error: mixed tabs and spaces for indentation.", -1)
+        end
+
+        if #s < #indent then
+            indent = s
+        end
+    end
+    return indent
+
+end
+
 return function(plume)
     --- Tokenizes input text into annotated tokens with source metadata
     -- Handles indentation-based block structure through NEWLINE tracking
@@ -96,7 +122,7 @@ return function(plume)
         end
 
         -- Detect standard indentation from first line's leading whitespace
-        local indentPattern = text:match("\n([ \t]+)")
+        local indentPattern = getFileIndent(text)
         local indentAnchored = indentPattern and "^" .. indentPattern or nil
 
         -- Main tokenization loop

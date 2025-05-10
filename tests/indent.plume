@@ -83,3 +83,11 @@ $a
 /// Result
 Bar
 /// End
+
+/// Test "Mixed tabs & spaces"
+t =
+	- bar
+    - foo
+/// Error
+Bar
+/// End
