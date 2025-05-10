@@ -50,5 +50,6 @@ According some quick benchmark simulating standard use-cases, transpiled code ex
 
 #### Bugfix
 - Fixed a bug where each line of an extended call was considered as an individual argument.
+- Fixed a bug where the dynamic table key was not transpiled correctly in certains cases.
 
 [Older versions]#(doc/changelog.md)

@@ -257,3 +257,16 @@ $a.name1
 /// Result
 bar
 /// End
+
+/// Test "Copy table"
+t =
+  foo: bar
+
+nt =
+  for k, v in pairs(t)
+    $k: $v
+
+$nt.foo
+/// Result
+bar
+/// End

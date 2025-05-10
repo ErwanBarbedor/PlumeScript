@@ -159,7 +159,7 @@ return function(plume, transpiler)
                 name = "[" .. transpiler.editLuaCode(name) .. "]"
             end
             
-            -- emitASSIGNMENT here likely emits "key = " or "[key_expr] = ".
+            -- emitASSIGNMENT here emits "[key_expr] = ".
             transpiler:emitASSIGNMENT(node, name) 
             -- Transpile the children of the hash item, which represent its value.
             transpiler.transpileChildren(node, true, true)

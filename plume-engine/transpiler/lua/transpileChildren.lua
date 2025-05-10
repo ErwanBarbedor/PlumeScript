@@ -213,16 +213,20 @@ return function(plume, transpiler)
                     -- If we've already processed some values or an accumulator isn't strictly needed for the first value set.
                     if firstValueFound or (not shouldInitAccumulator) then
                         for _, value in ipairs(values) do
-                            transpiler:newline()
-                            -- Special handling for hash items (key-value pairs).
-                            if info.content.kind == "HASH_ITEM" then 
-                                transpiler:emitASSIGNMENT(info.content,
-                                    "__plume_temp[\"" .. info.content.content .. "\"]",
-                                    nil
-                                )
-                                -- Transpile the children of the HASH_ITEM (its value).
-                                transpiler.transpileChildren(info.content, false, true, false)
+                            if value.kind == "HASH_ITEM" then
+                                local name = value.content
+
+                                if value.sourceToken and value.sourceToken.eval then
+                                    name = "__plume_temp[" .. name .. "]"
+                                else
+                                    name = "__plume_temp[\"" .. name .. "\"]"
+                                end
+
+                                transpiler:emitASSIGNMENT(value, name, nil)
+                                -- Transpile childrens of the HASH_ITEM (its value).
+                                transpiler.transpileChildren(value, false, true, false)
                             else
+                                transpiler:newline()
                                 -- Insert value into the accumulator table.
                                 transpiler:emitOPEN("__plume_insert (__plume_temp, ")
                                 if concat and value.kind ~= "TEXT" then 
