@@ -91,3 +91,13 @@ t =
 /// Error
 Error: mixed tabs and spaces for indentation.
 /// End
+
+/// Test "List item line is block begining"
+t =
+  - foo: bar
+    bar: baz
+
+$t[1].bar
+/// Result
+baz
+/// End
