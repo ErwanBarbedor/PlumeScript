@@ -6,6 +6,14 @@ $foo()
 bar
 /// End
 
+/// Test "Simple macro and call - inline"
+macro foo()bar
+$foo()
+/// Result
+bar
+/// End
+
+
 /// Test "Simple macro and call - with space"
 macro foo ()
     bar

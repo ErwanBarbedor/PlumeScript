@@ -37,10 +37,45 @@ return function (plume)
         plume.sourcedError(source, "Syntax error: no statements can follow a 'return' statement in the same block.")
     end
 
-    --- Throws an error if multiline evaluation syntax (e.g., `$var[[...]]`) is followed by a newline immediately after the opening delimiter.
+    --- Throws an error if multiline evaluation syntax is followed by a newline immediately after the opening delimiter.
     --- @param source table Source metadata, as expected by `getSourceLine`.
-    --- @param sep string The separator/delimiter used in the multiline eval syntax (e.g., "[[", "{").
+    --- @param sep string The separator/delimiter used in the multiline eval syntax
     function plume.multilineEvalError(source, sep)
         plume.sourcedError(source, "Syntax error: '$var" .. sep .. "' multiline evaluation syntax cannot be followed immediately by a line break.")
     end
+
+    --- Throws an error if several commands with the same name are chained in a single line.
+    --- @param source table Source metadata, as expected by `getSourceLine`.
+    --- @param name string The name of the command that is chained.
+    function plume.cannotChainSeveralCommand(source, name)
+        plume.sourcedError(source, "Syntax error: cannot chains several '" .. name .. "' commands in the same line." )
+    end
+
+    --- Throws an error if several different commands are chained in a single line.
+    --- @param source table Source metadata, as expected by `getSourceLine`.
+    --- @param ... string The names of the commands that are chained.
+    function plume.cannotChainCommands(source, ...)
+        local names = {...}
+        local nameList = {}
+        
+        -- Build a grammatically correct list of command names
+        for i=1, #names do
+            table.insert(nameList, "'" .. names[i].."'")
+            if i < #names-1 then
+                table.insert(nameList, ", ")
+            elseif i == #names-1 then
+                table.insert(nameList, " and ")
+            end
+        end
+
+        plume.sourcedError(source, "Syntax error: cannot chains " .. table.concat(nameList) .. " commands in the same line." )
+    end
+
+    --- Throws an error when a command that can be followed by either text or an indented block is followed by both.
+    --- @param source table Source metadata, as expected by `getSourceLine`.
+    --- @param name string The name of the command.
+    function plume.cannotOpenBlock(source, name)
+        plume.sourcedError(source, "Syntax error: command '" .. name .."' can be followed by text or by an indented block, but not both." )
+    end
+
 end

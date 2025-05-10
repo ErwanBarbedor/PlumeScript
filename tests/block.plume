@@ -1,6 +1,0 @@
-/// Test "Chained statement"
-a = b = c = 5
-$c
-/// Result
-5
-/// End

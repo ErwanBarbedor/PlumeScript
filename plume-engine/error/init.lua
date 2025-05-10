@@ -16,5 +16,5 @@ If not, see <https://www.gnu.org/licenses/>.
 return function (plume)
     require "plume-engine/error/error"   (plume)
     require "plume-engine/error/ast"     (plume)
-    require "plume-engine/error/parser"  (plume)
+    require "plume-engine/error/syntax"  (plume)
 end

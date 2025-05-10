@@ -147,10 +147,10 @@ return function (plume)
 
         -- Special fallback: if no traceback information could be generated and no main file was identified,
         -- but Plume was in the process of loading files, indicate the last known file being loaded.
-        local fileTrace = env.plume.package.fileTrace
-        if #traceback == 0 and not mainFilename and #fileTrace > 0 then
-            table.insert(result, "Occurring when loading '" .. fileTrace[#fileTrace] .. "'.")
-        end
+        -- local fileTrace = env.plume.package.fileTrace
+        -- if #traceback == 0 and not mainFilename and #fileTrace > 0 then
+        --     table.insert(result, "Occurring when loading '" .. fileTrace[#fileTrace] .. "'.")
+        -- end
         
         return table.concat(result, "\n")
     end

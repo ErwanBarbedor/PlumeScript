@@ -35,8 +35,8 @@ return function(plume)
         local inStatementContext = true -- Flag for structural token recognition
         local textAccumulator           -- Buffer for text fragments between structural tokens
         local result = {}               -- Final structured token collection
-
-        local macroDefDeep = 0
+        local lineCache = {}            -- Store informations about indentation and commands
+        local currentIndent = 0
 
         local captureBeginPos
         local captureTextEndPos
@@ -91,11 +91,91 @@ return function(plume)
             end
         end
 
+        --- Checks if the sequence of commands in `lineCache` is valid according to certain rules.
+        --- These rules prevent chaining specific commands and opening blocks in invalid contexts.
+        local function checkIsValid()
+            if #lineCache == 1 then
+                return
+            end
+
+            local source = lineCache.firstCommand.source
+
+            -- Check rules for ASSIGNMENT and HASH_ITEM commands
+            if contains("ASSIGNMENT HASH_ITEM", lineCache[1]) then
+                if lineCache[1] == lineCache[2] then
+                    plume.cannotChainSeveralCommand (source, lineCache[1])
+                elseif contains("ASSIGNMENT HASH_ITEM LIST_ITEM IF FOR ELSEIF WHILE", lineCache[2]) then
+                    plume.cannotChainCommands(source, lineCache[1], lineCache[2])
+                -- Check for invalid block opening
+                elseif lineCache[#lineCache] == "BLOCK_OPEN" then  
+                    if #lineCache > 2 then
+                        if not contains("INLINE_MACRO_DEFINITION MACRO_CALL_BEGIN", lineCache[2])   then
+                            plume.cannotOpenBlock(source, lineCache[1])
+                        end
+                    end
+
+                    if lineCache[2] == "INLINE_MACRO_DEFINITION" then
+                        local pos = 2
+                        while pos < #lineCache and lineCache[pos] ~= "RPAR" do
+                            pos = pos + 1
+                        end
+                        if #lineCache > pos+1 then
+                            plume.cannotOpenBlock(source, lineCache[2])
+                        end
+                    end
+                end
+            -- Check rules for MACRO_DEFINITION and LOCAL_MACRO_DEFINITION commands
+            elseif contains("MACRO_DEFINITION LOCAL_MACRO_DEFINITION", lineCache[1]) then
+                local pos = 1
+                while pos < #lineCache and lineCache[pos] ~= "RPAR" do
+                    pos = pos + 1
+                end
+
+                if lineCache[#lineCache] == "BLOCK_OPEN" and #lineCache > pos+1 then
+                    plume.cannotOpenBlock(source, lineCache[1])
+                end
+            end
+        end
+
+        --- Enforces command usage rules, particularly for block openings and command chaining.
+        --- This function analyzes the current `token` and its context to ensure proper syntax
+        --- and prevent forbidden command sequences.
+        ---@param token table? The current token being processed. If nil, it's treated as a text token.
+        local function checkCommandsRules(token)
+            local kind = (token and token.kind) or ("TEXT")
+
+            if kind and inStatementContext then
+                lineCache.indent = currentIndent
+                lineCache.firstCommand = token  
+            end
+
+            if kind == "ENDLINE" then
+                -- Check and handle block opening based on indent
+                if token.indent and lineCache.firstCommand and lineCache.indent < token.indent then
+                    table.insert(lineCache, "BLOCK_OPEN")
+                    checkIsValid()
+                end
+
+                lineCache = {} -- Reset lineCache at the end of a line
+            elseif lineCache.firstCommand then
+                table.insert(lineCache, kind)
+            end
+
+            if lineCache.firstCommand then
+                checkIsValid()
+            end
+
+            if token and token.indent then
+                currentIndent = token.indent
+            end
+        end
+
         --- Adds structured token and clears text buffer
         ---@param token table Token to add to result
         local function pushToken(token)
             popText()
             token.source = mergeSource(captureBeginPos, captureEndPos)
+            checkCommandsRules(token)
             table.insert(result, token)
         end
 
@@ -110,6 +190,8 @@ return function(plume)
 
             return table.concat(lineContent)
         end
+
+        
 
         function handleMacroDef (match, isLocal)
             if match.macroName and match.macroName.content then
@@ -470,7 +552,7 @@ return function(plume)
                 end
             else
                 captureEndPos = pos
-
+                checkCommandsRules(nil, true)
                 pushText(tokens[pos].content)
                 pos = pos + 1
             end

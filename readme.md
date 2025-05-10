@@ -44,6 +44,7 @@ According some quick benchmark simulating standard use-cases, transpiled code ex
 ### 0.30 (last version)
 
 #### Changes
-- Macro named parameter default value can be empty
+- Macro named parameters default value can be empty.
+- With a few exceptions, it is now impossible to have a command that is followed by both text AND an indented block.
 
 [Older versions]#(doc/changelog.md)

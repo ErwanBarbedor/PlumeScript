@@ -32,8 +32,9 @@ $i
 // /// End
 
 /// Test "comprehensive list - sort off"
-evens = for i=1, 5
-    - $(i*2)
+evens =
+    for i=1, 5
+        - $(i*2)
 
 for _, x in ipairs(evens)
     $x

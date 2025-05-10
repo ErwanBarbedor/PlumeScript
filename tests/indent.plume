@@ -1,0 +1,85 @@
+/// Test "Cannot mix line and open 1"
+a = Foo
+  Bar
+/// Error
+Syntax error: command 'ASSIGNMENT' can be followed by text or by an indented block, but not both.
+File <string_1>, line n°1:
+    a = Foo
+/// End
+
+/// Test "Cannot mix line and open 2"
+a: Foo
+  Bar
+/// Error
+Syntax error: command 'HASH_ITEM' can be followed by text or by an indented block, but not both.
+File <string_1>, line n°1:
+    a: Foo
+/// End
+
+/// Test "Cannot mix line and open 3"
+macro foo() bar
+  baz
+/// Error
+Syntax error: command 'MACRO_DEFINITION' can be followed by text or by an indented block, but not both.
+File <string_1>, line n°1:
+    macro foo() bar
+/// End
+
+/// Test "Cannot mix line and open 4"
+a = macro () bar
+    Foo
+/// Error
+Syntax error: command 'INLINE_MACRO_DEFINITION' can be followed by text or by an indented block, but not both.
+File <string_1>, line n°1:
+    a = macro () bar
+/// End
+
+/// Test "Cannot chain commands 1"
+a = b = c
+/// Error
+Syntax error: cannot chains several 'ASSIGNMENT' commands in the same line.
+File <string_1>, line n°1:
+    a = b = c
+/// End
+
+/// Test "Cannot chain commands 2"
+a: b = c
+/// Error
+Syntax error: cannot chains 'HASH_ITEM' and 'ASSIGNMENT' commands in the same line.
+File <string_1>, line n°1:
+    a: b = c
+/// End
+
+/// Test "Cannot chain commands 3"
+a = if a==5
+  foo
+/// Error
+Syntax error: cannot chains 'ASSIGNMENT' and 'IF' commands in the same line.
+File <string_1>, line n°1:
+    a = if a==5
+/// End
+
+/// Test "Cannot chain commands exception: macros 1"
+a = macro()
+  Foo
+$a()
+/// Result
+Foo
+/// End
+
+/// Test "Cannot chain commands exception: macros 2"
+a = macro()Foo
+$a()
+/// Result
+Foo
+/// End
+
+/// Test "Cannot chain commands exception: call with extension"
+macro Foo(x)
+  $x
+a = $Foo()
+  Bar
+$a
+/// Result
+Bar
+/// End
