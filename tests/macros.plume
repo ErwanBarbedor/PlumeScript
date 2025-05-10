@@ -83,6 +83,22 @@ $foo(x: baz)
 baz
 /// End
 
+/// Test "Macro with default value 3"
+macro foo(x:)
+    $x
+$foo()
+/// Result
+
+/// End
+
+/// Test "Macro with default value 4"
+macro foo(x: $nil)
+    $x
+$foo()
+/// Result
+
+/// End
+
 /// Test "Extended Parameters - single value"
 macro double(x)
     $x $x

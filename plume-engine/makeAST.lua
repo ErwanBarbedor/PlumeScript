@@ -170,6 +170,7 @@ return function (plume)
             for i, arg in ipairs(current.children) do
                 local token = arg.children[1] -- The first child usually holds the parameter name or value.
                 local content
+
                 if not token then
                     -- This can happen if a comma is followed by a parenthesis, e.g., `macro(arg1,)`
                     plume.unexpectedTokenError(current.sourceToken.source, "parameter name after \",\"", ")")
@@ -245,7 +246,8 @@ return function (plume)
                 local firstChildOfArg = currentArgContext.children[1]
                 local textContent = firstChildOfArg and firstChildOfArg.content -- Ensure firstChildOfArg exists
 
-                if textContent and firstChildOfArg.kind == "TEXT" then -- Only attempt to parse key:value from TEXT nodes
+                -- Attempt to parse key:value from TEXT nodes
+                if textContent and firstChildOfArg.kind == "TEXT" then
                     -- Detect `key:value` pattern for named parameters. Example: `name: "John"`
                     -- `key` must be a valid identifier. `lft1` captures leading whitespace. `lft2` captures `:` and following whitespace.
                     local lft1, key, lft2 = textContent:match('(%s*)([a-zA-Z_][a-zA-Z_0-9]*)(%s*:%s*)')
@@ -256,9 +258,6 @@ return function (plume)
                         currentArgContext.content = key -- Store the key in the HASH_ITEM's content.
                         -- Remove the `key:` part from the first child's content.
                         currentArgContext.children[1].content = textContent:gsub(lft1 .. key .. lft2, "", 1)
-                        if #currentArgContext.children[1].content == 0 then
-                            table.remove(currentArgContext.children, 1) -- Remove child if it becomes empty.
-                        end
                     end
                 end
             end

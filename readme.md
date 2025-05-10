@@ -43,4 +43,7 @@ According some quick benchmark simulating standard use-cases, transpiled code ex
 ## Changelog
 ### 0.30 (last version)
 
+#### Changes
+- Macro named parameter default value can be empty
+
 [Older versions]#(doc/changelog.md)
