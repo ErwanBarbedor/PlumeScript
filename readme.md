@@ -47,4 +47,7 @@ According some quick benchmark simulating standard use-cases, transpiled code ex
 - Macro named parameters default value can be empty.
 - With a few exceptions, it is now impossible to have a command that is followed by both text AND an indented block.
 
+#### Bugfix
+- Fixed a bug where each line of an extended call was considered as an individual argument.
+
 [Older versions]#(doc/changelog.md)

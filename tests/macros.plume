@@ -116,6 +116,16 @@ $double()
 Foo Foo
 /// End
 
+/// Test "Extended Parameters - long value"
+macro double(x)
+    $x $x
+$double()
+    Foo
+    $(1+1)
+/// Result
+Foo2 Foo2
+/// End
+
 /// Test "Extended Parameters - double value"
 macro keyvalue(key, value)
     $key \= $value

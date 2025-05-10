@@ -44,7 +44,11 @@ return function(plume, transpiler)
 
             -- Combine inline and extended arguments into a single list.
             plume.insertAll(argList, inlineArgs.children)
-            plume.insertAll(argList, extendedArgs.children)
+            if extendedArgs.returnType == "TABLE" then
+                plume.insertAll(argList, extendedArgs.children)
+            elseif extendedArgs.returnType == "TEXT" then
+                table.insert(argList, {kind="LIST_ITEM", children=extendedArgs.children, returnType="TEXT"})
+            end
 
             transpiler:emitCALL(node, name)
             if #extendedArgs.children == 0 and #inlineArgs.children == 0 then
