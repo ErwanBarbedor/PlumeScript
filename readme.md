@@ -49,6 +49,7 @@ According some quick benchmark simulating standard use-cases, transpiled code ex
 - `break` can no longer be used outside a loop.
 - When using one-line macro definition, trim macro body.
 - Instead of the first one detected, Plume takes now the smallest indentation in the file. Raises an error if tab and space are mixed.
+- New syntax sugar for giving flags to macro call `$foo(:flag)` -> `$foo(flag: $true)`.
 
 #### Bugfix
 - Fixed a bug where each line of an extended call was considered as an individual argument.

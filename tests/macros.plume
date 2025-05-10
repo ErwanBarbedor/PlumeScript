@@ -107,6 +107,21 @@ $foo()
 nil
 /// End
 
+/// Test "Macro with default value 5"
+macro foo(:option)
+  if option
+    Flag is active\n
+  else
+    Flag isn't active\n
+  
+$foo()
+$foo(:option)
+/// Result
+Flag isn't active
+Flag is active
+
+/// End
+
 /// Test "Extended Parameters - single value"
 macro double(x)
     $x $x

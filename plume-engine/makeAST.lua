@@ -181,10 +181,16 @@ return function (plume)
                     content = token.content
                 elseif arg.kind == "HASH_ITEM" then
                     content = arg.content -- For HASH_ITEM, the key is stored in arg.content itself.
+
+                    -- :option is a syntax sugar for option: $true in macro call,
+                    -- but option: $false in macro definition
+                    if arg.children[1].isShorthandKey then
+                        arg.children[1].content = "false"
+                    end
                 end
 
                 -- Regex to extract the parameter name and check for stray characters around it.
-                local inner, name, over = content:match('^(%S-)%s*([a-zA-Z_][a-zA-Z0-9_]*)%s*(%S*)$')
+                local inner, name, over = content:match('^%s*(%S-)%s*([a-zA-Z_][a-zA-Z0-9_]*)%s*(%S*)%s*$')
 
                 if token.kind == "VARARG" and i < #current.children then
                     -- Vararg must be the last parameter in a macro definition.
@@ -194,7 +200,8 @@ return function (plume)
                 if not name then
                     plume.unexpectedTokenError(token.sourceToken.source, "parameter name", content)
                 else
-                    plume.checkParameterName(token.sourceToken.source, name) -- External validation for name format.
+                    -- External validation for name format.
+                    plume.checkParameterName(token.sourceToken.source, name)
                     -- If 'over' is empty, but there are more children in a LIST_ITEM,
                     -- it means there was content after the name that wasn't captured by the regex,
                     -- potentially due to spacing issues not handled by %S.
@@ -205,6 +212,8 @@ return function (plume)
                     if #over > 0 then
                         plume.unexpectedTokenError(token.sourceToken.source, "a comma or closing parenthesis", over)
                     end
+
+                    
                     if #inner > 0 then
                         plume.unexpectedTokenError(token.sourceToken.source, "parameter name", inner)
                     end
@@ -252,6 +261,9 @@ return function (plume)
                     -- `key` must be a valid identifier. `lft1` captures leading whitespace. `lft2` captures `:` and following whitespace.
                     local lft1, key, lft2 = textContent:match('(%s*)([a-zA-Z_][a-zA-Z_0-9]*)(%s*:%s*)')
 
+                    -- :option is a syntax sugar for option: $true
+                    local isShorthandKey = textContent:match('^%s*:([a-zA-Z_][a-zA-Z_0-9]*)%s*$')
+
                     if key then
                         -- Convert LIST_ITEM to HASH_ITEM for named parameters.
                         currentArgContext.kind = "HASH_ITEM"
@@ -262,6 +274,10 @@ return function (plume)
                            and #currentArgContext.children > 1 then
                             table.remove(currentArgContext.children, 1) -- Remove child if it becomes empty.
                         end
+                    elseif isShorthandKey then
+                        currentArgContext.kind = "HASH_ITEM"
+                        currentArgContext.content = isShorthandKey
+                        currentArgContext.children = {{kind="VARIABLE", isShorthandKey=true, content="true", sourceToken={}}}
                     end
                 end
             end
