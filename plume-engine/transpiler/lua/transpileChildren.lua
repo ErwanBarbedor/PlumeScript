@@ -16,7 +16,7 @@ If not, see <https://www.gnu.org/licenses/>.
 return function(plume, transpiler)
     local contains   = plume.utils.containsWord
     -- A string containing all statement kinds, used to differentiate them from expressions.
-    local STATEMENTS = "FOR ASSIGNMENT LOCAL_ASSIGNMENT IF ELSE ELSEIF WHILE MACRO LOCAL_MACRO RETURN BREAK COMMAND_EXPAND"
+    local STATEMENTS = "VOID FOR ASSIGNMENT LOCAL_ASSIGNMENT IF ELSE ELSEIF WHILE MACRO LOCAL_MACRO RETURN BREAK COMMAND_EXPAND"
 
     ---Parses the children of a given node, categorizing them into lists of values or individual statements.
     ---This helps in deciding how to transpile them, especially when mixing values and statements.

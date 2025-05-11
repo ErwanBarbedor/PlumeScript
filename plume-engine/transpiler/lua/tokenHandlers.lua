@@ -257,6 +257,15 @@ return function(plume, transpiler)
             transpiler:emitEND()
         end,
 
+        -- Not very optimized
+        VOID = function (node)
+            transpiler:newline()
+            transpiler:emitOPEN('(function ()')
+            transpiler:newline()
+            transpiler.transpileChildren(node, false, true, true)
+            transpiler:emitCLOSE('end)()')
+        end,
+
         --- Handles 'break' statements.
         -- @param node table The break statement node to process.
         -- @return nil

@@ -189,6 +189,7 @@ return {
             }
         }
     },
+    {name = "VOID",   pattern = {{kind = "TEXT", content = "void"}}},
     {name = "ELSE",   pattern = {{kind = "TEXT", content = "else"}}},
     {name = "BREAK",  pattern = {{kind = "TEXT", content = "break"}}},
     {name = "COMMAND_EXPAND",  pattern = {

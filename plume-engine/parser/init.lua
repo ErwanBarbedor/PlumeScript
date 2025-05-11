@@ -383,6 +383,12 @@ return function(plume)
                     content = table.concat(line)
                 }
             end,
+            VOID = function(match)
+                pushToken {
+                    kind = "VOID",
+                    content = ""
+                }
+            end,
             ELSE = function(match)
                 pushToken {
                     kind = "ELSE",

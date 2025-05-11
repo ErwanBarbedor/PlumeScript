@@ -129,6 +129,6 @@ function showTestsResult(tests, successCount, maxErrorsShown)
 end
 
 -- Main execution flow
-local tests = loadTests("indent convert errors eval if files loops lua macros macros_syntax_error macros_vararg std suggestions table text variables issues")
+local tests = loadTests("void indent convert errors eval if files loops lua macros macros_syntax_error macros_vararg std suggestions table text variables issues")
 local successCount = passTests(tests)
 showTestsResult(tests, successCount)

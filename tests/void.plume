@@ -1,0 +1,11 @@
+/// Test "Side effect"
+x = 0
+macro foo()
+  x += 1
+  bar
+
+void $foo() aa
+$x
+/// Result
+1
+/// End

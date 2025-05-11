@@ -447,7 +447,7 @@ return function (plume)
                 popContext(currentIndent, nil, true)  -- Close completed contexts based on new indent.
 
             -- Control flow constructs.
-            elseif contains("FOR IF ELSEIF ELSE WHILE", token.kind) then
+            elseif contains("FOR IF ELSEIF ELSE WHILE VOID", token.kind) then
                 -- `token.content` usually holds the condition or iteration variables.
                 pushContext(token, token.kind, currentIndent+1, token.content)
 
