@@ -1,3 +1,18 @@
+### 0.31
+
+#### Changes
+- Can now chain table access without limit (ex: `$foo[1].bar.baz[2]`).
+- Can now chain table access and call it (ex: `$foo[1].bar.baz[2] ()`). Note: cannot access field or index _after_ the call, like `$foo().bar`. 
+- `$1` is no longer considered as a variable.
+- It is no longer possible to use several arguments with the same name in a macro call.
+- New command `void`, more or less a syntax sugar for `local useless_temp_variable = ...`
+
+#### Internal changes
+- Enhance patterns lib.
+
+#### Bugfix
+- If a `LIST_ITEM` is followed by text AND an open block, the leading text is correctly considered as the first line of the block.
+
 ### 0.30
 
 #### Changes
