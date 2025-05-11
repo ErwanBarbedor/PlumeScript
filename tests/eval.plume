@@ -19,7 +19,7 @@ $(math.cos(0))
 /// End
 
 /// Test "Number eval"
-$1
+1
 /// Result
 1
 /// End

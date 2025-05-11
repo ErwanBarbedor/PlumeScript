@@ -59,13 +59,6 @@ return {
         }
     },
     {
-        name = "VARIABLE",
-        pattern = {
-            {kind = "EVAL"},
-            {kind = "NUMBER", name = "variable"}
-        }
-    },
-    {
         name = "LUA_EXPRESSION",
         pattern = {
             {kind = "EVAL"},

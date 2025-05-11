@@ -45,6 +45,7 @@ According some quick benchmark simulating standard use-cases, transpiled code ex
 
 #### Changes
 - Can now chain table access without limit (ex: `$foo[1].bar.baz[2]`).
+- `$1` is no longer considered as a variable.
 
 #### Internal changes
 - Enhance patterns lib.
