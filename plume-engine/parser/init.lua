@@ -451,8 +451,17 @@ return function(plume)
                     end
                 end
 
+                local kind
+                
+                if match.call.kind ~= "EMPTY" then
+                    inStatementContext = false
+                    kind = "MACRO_CALL_BEGIN"
+                else
+                    kind = "VARIABLE"
+                end
+
                 pushToken {
-                    kind    = "VARIABLE",
+                    kind    = kind,
                     content = match.variable.content,
                     index   = index
                 }

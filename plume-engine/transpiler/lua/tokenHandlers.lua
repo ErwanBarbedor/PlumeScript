@@ -18,6 +18,20 @@ If not, see <https://www.gnu.org/licenses/>.
 -- @param transpiler table The transpiler instance.
 -- @return nil
 return function(plume, transpiler)
+    local function getVariableName(node)
+        local name = node.content
+        for _, index in ipairs(node.sourceToken.index or {}) do
+            if index.kind == "INDEX_ACCESS" then
+                name = name
+                    .. "["
+                        .. transpiler.editLuaCode(index.content)
+                    .. "]"
+            elseif index.kind == "FIELD_ACCESS" then
+                name = name .. "." .. index.content
+            end
+        end
+        return name
+    end
     -- Table mapping AST node types to handler functions.
     transpiler.tokenHandlers = {
         --- Handles block nodes, which contain multiple statements.
@@ -34,7 +48,7 @@ return function(plume, transpiler)
         -- @param node table The macro call node to process.
         -- @return nil
         MACRO_CALL = function (node)
-            local name = node.content
+            local name = getVariableName(node)
             -- Check for "method call" syntax (e.g., table.method) to correctly handle 'self'.
             local tableName, methodName = name:match("^(.-)%.([^%.]+)$")
 
@@ -289,18 +303,7 @@ return function(plume, transpiler)
         -- @param node table The variable node to process.
         -- @return nil
         VARIABLE = function (node)
-            local variableExpression = node.content
-
-            for _, index in ipairs(node.sourceToken.index or {}) do
-                if index.kind == "INDEX_ACCESS" then
-                    variableExpression = variableExpression
-                        .. "["
-                            .. transpiler.editLuaCode(index.content)
-                        .. "]"
-                elseif index.kind == "FIELD_ACCESS" then
-                    variableExpression = variableExpression .. "." .. index.content
-                end
-            end
+            local variableExpression = getVariableName(node)
 
             transpiler:emitVARIABLE(node, variableExpression) 
         end,

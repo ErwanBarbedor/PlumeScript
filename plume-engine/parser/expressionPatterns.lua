@@ -27,14 +27,14 @@ return {
             {kind = {"NEWLINE", "ENDLINE"}, name = "tokens", multipleCapture = true}},
             {kind = "SPACE", multipleCapture = true, optional=true},
     },
-    {
-        name = "MACRO_CALL_BEGIN",
-        pattern = {
-            {kind = "EVAL"},
-            {kind = "TEXT", name = "variable"},
-            {kind = "LPAR"},
-        }
-    },
+    -- {
+    --     name = "MACRO_CALL_BEGIN",
+    --     pattern = {
+    --         {kind = "EVAL"},
+    --         {kind = "TEXT", name = "variable"},
+    --         {kind = "LPAR"},
+    --     }
+    -- },
     {
         name = "VARIABLE",
         pattern = {
@@ -55,6 +55,11 @@ return {
                 name = "index",
                 optional = true,
                 multipleCapture = true
+            },
+            {
+                kind = "LPAR",
+                optional = true,
+                name = "call"
             }
         }
     },

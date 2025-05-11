@@ -287,3 +287,13 @@ Foo
 1
 bar
 /// End
+
+/// Test "Chained access and call"
+t =
+  - macro () bar
+  foo: macro () baz
+$t[1]()
+$t.foo()
+/// Result
+barbaz
+/// End
