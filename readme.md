@@ -43,6 +43,9 @@ According some quick benchmark simulating standard use-cases, transpiled code ex
 ## Changelog
 ### 0.31
 
+#### Internal changes
+- Enhance patterns lib.
+
 #### Bugfix
 - If a `LIST_ITEM` is followed by text AND an open block, the leading text is correctly considered as the first line of the block.
 

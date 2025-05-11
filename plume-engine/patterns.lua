@@ -56,6 +56,13 @@ If not, see <https://www.gnu.org/licenses/>.
 --                  - `open`:  Pattern specification for the opening token.
 --                  - `close`: Pattern specification for the closing token.
 --
+--   - `or`:      Table of pattern specifications. If this field is present,
+--                it must contain a list (table) of pattern specifications.
+--                The pattern is considered matched if at least one of these
+--                sub-patterns matches the token sequence at this position.
+--                This allows the definition of several alternative patterns:
+--                the pattern is valid if at least one alternative succeeds.
+--
 -- Conceptual examples of pattern specifications:
 --
 -- 1. Matching a specific token by type and content:
@@ -91,12 +98,22 @@ If not, see <https://www.gnu.org/licenses/>.
 --    -- nesting. The captured sequence is stored under the key
 --    -- `parenthesized_expression`.
 --
+-- 6. Pattern with alternatives ("or"):
+--    {
+--        or = {
+--            {kind = "NUMBER"},
+--            {kind = "IDENTIFIER"}
+--        }
+--    }
+--    -- This pattern matches if the next token is either of type "NUMBER"
+--    -- or of type "IDENTIFIER". The pattern is valid if one of the
+--    -- sub-patterns matches.
+--
 -- On success, `plume.matchPattern` returns a capture table. This table
 -- contains the tokens captured via the `name` field of the specifications,
 -- as well as a `length` field indicating the total number of tokens from
 -- the input sequence that were consumed by the match. On failure,
 -- the function returns `false`.
-
 
 return function (plume)
     --- Checks if a specific token field matches pattern constraints
@@ -138,6 +155,56 @@ return function (plume)
            and not (patternInfos.neg and plume.checkPattern(token, patternInfos.neg))
     end
 
+    function plume.capturePattern(tokens, tokenPos, patternInfos)
+        local token = tokens[tokenPos]
+        if patternInfos.braced then
+            -- Handle nested bracket structures
+            if plume.checkPattern(token, patternInfos.braced.open) then
+                local captureList = {}
+                local depth = 0    -- Bracket nesting level
+                local offset = 0   -- Token lookahead offset
+
+                -- Capture until matching closing bracket
+                while tokens[tokenPos + offset] do
+                    local current_token = tokens[tokenPos + offset]
+
+                    if plume.checkPattern(current_token, patternInfos.braced.open) then
+                        depth = depth + 1
+                    elseif plume.checkPattern(current_token, patternInfos.braced.close) then
+                        depth = depth - 1
+                    end
+
+                    table.insert(captureList, current_token)
+
+                    if depth == 0 then
+                        break
+                    end
+                    offset = offset + 1
+                end
+
+                -- Check for unbalanced brackets
+                if depth > 0 then
+                    return nil, true, 0
+                end
+
+                return captureList, true, offset
+            else
+                return nil, true, 0
+            end
+        elseif patternInfos["or"] then
+            for _, subPatternInfos in ipairs(patternInfos["or"]) do
+                local capture, isList, offset = plume.capturePattern(tokens, tokenPos, subPatternInfos)
+                if capture then
+                    return capture, isList, offset
+                end
+            end
+        else
+            if plume.checkPattern(token, patternInfos) then
+                return token
+            end
+        end
+    end
+
     --- Matches token sequence against complex pattern structure
     ---@param tokens table[] Array of tokens to process
     ---@param pos integer Starting index (1-based)
@@ -146,7 +213,7 @@ return function (plume)
     function plume.matchPattern(tokens, pos, patternList)
         local capture = {length = 0}  -- Stores captured tokens and total matched count
         local patternPos = 0          -- Current position in pattern list
-        local tokenPos = pos - 1      -- Current token index (adjusted for 1-based Lua arrays)
+        local tokenPos = pos - 1      -- Current token index
         
         while true do
             patternPos = patternPos + 1
@@ -171,13 +238,24 @@ return function (plume)
             if infos.multipleCapture then
                 local captureList = {}
                 -- Consume all consecutive matching tokens
-                while token and plume.checkPattern(token, infos) do
-                    table.insert(captureList, token)
-                    tokenPos = tokenPos + 1
-                    token = tokens[tokenPos]
+                while token do
+                    local found, isList, offset = plume.capturePattern(tokens, tokenPos, infos)
+
+                    if found then
+                        table.insert(captureList, found)
+                        if isList then
+                            tokenPos = tokenPos + offset + 1
+                            captureCount = captureCount + #found
+                        else
+                            tokenPos = tokenPos + 1
+                            captureCount = captureCount + 1
+                        end
+                        token = tokens[tokenPos]
+                    else
+                        break
+                    end
                 end 
 
-                captureCount = #captureList
                 -- Fail if mandatory capture has zero matches
                 if captureCount > 0 or infos.optional then
                     tokenPos = tokenPos - 1  -- Adjust for last non-matching token
@@ -188,62 +266,28 @@ return function (plume)
                 if infos.name then
                     capture[infos.name] = captureList
                 end
-            elseif infos.braced then
-                -- Handle nested bracket structures
-                if plume.checkPattern(token, infos.braced.open) then
-                    local captureList = {}
-                    local depth = 0    -- Bracket nesting level
-                    local offset = 0   -- Token lookahead offset
-
-                    -- Capture until matching closing bracket
-                    while tokens[tokenPos + offset] do
-                        local current_token = tokens[tokenPos + offset]
-
-                        if plume.checkPattern(current_token, infos.braced.open) then
-                            depth = depth + 1
-                        elseif plume.checkPattern(current_token, infos.braced.close) then
-                            depth = depth - 1
-                        end
-
-                        table.insert(captureList, current_token)
-
-                        if depth == 0 then
-                            break
-                        end
-                        offset = offset + 1
-                    end
-
-                    -- Check for unbalanced brackets
-                    if depth > 0 then
-                        return false
-                    end
-
-                    if infos.name then
-                        capture[infos.name] = captureList
-                    end
-
-                    captureCount = #captureList
-                    tokenPos = tokenPos + offset
-                elseif infos.optional then
-                    tokenPos = tokenPos - 1  -- Maintain position
-                else
-                    return false
-                end
             else
-                -- Single token matching logic
-                local found = plume.checkPattern(token, infos)
-
+                local found, isList, offset = plume.capturePattern(tokens, tokenPos, infos)
                 if found then
                     if infos.name then
-                        capture[infos.name] = token  -- Store named capture
+                        capture[infos.name] = found  -- Store named capture
                     end
-                    captureCount = 1
+
+                    if isList then
+                        captureCount = #found
+                        tokenPos = tokenPos + offset
+                    else
+                        captureCount = 1
+                    end
                 elseif infos.optional then
                     -- Create placeholder for optional captures
-                    captureCount = 0
                     tokenPos = tokenPos - 1  -- Maintain position
-                    if infos.name then
-                        capture[infos.name] = {content = "", kind = "EMPTY"}
+                    captureCount = 0
+                    if not isList then
+                        
+                        if infos.name then
+                            capture[infos.name] = {content = "", kind = "EMPTY"}
+                        end
                     end
                 else
                     return false  -- Non-optional pattern failed
