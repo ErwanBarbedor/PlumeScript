@@ -65,4 +65,17 @@ return function(plume)
             end
         end
     end
+
+    function plume.print_table(t, indent)
+        indent = indent or 0
+        local indent_str = string.rep("  ", indent)
+        for key, value in pairs(t) do
+            if type(value) == "table" then
+                print(indent_str .. tostring(key) .. " :")
+                print_table(value, indent + 1)
+            else
+                print(indent_str .. tostring(key) .. " : " .. tostring(value))
+            end
+        end
+    end
 end
