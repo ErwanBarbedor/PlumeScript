@@ -66,7 +66,7 @@ return function(plume)
         end
     end
 
-    function plume.print_table(t, indent)
+    function plume.printTable(t, indent)
         indent = indent or 0
         local indent_str = string.rep("  ", indent)
         for key, value in pairs(t) do
