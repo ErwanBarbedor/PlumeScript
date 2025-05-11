@@ -72,7 +72,7 @@ return function(plume)
         for key, value in pairs(t) do
             if type(value) == "table" then
                 print(indent_str .. tostring(key) .. " :")
-                print_table(value, indent + 1)
+                plume.printTable(value, indent + 1)
             else
                 print(indent_str .. tostring(key) .. " : " .. tostring(value))
             end
