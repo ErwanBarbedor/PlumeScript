@@ -264,15 +264,20 @@ return function(plume, transpiler)
         -- @param node table The variable node to process.
         -- @return nil
         VARIABLE = function (node)
-            local variableExpression
-            if node.sourceToken.index then
-                -- If an index is present, construct an indexed access expression.
-                variableExpression = node.content .. "[" .. transpiler.editLuaCode(node.sourceToken.index) .. "]"
-            else
-                -- Simple variable reference.
-                variableExpression = node.content
+            local variableExpression = node.content
+
+            for _, index in ipairs(node.sourceToken.index or {}) do
+                if index.kind == "INDEX_ACCESS" then
+                    variableExpression = variableExpression
+                        .. "["
+                            .. transpiler.editLuaCode(index.content)
+                        .. "]"
+                elseif index.kind == "FIELD_ACCESS" then
+                    variableExpression = variableExpression .. "." .. index.content
+                end
             end
-            transpiler:emitVARIABLE(node, variableExpression) -- Emits the Lua code for variable access.
+
+            transpiler:emitVARIABLE(node, variableExpression) 
         end,
 
         --- Handles expansion

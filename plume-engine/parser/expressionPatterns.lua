@@ -41,12 +41,20 @@ return {
             {kind = "EVAL"},
             {kind = "TEXT", name = "variable"},
             {
-                braced = {
-                    open  = {kind = "LBRK"},
-                    close = {kind = "RBRK"}
+                ["or"] = {
+                    {
+                        braced = {
+                            open  = {kind = "LBRK"},
+                            close = {kind = "RBRK"}
+                        }
+                    },
+                    {
+                        kind = "FIELD_ACCESS"
+                    }
                 },
                 name = "index",
-                optional = true
+                optional = true,
+                multipleCapture = true
             }
         }
     },

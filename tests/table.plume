@@ -270,3 +270,20 @@ $nt.foo
 /// Result
 bar
 /// End
+
+/// Test "Chained access"
+t =
+  foo: bar
+  bar:
+    - Foo
+    baz: 1
+  - foo: bar
+
+$t.bar[1]\n
+$t.bar.baz\n
+$t[1].foo
+/// Result
+Foo
+1
+bar
+/// End

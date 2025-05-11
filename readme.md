@@ -43,6 +43,9 @@ According some quick benchmark simulating standard use-cases, transpiled code ex
 ## Changelog
 ### 0.31
 
+#### Changes
+- Can now chain table access without limit (ex: `$foo[1].bar.baz[2]`).
+
 #### Internal changes
 - Enhance patterns lib.
 
