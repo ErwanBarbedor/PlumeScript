@@ -45,3 +45,21 @@ Syntax error: expected parameter name after ",", not ")".
 File <string_1>, line n°1:
     macro foo(x, )
 /// End
+
+/// Test "Twice argument 1"
+macro foo(x: bar)
+$foo(x: foo, x: baz)
+/// Error
+Syntax error: multiple use of the argument 'x' in the same call.
+File <string_1>, line n°2:
+    $foo(x: foo, x: baz)
+/// End
+
+/// Test "Twice argument 2"
+macro foo(x: bar)
+$foo(x: foo, :x)
+/// Error
+Syntax error: multiple use of the argument 'x' in the same call.
+File <string_1>, line n°2:
+    $foo(x: foo, :x)
+/// End

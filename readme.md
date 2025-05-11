@@ -46,6 +46,7 @@ According some quick benchmark simulating standard use-cases, transpiled code ex
 #### Changes
 - Can now chain table access without limit (ex: `$foo[1].bar.baz[2]`).
 - `$1` is no longer considered as a variable.
+- It is no longer possible to use several arguments with the same name in a macro call.
 
 #### Internal changes
 - Enhance patterns lib.

@@ -47,7 +47,23 @@ return function(plume, transpiler)
             if extendedArgs.returnType == "TABLE" then
                 plume.insertAll(argList, extendedArgs.children)
             elseif extendedArgs.returnType == "TEXT" then
-                table.insert(argList, {kind="LIST_ITEM", children=extendedArgs.children, returnType="TEXT"})
+                table.insert(argList, {
+                    kind="LIST_ITEM",
+                    children=extendedArgs.children,
+                    returnType="TEXT"
+                })
+            end
+
+            -- Check for several argument with the same name
+            local names = {}
+            for _, arg in ipairs(argList) do
+                if arg.kind == "HASH_ITEM" then
+                    if names[arg.content] then
+                        plume.multipleArgumentSameName (node.sourceToken.source, arg.content)
+                    else
+                        names[arg.content] = true
+                    end
+                end
             end
 
             transpiler:emitCALL(node, name)
