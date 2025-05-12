@@ -341,11 +341,20 @@ return function (plume)
                 pushMacroArgument()
 
             -- Macro call initiation.
-            elseif contains("MACRO_CALL_BEGIN", token.kind) then
+            elseif contains("MACRO_CALL_BEGIN COMMAND_EXPAND_CALL_BEGIN", token.kind) then
                 -- Default return type for a block macro call is TEXT.
                 -- This can be overridden if the macro is known (e.g., via a manifest) to return a VALUE.
-                setReturnType(token, "TEXT") -- Expected type propagation to parent.
-                pushContext(token, "MACRO_CALL", currentIndent+1, token.content) -- `content` has macro name.
+
+                -- Expected type propagation to parent.
+                local kind
+                if token.kind == "COMMAND_EXPAND_CALL_BEGIN" then
+                    kind = "COMMAND_EXPAND_CALL"
+                    setReturnType(token, "TABLE")
+                else
+                    kind = "MACRO_CALL"
+                    setReturnType(token, "TEXT")
+                end
+                pushContext(token, kind, currentIndent+1, token.content) -- `content` has macro name.
                 setReturnType(token, "TEXT") -- Set type for the MACRO_CALL node itself.
 
                 pushContext(token, "MACRO_ARG_TABLE", currentIndent+1)
@@ -370,7 +379,7 @@ return function (plume)
                     popContext(-1, 1, false) -- Pop MACRO_ARG_TABLE.
                     pushContext(token, "MACRO_BODY", currentIndent+1) -- Open context for the macro's body.
 
-                elseif isInside("MACRO_CALL") then
+                elseif isInside("MACRO_CALL") or isInside("COMMAND_EXPAND_CALL") then
                     -- This RPAR closes the argument list of a macro call.
                     popMacroArgument()   -- Finalize the last argument.
                     popContext(-1, 1, false) -- Pop MACRO_ARG_TABLE.

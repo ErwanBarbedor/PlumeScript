@@ -43,4 +43,8 @@ According some quick benchmark simulating standard use-cases, transpiled code ex
 ## Changelog
 ### 0.32 (last version)
 
+#### Changes
+- Can now expand result of chained access (e.g. `*a.foo[1].bar`)
+- Can now expand result of a call (e.g. `*foo()` instead of `local temp = $foo() ... *temp`)
+
 [Older versions](doc/changelog.md)

@@ -18,7 +18,7 @@ If not, see <https://www.gnu.org/licenses/>.
 -- @param transpiler table The transpiler instance.
 -- @return nil
 return function(plume, transpiler)
-    local function getVariableName(node)
+    function transpiler.getVariableName(node)
         local name = node.content
         for _, index in ipairs(node.sourceToken.index or {}) do
             if index.kind == "INDEX_ACCESS" then
@@ -32,6 +32,63 @@ return function(plume, transpiler)
         end
         return name
     end
+
+    local function handleMacroCall(node)
+        local name = transpiler.getVariableName(node)
+        -- Check for "method call" syntax (e.g., table.method) to correctly handle 'self'.
+        local tableName, methodName = name:match("^(.-)%.([^%.]+)$")
+
+        local inlineArgs   = node.children[1]
+        local extendedArgs = node.children[2] or {children={}} -- Extended arguments are optional.
+        local argList = {}
+
+        -- Combine inline and extended arguments into a single list.
+        plume.insertAll(argList, inlineArgs.children)
+        if extendedArgs.returnType == "TABLE" then
+            plume.insertAll(argList, extendedArgs.children)
+        elseif extendedArgs.returnType == "TEXT" then
+            table.insert(argList, {
+                kind="LIST_ITEM",
+                children=extendedArgs.children,
+                returnType="TEXT"
+            })
+        end
+
+        -- Check for several argument with the same name
+        local names = {}
+        for _, arg in ipairs(argList) do
+            if arg.kind == "HASH_ITEM" then
+                if names[arg.content] then
+                    plume.multipleArgumentSameName (node.sourceToken.source, arg.content)
+                else
+                    names[arg.content] = true
+                end
+            end
+        end
+
+        transpiler:emitCALL(node, name)
+        if #extendedArgs.children == 0 and #inlineArgs.children == 0 then
+            -- If there are no arguments, emit empty parentheses,
+            -- or specific handling if it's a table method call likely expecting no explicit args.
+            transpiler:emitEMPTY_ARGS(tableName)
+        else
+            if tableName then
+                -- If it's a method call (e.g., myTable.myMethod() ),
+                -- add 'self = tableName' as a named argument.
+                table.insert(argList, {
+                    kind = "HASH_ITEM", content = "self",
+                    children = {
+                        {kind = "VARIABLE", content = tableName, sourceToken = {}}
+                    }
+                })
+            end
+            transpiler:write('(')
+            -- Transpile the combined arguments, typically as a list of expressions or a table structure.
+            transpiler.transpileChildren({kind="TABLE", children=argList, returnType="TABLE"}, true, true)
+            transpiler:write(')')
+        end
+    end
+
     -- Table mapping AST node types to handler functions.
     transpiler.tokenHandlers = {
         --- Handles block nodes, which contain multiple statements.
@@ -48,59 +105,11 @@ return function(plume, transpiler)
         -- @param node table The macro call node to process.
         -- @return nil
         MACRO_CALL = function (node)
-            local name = getVariableName(node)
-            -- Check for "method call" syntax (e.g., table.method) to correctly handle 'self'.
-            local tableName, methodName = name:match("^(.-)%.([^%.]+)$")
+            handleMacroCall(node)
+        end,
 
-            local inlineArgs   = node.children[1]
-            local extendedArgs = node.children[2] or {children={}} -- Extended arguments are optional.
-            local argList = {}
-
-            -- Combine inline and extended arguments into a single list.
-            plume.insertAll(argList, inlineArgs.children)
-            if extendedArgs.returnType == "TABLE" then
-                plume.insertAll(argList, extendedArgs.children)
-            elseif extendedArgs.returnType == "TEXT" then
-                table.insert(argList, {
-                    kind="LIST_ITEM",
-                    children=extendedArgs.children,
-                    returnType="TEXT"
-                })
-            end
-
-            -- Check for several argument with the same name
-            local names = {}
-            for _, arg in ipairs(argList) do
-                if arg.kind == "HASH_ITEM" then
-                    if names[arg.content] then
-                        plume.multipleArgumentSameName (node.sourceToken.source, arg.content)
-                    else
-                        names[arg.content] = true
-                    end
-                end
-            end
-
-            transpiler:emitCALL(node, name)
-            if #extendedArgs.children == 0 and #inlineArgs.children == 0 then
-                -- If there are no arguments, emit empty parentheses,
-                -- or specific handling if it's a table method call likely expecting no explicit args.
-                transpiler:emitEMPTY_ARGS(tableName)
-            else
-                if tableName then
-                    -- If it's a method call (e.g., myTable.myMethod() ),
-                    -- add 'self = tableName' as a named argument.
-                    table.insert(argList, {
-                        kind = "HASH_ITEM", content = "self",
-                        children = {
-                            {kind = "VARIABLE", content = tableName, sourceToken = {}}
-                        }
-                    })
-                end
-                transpiler:write('(')
-                -- Transpile the combined arguments, typically as a list of expressions or a table structure.
-                transpiler.transpileChildren({kind="TABLE", children=argList, returnType="TABLE"}, true, true)
-                transpiler:write(')')
-            end
+        COMMAND_EXPAND_CALL = function (node)
+            handleMacroCall(node)
         end,
 
         --- Handles variable assignment, including table indexing and global assignment.
@@ -303,7 +312,7 @@ return function(plume, transpiler)
         -- @param node table The variable node to process.
         -- @return nil
         VARIABLE = function (node)
-            local variableExpression = getVariableName(node)
+            local variableExpression = transpiler.getVariableName(node)
 
             transpiler:emitVARIABLE(node, variableExpression) 
         end,

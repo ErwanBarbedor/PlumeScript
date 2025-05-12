@@ -534,9 +534,41 @@ return function(plume)
                 }
             end,
             COMMAND_EXPAND = function(match)
+                local index = {}
+                if match.index then
+                    for _, capture in ipairs(match.index) do
+                        if #capture > 0 then -- bracket indexing
+                            local code = {}
+                            for _, subCapture in ipairs(capture) do
+                                table.insert(code, subCapture.content)
+                            end
+                            table.insert(index, {
+                                kind="INDEX_ACCESS",
+                                content=table.concat(code, "", 2, #code-1) -- removing brackets
+                            })
+                        else -- field indexing
+                            local name = capture.content:sub(2, -1) -- removing leading dot
+                            plume.checkVariableName(capture.source, name)
+                            table.insert(index, {
+                                kind="FIELD_ACCESS",
+                                content=name
+                            })
+                        end
+                    end
+                end
+
+                if match.call.kind ~= "EMPTY" then
+                    inStatementContext = false
+                    kind = "COMMAND_EXPAND_CALL_BEGIN"
+                else
+                    kind = "COMMAND_EXPAND"
+                end
+
                 pushToken {
-                    kind    = "COMMAND_EXPAND",
-                    content = match.variable.content
+                    kind    = kind,
+                    content = match.variable.content,
+                    index   = index,
+                    expand  = true
                 }
             end
         }

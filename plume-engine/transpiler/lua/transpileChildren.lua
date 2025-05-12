@@ -16,7 +16,7 @@ If not, see <https://www.gnu.org/licenses/>.
 return function(plume, transpiler)
     local contains   = plume.utils.containsWord
     -- A string containing all statement kinds, used to differentiate them from expressions.
-    local STATEMENTS = "VOID FOR ASSIGNMENT LOCAL_ASSIGNMENT IF ELSE ELSEIF WHILE MACRO LOCAL_MACRO RETURN BREAK COMMAND_EXPAND"
+    local STATEMENTS = "VOID FOR ASSIGNMENT LOCAL_ASSIGNMENT IF ELSE ELSEIF WHILE MACRO LOCAL_MACRO RETURN BREAK COMMAND_EXPAND COMMAND_EXPAND_CALL"
 
     ---Parses the children of a given node, categorizing them into lists of values or individual statements.
     ---This helps in deciding how to transpile them, especially when mixing values and statements.
@@ -64,7 +64,7 @@ return function(plume, transpiler)
 
                 -- Cannot reliably count return values when control structures are involved,
                 -- as their execution path can vary. valueCount = -1 signifies this.
-                if contains("IF ELSEIF ELSE FOR WHILE COMMAND_EXPAND", child.kind) then
+                if contains("IF ELSEIF ELSE FOR WHILE COMMAND_EXPAND COMMAND_EXPAND_CALL", child.kind) then
                     valueCount = -1
                 end
 
@@ -269,9 +269,16 @@ return function(plume, transpiler)
                     end
                 end
 
-            -- Special case: expand macro call (e.g., `(...my_list)`)
+            -- Special case: expand macro call
             elseif info.content.kind == "COMMAND_EXPAND" then
-                transpiler:chunkEXPAND(info.content.content)
+                local name = transpiler.getVariableName(info.content)
+                transpiler:chunkEXPAND(name)
+
+            elseif info.content.kind == "COMMAND_EXPAND_CALL" then
+                local temp = transpiler:getTempVarName()
+                transpiler:emitASSIGNMENT(info.content, temp, nil, true)
+                transpiler.transpileToLua(info.content)
+                transpiler:chunkEXPAND(temp)
 
             -- If it is not a storable value (i.e., it's a statement), transpile it directly.
             else

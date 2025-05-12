@@ -30,11 +30,16 @@ return function ()
         self.code = {}  -- Stores the generated Lua code as a list of strings.
         self.map  = map -- Reference to the source map table, where each inner table collects nodes for a line.
         self.deep = 0   -- Current indentation level.
+        self.temp = 0   -- to make unique temp variables
 
         self.forceBreak = false -- Flag to indicate if the next write should start on a new line.
         return self
     end
 
+    function builder:getTempVarName()
+        self.temp = self.temp + 1
+        return "__plume_temp_u" .. self.temp
+    end
 
     -- Helper functions for managing the code buffer
 

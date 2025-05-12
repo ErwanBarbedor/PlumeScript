@@ -194,6 +194,27 @@ return {
     {name = "BREAK",  pattern = {{kind = "TEXT", content = "break"}}},
     {name = "COMMAND_EXPAND",  pattern = {
         {kind = "OPERATOR", content = "*"},
-        {kind = "TEXT", name = "variable"}
+        {kind = "TEXT", name = "variable"},
+        {
+            ["or"] = {
+                {
+                    braced = {
+                        open  = {kind = "LBRK"},
+                        close = {kind = "RBRK"}
+                    }
+                },
+                {
+                    kind = "FIELD_ACCESS"
+                }
+            },
+            name = "index",
+            optional = true,
+            multipleCapture = true
+        },
+        {
+            kind = "LPAR",
+            optional = true,
+            name = "call"
+        }
     }},
 }

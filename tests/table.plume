@@ -171,7 +171,7 @@ $b.foo $b.bar
 bar foo
 /// End
 
-/// Test "Expand 3"
+/// Test "Expand 4"
 a =
     - foo
     - bar
@@ -185,7 +185,7 @@ $b.foo
 foo
 /// End
 
-/// Test "Expand 3"
+/// Test "Expand 5"
 a =
     - foo
     - bar
@@ -197,6 +197,45 @@ b =
 $b.foo
 /// Result
 bar
+/// End
+
+/// Test "Expand 6"
+macro foo()
+    - foo
+    - bar
+t =
+    *foo()
+    - baz
+$t[2]
+/// Result
+bar
+/// End
+
+/// Test "Expand 7"
+macro foo(x, y)
+    - $x
+    - $y
+t =
+    *foo()
+        - foo
+        - bar
+    - baz
+$t[2]
+/// Result
+bar
+/// End
+
+/// Test "Expand 8"
+t1 =
+    -
+        - Foo
+        - Bar
+
+t2 =
+    *t1[1]
+$t2[2]
+/// Result
+Bar
 /// End
 
 /// Test "Index read 1"
