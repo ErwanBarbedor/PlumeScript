@@ -62,8 +62,6 @@ local tokenPatterns = {
     {name = "TEXT",  pattern = "[a-zA-Z_][a-zA-Z0-9%_%.:]*[a-zA-Z0-9%_]"},
     {name = "TEXT",  pattern = "[a-zA-Z_][a-zA-Z0-9%_]*"},
     {name = "FIELD_ACCESS",  pattern = "%.[a-zA-Z_][a-zA-Z0-9%_]*"},
-    {name = "NUMBER",  pattern = "[0-9]+"}, 
-    {name = "NUMBER",  pattern = "[0-9]+%.[0-9]+"}, 
     {name = "SYMBOL", pattern = "."}       -- Catch-all for unmatched single characters
 }
 
