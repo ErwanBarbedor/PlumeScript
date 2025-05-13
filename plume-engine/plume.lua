@@ -148,7 +148,7 @@ return function(plume)
     --- data order.
     --- @param source table
     --- @param dest table
-    function plume.plumeStdLib.expand(source, dest)
+    function plume.plumeStdLib.expand(dest, source)
         for k, v in ipairs(source) do
             table.insert(dest, v)
         end

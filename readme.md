@@ -49,5 +49,6 @@ According some quick benchmark simulating standard use-cases, transpiled code ex
 
 #### Internal changes
 - For readability and maintainability, use utils functions instead of inline functions in transpiled code.
+- For readability, implement smarter indentation in transpiled file.
 
 [Older versions](doc/changelog.md)

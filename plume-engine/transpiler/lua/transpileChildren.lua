@@ -272,13 +272,18 @@ return function(plume, transpiler)
             -- Special case: expand macro call
             elseif info.content.kind == "COMMAND_EXPAND" then
                 local name = transpiler.getVariableName(info.content)
-                transpiler:chunkEXPAND(name)
+                transpiler:chunkEXPAND(function()
+                    transpiler:write(name)
+                end)
 
             elseif info.content.kind == "COMMAND_EXPAND_CALL" then
-                local temp = transpiler:getTempVarName()
-                transpiler:emitASSIGNMENT(info.content, temp, nil, true)
-                transpiler.transpileToLua(info.content)
-                transpiler:chunkEXPAND(temp)
+                -- local temp = transpiler:getTempVarName()
+                -- transpiler:emitASSIGNMENT(info.content, temp, nil, true)
+                
+                transpiler:chunkEXPAND(function ()
+                    transpiler.transpileToLua(info.content)
+                end)
+                
 
             -- If it is not a storable value (i.e., it's a statement), transpile it directly.
             else

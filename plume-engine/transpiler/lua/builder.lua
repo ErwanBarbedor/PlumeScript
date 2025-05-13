@@ -32,6 +32,8 @@ return function (plume)
         self.deep = 0   -- Current indentation level.
         self.temp = 0   -- to make unique temp variables
 
+        self.newlineCount = {}
+
         self.forceBreak = false -- Flag to indicate if the next write should start on a new line.
         return self
     end
@@ -68,6 +70,9 @@ return function (plume)
     -- Applies current indentation after the newline.
     ---@return nil
     function builder:newline()
+        if #self.newlineCount > 0 then
+            self.newlineCount[#self.newlineCount] = self.newlineCount[#self.newlineCount]+1
+        end 
         self.forceBreak = false -- Reset forceBreak as a newline is explicitly handled.
         insert(self.map, {}) -- Create a new entry for the new line in the source map.
         self:insert("\n")
@@ -293,6 +298,7 @@ return function (plume)
         self:write(char)
         self.deep = self.deep + 1
         self.forceBreak = true -- Suggests that content immediately following this opening char can start on a new, indented line.
+        table.insert(self.newlineCount, 0)
     end
 
     --- Emits a closing character (e.g., ')', '}') on a new line.
@@ -300,8 +306,28 @@ return function (plume)
     ---@return nil
     function builder:emitCLOSE(char)
         self.deep = self.deep - 1
-        self:newline() -- Ensures the closing character is on its own, correctly indented line.
-        self:write(char)   
+        
+        local nlc = table.remove(self.newlineCount)
+
+        if nlc == 1 then -- if only one lineBreak, it's emitOPEN. Remove it
+            for i = #self.code, 1, -1 do
+                if self.code[i] == "\n" then
+                    table.remove(self.code, i)
+                    table.remove(self.code, i) -- remove indent
+
+                    -- Rebuild map
+                    for _, node in ipairs(self.map[#self.map]) do
+                        table.insert(self.map[#self.map-1], node)
+                    end
+                    table.remove(self.map)
+                    break
+                end
+            end
+        else
+            self:newline() -- Ensures the closing character is on its own, correctly indented line.
+        end
+
+        self:write(char)  
     end
 
     -- Predefined chunks of commonly used Lua code for Plume's specific runtime conventions
@@ -376,11 +402,12 @@ return function (plume)
     -- This involves copying both the array part (integer keys) and the hash part (string keys)
     -- from the table `name` into a temporary table `__plume_temp`.
     -- This is typically used for argument spreading or table construction.
-    ---@param name string The name of the variable holding the table to expand.
     ---@return nil
-    function builder:chunkEXPAND(name)
+    function builder:chunkEXPAND(callback)
         self:newline()
-        self:insert("__plume_expand(" .. name .. ", __plume_temp)")
+        self:emitOPEN("__plume_expand(__plume_temp, ")
+        callback()
+        self:emitCLOSE(")")
     end
 
     return builder
