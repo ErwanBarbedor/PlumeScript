@@ -27,7 +27,7 @@ return function(plume)
     local contains = plume.utils.containsWord
 
     -- Initialize the Lua code builder instance.
-    local transpiler = require "plume-engine/transpiler/lua/builder" ()
+    local transpiler = require "plume-engine/transpiler/lua/builder" (plume)
     
     require "plume-engine/transpiler/lua/transpileChildren" (plume, transpiler)
     require "plume-engine/transpiler/lua/tokenHandlers"     (plume, transpiler)
@@ -100,22 +100,26 @@ return function(plume)
         -- Insert a preamble into the generated Lua code.
         -- This preamble includes localized Plume helper functions and aliases for
         -- standard Lua functions, accessed via `__lua` environment table.
-        transpiler:insert("local __plume_check  = plume.checkConcat")
+        transpiler:insert("local __plume_check     = plume.checkConcat")
         transpiler:newline()
-        transpiler:insert("local __plume_concat = __lua.table.concat")
+        transpiler:insert("local __plume_expand    = plume.expand")
         transpiler:newline()
-        transpiler:insert("local __plume_insert = __lua.table.insert")
+        transpiler:insert("local __plume_init_args = plume.initArgs")
         transpiler:newline()
-        transpiler:insert("local __plume_remove = __lua.table.remove")
+        transpiler:insert("local __plume_concat    = __lua.table.concat")
+        transpiler:newline()
+        transpiler:insert("local __plume_insert    = __lua.table.insert")
+        transpiler:newline()
+        transpiler:insert("local __plume_remove    = __lua.table.remove")
         transpiler:newline()
         
         -- Select the correct 'unpack' function based on the target Lua version.
         if contains("5.1 JIT", luaVersion) then
             -- Lua 5.1 and LuaJIT use global unpack.
-            transpiler:insert("local __plume_unpack = __lua.unpack")
+            transpiler:insert("local __plume_unpack    = __lua.unpack")
         else
             -- Lua 5.2 and later use table.unpack.
-            transpiler:insert("local __plume_unpack = __lua.table.unpack")
+            transpiler:insert("local __plume_unpack    = __lua.table.unpack")
         end
         transpiler:newline() -- Add a newline after the preamble for better readability
 

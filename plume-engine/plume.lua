@@ -93,7 +93,7 @@ return function(plume)
                 .. "?"
         end
 
-        error(message, 3)
+        error(message, 4)
     end
     
     -- Visibles from Plume:
@@ -125,8 +125,6 @@ return function(plume)
 
         env._G = env
 
-        env.__lua.raiseWrongParameterName = raiseWrongParameterName
-
         return env
     end
 
@@ -144,6 +142,87 @@ return function(plume)
             return x
         end
     end
+
+    --- Copy the contents of one table to another.
+    --- process list and hash separately to preserve
+    --- data order.
+    --- @param source table
+    --- @param dest table
+    function plume.plumeStdLib.expand(source, dest)
+        for k, v in ipairs(source) do
+            table.insert(dest, v)
+        end
+
+        for k, v in pairs(source) do
+            if not tonumber(k) then
+                dest[k] = v
+            end
+        end
+    end
+
+        
+    --- Check and initialize function arguments. It validates the number of arguments
+    --- and assigns default values to named parameters if they are not provided.
+    ---@param argsTable table The table of arguments passed to the function.
+    ---@param positionalArgsCount integer The number of required positional arguments.
+    ---@param namedArgs table<string,any> A list of named arguments with their default values. Format: {{name1, defaultValue1}, {name2, defaultValue2}, ...}
+    ---@param vararg boolean  Indicates whether the function accepts a variable number of arguments.
+    function plume.plumeStdLib.initArgs(argsTable, positionalArgsCount, namedArgs, vararg)
+        local result = {argsTable.self or false} -- Store the 'self' parameter if present
+
+        argsTable.self = nil -- Remove 'self' from argsTable
+
+        -- Process positional arguments
+        local notEnoughtArgs
+        for i=1, positionalArgsCount do
+            local item = table.remove(argsTable, 1)
+            if item then
+                table.insert(result, item)
+            else
+                notEnoughtArgs = true -- Flag if not enough positional arguments are provided
+                break
+            end
+        end
+
+        -- Error handling for incorrect number of arguments
+        if notEnoughtArgs or (not  vararg and #argsTable > 0) then
+            error('Wrong number of arguments, ' .. (#result+#argsTable-1) .. ' instead of '..positionalArgsCount .. '.', 3)
+        end
+
+        -- Process named arguments
+        for _, infos in ipairs(namedArgs) do
+            local name  = infos[1]
+            local value = infos[2]
+            if argsTable[name] then
+                table.insert(result, argsTable[name])
+                argsTable[name] = nil -- Remove the named argument from argsTable after processing
+            else
+                table.insert(result, value) -- Use default value if named argument is not provided
+            end
+        end
+
+        -- Check for surplus named arguments if vararg is not used
+        if not vararg then
+            for name, _ in pairs(argsTable) do  -- Iterate through remaining entries in argsTable
+                if not tonumber(name) then -- Check if the key is not a number (indicating a named argument)
+                    local names = {}
+                    for _, infos in ipairs(namedArgs) do
+                        names[infos[1]] = true
+                    end
+                    -- Raise an error if an surplus named argument is found
+                    raiseWrongParameterName(name, names) 
+                end
+            end
+        end
+
+        -- Add varargs to the result if enabled
+        if vararg then
+            table.insert(result, argsTable) -- Vararg is the remaining entries
+        end
+
+        return unpack(result) -- Return the processed arguments
+    end
+
 
     plume.plumeStdLib.importLuaFunction = importLuaFunction(importLuaFunction)
 

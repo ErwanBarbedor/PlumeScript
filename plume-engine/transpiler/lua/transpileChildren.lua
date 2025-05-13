@@ -366,55 +366,27 @@ return function(plume, transpiler)
         local parameters_node = node.children[1] -- The first child is the parameter list node.
         local body_node       = node.children[2] -- The second child is the body of the macro.
 
-        local parametersList       = {} -- Ordered list of parameter names/nodes.
-        local namedParameterValues = {} -- Map of parameter name to its HASH_ITEM node (for default values).
-        local positionalParameterCount = 0 -- Count of positional parameters.
-        local vararg = false            -- True if the macro accepts variable arguments.
-
-        -- Process the parameter definition node.
-        for _, param_child_node in ipairs(parameters_node.children) do
-            if param_child_node.kind == "LIST_ITEM" then -- Positional parameter.
-                local actual_param_node = param_child_node.children[1]
-                table.insert(parametersList, actual_param_node)
-                if actual_param_node.kind == "VARARG" then
-                    vararg = true
-                else
-                    positionalParameterCount = positionalParameterCount + 1
-                end
-            else -- Named parameter (often a HASH_ITEM for `name = default_value`).
-                table.insert(parametersList, param_child_node)
-                namedParameterValues[param_child_node.content] =  param_child_node -- Store the HASH_ITEM itself.
-            end
-        end
-
         -- Emit the Lua function signature.
-        transpiler:emitDEFINITION(node, node.content, islocal, inline, positionalParameterCount, vararg)
+        transpiler:emitDEFINITION(node, node.content, islocal, inline)
+        
+        local positionalArgs = {}
+        local namedArgs      = {}
+        local vararg
 
-        local current_pos_param_index = 0
-        -- Generate Lua code for initializing parameters (handling defaults, varargs).
-        for _, arg_node in ipairs(parametersList) do
-            local argName = arg_node.content
-            if arg_node.kind == "VARARG" then
-                transpiler:chunkINIT_VARARG(argName, current_pos_param_index) 
-            elseif namedParameterValues[argName] then
-                -- Initialize named parameter, potentially with a default value.
-                transpiler:chunkINIT_NAMED_PARAM(argName, function()
-                    -- The default value is the content of the HASH_ITEM.
-                    transpiler.transpileChildren(namedParameterValues[argName], false, true)
-                end)
-            else
-                current_pos_param_index = current_pos_param_index + 1
-                transpiler:chunkINIT_PARAM(argName, current_pos_param_index, vararg) 
+        for _, children in ipairs(parameters_node.children) do
+            if children.kind == "LIST_ITEM" then -- Positional parameter.
+                local name = children.children[1].content
+                if children.children[1].kind == "VARARG" then
+                    vararg = name
+                else
+                    table.insert(positionalArgs, name)
+                end
+            elseif children.kind == "HASH_ITEM" then -- named parameter
+                table.insert(namedArgs, children)
             end
         end
 
-        -- Initialize `self` if applicable (for table field call).
-        transpiler:chunkINIT_SELF_PARAM() 
-
-        -- Raises an error if a named parameter is unknown, except in case of vararg
-        if not vararg then
-            transpiler:chunckCHECK_UNUSED_NAMED_PARAM(namedParameterValues)
-        end
+        transpiler:chunkINIT_PARAM(positionalArgs, namedArgs, vararg) 
 
         -- Transpile the macro body.
         transpiler.transpileChildren (body_node, false, true, true)
