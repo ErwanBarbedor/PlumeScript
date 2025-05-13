@@ -48,6 +48,6 @@ According some quick benchmark simulating standard use-cases, transpiled code ex
 - Can now expand result of a call (e.g. `*foo()` instead of `local temp = $foo() ... *temp`)
 
 #### Internal changes
-- For readability, use utils functions instead of inline functions in transpiled code.
+- For readability and maintainability, use utils functions instead of inline functions in transpiled code.
 
 [Older versions](doc/changelog.md)
