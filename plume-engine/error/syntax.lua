@@ -93,4 +93,16 @@ return function (plume)
         plume.sourcedError(source, "Syntax error: multiple use of the argument '" .. name .."' in the same call." )
     end
 
+    --- Throws an error when multiple arguments with the same name are used in a function call.
+    --- @param source table Source metadata, as expected by `getSourceLine`.
+    --- @param name string The duplicated argument name.
+    function plume.multipleArgumentSameName(source, name)
+        -- Reports the error regarding the duplicated argument name.
+        plume.sourcedError(source, "Syntax error: multiple use of the argument '" .. name .."' in the same call." )
+    end
+
+    function plume.cannotUseSelfError(source)
+        plume.sourcedError(source, "Syntax error: cannot use 'self' as variable name." )
+    end
+
 end

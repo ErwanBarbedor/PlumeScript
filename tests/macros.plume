@@ -364,3 +364,11 @@ File <string_1>, line n°2:
 Traceback:
     File <string_1>, line n°1: in macro 'foo'
 /// End
+
+/// Test "self as variable name"
+macro foo(self)
+/// Error
+Syntax error: cannot use 'self' as variable name.
+File <string_1>, line n°1:
+    macro foo(self)
+/// End

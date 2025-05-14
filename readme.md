@@ -46,6 +46,7 @@ According some quick benchmark simulating standard use-cases, transpiled code ex
 #### Changes
 - Can now expand result of chained access (e.g. `*a.foo[1].bar`)
 - Can now expand result of a call (e.g. `*foo()` instead of `local temp = $foo() ... *temp`)
+- `self` cannot be use as variable name
 
 #### Internal changes
 - For readability and maintainability, use utils functions instead of inline functions in transpiled code.

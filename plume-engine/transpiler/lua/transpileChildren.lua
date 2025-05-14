@@ -381,6 +381,10 @@ return function(plume, transpiler)
         for _, children in ipairs(parameters_node.children) do
             if children.kind == "LIST_ITEM" then -- Positional parameter.
                 local name = children.children[1].content
+                if name == "self" then
+                    plume.cannotUseSelfError(children.children[1].sourceToken.source)
+                end
+
                 if children.children[1].kind == "VARARG" then
                     vararg = name
                 else
