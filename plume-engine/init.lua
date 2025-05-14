@@ -28,22 +28,26 @@ local plume = {}
 plume._VERSION = "Plume🪶 0.32"
 
 -- Load core components using dependency injection pattern
-require "plume-engine/utils"         (plume)
-require "plume-engine/patterns"      (plume)
-require "plume-engine/tokenizer"     (plume)
-require "plume-engine/parser/init" (plume)
-require "plume-engine/makeAST"       (plume)
-require "plume-engine/plume"         (plume)
-require "plume-engine/transpiler/init"    (plume)
-require "plume-engine/suggestion"    (plume)
-require "plume-engine/error/init"   (plume)
-require "plume-engine/plumeDebug"    (plume)
+for lib in ([[
+    utils
+    patterns
+    tokenizer
+    parser/init
+    makeAST
+    plume
+    transpiler/init
+    suggestion
+    error/init
+    plumeDebug
+]]):gmatch('%S+') do
+    require("plume-engine/" .. lib)(plume)
+end
 
 --- Transpile Plume code to Lua code.
---- @param string code       The Plume source code.
---- @param string filename   The filename (for error reporting).
---- @return string transpiledCode  The resulting Lua code.
---- @return table map             Source map.
+--- @param string code            The Plume source code.
+--- @param string filename        The filename (for error reporting).
+--- @return string transpiledCode The resulting Lua code.
+--- @return table map             Map between Lua and Plume code.
 function plume.transpile(code, filename)
     local tokens = plume.tokenize(code, filename)
     tokens = plume.parse(tokens)
@@ -54,9 +58,9 @@ end
 
 --- Execute Plume code inside a given environment.
 --- @param string code       The Plume source code.
---- @param string filename   The filename (for source mapping).
+--- @param string filename   The filename (for source mapping and messages errors).
 --- @param table env         The environment table to use during execution.
---- @return The result of running the code.
+--- @return Value returner by the code.
 function plume.execute(code, filename, env)
     -- Get transpiled Lua code and source map
     local transpiledCode, map = plume.transpile(code, filename)
