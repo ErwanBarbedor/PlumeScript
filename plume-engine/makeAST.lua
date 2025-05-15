@@ -192,10 +192,10 @@ return function (plume)
                 -- Regex to extract the parameter name and check for stray characters around it.
                 local inner, name, over = content:match('^%s*(%S-)%s*([a-zA-Z_][a-zA-Z0-9_]*)%s*(%S*)%s*$')
 
-                if token.kind == "VARARG" and i < #current.children then
-                    -- Vararg must be the last parameter in a macro definition.
-                    plume.unexpectedVarargError(token.sourceToken.source, "vararg must be in last position.")
-                end
+                -- if token.kind == "VARARG" and i < #current.children then
+                --     -- Vararg must be the last parameter in a macro definition.
+                --     plume.unexpectedVarargError(token.sourceToken.source, "vararg must be in last position.")
+                -- end
 
                 if not name then
                     plume.unexpectedTokenError(token.sourceToken.source, "parameter name", content)
@@ -341,14 +341,17 @@ return function (plume)
                 pushMacroArgument()
 
             -- Macro call initiation.
-            elseif contains("MACRO_CALL_BEGIN COMMAND_EXPAND_CALL_BEGIN", token.kind) then
+            elseif contains("MACRO_CALL_BEGIN COMMAND_EXPAND_LIST_CALL_BEGIN COMMAND_EXPAND_HASH_CALL_BEGIN", token.kind) then
                 -- Default return type for a block macro call is TEXT.
                 -- This can be overridden if the macro is known (e.g., via a manifest) to return a VALUE.
 
                 -- Expected type propagation to parent.
                 local kind
-                if token.kind == "COMMAND_EXPAND_CALL_BEGIN" then
-                    kind = "COMMAND_EXPAND_CALL"
+                if token.kind == "COMMAND_EXPAND_LIST_CALL_BEGIN" then
+                    kind = "COMMAND_EXPAND_LIST_CALL"
+                    setReturnType(token, "TABLE")
+                elseif token.kind == "COMMAND_EXPAND_HASH_CALL_BEGIN" then
+                    kind = "COMMAND_EXPAND_HASH_CALL"
                     setReturnType(token, "TABLE")
                 else
                     kind = "MACRO_CALL"
@@ -379,7 +382,7 @@ return function (plume)
                     popContext(-1, 1, false) -- Pop MACRO_ARG_TABLE.
                     pushContext(token, "MACRO_BODY", currentIndent+1) -- Open context for the macro's body.
 
-                elseif isInside("MACRO_CALL") or isInside("COMMAND_EXPAND_CALL") then
+                elseif isInside("MACRO_CALL") or isInside("COMMAND_EXPAND_LIST_CALL") or isInside("COMMAND_EXPAND_HASH_CALL") then
                     -- This RPAR closes the argument list of a macro call.
                     popMacroArgument()   -- Finalize the last argument.
                     popContext(-1, 1, false) -- Pop MACRO_ARG_TABLE.
@@ -407,15 +410,20 @@ return function (plume)
                 end
 
             -- Expand operator
-            elseif contains("EXPAND", token.kind) then
+            elseif contains("EXPAND_LIST EXPAND_HASH", token.kind) then
                 if isInside("MACRO_ARG_TABLE") then
                     if isInside("MACRO_DEFINITION") or isInside("INLINE_MACRO_DEFINITION") then
                         -- This is a vararg parameter in a macro definition (e.g., `def macro(param1, *arg)`).
-                        pushChild(token, "VARARG", token.content) -- content is the vargard name
+                        if token.kind == "EXPAND_LIST" then
+                            -- content is the vargard name
+                            pushChild(token, "VARARG_POSITIONAL", token.content)
+                        else
+                            pushChild(token, "VARARG_NAMED", token.content)
+                        end
                     else -- Inside a macro call
                         -- This is expanding a variable into arguments
                         popMacroArgument() -- Finalize potentially empty argument before expand.
-                        pushChild(token, "COMMAND_EXPAND", token.content) -- The actual var to expand.
+                        pushChild(token, "COMMAND_" .. token.kind, token.content) -- The actual var to expand.
                         pushMacroArgument(true) -- Next argument (if any) can be empty.
                     end
                 else
@@ -423,10 +431,10 @@ return function (plume)
                     pushChild(token, "TEXT", "*"..(token.content or "")) -- token.content might be name after *
                 end
 
-            elseif contains("COMMAND_EXPAND", token.kind) then
+            elseif contains("COMMAND_EXPAND_LIST", token.kind) then
                  -- An explicit command/variable to expand used in table.
                 setReturnType(token, "TABLE")
-                pushChild(token, "COMMAND_EXPAND", token.content)
+                pushChild(token, token.kind, token.content)
 
             -- Variable assignment constructs.
             elseif token.kind == "ASSIGNMENT" then

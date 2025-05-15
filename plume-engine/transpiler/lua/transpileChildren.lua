@@ -376,7 +376,7 @@ return function(plume, transpiler)
         
         local positionalArgs = {}
         local namedArgs      = {}
-        local vararg
+        local varargPos, varargNamed
 
         for _, children in ipairs(parameters_node.children) do
             if children.kind == "LIST_ITEM" then -- Positional parameter.
@@ -385,8 +385,10 @@ return function(plume, transpiler)
                     plume.cannotUseSelfError(children.children[1].sourceToken.source)
                 end
 
-                if children.children[1].kind == "VARARG" then
-                    vararg = name
+                if children.children[1].kind == "VARARG_POSITIONAL" then
+                    varargPos = name
+                elseif children.children[1].kind == "VARARG_NAMED" then
+                    varargNamed = name
                 else
                     table.insert(positionalArgs, name)
                 end
@@ -395,7 +397,7 @@ return function(plume, transpiler)
             end
         end
 
-        transpiler:chunkINIT_PARAM(positionalArgs, namedArgs, vararg) 
+        transpiler:chunkINIT_PARAM(positionalArgs, namedArgs, varargPos, varargNamed) 
 
         -- Transpile the macro body.
         transpiler.transpileChildren (body_node, false, true, true)

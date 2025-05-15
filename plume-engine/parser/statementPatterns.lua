@@ -192,7 +192,33 @@ return {
     {name = "VOID",   pattern = {{kind = "TEXT", content = "void"}}},
     {name = "ELSE",   pattern = {{kind = "TEXT", content = "else"}}},
     {name = "BREAK",  pattern = {{kind = "TEXT", content = "break"}}},
-    {name = "COMMAND_EXPAND",  pattern = {
+    {name = "COMMAND_EXPAND_LIST",  pattern = {
+        {kind = "OPERATOR", content = "*"},
+        {kind = "TEXT", name = "variable"},
+        {
+            ["or"] = {
+                {
+                    braced = {
+                        open  = {kind = "LBRK"},
+                        close = {kind = "RBRK"}
+                    }
+                },
+                {
+                    kind = "FIELD_ACCESS"
+                }
+            },
+            name = "index",
+            optional = true,
+            multipleCapture = true
+        },
+        {
+            kind = "LPAR",
+            optional = true,
+            name = "call"
+        }
+    }},
+    {name = "COMMAND_EXPAND_HASH",  pattern = {
+        {kind = "OPERATOR", content = "*"},
         {kind = "OPERATOR", content = "*"},
         {kind = "TEXT", name = "variable"},
         {

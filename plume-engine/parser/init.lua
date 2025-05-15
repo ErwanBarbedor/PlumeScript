@@ -193,7 +193,7 @@ return function(plume)
 
         
 
-        function handleMacroDef (match, isLocal)
+        local function handleMacroDef (match, isLocal)
             if match.macroName and match.macroName.content then
                 pushToken {
                     kind = "MACRO_DEFINITION",
@@ -208,6 +208,45 @@ return function(plume)
             end
 
             inStatementContext = false
+        end
+
+        local function handleCommandExpand(match, expandKind)
+            local index = {}
+            if match.index then
+                for _, capture in ipairs(match.index) do
+                    if #capture > 0 then -- bracket indexing
+                        local code = {}
+                        for _, subCapture in ipairs(capture) do
+                            table.insert(code, subCapture.content)
+                        end
+                        table.insert(index, {
+                            kind="INDEX_ACCESS",
+                            content=table.concat(code, "", 2, #code-1) -- removing brackets
+                        })
+                    else -- field indexing
+                        local name = capture.content:sub(2, -1) -- removing leading dot
+                        plume.checkVariableName(capture.source, name)
+                        table.insert(index, {
+                            kind="FIELD_ACCESS",
+                            content=name
+                        })
+                    end
+                end
+            end
+
+            if match.call.kind ~= "EMPTY" then
+                inStatementContext = false
+                kind = "COMMAND_EXPAND_" .. expandKind .. "_CALL_BEGIN"
+            else
+                kind = "COMMAND_EXPAND_" .. expandKind
+            end
+
+            pushToken {
+                kind    = kind,
+                content = match.variable.content,
+                index   = index,
+                expand  = true
+            }
         end
 
         function handleMacroCall (match)
@@ -527,50 +566,26 @@ return function(plume)
                     content = match.token.content
                 }
             end,
-            EXPAND = function(match)
+            EXPAND_LIST = function(match)
+                local kind
                 pushToken {
-                    kind    = "EXPAND",
+                    kind    = "EXPAND_LIST",
                     content = match.variable.content
                 }
             end,
-            COMMAND_EXPAND = function(match)
-                local index = {}
-                if match.index then
-                    for _, capture in ipairs(match.index) do
-                        if #capture > 0 then -- bracket indexing
-                            local code = {}
-                            for _, subCapture in ipairs(capture) do
-                                table.insert(code, subCapture.content)
-                            end
-                            table.insert(index, {
-                                kind="INDEX_ACCESS",
-                                content=table.concat(code, "", 2, #code-1) -- removing brackets
-                            })
-                        else -- field indexing
-                            local name = capture.content:sub(2, -1) -- removing leading dot
-                            plume.checkVariableName(capture.source, name)
-                            table.insert(index, {
-                                kind="FIELD_ACCESS",
-                                content=name
-                            })
-                        end
-                    end
-                end
-
-                if match.call.kind ~= "EMPTY" then
-                    inStatementContext = false
-                    kind = "COMMAND_EXPAND_CALL_BEGIN"
-                else
-                    kind = "COMMAND_EXPAND"
-                end
-
+            EXPAND_HASH = function(match)
+                local kind
                 pushToken {
-                    kind    = kind,
-                    content = match.variable.content,
-                    index   = index,
-                    expand  = true
+                    kind    = "EXPAND_HASH",
+                    content = match.variable.content
                 }
-            end
+            end,
+            COMMAND_EXPAND_LIST = function(match)
+                handleCommandExpand("LIST")
+            end,
+            COMMAND_EXPAND_HASH = function(match)
+                handleCommandExpand("HASH")
+            end,
         }
 
         local function testAllPatterns(patternList)

@@ -166,8 +166,7 @@ return function(plume)
     ---@param argsTable table The table of arguments passed to the function.
     ---@param positionalArgsCount integer The number of required positional arguments.
     ---@param namedArgs table<string,any> A list of named arguments with their default values. Format: {{name1, defaultValue1}, {name2, defaultValue2}, ...}
-    ---@param vararg boolean  Indicates whether the function accepts a variable number of arguments.
-    function plume.plumeStdLib.initArgs(argsTable, positionalArgsCount, namedArgs, vararg)
+    function plume.plumeStdLib.initArgs(argsTable, positionalArgsCount, namedArgs, varargPos, varargNamed)
         local result = {argsTable.self or false} -- Store the 'self' parameter if present
 
         argsTable.self = nil -- Remove 'self' from argsTable
@@ -185,7 +184,7 @@ return function(plume)
         end
 
         -- Error handling for incorrect number of arguments
-        if notEnoughtArgs or (not  vararg and #argsTable > 0) then
+        if notEnoughtArgs or (not  varargPos and #argsTable > 0) then
             error('Wrong number of arguments, ' .. (#result+#argsTable-1) .. ' instead of '..positionalArgsCount .. '.', 3)
         end
 
@@ -202,22 +201,30 @@ return function(plume)
         end
 
         -- Check for surplus named arguments if vararg is not used
-        if not vararg then
-            for name, _ in pairs(argsTable) do  -- Iterate through remaining entries in argsTable
-                if not tonumber(name) then -- Check if the key is not a number (indicating a named argument)
+        local excessNamed = {}
+        for name, _ in pairs(argsTable) do  -- Iterate through remaining entries in argsTable
+            if not tonumber(name) then -- Check if the key is not a number (indicating a named argument)
+                if varargNamed then
+                    excessNamed[name] = value
+                    argsTable[name] = nil
+                else
                     local names = {}
                     for _, infos in ipairs(namedArgs) do
                         names[infos[1]] = true
                     end
                     -- Raise an error if an surplus named argument is found
-                    raiseWrongParameterName(name, names) 
+                    raiseWrongParameterName(name, names)
                 end
             end
         end
 
         -- Add varargs to the result if enabled
-        if vararg then
+        if varargPos then
             table.insert(result, argsTable) -- Vararg is the remaining entries
+        end
+
+        if varargNamed then
+            table.insert(result, excessNamed)
         end
 
         return unpack(result) -- Return the processed arguments

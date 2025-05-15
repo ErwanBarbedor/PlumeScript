@@ -334,8 +334,7 @@ return function (plume)
 
     ---@param positionalArgs table List of positional arguments.
     ---@param namedArgs table List of named arguments nodes
-    ---@param vararg string|nil Vararg parameter name if present.
-    function builder:chunkINIT_PARAM(positionalArgs, namedArgs, vararg)
+    function builder:chunkINIT_PARAM(positionalArgs, namedArgs, varargPos, varargNamed)
         local stringPositionalArgs = table.concat(positionalArgs, ", ")
         
         local stringNamedArgs = {}
@@ -344,11 +343,16 @@ return function (plume)
         end
         stringNamedArgs = table.concat(stringNamedArgs, ", ")
 
-        local stringVarargCheck
-        if vararg then
-            stringVarargCheck = "true"
+        local stringVarargCheckPos, stringVarargCheckNamed
+        if varargPos then
+            stringVarargCheckPos = "true"
         else
-            stringVarargCheck = "false"
+            stringVarargCheckPos = "false"
+        end
+        if varargNamed then
+            stringVarargCheckNamed = "true"
+        else
+            stringVarargCheckNamed = "false"
         end
 
         --- Start generating code for parameter initialization.
@@ -362,9 +366,13 @@ return function (plume)
             self:insert(", ")
             self:insert(stringNamedArgs)
         end
-        if vararg then
+        if varargPos then
             self:insert(", ")
-            self:insert(vararg)
+            self:insert(varargPos)
+        end
+        if varargNamed then
+            self:insert(", ")
+            self:insert(varargNamed)
         end
 
         self:insert(" = ")
@@ -392,7 +400,9 @@ return function (plume)
             end
             self:insert("}") -- End of named arguments table.
             self:insert(", ")
-            self:insert(stringVarargCheck)
+            self:insert(stringVarargCheckPos)
+            self:insert(", ")
+            self:insert(stringVarargCheckNamed)
         self.deep = self.deep - 1
         self:insert(")")
         self.deep = self.deep - 1

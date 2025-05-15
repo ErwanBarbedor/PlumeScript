@@ -122,7 +122,12 @@ return {
             {kind = {"NEWLINE"}, name = "tokens", multipleCapture = true, optional=true}
         }
     },
-    {name = "EXPAND",  pattern = {
+    {name = "EXPAND_LIST",  pattern = {
+        {kind = "OPERATOR", content = "*"},
+        {kind = "TEXT", name = "variable"}
+    }},
+    {name = "EXPAND_HASH",  pattern = {
+        {kind = "OPERATOR", content = "*"},
         {kind = "OPERATOR", content = "*"},
         {kind = "TEXT", name = "variable"}
     }},
