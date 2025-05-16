@@ -108,7 +108,11 @@ return function(plume, transpiler)
             handleMacroCall(node)
         end,
 
-        COMMAND_EXPAND_CALL = function (node)
+        COMMAND_EXPAND_LIST_CALL = function (node)
+            handleMacroCall(node)
+        end,
+
+        COMMAND_EXPAND_HASH_CALL = function (node)
             handleMacroCall(node)
         end,
 

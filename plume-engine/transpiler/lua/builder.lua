@@ -413,9 +413,16 @@ return function (plume)
     -- from the table `name` into a temporary table `__plume_temp`.
     -- This is typically used for argument spreading or table construction.
     ---@return nil
-    function builder:chunkEXPAND(callback)
+    function builder:chunkEXPAND_LIST(callback)
         self:newline()
-        self:emitOPEN("__plume_expand(__plume_temp, ")
+        self:emitOPEN("__plume_expand_list(__plume_temp, ")
+        callback()
+        self:emitCLOSE(")")
+    end
+
+    function builder:chunkEXPAND_HASH(callback)
+        self:newline()
+        self:emitOPEN("__plume_expand_hash(__plume_temp, ")
         callback()
         self:emitCLOSE(")")
     end

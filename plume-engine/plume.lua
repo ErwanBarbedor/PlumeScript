@@ -148,13 +148,15 @@ return function(plume)
     --- data order.
     --- @param source table
     --- @param dest table
-    function plume.plumeStdLib.expand(dest, source)
+    function plume.plumeStdLib.expandList(dest, source)
         for k, v in ipairs(source) do
             table.insert(dest, v)
         end
+    end
 
+    function plume.plumeStdLib.expandHash(dest, source)
         for k, v in pairs(source) do
-            if not tonumber(k) then
+            if not type(k) == "number" then
                 dest[k] = v
             end
         end
