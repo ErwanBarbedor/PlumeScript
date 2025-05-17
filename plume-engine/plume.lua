@@ -19,7 +19,7 @@ If not, see <https://www.gnu.org/licenses/>.
 
 local function importLuaFunction (f)
     return function(__plume_args)
-        return f((unpack or table.unpack)(__plume_args))
+        return f(unpack(__plume_args))
     end
 end
 
@@ -46,38 +46,20 @@ return function(plume)
     plume.luaStdLib = importLuaStdLib()
     plume.envStdLib = {}
 
-    if table.move then
-        function plume.plumeStdLib.table.merge(...)
-            local result = {}
-            local index = 1
+    function plume.plumeStdLib.table.merge(...)
+        local result = {}
+        local index = 1
 
-            for i = 1, select('#', ...) do
-                local tbl = select(i, ...)
-                if tbl then
-                    local len = #tbl
-                    table.move(tbl, 1, len, index, result)
-                    index = index + len
-                end
+        for i = 1, select('#', ...) do
+            local tbl = select(i, ...)
+            if tbl then
+                local len = #tbl
+                table.move(tbl, 1, len, index, result)
+                index = index + len
             end
-
-          return result
         end
-    else
-        function plume.plumeStdLib.table.merge(...)
-            local result = {}
-            local index = 1
 
-            for _, tbl in ipairs({...}) do
-                if tbl then
-                    for j = 1, #tbl do
-                        result[index] = tbl[j]
-                        index = index + 1
-                    end
-                end
-            end
-
-            return result
-        end
+      return result
     end
 
     local function raiseWrongParameterName(name, t)
@@ -284,18 +266,11 @@ return function(plume)
                 file:close()
                 local chunk, err
                 
-                if _VERSION == "Lua 5.1" or jit then
-                    chunk, err = loadfile(filename)
-                    if not chunk then
-                        error("Error when loading '" .. filename .. "': " .. tostring(err))
-                    end
-                    setfenv(chunk, env) -- Lua 5.1 only
-                else -- Lua 5.2+
-                    chunk, err = loadfile(filename, "t", env)
-                    if not chunk then
-                        error("Error when loading '" .. filename .. "': " .. tostring(err))
-                    end
+                chunk, err = loadfile(filename)
+                if not chunk then
+                    error("Error when loading '" .. filename .. "': " .. tostring(err))
                 end
+                setfenv(chunk, env)
 
                 table.insert(env.plume.package.fileTrace, filename)
                 local result = chunk()

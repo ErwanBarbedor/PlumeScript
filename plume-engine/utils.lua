@@ -45,19 +45,7 @@ return function (plume)
     --- Inserts all elements from t2 into t1.
     ---@param t1 table The table to insert into.
     ---@param t2 table The table to insert from.
-    local insertAll
-
-
-    -- table.move is more efficient, but not available in all versions
-    if table.move then
-        function plume.insertAll(t1, t2)
-            table.move(t2, 1, #t2, #t1 + 1, t1)
-        end
-    else
-        function plume.insertAll(t1, t2)
-            for i = 1, #t2 do
-                table.insert(t1, t2[i])
-            end
-        end
+    function plume.insertAll(t1, t2)
+        table.move(t2, 1, #t2, #t1 + 1, t1)
     end
 end

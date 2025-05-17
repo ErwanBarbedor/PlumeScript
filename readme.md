@@ -8,11 +8,10 @@
 - ✨ **Lightweight Syntax:** Minimal special characters and indentation-based structure make Plume easy to write and read.
 - 📖 **Expressive and Readable:** Inspired by YAML for lists and hashes, and common programming languages for the rest, Plume offers a clear and concise syntax.
 - ⚙️ **Versatile and Extensible:** While well-suited for rich text generation with macros, Plume allows you to achieve virtually anything possible with a general-purpose programming language, with almost no special syntax. This makes it highly adaptable to various use cases.
-- 🔗 **Lua Integration:** Written in and transpiling to Lua, seamlessly integrate Plume into your existing Lua projects (5.1 and LuaJIT). Also, easily benefit from the decent performance of LuaJIT.
+- 🔗 **Lua Integration:** Written in and transpiling to Lua, seamlessly integrate Plume into your existing Luajit projects.
 
-Test it now [in your browser](https://app.barbedor.bzh/plume.html)!
+Test it now [in your browser](https://app.barbedor.bzh/plume.html)! *older version waiting for update*
 
-**Warning:** currently only compatible with `luajit`. Compatibility with `5.2+`  under consideration.
 
 ## Quick Start
 Download `plume-engine` folder. Then, in a Lua file:
@@ -43,6 +42,9 @@ According some quick benchmark simulating standard use-cases, transpiled code ex
 ## Changelog
 ### 0.33 (last version)
 
+#### Changes
+- Remove all compatibility with Lua 5.2+.
+
 #### Bugfix
 - Change `not tonumber(x)` to `type(x) ~= "number"` to check if a variable is a number.
 - Correctly map `expand` code.
@@ -53,5 +55,6 @@ According some quick benchmark simulating standard use-cases, transpiled code ex
 
 #### Internal changes
 - Transpiler divides the assignment into two lines, so not more that one token is retained for each transpiled Lua line.
+
 
 [Older versions](doc/changelog.md)

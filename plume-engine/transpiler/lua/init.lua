@@ -77,21 +77,9 @@ return function(plume)
 
     --- Converts an entire AST into a Lua code string and its corresponding source map.
     ---@param ast table The Abstract Syntax Tree to transpile.
-    ---@param luaVersion? string Optional Lua version to target. Detected automatically if nil.
     ---@return string transpiledCode The concatenated Lua source code.
     ---@return table sourceMap The mapping information for the transpiled code.
-    plume.transpileToLua = function(ast, luaVersion)
-
-        if not luaVersion then
-            -- Autodetect Lua version if not specified.
-            if jit then -- Check for LuaJIT global 'jit'.
-                luaVersion = "JIT"
-            else
-                -- Extract version number from global _VERSION string (e.g., "Lua 5.4" -> "5.4").
-                luaVersion = _VERSION:match('%S+$')
-            end
-        end
-
+    plume.transpileToLua = function(ast)
         local map = {{}} -- Initialize the source map.
 
         -- Initialize the transpiler builder with the source map.
@@ -114,16 +102,8 @@ return function(plume)
         transpiler:newline()
         transpiler:insert("local __plume_remove      = __lua.table.remove")
         transpiler:newline()
-        
-        -- Select the correct 'unpack' function based on the target Lua version.
-        if contains("5.1 JIT", luaVersion) then
-            -- Lua 5.1 and LuaJIT use global unpack.
-            transpiler:insert("local __plume_unpack      = __lua.unpack")
-        else
-            -- Lua 5.2 and later use table.unpack.
-            transpiler:insert("local __plume_unpack      = __lua.table.unpack")
-        end
-        transpiler:newline() -- Add a newline after the preamble for better readability
+        transpiler:insert("local __plume_unpack      = __lua.unpack")
+        transpiler:newline()
 
         -- Start the recursive transpilation process from the root AST node.
         transpiler.transpileToLua(ast)

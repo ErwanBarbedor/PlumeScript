@@ -69,14 +69,9 @@ function plume.execute(code, filename, env)
     env.plume.package.map[filename] = map
 
     -- Compile Lua code using sandboxed environment
-    local compiledFunction, errorMessage
-    if setfenv then -- Lua 5.1
-        compiledFunction, errorMessage = loadstring(transpiledCode, filename)
-        if compiledFunction then
-            setfenv(compiledFunction, env)
-        end
-    else -- Lua 5.2+
-        compiledFunction, errorMessage = load(transpiledCode, filename, nil, env)
+    local compiledFunction, errorMessage = loadstring(transpiledCode, filename)
+    if compiledFunction then
+        setfenv(compiledFunction, env)
     end
 
     if not compiledFunction then
