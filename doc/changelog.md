@@ -1,3 +1,16 @@
+### 0.32
+
+#### Changes
+- Split vararg into `*positional` and `**named`. *Lua lets you use list and hash in the same object. But mixing the two leads to the fact that if a macro accepts a dynamic number of positional arguments (without using the excedent named arguments), Plume will not raise an error in the event of misuse of the named arguments, which is detrimental to the user experience.*
+- Split expand too between `*expand_list` and `**expand_hash`
+- Can now expand result of chained access (e.g. `*a.foo[1].bar`)
+- Can now expand result of a call (e.g. `*foo()` instead of `local temp = $foo() ... *temp`)
+- `self` cannot be use as variable name
+
+#### Internal changes
+- For readability and maintainability, use utils functions instead of inline functions in transpiled code.
+- For readability, implement smarter indentation in transpiled file.
+
 ### 0.31
 
 #### Changes

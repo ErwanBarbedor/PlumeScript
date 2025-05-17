@@ -1,6 +1,6 @@
 <p align="center"><img src="plume_logo.svg" width="600" height="300"></p>
 
-![Version](https://img.shields.io/badge/version-0.32-blue.svg) [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
+![Version](https://img.shields.io/badge/version-0.33-blue.svg) [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 
 
 ## Plume🪶 - An Expressive Templating Language
@@ -41,17 +41,8 @@ On my 12600k, transpilation of a 100ko file takes less than 200ms, up to 2s for 
 According some quick benchmark simulating standard use-cases, transpiled code executes at between 80% and 100% of Lua's performance. So with LuaJIT, this makes it possible to include relatively costly calculations in templates.
 
 ## Changelog
-### 0.32 (last version)
+### 0.33 (last version)
 
-#### Changes
-- Split vararg into `*positional` and `**named`. *Lua lets you use list and hash in the same object. But mixing the two leads to the fact that if a macro accepts a dynamic number of positional arguments (without using the excedent named arguments), Plume will not raise an error in the event of misuse of the named arguments, which is detrimental to the user experience.*
-- Split expand too between `*expand_list` and `**expand_hash`
-- Can now expand result of chained access (e.g. `*a.foo[1].bar`)
-- Can now expand result of a call (e.g. `*foo()` instead of `local temp = $foo() ... *temp`)
-- `self` cannot be use as variable name
 
-#### Internal changes
-- For readability and maintainability, use utils functions instead of inline functions in transpiled code.
-- For readability, implement smarter indentation in transpiled file.
 
 [Older versions](doc/changelog.md)
