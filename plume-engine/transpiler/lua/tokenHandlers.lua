@@ -136,7 +136,7 @@ return function(plume, transpiler)
             end
 
             -- false indicates a global assignment.
-            transpiler:emitASSIGNMENT(node, targetVariable, node.sourceToken.compound_operator, false)
+            transpiler:emitASSIGNMENT(node, targetVariable, node.sourceToken.compound_operator, false, true)
 
             if #node.children > 0 then
                 -- Transpile the value being assigned.

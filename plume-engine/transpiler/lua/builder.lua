@@ -97,8 +97,9 @@ return function (plume)
     ---@param variable string The name of the variable being assigned.
     ---@param compound string|nil The compound assignment operator
     ---@param islocal boolean True if the assignment is for a local variable.
+    ---@param jump boolean True if a linebreak is needed
     ---@return nil
-    function builder:emitASSIGNMENT(node, variable, compound, islocal)
+    function builder:emitASSIGNMENT(node, variable, compound, islocal, jump)
         self:newline()
         if node then self:use(node) end
 
@@ -108,7 +109,10 @@ return function (plume)
 
         self:write(variable)
         
-        self:newline()
+        if jump then
+            self:newline()
+        end
+        
         if compound then
             self:write(" = ")
             self:write(variable)
