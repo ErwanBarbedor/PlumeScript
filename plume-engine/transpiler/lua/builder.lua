@@ -409,9 +409,11 @@ return function (plume)
     end
 
     --- Generates code to expand a table's array part into `__plume_temp`.
+    ---@param node table used Node
     ---@param callback function The function that emits the table expression to expand.
-    function builder:chunkEXPAND_LIST(callback)
+    function builder:chunkEXPAND_LIST(node, callback)
         self:newline()
+        self:use(node)
         -- Emits the call to __plume_expand_list, which handles the array part expansion.
         self:emitOPEN("__plume_expand_list(__plume_temp, ")
         callback()
@@ -419,9 +421,11 @@ return function (plume)
     end
 
     --- Generates code to expand a table's hash part into `__plume_temp`.
+    ---@param node table used Node
     ---@param callback function The function that emits the table expression to expand.
-    function builder:chunkEXPAND_HASH(callback)
+    function builder:chunkEXPAND_HASH(node, callback)
         self:newline()
+        self:use(node)
         -- Emits the call to __plume_expand_hash, which handles the hash part expansion.
         self:emitOPEN("__plume_expand_hash(__plume_temp, ")
         callback()
