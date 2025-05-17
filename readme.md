@@ -43,6 +43,7 @@ According some quick benchmark simulating standard use-cases, transpiled code ex
 ## Changelog
 ### 0.33 (last version)
 
-
+#### Bugfix
+- Change `not tonumber(x)` to `type(x) ~= "number"` to check if a variable is a number.
 
 [Older versions](doc/changelog.md)

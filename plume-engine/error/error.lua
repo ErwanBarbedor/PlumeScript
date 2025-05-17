@@ -204,7 +204,7 @@ return function (plume)
 
         -- Capture all global variables and their types from the provided `env`.
         for k, v in pairs(env) do
-            if not tonumber(k) then -- Exclude numeric keys, which are unlikely to be variable names.
+            if type(k) ~= "tonumber" then -- Exclude numeric keys, which are unlikely to be variable names.
                 if not visiblesVariables[name] then
                     visiblesVariables[k] = type(v)
                 end
