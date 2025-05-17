@@ -108,6 +108,7 @@ return function (plume)
 
         self:write(variable)
         
+        self:newline()
         if compound then
             self:write(" = ")
             self:write(variable)
@@ -117,7 +118,7 @@ return function (plume)
         else
             self:write(" = ")
         end
-        self:newline()
+        
     end
 
     --- Emits a function definition.
