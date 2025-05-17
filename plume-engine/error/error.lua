@@ -28,6 +28,7 @@ return function (plume)
         local pos = 0
         local lineCount = 0
         local capturedLine
+        local lastLine
 
         -- Iterate over lines of the source file to find the one corresponding to the error's absolute position.
         -- A newline is appended to sourceFile to ensure the last line is processed correctly by gmatch.
@@ -35,19 +36,34 @@ return function (plume)
             lineCount = lineCount + 1
             pos = pos + #line + 1  -- Current position in the file; +1 accounts for the newline character.
             if pos >= source.absolutePosition then
+                lastLine     = line
                 capturedLine = line:gsub('^%s*', '') -- Remove leading whitespace from the captured line.
                 break
             end
         end
 
+        local tokenIndication
         if includeLine then
             capturedLine = "\n    " .. capturedLine -- Indent the line content if included.
+            tokenIndication = {"    "}
+            for i=pos-#lastLine, source.absolutePosition-1 do
+                table.insert(tokenIndication, " ")
+            end
+            for i=1, source.length do
+                table.insert(tokenIndication, "^")
+            end
+            tokenIndication = "\n" .. table.concat(tokenIndication)
         else
+            tokenIndication = ""
             capturedLine = ""
         end
 
         -- Compose the context string. The '^@' is typically prepended by Lua for loaded files; remove it for cleaner display.
-        return string.format("File %s, line n°%i:%s", source.filename:gsub("^@", ""), lineCount, capturedLine)
+        local fullLine = string.format("File %s, line n°%i:%s", source.filename:gsub("^@", ""), lineCount, capturedLine)
+
+        fullLine = fullLine .. tokenIndication
+        
+        return fullLine
     end
 
     --- Extracts filename, line number, and message from a standard Lua error string.

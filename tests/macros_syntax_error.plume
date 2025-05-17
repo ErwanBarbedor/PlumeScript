@@ -4,6 +4,7 @@ macro foo(x y)
 Syntax error: expected a comma or closing parenthesis, not "y".
 File <string_1>, line n°1:
     macro foo(x y)
+              ^^^
 /// End
 
 /// Test "Expecting a name 1"
@@ -12,6 +13,7 @@ macro foo($)
 Syntax error: expected parameter name, not "$".
 File <string_1>, line n°1:
     macro foo($)
+              ^
 /// End
 
 /// Test "Expecting a name 2"
@@ -20,6 +22,7 @@ macro foo(x, $)
 Syntax error: expected parameter name, not "$".
 File <string_1>, line n°1:
     macro foo(x, $)
+                 ^
 /// End
 
 /// Test "Expecting a name 3"
@@ -28,6 +31,7 @@ macro foo(x, !x)
 Syntax error: expected parameter name, not "!".
 File <string_1>, line n°1:
     macro foo(x, !x)
+                 ^^
 /// End
 
 /// Test "Expecting a name 4"
@@ -36,6 +40,7 @@ macro foo(x,)
 Syntax error: expected parameter name after ",", not ")".
 File <string_1>, line n°1:
     macro foo(x,)
+    ^^^^^^^^^^
 /// End
 
 /// Test "Expecting a name 5"
@@ -44,6 +49,7 @@ macro foo(x, )
 Syntax error: expected parameter name after ",", not ")".
 File <string_1>, line n°1:
     macro foo(x, )
+    ^^^^^^^^^^
 /// End
 
 /// Test "Twice argument 1"
@@ -53,6 +59,7 @@ $foo(x: foo, x: baz)
 Syntax error: multiple use of the argument 'x' in the same call.
 File <string_1>, line n°2:
     $foo(x: foo, x: baz)
+    ^^^^^
 /// End
 
 /// Test "Twice argument 2"
@@ -62,4 +69,5 @@ $foo(x: foo, :x)
 Syntax error: multiple use of the argument 'x' in the same call.
 File <string_1>, line n°2:
     $foo(x: foo, :x)
+    ^^^^^
 /// End

@@ -312,6 +312,7 @@ $foo(x)
 Error: Wrong number of arguments, 1 instead of 0.
 File <string_1>, line n°2:
     $foo(x)
+    ^^^^^
 /// End
 
 /// Test "Method wrong argument number 2"
@@ -321,6 +322,7 @@ $foo()
 Error: Wrong number of arguments, 0 instead of 1.
 File <string_1>, line n°2:
     $foo()
+    ^^^^^
 /// End
 
 /// Test "Method wrong argument number 3"
@@ -330,6 +332,7 @@ $foo()
 Error: Wrong number of arguments, 0 instead of 1.
 File <string_1>, line n°2:
     $foo()
+    ^^^^^
 Traceback:
     File <string_1>, line n°1: in macro 'foo'
 /// End
@@ -341,6 +344,7 @@ $foo(x, y)
 Error: Wrong number of arguments, 2 instead of 1.
 File <string_1>, line n°2:
     $foo(x, y)
+    ^^^^^
 Traceback:
     File <string_1>, line n°1: in macro 'foo'
 /// End
@@ -352,6 +356,7 @@ $foo()
 Error: Wrong number of arguments, 0 instead of 1.
 File <string_1>, line n°2:
     $foo()
+    ^^^^^
 /// End
 
 /// Test "Method wrong argument number 6"
@@ -361,6 +366,7 @@ $foo(fooz: baz)
 Error: Unknow named parameter 'fooz'. Perhaps you mean 'foo'?
 File <string_1>, line n°2:
     $foo(fooz: baz)
+    ^^^^^
 Traceback:
     File <string_1>, line n°1: in macro 'foo'
 /// End
@@ -371,4 +377,5 @@ macro foo(self)
 Syntax error: cannot use 'self' as variable name.
 File <string_1>, line n°1:
     macro foo(self)
+              ^^^^
 /// End

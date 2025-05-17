@@ -245,6 +245,7 @@ a = 4
 Error: Cannot expand a 'number' variable.
 File <string_1>, line n°2:
     *a
+    ^^
 /// End
 
 /// Test "Index read 1"

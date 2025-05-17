@@ -59,13 +59,14 @@ nil
 /// End
 
 /// Test "File not found"
-void = $require(azag)
+module = $require(azag)
 /// Error
 Error: Module 'azag' not found:
     no file './azag.plume'
     no file './azag.lua'
 File <string_1>, line n°1:
-    void = $require(azag)
+    module = $require(azag)
+             ^^^^^^^^^
 /// End
 
 /// Test "Error in lib"
@@ -75,6 +76,7 @@ foo
 Error: attempt to perform arithmetic on global 'a' (a nil value)
 File ./tests/toImport/badlib.plume, line n°1:
     $(a+1)
+    ^^^^^^
 Traceback:
     File ./tests/toImport/badlib.plume, line n°1: in macro 'require'
 /// End
@@ -86,6 +88,7 @@ foo
 Error: attempt to perform arithmetic on global 'a' (a nil value)
 File ./tests/toImport/badlib.plume, line n°1:
     $(a+1)
+    ^^^^^^
 Traceback:
     File ./tests/toImport/badlib.plume, line n°1: in macro 'require'
     File ./tests/toImport/lib2.plume, line n°1: in macro 'require'
@@ -98,6 +101,7 @@ a = $foo()
 Error: attempt to perform arithmetic on global 'a' (a nil value)
 File ./tests/toImport/badlib2.plume, line n°2:
     a = $(a+1)
+        ^^^
 Traceback:
     File ./tests/toImport/badlib2.plume, line n°2: in macro 'foo'
 /// End
@@ -117,4 +121,5 @@ a = $foo()
 Error: File './tests/toImport/lib.foo' found, but plume doesn't know how to handle 'foo' files.
 File <string_1>, line n°1:
     $require(tests/toImport/lib, ext: foo)
+    ^^^^^^^^^
 /// End

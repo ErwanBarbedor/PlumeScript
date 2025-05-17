@@ -42,6 +42,7 @@ macro foo(
 Syntax error: ")" expected to close argument list.
 File <string_1>, line n°1:
     macro foo(
+    ^^^^^^^^^^
 /// End"
 
 /// Test "Syntax Error"
@@ -58,6 +59,7 @@ $for
 Syntax error: 'for' isn't a valid name.
 File <string_1>, line n°1:
     $for
+     ^^^
 /// End
 
 /// Test "Invalid lua name 2"
@@ -66,6 +68,7 @@ $for()
 Syntax error: 'for' isn't a valid name.
 File <string_1>, line n°1:
     $for()
+     ^^^
 /// End
 
 /// Test "Invalid lua name 3"
@@ -74,6 +77,7 @@ macro foo(for)
 Syntax error: 'for' isn't a valid name.
 File <string_1>, line n°1:
     macro foo(for)
+              ^^^
 /// End
 
 /// Test "Code after return"

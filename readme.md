@@ -49,5 +49,6 @@ According some quick benchmark simulating standard use-cases, transpiled code ex
 
 #### Enhancement
 - New error message when trying to expand a non-table variable.
+- The error message indicates exactly which element caused the error, rather than the entire line.
 
 [Older versions](doc/changelog.md)

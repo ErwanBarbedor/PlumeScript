@@ -7,6 +7,7 @@ $azert()
 Error: attempt to call global 'azert' (a nil value). Perhaps you mean 'assert' or 'azerty'?
 File <string_1>, line n°4:
     $azert()
+    ^^^^^^^
 /// End
 
 /// Test "add"
@@ -18,6 +19,7 @@ $(azert+1)
 Error: attempt to perform arithmetic on global 'azert' (a nil value). Perhaps you mean 'azerty'?
 File <string_1>, line n°4:
     $(azert+1)
+    ^^^^^^^^^^
 /// End
 
 /// Test "add table"
@@ -30,6 +32,7 @@ $(azert+1)
 Error: attempt to perform arithmetic on global 'azert' (a table value). Perhaps you mean 'azerty'?
 File <string_1>, line n°5:
     $(azert+1)
+    ^^^^^^^^^^
 /// End
 
 /// Test "call (local)"
@@ -40,6 +43,7 @@ $azert()
 Error: attempt to call global 'azert' (a nil value). Perhaps you mean 'assert' or 'azerty'?
 File <string_1>, line n°3:
     $azert()
+    ^^^^^^^
 /// End
 
 /// Test "concat"
@@ -51,6 +55,7 @@ $(azert.."bar")
 Error: attempt to concatenate global 'azert' (a nil value). Perhaps you mean 'azerty'?
 File <string_1>, line n°4:
     $(azert.."bar")
+    ^^^^^^^^^^^^^^^
 /// End
 
 /// Test "length"
@@ -62,4 +67,5 @@ $(#azert)
 Error: attempt to get length of global 'azert' (a nil value). Perhaps you mean 'azerty'?
 File <string_1>, line n°4:
     $(#azert)
+    ^^^^^^^^^
 /// End
