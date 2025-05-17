@@ -117,6 +117,7 @@ return function (plume)
         else
             self:write(" = ")
         end
+        self:newline()
     end
 
     --- Emits a function definition.

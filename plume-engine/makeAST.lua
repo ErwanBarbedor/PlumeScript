@@ -144,8 +144,11 @@ return function (plume)
                     if prevChildInParent and prevChildInParent.kind == "RETURN" then
                        -- Error if the context being popped (lastContext) has children,
                        -- implying something came after the RETURN within the same logical scope defined by RETURN.
-                       if #lastContext.children > 0 then
-                           plume.followedReturnError(lastContext.children[1].sourceToken.source)
+                        if #lastContext.children > 0 then
+                            -- plume.printTable(lastContext)
+                            local token = lastContext.sourceToken
+                                --or lastContext.children[1].sourceToken
+                            plume.followedReturnError(token.source)
                        end
                     end
 

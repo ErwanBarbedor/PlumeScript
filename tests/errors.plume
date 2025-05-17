@@ -6,6 +6,7 @@ a =
 mixedBlockError: Given the previous expressions in this block, it was expected to be of type TABLE, but a TEXT expression has been supplied.
 File <string_1>, line n°3:
     Bar
+    ^^^
 /// End
 
 /// Test "Mixed Table/Text"
@@ -16,6 +17,7 @@ a =
 mixedBlockError: Given the previous expressions in this block, it was expected to be of type TEXT, but a TABLE expression has been supplied.
 File <string_1>, line n°3:
     - Bar
+    ^^
 /// End
 
 /// Test "Mixed Table/Text"
@@ -26,6 +28,7 @@ a =
 mixedBlockError: Given the previous expressions in this block, it was expected to be of type TEXT, but a VALUE expression has been supplied.
 File <string_1>, line n°3:
     return Bar
+    ^^^^^^^^^^
 /// End
 
 /// Test "Evaluation Error 1"
@@ -34,6 +37,7 @@ a = $(1+b)
 Error: attempt to perform arithmetic on global 'b' (a nil value)
 File <string_1>, line n°1:
     a = $(1+b)
+        ^^^^^^
 /// End
 
 /// Test "Missing ')'"
@@ -51,6 +55,7 @@ a = $(1+)
 Error: unexpected symbol near ')'
 File <string_1>, line n°1:
     a = $(1+)
+        ^^^^^
 /// End
 
 /// Test "Invalid lua name 1"
@@ -88,6 +93,7 @@ macro foo()
 Syntax error: no statements can follow a 'return' statement in the same block.
 File <string_1>, line n°3:
     a = 2
+    ^^^
 /// End
 
 /// Test "Code after return - no errors 1"

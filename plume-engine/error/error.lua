@@ -46,7 +46,7 @@ return function (plume)
         if includeLine then
             capturedLine = "\n    " .. capturedLine -- Indent the line content if included.
             tokenIndication = {"    "}
-            for i=pos-#lastLine, source.absolutePosition-1 do
+            for i=pos-#lastLine, source.absolutePosition-1-#(lastLine:match('^%s+')or"") do
                 table.insert(tokenIndication, " ")
             end
             for i=1, source.length do
@@ -57,6 +57,8 @@ return function (plume)
             tokenIndication = ""
             capturedLine = ""
         end
+
+
 
         -- Compose the context string. The '^@' is typically prepended by Lua for loaded files; remove it for cleaner display.
         local fullLine = string.format("File %s, line n°%i:%s", source.filename:gsub("^@", ""), lineCount, capturedLine)
