@@ -164,7 +164,7 @@ a =
     foo: bar
 
 b =
-    *a
+    **a
     bar: foo
 $b.foo $b.bar
 /// Result
@@ -193,7 +193,7 @@ a =
 
 b =
     foo: foo
-    *a
+    **a
 $b.foo
 /// Result
 bar

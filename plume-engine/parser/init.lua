@@ -191,16 +191,19 @@ return function(plume)
             return table.concat(lineContent)
         end
 
-        
-
+        ---@param match table The matched macro definition.
+        ---@param isLocal boolean True if the macro is local, false otherwise.
+        ---@return nil
         local function handleMacroDef (match, isLocal)
             if match.macroName and match.macroName.content then
+                -- Push a MACRO_DEFINITION token for named macros.
                 pushToken {
                     kind = "MACRO_DEFINITION",
                     content = match.macroName.content,
                     isLocal = isLocal
                 }  
             else
+                -- Push an INLINE_MACRO_DEFINITION token for anonymous macros.
                 pushToken {
                     kind = "INLINE_MACRO_DEFINITION",
                     content = ""
@@ -210,9 +213,12 @@ return function(plume)
             inStatementContext = false
         end
 
+        ---@param match table The matched command expansion.
+        ---@param expandKind string The kind of expansion ("LIST" or "HASH").
         local function handleCommandExpand(match, expandKind)
             local index = {}
             if match.index then
+                -- Process indexing (bracket and field access).
                 for _, capture in ipairs(match.index) do
                     if #capture > 0 then -- bracket indexing
                         local code = {}
@@ -221,10 +227,12 @@ return function(plume)
                         end
                         table.insert(index, {
                             kind="INDEX_ACCESS",
-                            content=table.concat(code, "", 2, #code-1) -- removing brackets
+                            -- Removing the surrounding brackets from the captured content.
+                            content=table.concat(code, "", 2, #code-1) 
                         })
                     else -- field indexing
-                        local name = capture.content:sub(2, -1) -- removing leading dot
+                        -- Removing the leading dot from the field access.
+                        local name = capture.content:sub(2, -1) 
                         plume.checkVariableName(capture.source, name)
                         table.insert(index, {
                             kind="FIELD_ACCESS",
@@ -234,6 +242,8 @@ return function(plume)
                 end
             end
 
+            local kind = ""
+            -- Distinguish between command expansions with and without calls.
             if match.call.kind ~= "EMPTY" then
                 inStatementContext = false
                 kind = "COMMAND_EXPAND_" .. expandKind .. "_CALL_BEGIN"
@@ -241,6 +251,7 @@ return function(plume)
                 kind = "COMMAND_EXPAND_" .. expandKind
             end
 
+            -- Push the command expansion token.
             pushToken {
                 kind    = kind,
                 content = match.variable.content,
@@ -258,7 +269,7 @@ return function(plume)
 
             inStatementContext = false
         end
-
+        
         local statementHandler
         statementHandler = {
             LIST_ITEM = function(match)
@@ -581,10 +592,10 @@ return function(plume)
                 }
             end,
             COMMAND_EXPAND_LIST = function(match)
-                handleCommandExpand("LIST")
+                handleCommandExpand(match, "LIST")
             end,
             COMMAND_EXPAND_HASH = function(match)
-                handleCommandExpand("HASH")
+                handleCommandExpand(match, "HASH")
             end,
         }
 

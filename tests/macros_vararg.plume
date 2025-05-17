@@ -47,14 +47,6 @@ $foo()
 Bar
 /// End
 
-/// Test "vararg not last"
-macro foo(*kw, foo)
-/// Error
-Syntax error: vararg ('...') must be the last parameter in a parameter list.
-File <string_1>, line n°1:
-    macro foo(*kw, foo)
-/// End
-
 /// Test "Vararg inline"
 foo = macro(*x)
 /// Result

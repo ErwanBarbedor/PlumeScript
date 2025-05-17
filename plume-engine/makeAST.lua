@@ -431,7 +431,7 @@ return function (plume)
                     pushChild(token, "TEXT", "*"..(token.content or "")) -- token.content might be name after *
                 end
 
-            elseif contains("COMMAND_EXPAND_LIST", token.kind) then
+            elseif contains("COMMAND_EXPAND_LIST COMMAND_EXPAND_HASH", token.kind) then
                  -- An explicit command/variable to expand used in table.
                 setReturnType(token, "TABLE")
                 pushChild(token, token.kind, token.content)

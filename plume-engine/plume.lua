@@ -156,18 +156,19 @@ return function(plume)
 
     function plume.plumeStdLib.expandHash(dest, source)
         for k, v in pairs(source) do
-            if not type(k) == "number" then
+            if type(k) ~= "number" then
                 dest[k] = v
             end
         end
     end
-
-        
+   
     --- Check and initialize function arguments. It validates the number of arguments
     --- and assigns default values to named parameters if they are not provided.
     ---@param argsTable table The table of arguments passed to the function.
     ---@param positionalArgsCount integer The number of required positional arguments.
-    ---@param namedArgs table<string,any> A list of named arguments with their default values. Format: {{name1, defaultValue1}, {name2, defaultValue2}, ...}
+    ---@param namedArgs table<string,any> A list of named arguments with their default values. Format: {{name1, defaultValue1}, {name2, defaultValue2}, ...} 
+    ---@param varargPos bool 
+    ---@param varargNamed bool
     function plume.plumeStdLib.initArgs(argsTable, positionalArgsCount, namedArgs, varargPos, varargNamed)
         local result = {argsTable.self or false} -- Store the 'self' parameter if present
 
@@ -204,8 +205,10 @@ return function(plume)
 
         -- Check for surplus named arguments if vararg is not used
         local excessNamed = {}
-        for name, _ in pairs(argsTable) do  -- Iterate through remaining entries in argsTable
-            if not tonumber(name) then -- Check if the key is not a number (indicating a named argument)
+        -- Iterate through remaining entries in argsTable
+        for name, value in pairs(argsTable) do
+            -- Check if the key is not a number (indicating a named argument)
+            if type(name) ~= "number" then
                 if varargNamed then
                     excessNamed[name] = value
                     argsTable[name] = nil

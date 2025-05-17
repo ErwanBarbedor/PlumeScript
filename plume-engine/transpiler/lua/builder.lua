@@ -408,20 +408,21 @@ return function (plume)
         self.deep = self.deep - 1
     end
 
-    --- Generates code to expand a table's contents into `__plume_temp`.
-    -- This involves copying both the array part (integer keys) and the hash part (string keys)
-    -- from the table `name` into a temporary table `__plume_temp`.
-    -- This is typically used for argument spreading or table construction.
-    ---@return nil
+    --- Generates code to expand a table's array part into `__plume_temp`.
+    ---@param callback function The function that emits the table expression to expand.
     function builder:chunkEXPAND_LIST(callback)
         self:newline()
+        -- Emits the call to __plume_expand_list, which handles the array part expansion.
         self:emitOPEN("__plume_expand_list(__plume_temp, ")
         callback()
         self:emitCLOSE(")")
     end
 
+    --- Generates code to expand a table's hash part into `__plume_temp`.
+    ---@param callback function The function that emits the table expression to expand.
     function builder:chunkEXPAND_HASH(callback)
         self:newline()
+        -- Emits the call to __plume_expand_hash, which handles the hash part expansion.
         self:emitOPEN("__plume_expand_hash(__plume_temp, ")
         callback()
         self:emitCLOSE(")")
