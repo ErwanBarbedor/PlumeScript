@@ -149,12 +149,20 @@ return function(plume)
     --- @param source table
     --- @param dest table
     function plume.plumeStdLib.expandList(dest, source)
+        if type(source) ~= "table" then
+            error("Cannot expand a '" .. type(source) .. "' variable.", 2)
+        end
+
         for k, v in ipairs(source) do
             table.insert(dest, v)
         end
     end
 
     function plume.plumeStdLib.expandHash(dest, source)
+        if type(source) ~= "table" then
+            error("Cannot expand a '" .. type(source) .. "' variable.", 2)
+        end
+        
         for k, v in pairs(source) do
             if type(k) ~= "number" then
                 dest[k] = v

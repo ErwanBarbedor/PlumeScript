@@ -238,6 +238,15 @@ $t2[2]
 Bar
 /// End
 
+/// Test "Expand error"
+a = 4
+*a
+/// Error
+Error: Cannot expand a 'number' variable.
+File <string_1>, line n°2:
+    *a
+/// End
+
 /// Test "Index read 1"
 a =
     - foo

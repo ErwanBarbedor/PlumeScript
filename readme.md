@@ -47,4 +47,7 @@ According some quick benchmark simulating standard use-cases, transpiled code ex
 - Change `not tonumber(x)` to `type(x) ~= "number"` to check if a variable is a number.
 - Correctly map `expand` code.
 
+#### Enhancement
+- New error message when trying to expand a non-table variable.
+
 [Older versions](doc/changelog.md)
