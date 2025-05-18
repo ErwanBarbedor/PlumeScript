@@ -1,6 +1,8 @@
-#!/bin/bash
+#!/bin/sh
 
-SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
+SCRIPT_DIR_REL="$(dirname "$0")"
+SCRIPT_DIR="$(cd "$SCRIPT_DIR_REL" > /dev/null 2>&1 && pwd)"
+
 LUA="${PLUME_LUA_EXECUTABLE:-luajit}"
 
 "$LUA" "$SCRIPT_DIR/plume.lua" "$SCRIPT_DIR" "$@"
