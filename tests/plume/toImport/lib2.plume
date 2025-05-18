@@ -1,0 +1,2 @@
+$require(tests/plume/toImport/badlib)
+foo

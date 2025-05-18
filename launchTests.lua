@@ -22,7 +22,7 @@ local function loadTests(filenames)
     local tests = {}
 
     for filename in filenames:gmatch("%S+") do
-        local content = io.open("tests/" .. filename .. ".plume"):read("*a"):gsub('\r', '')
+        local content = io.open("tests/plume/" .. filename .. ".plume"):read("*a"):gsub('\r', '')
         -- Test block structure:
         -- /// Test "Name"
         -- [code]

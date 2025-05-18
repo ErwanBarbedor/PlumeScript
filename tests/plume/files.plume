@@ -1,58 +1,58 @@
 /// Test "Load plume 1"
-$require(tests/toImport/lib) // relative to launchTests.lua
+$require(tests/plume/toImport/lib) // relative to launchTests.lua
 /// Result
 plume loaded
 /// End
 
 /// Test "Load plume 2"
-foo = $require(tests/toImport/lib)
+foo = $require(tests/plume/toImport/lib)
 $foo
 /// Result
 plume loaded
 /// End
 
 /// Test "Load plume 3"
-foo = $require(tests/toImport/lib)
+foo = $require(tests/plume/toImport/lib)
 $globalVar
 /// Result
 plume loaded (global)
 /// End
 
 /// Test "Load plume 4"
-foo = $require(tests/toImport/lib)
+foo = $require(tests/plume/toImport/lib)
 $localVar
 /// Result
 nil
 /// End
 
 /// Test "Load lua 1"
-$require(tests/toImport/lib, ext: lua)
+$require(tests/plume/toImport/lib, ext: lua)
 /// Result
 lua loaded
 /// End
 
 /// Test "Load lua 2"
-$require(tests/toImport/lualib)
+$require(tests/plume/toImport/lualib)
 /// Result
 lua loaded
 /// End
 
 /// Test "Load lua 3"
-foo = $require(tests/toImport/lib, ext: lua)
+foo = $require(tests/plume/toImport/lib, ext: lua)
 $foo
 /// Result
 lua loaded
 /// End
 
 /// Test "Load lua 4"
-foo = $require(tests/toImport/lib, ext: lua)
+foo = $require(tests/plume/toImport/lib, ext: lua)
 $globalVar
 /// Result
 lua loaded (global)
 /// End
 
 /// Test "Load lua 5"
-foo = $require(tests/toImport/lib, ext: lua)
+foo = $require(tests/plume/toImport/lib, ext: lua)
 $localVar
 /// Result
 nil
@@ -70,56 +70,56 @@ File <string_1>, line n°1:
 /// End
 
 /// Test "Error in lib"
-$require(tests/toImport/badlib)
+$require(tests/plume/toImport/badlib)
 foo
 /// Error
 Error: attempt to perform arithmetic on global 'a' (a nil value)
-File ./tests/toImport/badlib.plume, line n°1:
+File ./tests/plume/toImport/badlib.plume, line n°1:
     $(a+1)
     ^^^^^^
 Traceback:
-    File ./tests/toImport/badlib.plume, line n°1: in macro 'require'
+    File ./tests/plume/toImport/badlib.plume, line n°1: in macro 'require'
 /// End
 
 /// Test "Error in lib (chained)"
-$require(tests/toImport/lib2)
+$require(tests/plume/toImport/lib2)
 foo
 /// Error
 Error: attempt to perform arithmetic on global 'a' (a nil value)
-File ./tests/toImport/badlib.plume, line n°1:
+File ./tests/plume/toImport/badlib.plume, line n°1:
     $(a+1)
     ^^^^^^
 Traceback:
-    File ./tests/toImport/badlib.plume, line n°1: in macro 'require'
-    File ./tests/toImport/lib2.plume, line n°1: in macro 'require'
+    File ./tests/plume/toImport/badlib.plume, line n°1: in macro 'require'
+    File ./tests/plume/toImport/lib2.plume, line n°1: in macro 'require'
 /// End
 
 /// Test "Error in lib (imported)"
-$require(tests/toImport/badlib2)
+$require(tests/plume/toImport/badlib2)
 a = $foo()
 /// Error
 Error: attempt to perform arithmetic on global 'a' (a nil value)
-File ./tests/toImport/badlib2.plume, line n°2:
+File ./tests/plume/toImport/badlib2.plume, line n°2:
     a = $(a+1)
         ^^^^^^
 Traceback:
-    File ./tests/toImport/badlib2.plume, line n°2: in macro 'foo'
+    File ./tests/plume/toImport/badlib2.plume, line n°2: in macro 'foo'
 /// End
 
 /// Test "Error in lualib (imported)"
-$require(tests/toImport/badlib2, ext: lua)
+$require(tests/plume/toImport/badlib2, ext: lua)
 a = $foo()
 /// Error
-./tests/toImport/badlib2.lua:2: attempt to call global 'bar' (a nil value)
+./tests/plume/toImport/badlib2.lua:2: attempt to call global 'bar' (a nil value)
 /// End
 
 
 /// Test "Wrong ext"
-$require(tests/toImport/lib, ext: foo)
+$require(tests/plume/toImport/lib, ext: foo)
 a = $foo()
 /// Error
-Error: File './tests/toImport/lib.foo' found, but plume doesn't know how to handle 'foo' files.
+Error: File './tests/plume/toImport/lib.foo' found, but plume doesn't know how to handle 'foo' files.
 File <string_1>, line n°1:
-    $require(tests/toImport/lib, ext: foo)
+    $require(tests/plume/toImport/lib, ext: foo)
     ^^^^^^^^^
 /// End
