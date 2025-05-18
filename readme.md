@@ -42,4 +42,7 @@ According some quick benchmark simulating standard use-cases, transpiled code ex
 ## Changelog
 ### 0.34 (last version)
 
+### Changes
+- Addition of a test suite for the CLI.
+
 [Older versions](doc/changelog.md)
