@@ -54,6 +54,19 @@ According some quick benchmark simulating standard use-cases, transpiled code ex
 #### Enhancement
 - New error message when trying to expand a non-table variable.
 - The error message indicates exactly which element caused the error, rather than the entire line.
+Exemple:
+```
+Syntax error: expected parameter name, not "$".
+File <string_1>, line n°1:
+    macro foo(x, $)
+                 ^
+```
+Instead of
+```
+Syntax error: expected parameter name, not "$".
+File <string_1>, line n°1:
+    macro foo(x, $)
+```
 
 #### Internal changes
 - Transpiler divides the assignment into two lines, so not more that one token is retained for each transpiled Lua line.
