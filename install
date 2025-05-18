@@ -1,0 +1,52 @@
+#!/bin/sh
+set -e
+
+# Configuration
+INSTALL_PATH_TARGET="/usr/local/bin"
+APP_EXECUTABLE_NAME="plume"
+APP_LUA_SCRIPT="plume.lua"
+APP_ENGINE_DIR="plume-engine"
+SOURCE_DIR="."
+
+# Check for LuaJIT
+if ! command -v luajit >/dev/null 2>&1; then
+    echo "Error: luajit interpreter not found in PATH." >&2
+    echo "Please install LuaJIT or set the PLUME_LUA_EXECUTABLE environment variable" >&2
+    echo "to specify name of the LuaJIT executable ." >&2
+    exit 1
+fi
+echo "LuaJIT interpreter detected."
+
+# Check source files exist
+if [ ! -f "${SOURCE_DIR}/${APP_EXECUTABLE_NAME}" ]; then
+    echo "Error: Executable file '${APP_EXECUTABLE_NAME}' not found in '${SOURCE_DIR}'." >&2
+    exit 1
+fi
+if [ ! -f "${SOURCE_DIR}/${APP_LUA_SCRIPT}" ]; then
+    echo "Error: Lua script '${APP_LUA_SCRIPT}' not found in '${SOURCE_DIR}'." >&2
+    exit 1
+fi
+if [ ! -d "${SOURCE_DIR}/${APP_ENGINE_DIR}" ]; then
+    echo "Error: Directory '${APP_ENGINE_DIR}' not found in '${SOURCE_DIR}'." >&2
+    exit 1
+fi
+echo "Source files checked."
+
+# Installation
+echo "Installing Plume to ${INSTALL_PATH_TARGET}..."
+echo "This operation may require administrative privileges (sudo)."
+
+cp "${SOURCE_DIR}/${APP_EXECUTABLE_NAME}" "${INSTALL_PATH_TARGET}/"
+cp "${SOURCE_DIR}/${APP_LUA_SCRIPT}" "${INSTALL_PATH_TARGET}/"
+# Remove existing engine directory in target if it exists, to avoid merging issues with cp -r
+if [ -d "${INSTALL_PATH_TARGET}/${APP_ENGINE_DIR}" ]; then
+    rm -rf "${INSTALL_PATH_TARGET}/${APP_ENGINE_DIR}"
+fi
+cp -r "${SOURCE_DIR}/${APP_ENGINE_DIR}" "${INSTALL_PATH_TARGET}/"
+
+chmod +x "${INSTALL_PATH_TARGET}/${APP_EXECUTABLE_NAME}"
+
+echo "Plume installation complete."
+echo "The executable '${APP_EXECUTABLE_NAME}' should now be accessible from any location."
+
+exit 0

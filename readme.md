@@ -13,19 +13,32 @@
 Test it now [in your browser](https://app.barbedor.bzh/plume.html)! *older version waiting for update*
 
 
-## Quick Start
-Download `plume-engine` folder. Then, in a Lua file:
+## Installation
 
-``` lua
-local plume = require("plume-engine/init")
-
-print(plume.run [[
-a = 5
-a is $(a)
-]])
-
+### Linux
+``` sh
+git clone https://github.com/ErwanBarbedor/PlumeScript
+cd PlumeScript
+sudo ./install
 ```
 
+## Usage
+```
+plume ( input_path | ([-s | --string] "scrint_script") ) [ ([-o | --output] output_path) | ([-p | --print]) ] | [-h | --help]
+Usage: 
+    plume [-h --help]
+        Displays this help message.
+    plume file.plume
+        Executes the file.plume script.
+    plume [-s --string] "..."
+        Executes the given string as a Plume script.
+    plume file.plume [-o --output] file.txt
+        Saves the script's output to file.txt.
+        Warning: The result is converted using 'tostring'.
+        So if the script returns a table, the output in the file might not be directly usable.
+    plume file.plume [-p --print]
+        Executes file.plume and prints its result to the console.
+```
 ## Overview
 
 *(the best way to get a feel for Plume is to follow the tutorials available on the link given above)*
