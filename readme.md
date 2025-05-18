@@ -43,6 +43,7 @@ According some quick benchmark simulating standard use-cases, transpiled code ex
 ### 0.33 (last version)
 
 #### Changes
+- Add a CLI tools to run plume
 - Remove all compatibility with Lua 5.2+.
 
 #### Bugfix
