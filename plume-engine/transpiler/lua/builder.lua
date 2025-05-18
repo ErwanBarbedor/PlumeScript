@@ -155,8 +155,8 @@ return function (plume)
     ---@param name string The name of the function to call.
     ---@return nil
     function builder:emitCALL(node, name)
-        if node then self:use(node) end
         self:write(name)
+        if node then self:use(node) end
     end
 
     --- Emits an argument table, typically empty or with a 'self' field for method calls.
@@ -415,11 +415,9 @@ return function (plume)
     end
 
     --- Generates code to expand a table's array part into `__plume_temp`.
-    ---@param node table used Node
     ---@param callback function The function that emits the table expression to expand.
-    function builder:chunkEXPAND_LIST(node, callback)
+    function builder:chunkEXPAND_LIST(callback)
         self:newline()
-        self:use(node)
         -- Emits the call to __plume_expand_list, which handles the array part expansion.
         self:emitOPEN("__plume_expand_list(__plume_temp, ")
         callback()
@@ -427,11 +425,9 @@ return function (plume)
     end
 
     --- Generates code to expand a table's hash part into `__plume_temp`.
-    ---@param node table used Node
     ---@param callback function The function that emits the table expression to expand.
-    function builder:chunkEXPAND_HASH(node, callback)
+    function builder:chunkEXPAND_HASH(callback)
         self:newline()
-        self:use(node)
         -- Emits the call to __plume_expand_hash, which handles the hash part expansion.
         self:emitOPEN("__plume_expand_hash(__plume_temp, ")
         callback()

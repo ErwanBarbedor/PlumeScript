@@ -272,23 +272,25 @@ return function(plume, transpiler)
             -- Special case: expand macro call
             elseif info.content.kind == "COMMAND_EXPAND_LIST" then
                 local name = transpiler.getVariableName(info.content)
-                transpiler:chunkEXPAND_LIST(info.content, function()
+                transpiler:chunkEXPAND_LIST(function()
+                    transpiler:use(info.content)
                     transpiler:write(name)
                 end)
 
             elseif info.content.kind == "COMMAND_EXPAND_LIST_CALL" then
-                transpiler:chunkEXPAND_LIST(info.content, function ()
+                transpiler:chunkEXPAND_LIST(function ()
                     transpiler.transpileToLua(info.content)
                 end)
 
             elseif info.content.kind == "COMMAND_EXPAND_HASH" then
                 local name = transpiler.getVariableName(info.content)
-                transpiler:chunkEXPAND_HASH(info.content, function()
+                transpiler:chunkEXPAND_HASH(function()
+                    transpiler:use(info.content)
                     transpiler:write(name)
                 end)
 
             elseif info.content.kind == "COMMAND_EXPAND_HASH_CALL" then
-                transpiler:chunkEXPAND_HASH(info.content, function ()
+                transpiler:chunkEXPAND_HASH(function ()
                     transpiler.transpileToLua(info.content)
                 end)
             

@@ -321,13 +321,6 @@ return function(plume, transpiler)
             transpiler:emitVARIABLE(node, variableExpression) 
         end,
 
-        --- Handles expansion
-        -- @param node table The command expansion node to process.
-        -- @return nil
-        COMMAND_EXPAND = function (node)
-            transpiler:emitVARIABLE(node, node.content)
-        end,
-
         --- Handles raw Lua expressions embedded in Plume code.
         -- @param node table The Lua expression node to process.
         -- @return nil
