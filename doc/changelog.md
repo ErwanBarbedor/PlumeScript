@@ -1,3 +1,36 @@
+### 0.33
+
+#### Changes
+- Add a CLI tools to run plume
+- Remove all compatibility with Lua 5.2+.
+
+#### Bugfix
+- Change `not tonumber(x)` to `type(x) ~= "number"` to check if a variable is a number.
+- Correctly map `expand` code.
+- Correctly map `call` code.
+- Correction of a case where the transpiled code is ambiguous (situation like `a = bar (function () ... end)` using the command `void`)
+- Extending a macro call within a macro definition will behave correctly.
+
+#### Enhancement
+- New error message when trying to expand a non-table variable.
+- The error message indicates exactly which element caused the error, rather than the entire line.
+Exemple:
+```
+Syntax error: expected parameter name, not "$".
+File <string_1>, line n°1:
+    macro foo(x, $)
+                 ^
+```
+Instead of
+```
+Syntax error: expected parameter name, not "$".
+File <string_1>, line n°1:
+    macro foo(x, $)
+```
+
+#### Internal changes
+- Transpiler divides the assignment into two lines, so not more that one token is retained for each transpiled Lua line.
+
 ### 0.32
 
 #### Changes

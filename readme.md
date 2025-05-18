@@ -1,6 +1,6 @@
 <p align="center"><img src="plume_logo.svg" width="600" height="300"></p>
 
-![Version](https://img.shields.io/badge/version-0.33-blue.svg) [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
+![Version](https://img.shields.io/badge/version-0.34-blue.svg) [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 
 
 ## Plume🪶 - An Expressive Templating Language
@@ -40,38 +40,6 @@ On my 12600k, transpilation of a 100ko file takes less than 200ms, up to 2s for 
 According some quick benchmark simulating standard use-cases, transpiled code executes at between 80% and 100% of Lua's performance. So with LuaJIT, this makes it possible to include relatively costly calculations in templates.
 
 ## Changelog
-### 0.33 (last version)
-
-#### Changes
-- Add a CLI tools to run plume
-- Remove all compatibility with Lua 5.2+.
-
-#### Bugfix
-- Change `not tonumber(x)` to `type(x) ~= "number"` to check if a variable is a number.
-- Correctly map `expand` code.
-- Correctly map `call` code.
-- Correction of a case where the transpiled code is ambiguous (situation like `a = bar (function () ... end)` using the command `void`)
-- Extending a macro call within a macro definition will behave correctly.
-
-#### Enhancement
-- New error message when trying to expand a non-table variable.
-- The error message indicates exactly which element caused the error, rather than the entire line.
-Exemple:
-```
-Syntax error: expected parameter name, not "$".
-File <string_1>, line n°1:
-    macro foo(x, $)
-                 ^
-```
-Instead of
-```
-Syntax error: expected parameter name, not "$".
-File <string_1>, line n°1:
-    macro foo(x, $)
-```
-
-#### Internal changes
-- Transpiler divides the assignment into two lines, so not more that one token is retained for each transpiled Lua line.
-
+### 0.34 (last version)
 
 [Older versions](doc/changelog.md)
