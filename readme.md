@@ -49,6 +49,7 @@ According some quick benchmark simulating standard use-cases, transpiled code ex
 - Change `not tonumber(x)` to `type(x) ~= "number"` to check if a variable is a number.
 - Correctly map `expand` code.
 - Correctly map `call` code.
+- Correction of a case where the transpiled code is ambiguous (situation like `a = bar (function () ... end)` using the command `void`)
 
 #### Enhancement
 - New error message when trying to expand a non-table variable.

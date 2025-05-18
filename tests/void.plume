@@ -9,3 +9,10 @@ $x
 /// Result
 1
 /// End
+
+/// Test "No ambiguous syntax"
+a = $bar
+void $math.sin(1)
+/// Result
+nil
+/// End

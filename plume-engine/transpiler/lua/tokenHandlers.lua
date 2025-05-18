@@ -287,7 +287,9 @@ return function(plume, transpiler)
         -- Not very optimized
         VOID = function (node)
             transpiler:newline()
-            transpiler:emitOPEN('(function ()')
+            -- add ';' avoid ambiguous syntax in situation like
+            -- `a = bar (function () ... end)`
+            transpiler:emitOPEN(';(function ()') 
             transpiler:newline()
             transpiler.transpileChildren(node, false, true, true)
             transpiler:emitCLOSE('end)()')
