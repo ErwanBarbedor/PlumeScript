@@ -50,6 +50,7 @@ According some quick benchmark simulating standard use-cases, transpiled code ex
 - Correctly map `expand` code.
 - Correctly map `call` code.
 - Correction of a case where the transpiled code is ambiguous (situation like `a = bar (function () ... end)` using the command `void`)
+- Extending a macro call within a macro definition will behave correctly.
 
 #### Enhancement
 - New error message when trying to expand a non-table variable.

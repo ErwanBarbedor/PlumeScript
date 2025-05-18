@@ -415,7 +415,7 @@ return function (plume)
             -- Expand operator
             elseif contains("EXPAND_LIST EXPAND_HASH", token.kind) then
                 if isInside("MACRO_ARG_TABLE") then
-                    if isInside("MACRO_DEFINITION") or isInside("INLINE_MACRO_DEFINITION") then
+                    if isInside("MACRO_DEFINITION", 3) or isInside("INLINE_MACRO_DEFINITION", 3) then
                         -- This is a vararg parameter in a macro definition (e.g., `def macro(param1, *arg)`).
                         if token.kind == "EXPAND_LIST" then
                             -- content is the vargard name
