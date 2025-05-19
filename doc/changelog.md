@@ -1,3 +1,12 @@
+### 0.34
+
+### CLI
+- Addition of a test suite for the CLI.
+- New CLI option `-v --version`
+- New CLI option `--install`
+- New CLI option `--remove`
+- New CLI option `--update`
+
 ### 0.33
 
 #### Changes
