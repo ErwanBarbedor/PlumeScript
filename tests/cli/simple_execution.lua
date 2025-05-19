@@ -6,6 +6,6 @@ return {
         "./plume test.plume"
     },
     expected = {
-        output = "Executed with sucess."
+        output = "Executed with success."
     }
 }

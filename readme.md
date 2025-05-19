@@ -16,10 +16,14 @@ Test it now [in your browser](https://app.barbedor.bzh/plume.html)! *older versi
 ## Installation
 
 ### Linux
+
+You must have luajit installed.
+
 ``` sh
 git clone https://github.com/ErwanBarbedor/PlumeScript
 cd PlumeScript
-sudo ./install
+chmod +x plume
+./plume --install
 ```
 
 ## Usage
@@ -38,6 +42,11 @@ Usage:
         So if the script returns a table, the output in the file might not be directly usable.
     plume INPUT [-p --print]
         Print the output to the console.
+
+    PLUME MANAGEMENT
+    plume --install
+    plume --install directory
+        Install plume in the given directory (~/.local/bin by default)
     
     OTHER
     plume [-h --help]
@@ -61,8 +70,9 @@ According some quick benchmark simulating standard use-cases, transpiled code ex
 ## Changelog
 ### 0.34 (last version)
 
-### Changes
+### CLI
 - Addition of a test suite for the CLI.
 - New CLI option `-v --version`
+- New CLI option `--install`
 
 [Older versions](doc/changelog.md)

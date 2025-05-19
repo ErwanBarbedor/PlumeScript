@@ -3,6 +3,6 @@ return {
         "./plume -s \"\\$print(foo)\""
     },
     expected = {
-        output = "foo\nExecuted with sucess."
+        output = "foo\nExecuted with success."
     }
 }

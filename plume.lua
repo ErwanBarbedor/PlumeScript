@@ -37,7 +37,7 @@ Usage:
     plume INPUT [-p --print]
         Print the output to the console.
 
-    INSTALATION 
+    PLUME MANAGEMENT
     plume --install
     plume --install directory
         Install plume in the given directory (~/.local/bin by default)
@@ -75,6 +75,20 @@ end
 --- Displays the Plume version.
 local function CLIVersion ()
     print(plume._VERSION)
+end
+
+local function checkDirOnPath(dir)
+    local home = os.getenv("HOME")
+    local resdir = dir:gsub('~', home)
+    local paths = os.getenv("PATH")
+    
+    for path in paths:gmatch('[^:]+') do
+        if path == dir then
+            return true
+        end
+    end
+
+    return false
 end
 
 --- Executes Plume code provided either as a string or from a file.
@@ -129,6 +143,39 @@ function CLIExec (options)
     end
 end
 
+--- Installs the Plume CLI tools.
+---@param dir string The directory to install to. Defaults to '~/.local/bin'.
+local function CLIInstall(dir)
+    if dir == true then
+        dir = "~/.local/bin"
+    end
+
+    -- Check if source files exist
+    for filename in ("plume plume-engine plume.lua"):gmatch("%S+") do
+        local file = io.open(filename)
+        if not file then
+            CLIError("'" .. filename .. "' not found, abort.")
+        end
+        file:close()
+    end
+
+    -- Copy files to the installation directory
+    for filename in ("plume plume-engine plume.lua"):gmatch("%S+") do
+        local p = io.popen("cp -r " .. filename .. " " .. dir .. "/" .. filename .. " 2>&1")
+        local result = p:read("*a")
+        if #result > 0 then
+            CLIError("Error during copy: " .. result)
+        end
+    end
+
+    -- check if dir is in the path and warn if not
+    if not checkDirOnPath(dir) then
+        print("Warning: '" .. dir .."' is not on PATH.")
+    end
+
+    print("Plume installed in '" .. dir .. "' with success.")
+end
+
 -- Option configuration
 
 -- Maps short option flags to their corresponding long option names.
@@ -145,7 +192,8 @@ local acceptedParameters = {
     output  = true,
     help    = true,
     print   = true,
-    version = true
+    version = true,
+    install = true
 }
 -- Defines options that cannot be used together.
 local exclusive = {
@@ -161,7 +209,10 @@ local all_exclusive = {
 -- A set of option names that require an accompanying value.
 local expectedValue = {
     string  = true,
-    output  = true,
+    output  = true
+}
+
+local optionalValue = {
     install = true
 }
 
@@ -221,6 +272,12 @@ while #arg > 0 do
             if not value then
                 CLIError("Error: Expected a value after parameter '" .. parameter .. "'.", true)
             end
+        elseif optionalValue[name] then
+            if #arg>0 and not arg[#arg]:match('^%-') then
+                value = table.remove(arg, 1)
+            else
+                value = true
+            end
         else
             value = true
         end
@@ -237,6 +294,8 @@ if options.help then
     CLIHelp()
 elseif options.version then
     CLIVersion()
+elseif options.install then
+    CLIInstall(options.install)
 else
     CLIExec(options)
 end
