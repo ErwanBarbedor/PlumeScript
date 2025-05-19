@@ -24,20 +24,24 @@ sudo ./install
 
 ## Usage
 ```
-plume ( input_path | ([-s | --string] "scrint_script") ) [ ([-o | --output] output_path) | ([-p | --print]) ] | [-h | --help]
 Usage: 
-    plume [-h --help]
-        Displays this help message.
+    INPUT
     plume file.plume
-        Executes the file.plume script.
+        Executes the given script.
     plume [-s --string] "..."
-        Executes the given string as a Plume script.
-    plume file.plume [-o --output] file.txt
-        Saves the script's output to file.txt.
+        Executes the given string.
+    
+    OUTPUT
+    plume INPUT [-o --output] file.txt
+        Saves the output to file.txt.
         Warning: The result is converted using 'tostring'.
         So if the script returns a table, the output in the file might not be directly usable.
-    plume file.plume [-p --print]
-        Executes file.plume and prints its result to the console.
+    plume INPUT [-p --print]
+        Print the output to the console.
+    
+    OTHER
+    plume [-h --help]
+        Displays this help message.
 ```
 ## Overview
 
