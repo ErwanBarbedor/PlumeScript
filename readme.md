@@ -47,6 +47,8 @@ Usage:
     plume --install
     plume --install directory
         Install plume in the given directory (~/.local/bin by default)
+    plume --remove
+        Remove plume installation
     
     OTHER
     plume [-h --help]
@@ -74,5 +76,6 @@ According some quick benchmark simulating standard use-cases, transpiled code ex
 - Addition of a test suite for the CLI.
 - New CLI option `-v --version`
 - New CLI option `--install`
+- New CLI option `--remove`
 
 [Older versions](doc/changelog.md)

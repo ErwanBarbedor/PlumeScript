@@ -41,6 +41,8 @@ Usage:
     plume --install
     plume --install directory
         Install plume in the given directory (~/.local/bin by default)
+    plume --remove
+        Remove plume installation
     
     OTHER
     plume [-h --help]
@@ -75,20 +77,6 @@ end
 --- Displays the Plume version.
 local function CLIVersion ()
     print(plume._VERSION)
-end
-
-local function checkDirOnPath(dir)
-    local home = os.getenv("HOME")
-    local resdir = dir:gsub('~', home)
-    local paths = os.getenv("PATH")
-    
-    for path in paths:gmatch('[^:]+') do
-        if path == dir then
-            return true
-        end
-    end
-
-    return false
 end
 
 --- Executes Plume code provided either as a string or from a file.
@@ -143,6 +131,21 @@ function CLIExec (options)
     end
 end
 
+local function checkDirOnPath(dir)
+    local home = os.getenv("HOME")
+    local resdir = dir:gsub('~', home)
+    local paths = os.getenv("PATH")
+    
+    for path in paths:gmatch('[^:]+') do
+        if path == resdir then
+            return true
+        end
+    end
+
+    return false
+end
+
+local plumeFiles = {"plume", "plume-engine", "plume.lua"}
 --- Installs the Plume CLI tools.
 ---@param dir string The directory to install to. Defaults to '~/.local/bin'.
 local function CLIInstall(dir)
@@ -160,7 +163,7 @@ local function CLIInstall(dir)
     end
 
     -- Copy files to the installation directory
-    for filename in ("plume plume-engine plume.lua"):gmatch("%S+") do
+    for _, filename in ipairs(plumeFiles) do
         local p = io.popen("cp -r " .. filename .. " " .. dir .. "/" .. filename .. " 2>&1")
         local result = p:read("*a")
         if #result > 0 then
@@ -174,6 +177,16 @@ local function CLIInstall(dir)
     end
 
     print("Plume installed in '" .. dir .. "' with success.")
+end
+
+local function CLIRemove ()
+    for _, filename in ipairs(plumeFiles) do
+        local p = io.popen("rm -r " .. scriptDir .. "/" .. filename .. " 2>&1")
+        local result = p:read("*a")
+        if #result > 0 then
+            CLIError("Error during supression: " .. result)
+        end
+    end
 end
 
 -- Option configuration
@@ -193,7 +206,8 @@ local acceptedParameters = {
     help    = true,
     print   = true,
     version = true,
-    install = true
+    install = true,
+    remove  = true
 }
 -- Defines options that cannot be used together.
 local exclusive = {
@@ -203,8 +217,10 @@ local exclusive = {
     output   = {print=true},
 }
 local all_exclusive = {
-    help=true,
-    version=true
+    help    = true,
+    version = true,
+    install = true,
+    remove  = true
 }
 -- A set of option names that require an accompanying value.
 local expectedValue = {
@@ -296,6 +312,8 @@ elseif options.version then
     CLIVersion()
 elseif options.install then
     CLIInstall(options.install)
+elseif options.remove then
+    CLIRemove()
 else
     CLIExec(options)
 end
