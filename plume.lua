@@ -43,6 +43,8 @@ Usage:
         Install plume in the given directory (~/.local/bin by default)
     plume --remove
         Remove plume installation
+    plume --update
+        Download new plume version from github
     
     OTHER
     plume [-h --help]
@@ -148,43 +150,87 @@ end
 local plumeFiles = {"plume", "plume-engine", "plume.lua"}
 --- Installs the Plume CLI tools.
 ---@param dir string The directory to install to. Defaults to '~/.local/bin'.
-local function CLIInstall(dir)
+---@param src string
+---@param showSuccessMessage bool
+local function CLIInstall(dir, src, showSuccessMessage)
     if dir == true then
         dir = "~/.local/bin"
     end
 
     -- Check if source files exist
-    for filename in ("plume plume-engine plume.lua"):gmatch("%S+") do
-        local file = io.open(filename)
+    for _, filename in ipairs(plumeFiles) do
+        print("Check: " .. src .. filename)
+        local file = io.open(src..filename)
         if not file then
-            CLIError("'" .. filename .. "' not found, abort.")
+            CLIError("'" .. src .. filename .. "' not found, abort.")
         end
         file:close()
     end
 
     -- Copy files to the installation directory
     for _, filename in ipairs(plumeFiles) do
-        local p = io.popen("cp -r " .. filename .. " " .. dir .. "/" .. filename .. " 2>&1")
+        local srcPath  = src .. filename
+        local distPath = dir .. "/" .. filename
+        print("Copy: " .. srcPath .. " -> " .. distPath)
+        local p = io.popen("cp -r " .. srcPath .. " " .. distPath .. " 2>&1")
         local result = p:read("*a")
         if #result > 0 then
             CLIError("Error during copy: " .. result)
         end
     end
 
+    print("Make Plume executable.")
+    io.popen("chmod +x " .. dir .. "/plume")
+
     -- check if dir is in the path and warn if not
     if not checkDirOnPath(dir) then
         print("Warning: '" .. dir .."' is not on PATH.")
     end
 
-    print("Plume installed in '" .. dir .. "' with success.")
+    if showSuccessMessage then
+        print("Plume installed in '" .. dir .. "' with success.")
+    end
 end
 
 local function CLIRemove ()
     for _, filename in ipairs(plumeFiles) do
+        print("Remove: " .. scriptDir .. "/" .. filename)
         local p = io.popen("rm -r " .. scriptDir .. "/" .. filename .. " 2>&1")
         local result = p:read("*a")
         if #result > 0 then
             CLIError("Error during supression: " .. result)
+        end
+    end
+end
+
+local function CLIUpdate ()
+    local command = "git ls-remote --tags --sort=-v:refname " .. GITHUB .. " | head -n 1"
+    local tag = io.popen(command):read("*a")
+
+    if not tag then
+        CLIError("Cannot fetch data")
+    end
+
+    local gitVersion = tag:match('([%.0-9]+)%s*$')
+    local curVersion = plume._VERSION:match('[%.0-9]+$')
+
+    if gitVersion == curVersion then
+        print("Plume is up to date.")
+    else
+        io.write("Update plume from version '" .. curVersion .."' to '" .. gitVersion .. "'? y/n: ")
+        local answer = io.read()
+
+        if answer == "y" or answer == "yes" then
+            os.execute("rm -rf PlumeScript")
+            os.execute("git clone " .. GITHUB )
+
+            CLIRemove()
+            CLIInstall(scriptDir, "PlumeScript/", false)
+
+            print("Remove git clone")
+            os.execute("rm -rf PlumeScript")
+
+            print("Plume updated with success to version '" .. gitVersion .. "'.")
         end
     end
 end
@@ -207,7 +253,8 @@ local acceptedParameters = {
     print   = true,
     version = true,
     install = true,
-    remove  = true
+    remove  = true,
+    update  = true
 }
 -- Defines options that cannot be used together.
 local exclusive = {
@@ -220,7 +267,8 @@ local all_exclusive = {
     help    = true,
     version = true,
     install = true,
-    remove  = true
+    remove  = true,
+    update  = true
 }
 -- A set of option names that require an accompanying value.
 local expectedValue = {
@@ -311,9 +359,11 @@ if options.help then
 elseif options.version then
     CLIVersion()
 elseif options.install then
-    CLIInstall(options.install)
+    CLIInstall(options.install, "./", true)
 elseif options.remove then
     CLIRemove()
+elseif options.update then
+    CLIUpdate()
 else
     CLIExec(options)
 end
