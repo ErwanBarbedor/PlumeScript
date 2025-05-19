@@ -42,6 +42,8 @@ Usage:
     OTHER
     plume [-h --help]
         Displays this help message.
+    plume [-v --version]
+        Displays current Plume version
 ```
 ## Overview
 
@@ -61,5 +63,6 @@ According some quick benchmark simulating standard use-cases, transpiled code ex
 
 ### Changes
 - Addition of a test suite for the CLI.
+- New CLI option `-v --version`
 
 [Older versions](doc/changelog.md)

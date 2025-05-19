@@ -241,6 +241,6 @@ local plumeTests = loadPlumeTests("void indent convert errors eval if files loop
 local plumeSuccessCount = passPlumeTests(plumeTests)
 showPlumeTestsResult(plumeTests, plumeSuccessCount)
 
-local cliTests = loadCLITests("simple_execution option_output option_string option_print")
+local cliTests = loadCLITests("simple_execution option_output option_string option_print option_version")
 local cliSuccessCount = passCLITests(cliTests)
 showCLITestsResult(cliTests, cliSuccessCount)

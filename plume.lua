@@ -40,6 +40,8 @@ Usage:
     OTHER
     plume [-h --help]
         Displays this help message.
+    plume [-v --version]
+        Displays current Plume version
 ]]
 
 local GITHUB = "https://github.com/ErwanBarbedor/PlumeScript"
@@ -62,22 +64,27 @@ local shortcut = {
     s = "string",
     o = "output",
     h = "help",
-    p = "print"
+    p = "print",
+    v = "version"
 }
 -- A set of valid long option names.
 local acceptedParameters = {
-    string = true,
-    output = true,
-    help   = true,
-    print  = true
+    string  = true,
+    output  = true,
+    help    = true,
+    print   = true,
+    version = true
 }
 -- Defines options that cannot be used together.
 local exclusive = {
-    string   = {filename=true, help=true},
-    filename = {string=true, help=true},
-    print    = {output=true, help=true},
-    output   = {print=true, help=true},
-    help     = {filename=true, string=true, output=true, print=true}
+    string   = {filename=true},
+    filename = {string=true},
+    print    = {output=true},
+    output   = {print=true},
+}
+local all_exclusive = {
+    help=true,
+    version=true
 }
 -- A set of option names that require an accompanying value.
 local expectedValue = {
@@ -98,7 +105,9 @@ local function addOption(name, value)
 
     -- Check for exclusivity with already added options
     for optionName, _ in pairs(options) do
-        if exclusive[optionName] and exclusive[optionName][name] then 
+        if  (exclusive[optionName] and exclusive[optionName][name])
+            or all_exclusive[optionName]
+            or all_exclusive[name] then 
             CLIError(
                 "Error: Wrong usage, cannot provide both '"
                 .. name
@@ -156,6 +165,8 @@ if options.help then
     print(GITHUB)
     print()
     print(help)
+elseif options.version then
+    print(plume._VERSION)
 else
     local result
     local codeToRun -- Variable to hold the Plume code string
