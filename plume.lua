@@ -36,6 +36,11 @@ Usage:
         So if the script returns a table, the output in the file might not be directly usable.
     plume INPUT [-p --print]
         Print the output to the console.
+
+    INSTALATION 
+    plume --install
+    plume --install directory
+        Install plume in the given directory (~/.local/bin by default)
     
     OTHER
     plume [-h --help]
@@ -55,6 +60,73 @@ local function CLIError(msg, showHelp)
         print(help)
     end
     os.exit(1) -- Exit with a non-zero status to indicate an error
+end
+
+--- Displays the command-line interface help message.
+-- This function prints the Plume version, a link to the GitHub repository,
+-- and a general help text.
+local function CLIHelp ()
+    print(plume._VERSION)
+    print(GITHUB)
+    print()
+    print(help)
+end
+
+--- Displays the Plume version.
+local function CLIVersion ()
+    print(plume._VERSION)
+end
+
+--- Executes Plume code provided either as a string or from a file.
+--- @param options table A table containing execution options
+function CLIExec (options)
+    local result
+    local codeToRun -- Variable to hold the Plume code string to be executed.
+
+    if options.string then
+        codeToRun = options.string
+        -- Run the code string; "@input" is a conventional name for the chunk for error reporting.
+        result = plume.run(codeToRun, "@input")
+    elseif options.filename then
+        -- Attempt to open the specified file for reading.
+        local file, err_open = io.open(options.filename, "r")
+        if not file then
+            CLIError ("Error: Cannot open the file '" .. options.filename .. "'. " .. (err_open or ""))
+        end
+
+        codeToRun = file:read('*a')
+        file:close()
+        -- Run the file content; prepending "@" to the filename is a Lua convention for chunk names,
+        -- useful for error reporting.
+        result = plume.run(codeToRun, "@"..options.filename)
+    else
+        -- If no input (string or filename) is provided, report an error.
+        CLIError("Error: No input specified.", true)
+    end
+
+    -- Convert the result of the Plume script execution to a string for output.
+    result = tostring(result)
+
+    if options.output then
+        -- If an output file is specified, attempt to write the result to it.
+        local file, err_open_output = io.open(options.output, "w")
+        if not file then
+            -- If the output file cannot be opened for writing, report an error.
+            CLIError ("Error: Cannot write to the file '" .. options.output .. "'. " .. (err_open_output or ""))
+        end
+        -- Write the result to the file.
+        local ok, err_write = file:write(result)
+        if not ok then
+            -- If writing to the file fails, report an error.
+             CLIError ("Error: Failed to write to file '" .. options.output .. "'. " .. (err_write or ""))
+        end
+        file:close()
+        print("Output successfully written to '".. options.output .."'." )
+    elseif options.print then
+        print(result)
+    else
+        print("Executed with success.")
+    end
 end
 
 -- Option configuration
@@ -88,8 +160,9 @@ local all_exclusive = {
 }
 -- A set of option names that require an accompanying value.
 local expectedValue = {
-    string = true,
-    output = true
+    string  = true,
+    output  = true,
+    install = true
 }
 
 -- Stores the parsed command-line options.
@@ -161,50 +234,9 @@ end
 
 -- Execute based on parsed options
 if options.help then
-    print(plume._VERSION)
-    print(GITHUB)
-    print()
-    print(help)
+    CLIHelp()
 elseif options.version then
-    print(plume._VERSION)
+    CLIVersion()
 else
-    local result
-    local codeToRun -- Variable to hold the Plume code string
-
-    if options.string then
-        codeToRun = options.string
-        -- Run the string; "@input" is a conventional name for the chunk for error reporting.
-        result = plume.run(codeToRun, "@input")
-    elseif options.filename then
-        local file = io.open(options.filename, "r")
-        if not file then
-            CLIError ("Error: Cannot open the file '" .. options.filename .. "'.")
-        end
-        codeToRun = file:read('*a')
-        file:close()
-        -- Run the file content; "@" prepended to filename is a lua convention for filename.
-        result = plume.run(codeToRun, "@"..options.filename)
-    else
-        CLIError("Error: No input specified.", true)
-    end
-
-    -- Convert the result of the Plume script to a string for output.
-    result = tostring(result)
-
-    if options.output then
-        local file, err = io.open(options.output, "w")
-        if not file then
-            CLIError ("Error: Cannot write to the file '" .. options.output .. "'. " .. (err or ""))
-        end
-        local ok, write_err = file:write(result)
-        if not ok then
-             CLIError ("Error: Failed to write to file '" .. options.output .. "'. " .. (write_err or ""))
-        end
-        file:close()
-        print("Output successfully written to '".. options.output .."'." )
-    elseif options.print then
-        print(result)
-    else
-        print("Executed with sucess.")
-    end
+    CLIExec(options)
 end
