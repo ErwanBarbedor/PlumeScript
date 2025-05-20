@@ -93,21 +93,20 @@ return function (plume)
 
         f = io.open('.plume-cache/index', "w")
         if f then
-            for filename_key, infos in pairs(index) do
-                local actual_cache_filename = fnv1a32(filename_key)
+            for filename, infos in pairs(index) do
 
-                f:write(table.concat({actual_cache_filename, infos.plumeVersion, infos.date}, " ") .. "\n")
+                f:write(table.concat({filename, infos.plumeVersion, infos.date}, " ") .. "\n")
 
                 -- Save newCode and newMap if exists
                 if infos.newCode then
-                    local code_file = io.open('.plume-cache/' .. actual_cache_filename .. ".lua", "w")
+                    local code_file = io.open('.plume-cache/' .. filename .. ".lua", "w")
                     if code_file then -- Check if file opened successfully
                         code_file:write(infos.newCode)
                         code_file:close()
                     end
                 end
                 if infos.newMap then
-                    local map_file = io.open('.plume-cache/' .. actual_cache_filename .. ".map", "w")
+                    local map_file = io.open('.plume-cache/' .. filename .. ".map", "w")
                     if map_file then
                         map_file:write(buffer.encode(infos.newMap))
                         map_file:close()
@@ -134,7 +133,6 @@ return function (plume)
             index = plume.loadCache()
             cache = index[internalFilename]
         end
-
 
         -- Check if cache is valid
         -- check version
