@@ -258,9 +258,8 @@ return function(plume)
 
         if file then
             if fileext == "plume" then
-                code = file:read("*a")
                 file:close()
-                return plume.execute(code, '@'..filename, env)
+                return plume.execute(filename, false, env)
             elseif fileext == "lua" then
                 -- Handle Lua files: load using Lua's standard loading mechanisms
                 file:close()

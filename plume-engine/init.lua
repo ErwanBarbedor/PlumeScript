@@ -57,19 +57,35 @@ function plume.transpile(code, filename)
 end
 
 --- Execute Plume code inside a given environment.
---- @param string code       The Plume source code.
---- @param string filename   The filename (for source mapping and messages errors).
---- @param table env         The environment table to use during execution.
+--- @param filename string  Name of the file to run.
+--- @param isString boolean Should the filename be considered as the script to run.
+--- @param table env        The environment table to use during execution.
 --- @return Value returner by the code.
-function plume.execute(code, filename, env)
+function plume.execute(filename, isString, env)
+    local plumeCode, luaCode, luaMap
+
+    -- filename contain the code?
+    if isString then
+        plumeCode = filename
+        env.plume.package.anonymous = env.plume.package.anonymous + 1
+        filename = "@<string_" .. env.plume.package.anonymous .. ">"
+    -- else load it from the file
+    else
+        local file = io.open(filename)
+        plumeCode = file:read('*a')
+        file:close ()
+
+        filename = "@" .. filename
+    end
+
     -- Get transpiled Lua code and source map
-    local transpiledCode, map = plume.transpile(code, filename)
+    local luaCode, luaMap = plume.transpile(plumeCode, filename)
 
     -- Store source map for debugging purposes
-    env.plume.package.map[filename] = map
+    env.plume.package.map[filename] = luaMap
 
     -- Compile Lua code using sandboxed environment
-    local compiledFunction, errorMessage = loadstring(transpiledCode, filename)
+    local compiledFunction, errorMessage = loadstring(luaCode, filename)
     if compiledFunction then
         setfenv(compiledFunction, env)
     end
@@ -81,25 +97,16 @@ function plume.execute(code, filename, env)
     return compiledFunction()
 end
 
---- Run Plume code; sets up environment, error handling, and file tracing.
---- @param string code       The Plume source code.
---- @param string? filename The filename. If omitted, a unique name is generated.
---- @return The result of running the code.
-function plume.run(code, filename)
+--- Run Plume code; sets up environment and error handling.
+--- @param filename string  Name of the file to run.
+--- @param isString boolean Should the filename be considered as the script to run.
+function plume.run(filename, isString)
     local env = plume.initRuntime()
-
-    -- Generate unique filename if not provided
-    if not filename then
-        env.plume.package.anonymous = env.plume.package.anonymous + 1
-        filename = "@<string_" .. env.plume.package.anonymous .. ">"
-    end
-
-    table.insert(env.plume.package.fileTrace, filename)
 
     -- Use xpcall for stack trace and context-aware error handling
     local success, result = xpcall(
         function()
-            return plume.execute(code, filename, env)
+            return plume.execute(filename, isString, env)
         end,
         function (err)
             return plume.errorHandler(err, env)
@@ -109,9 +116,6 @@ function plume.run(code, filename)
     if not success then
         error(result, -1)
     end
-
-    -- Clean up file trace stack
-    table.remove(env.plume.package.fileTrace)
 
     return result
 end
