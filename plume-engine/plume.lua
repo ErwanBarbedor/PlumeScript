@@ -102,7 +102,8 @@ return function(plume)
             path      = {"./<name>.<ext>"},
             map       = {},
             anonymous = 0,
-            fileTrace = {}
+            fileTrace = {},
+            caching   = true
         }
 
         env._G = env

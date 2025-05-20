@@ -124,18 +124,19 @@ return function (plume)
     --- @param filename string The path to the original Plume source file 
     --- @return string The transpiled Lua code.
     --- @return table? The source map data for the transpiled code
-    function plume.loadOrTranspile(filename)
-        local luaCode, luaMap
+    function plume.loadOrTranspile(filename, env)
+        local luaCode, luaMap, cache, index, internalFilename
 
-        -- hash the filename
-        local internalFilename = fnv1a32(filename)
 
-        local index = plume.loadCache()
-        
-        local cache = index[internalFilename]
+        if env.plume.package.caching then
+            -- hash the filename
+            internalFilename = fnv1a32(filename)
+            index = plume.loadCache()
+            cache = index[internalFilename]
+        end
+
 
         -- Check if cache is valid
-
         -- check version
         if cache and plume._VERSION ~= cache.plumeVersion then
             cache = nil
@@ -172,24 +173,26 @@ return function (plume)
 
         -- If no valid cache entry was found , transpile the source file.
         if not cache then
-            local plume_source_file = io.open(filename, 'r')
+            local plume_source_file = io.open(filename)
             if not plume_source_file then
-                error("Cannot open Plume source file for reading: " .. filename)
+                error("Cannot open file '" .. filename .. "'")
             end
             local plumeCode = plume_source_file:read('*a')
             plume_source_file:close()
 
             luaCode, luaMap = plume.transpile(plumeCode, filename)
 
-            -- Cache informations
-            index[internalFilename] = {
-                date         = os.time(), 
-                plumeVersion = plume._VERSION,
-                newCode      = luaCode,
-                newMap       = luaMap
-            }
-            
-            plume.saveCache(index)
+            if env.plume.package.caching then 
+                -- Cache informations
+                index[internalFilename] = {
+                    date         = os.time(), 
+                    plumeVersion = plume._VERSION,
+                    newCode      = luaCode,
+                    newMap       = luaMap
+                }
+                
+                plume.saveCache(index)
+            end
         end
         
         return luaCode, luaMap

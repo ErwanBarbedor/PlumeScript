@@ -6,7 +6,7 @@ return {
         ]]
     },
     commands = {
-        "./plume test.plume -o output.txt"
+        "./plume test.plume -o output.txt --no-cache"
     },
     expected = {
         files = {

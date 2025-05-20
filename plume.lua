@@ -36,6 +36,8 @@ Usage:
         So if the script returns a table, the output in the file might not be directly usable.
     plume INPUT [-p --print]
         Print the output to the console.
+    plume INPUT --no-cache
+        Dont read nor write caching informations
 
     PLUME MANAGEMENT
     plume --install
@@ -47,6 +49,7 @@ Usage:
         Download new plume version from github
     plume --remove-cache
         Delete all cached file
+
     
     OTHER
     plume [-h --help]
@@ -100,9 +103,8 @@ function CLIExec (options)
             CLIError ("Error: Cannot open the file '" .. options.filename .. "'. " .. (err_open or ""))
         end
         file:close()
-        -- Run the file content; prepending "@" to the filename is a Lua convention for chunk names,
-        -- useful for error reporting.
-        result = plume.run(options.filename)
+
+        result = plume.run(options.filename, false, {caching = not options["no-cache"]})
     else
         -- If no input (string or filename) is provided, report an error.
         CLIError("Error: No input specified.", true)
@@ -112,16 +114,12 @@ function CLIExec (options)
     result = tostring(result)
 
     if options.output then
-        -- If an output file is specified, attempt to write the result to it.
         local file, err_open_output = io.open(options.output, "w")
         if not file then
-            -- If the output file cannot be opened for writing, report an error.
             CLIError ("Error: Cannot write to the file '" .. options.output .. "'. " .. (err_open_output or ""))
         end
-        -- Write the result to the file.
         local ok, err_write = file:write(result)
         if not ok then
-            -- If writing to the file fails, report an error.
              CLIError ("Error: Failed to write to file '" .. options.output .. "'. " .. (err_write or ""))
         end
         file:close()
@@ -259,7 +257,8 @@ local acceptedParameters = {
     install          = true,
     remove           = true,
     update           = true,
-    ["remove-cache"] = true
+    ["remove-cache"] = true,
+    ["no-cache"]     = true
 }
 -- Defines options that cannot be used together.
 local exclusive = {

@@ -3,7 +3,7 @@ return {
         ["test.plume"] = [[]]
     },
     commands = {
-        "./plume test.plume"
+        "./plume test.plume  --no-cache"
     },
     expected = {
         output = "Executed with success."

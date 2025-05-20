@@ -53,6 +53,8 @@ Usage:
         Download new plume version from github
     plume --remove-cache
         Delete all cached file
+    plume --no-cache
+        Dont read nor write caching informations
     
     OTHER
     plume [-h --help]
@@ -78,6 +80,7 @@ According some quick benchmark simulating standard use-cases, transpiled code ex
 
 #### CLI
 - New CLI option `--remove-cache`.
+- New CLI option `--no-cache`.
 
 #### Changes
 - Implement a caching system for transpiled files.

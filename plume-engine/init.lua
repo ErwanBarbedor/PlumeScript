@@ -73,7 +73,7 @@ function plume.execute(filename, isString, env)
         luaCode, luaMap = plume.transpile(plumeCode, filename)
     -- else load it from the file. Handle caching
     else
-        luaCode, luaMap = plume.loadOrTranspile(filename)
+        luaCode, luaMap = plume.loadOrTranspile(filename, env)
     end
 
     -- Store source map for debugging purposes
@@ -95,8 +95,12 @@ end
 --- Run Plume code; sets up environment and error handling.
 --- @param filename string  Name of the file to run.
 --- @param isString boolean Should the filename be considered as the script to run.
-function plume.run(filename, isString)
+--- @param options table
+function plume.run(filename, isString, options)
+    options = options or {}
+
     local env = plume.initRuntime()
+    env.plume.package.caching = options.caching
 
     -- Use xpcall for stack trace and context-aware error handling
     local success, result = xpcall(
