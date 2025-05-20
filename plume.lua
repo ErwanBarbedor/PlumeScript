@@ -93,16 +93,14 @@ function CLIExec (options)
         result = plume.run(codeToRun, "@input")
     elseif options.filename then
         -- Attempt to open the specified file for reading.
-        local file, err_open = io.open(options.filename, "r")
+        local file, err_open = io.open(options.filename)
         if not file then
             CLIError ("Error: Cannot open the file '" .. options.filename .. "'. " .. (err_open or ""))
         end
-
-        codeToRun = file:read('*a')
         file:close()
         -- Run the file content; prepending "@" to the filename is a Lua convention for chunk names,
         -- useful for error reporting.
-        result = plume.run(codeToRun, "@"..options.filename)
+        result = plume.run(options.filename)
     else
         -- If no input (string or filename) is provided, report an error.
         CLIError("Error: No input specified.", true)

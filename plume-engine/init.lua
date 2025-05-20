@@ -25,7 +25,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 local plume = {}
 
-plume._VERSION = "Plume🪶 0.35"
+plume._VERSION = "Plume🪶-0.35"
 
 -- Load core components using dependency injection pattern
 for lib in ([[
@@ -38,6 +38,7 @@ for lib in ([[
     transpiler/init
     suggestion
     error/init
+    cache
     plumeDebug
 ]]):gmatch('%S+') do
     require("plume-engine/" .. lib)(plume)
@@ -49,7 +50,7 @@ end
 --- @return string transpiledCode The resulting Lua code.
 --- @return table map             Map between Lua and Plume code.
 function plume.transpile(code, filename)
-    local tokens = plume.tokenize(code, filename)
+    local tokens = plume.tokenize(code, "@"..filename)
     tokens = plume.parse(tokens)
     tokens = plume.makeAST(tokens)
     local transpiledCode, map = plume.transpileToLua(tokens)
@@ -62,30 +63,24 @@ end
 --- @param table env        The environment table to use during execution.
 --- @return Value returner by the code.
 function plume.execute(filename, isString, env)
-    local plumeCode, luaCode, luaMap
+    local luaCode, luaMap
 
     -- filename contain the code?
     if isString then
-        plumeCode = filename
+        local plumeCode = filename
         env.plume.package.anonymous = env.plume.package.anonymous + 1
-        filename = "@<string_" .. env.plume.package.anonymous .. ">"
-    -- else load it from the file
+        filename = "<string_" .. env.plume.package.anonymous .. ">"
+        luaCode, luaMap = plume.transpile(plumeCode, filename)
+    -- else load it from the file. Handle caching
     else
-        local file = io.open(filename)
-        plumeCode = file:read('*a')
-        file:close ()
-
-        filename = "@" .. filename
+        luaCode, luaMap = plume.loadOrTranspile(filename)
     end
 
-    -- Get transpiled Lua code and source map
-    local luaCode, luaMap = plume.transpile(plumeCode, filename)
-
     -- Store source map for debugging purposes
-    env.plume.package.map[filename] = luaMap
+    env.plume.package.map["@"..filename] = luaMap
 
     -- Compile Lua code using sandboxed environment
-    local compiledFunction, errorMessage = loadstring(luaCode, filename)
+    local compiledFunction, errorMessage = loadstring(luaCode, "@"..filename)
     if compiledFunction then
         setfenv(compiledFunction, env)
     end

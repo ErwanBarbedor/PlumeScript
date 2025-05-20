@@ -67,11 +67,14 @@ Thinks of Plume as a Yaml-like langage with scripting capabilities
 
 ## Performances
 
-On my 12600k, transpilation of a 100ko file takes less than 200ms, up to 2s for a 1Mo file. This should be more than sufficient for small projects: small file (<5ko) take a few ms compile, and loaded files are cached (okay, the cache is not yet implemented, but planned).
+On my 12600k, transpilation of a 100ko file takes less than 200ms, up to 2s for a 1Mo file. This should be more than sufficient for small projects: small file (<5ko) take a few ms compile, and loaded files are cached.
 
 According some quick benchmark simulating standard use-cases, transpiled code executes at between 80% and 100% of Lua's performance. So with LuaJIT, this makes it possible to include relatively costly calculations in templates.
 
 ## Changelog
 ### 0.35 (last version)
+
+#### Changes
+- Implement a caching system for transpiled files.
 
 [Older versions](doc/changelog.md)
