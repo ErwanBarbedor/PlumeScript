@@ -45,6 +45,8 @@ Usage:
         Remove plume installation
     plume --update
         Download new plume version from github
+    plume --remove-cache
+        Delete all cached file
     
     OTHER
     plume [-h --help]
@@ -129,6 +131,10 @@ function CLIExec (options)
     else
         print("Executed with success.")
     end
+end
+
+local function CLIRemoveCache()
+    os.execute("rm -rf .plume-cache")
 end
 
 local function checkDirOnPath(dir)
@@ -245,14 +251,15 @@ local shortcut = {
 }
 -- A set of valid long option names.
 local acceptedParameters = {
-    string  = true,
-    output  = true,
-    help    = true,
-    print   = true,
-    version = true,
-    install = true,
-    remove  = true,
-    update  = true
+    string           = true,
+    output           = true,
+    help             = true,
+    print            = true,
+    version          = true,
+    install          = true,
+    remove           = true,
+    update           = true,
+    ["remove-cache"] = true
 }
 -- Defines options that cannot be used together.
 local exclusive = {
@@ -362,6 +369,8 @@ elseif options.remove then
     CLIRemove()
 elseif options.update then
     CLIUpdate()
+elseif options["remove-cache"] then
+    CLIRemoveCache()
 else
     CLIExec(options)
 end

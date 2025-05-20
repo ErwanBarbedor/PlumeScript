@@ -51,6 +51,8 @@ Usage:
         Remove plume installation
     plume --update
         Download new plume version from github
+    plume --remove-cache
+        Delete all cached file
     
     OTHER
     plume [-h --help]
@@ -73,6 +75,9 @@ According some quick benchmark simulating standard use-cases, transpiled code ex
 
 ## Changelog
 ### 0.35 (last version)
+
+#### CLI
+- New CLI option `--remove-cache`.
 
 #### Changes
 - Implement a caching system for transpiled files.
