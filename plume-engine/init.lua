@@ -96,10 +96,10 @@ end
 --- @param filename string  Name of the file to run.
 --- @param isString boolean Should the filename be considered as the script to run.
 --- @param options table
-function plume.run(filename, isString, options)
+function plume.run(filename, isString, options, scriptDir)
     options = options or {}
 
-    local env = plume.initRuntime()
+    local env = plume.initRuntime(scriptDir)
     env.plume.package.caching = options.caching
                 
     -- Use xpcall for stack trace and context-aware error handling

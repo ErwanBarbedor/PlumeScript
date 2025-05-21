@@ -90,12 +90,14 @@ end
 --- @param options table A table containing execution options
 function CLIExec (options)
     local result
-    local codeToRun -- Variable to hold the Plume code string to be executed.
 
     if options.string then
-        codeToRun = options.string
-        -- Run the code string; "@input" is a conventional name for the chunk for error reporting.
-        result = plume.run(codeToRun, "@input")
+        result = plume.run(
+            options.string,
+            true, 
+            {caching = not options["no-cache"]},
+            scriptDir
+        )
     elseif options.filename then
         -- Attempt to open the specified file for reading.
         local file, err_open = io.open(options.filename)
@@ -104,7 +106,12 @@ function CLIExec (options)
         end
         file:close()
 
-        result = plume.run(options.filename, false, {caching = not options["no-cache"]})
+        result = plume.run(
+            options.filename,
+            false, 
+            {caching = not options["no-cache"]},
+            scriptDir
+        )
     else
         -- If no input (string or filename) is provided, report an error.
         CLIError("Error: No input specified.", true)

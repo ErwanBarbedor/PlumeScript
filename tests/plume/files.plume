@@ -63,7 +63,13 @@ module = $require(azag)
 /// Error
 Error: Module 'azag' not found:
     no file './azag.plume'
+    no file './azag/init.plume'
+    no file './/plume-libs/azag.plume'
+    no file './/plume-libs/azag/init.plume'
     no file './azag.lua'
+    no file './azag/init.lua'
+    no file './/plume-libs/azag.lua'
+    no file './/plume-libs/azag/init.lua'
 File <string_1>, line n°1:
     module = $require(azag)
              ^^^^^^^^^

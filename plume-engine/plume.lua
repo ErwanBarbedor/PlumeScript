@@ -82,7 +82,7 @@ return function(plume)
         -- table plume: methods/table exposed to user
         -- all _G methods, to be use with Plume calling convention.
         -- table __lua: use Lua calling convention, cannot be used by user.
-    function plume.initRuntime ()
+    function plume.initRuntime (scriptDir)
         local env = {plume = {}, __lua = _G}
 
         for k, v in pairs(plume.plumeStdLib) do
@@ -99,7 +99,12 @@ return function(plume)
 
         env.plume.package = {
             loaded    = {},
-            path      = {"./<name>.<ext>"},
+            path      = {
+                "./<name>.<ext>",
+                "./<name>/init.<ext>",
+                scriptDir .. "/plume-libs/<name>.<ext>",
+                scriptDir .. "/plume-libs/<name>/init.<ext>"
+            },
             map       = {},
             anonymous = 0,
             fileTrace = {},
@@ -240,7 +245,7 @@ return function(plume)
         )
         local triedPath   = {}
         local file, filename, fileext
-        
+
         -- Attempt to find and open the module file with the specified extensions and paths
         for ext in exts:gmatch "%S+" do
             for _, basepath in ipairs(env.plume.package.path) do

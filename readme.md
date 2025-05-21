@@ -85,6 +85,8 @@ According some quick benchmark simulating standard use-cases, transpiled code ex
 #### Changes
 - Implement a caching system for transpiled files.
 - `void` cannot anymore be used as a variable name.
+- Add `[plume install dir]/lib` to file searching path.
+- Add `[name]/init.plume` to file searching path.
 
 #### Enhancement
 - Argument check in `require`.
