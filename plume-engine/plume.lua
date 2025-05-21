@@ -235,11 +235,12 @@ return function(plume)
     -- @return Any The result of loading/executing the module file.
     -- @error Raises an error if the module cannot be found or loaded.
     function plume.envStdLib.require(env, __plume_args)
-        local libname     = __plume_args[1]
-        local exts        = __plume_args.ext or 'plume lua'
+        local _, libname, exts = plume.plumeStdLib.initArgs(
+            __plume_args, 1, {{'ext', "plume lua"}}, false, false
+        )
         local triedPath   = {}
         local file, filename, fileext
-
+        
         -- Attempt to find and open the module file with the specified extensions and paths
         for ext in exts:gmatch "%S+" do
             for _, basepath in ipairs(env.plume.package.path) do
