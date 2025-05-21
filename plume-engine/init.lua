@@ -101,7 +101,7 @@ function plume.run(filename, isString, options)
 
     local env = plume.initRuntime()
     env.plume.package.caching = options.caching
-
+                
     -- Use xpcall for stack trace and context-aware error handling
     local success, result = xpcall(
         function()
