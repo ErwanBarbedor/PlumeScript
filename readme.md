@@ -87,6 +87,7 @@ According some quick benchmark simulating standard use-cases, transpiled code ex
 - `void` cannot anymore be used as a variable name.
 - Add `[plume install dir]/lib` to file searching path.
 - Add `[name]/init.plume` to file searching path.
+- New variables `_FILE` and `_DIR`, containing current script path and parent directory.
 
 #### Enhancement
 - Argument check in `require`.

@@ -53,7 +53,7 @@ function plume.transpile(code, filename)
     local tokens = plume.tokenize(code, "@"..filename)
     tokens = plume.parse(tokens)
     tokens = plume.makeAST(tokens)
-    local transpiledCode, map = plume.transpileToLua(tokens)
+    local transpiledCode, map = plume.transpileToLua(tokens, filename)
     return transpiledCode, map
 end
 

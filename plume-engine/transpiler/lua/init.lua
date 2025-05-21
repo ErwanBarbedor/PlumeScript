@@ -79,9 +79,13 @@ return function(plume)
     ---@param ast table The Abstract Syntax Tree to transpile.
     ---@return string transpiledCode The concatenated Lua source code.
     ---@return table sourceMap The mapping information for the transpiled code.
-    plume.transpileToLua = function(ast)
+    plume.transpileToLua = function(ast, filename)
         local map = {{}} -- Initialize the source map.
 
+        local dir = filename:gsub('[^\\/]+$', '')
+        if #dir == 0 then
+            dir = "./"
+        end
         -- Initialize the transpiler builder with the source map.
         transpiler:init (map)
 
@@ -103,6 +107,12 @@ return function(plume)
         transpiler:insert("local __plume_remove      = __lua.table.remove")
         transpiler:newline()
         transpiler:insert("local __plume_unpack      = __lua.unpack")
+        transpiler:newline()
+
+        -- Special variables
+        transpiler:insert("local _FILE = \"" .. filename .. "\"")
+        transpiler:newline()
+        transpiler:insert("local _DIR  = \"" .. dir .. "\"")
         transpiler:newline()
 
         -- Start the recursive transpilation process from the root AST node.
