@@ -84,5 +84,6 @@ According some quick benchmark simulating standard use-cases, transpiled code ex
 
 #### Changes
 - Implement a caching system for transpiled files.
+- `void` cannot anymore be used as a variable name.
 
 [Older versions](doc/changelog.md)

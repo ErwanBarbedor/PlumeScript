@@ -231,7 +231,7 @@ macro inc()
     Foo
 
 $inc()\n
-local void = $inc()
+void $inc()
 $x
 /// Result
 Foo

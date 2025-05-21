@@ -20,6 +20,117 @@ If not, see <https://www.gnu.org/licenses/>.
 
 return {
     {
+        name = "LOCAL_MACRO_DEFINITION",
+        pattern = {
+            {kind = "TEXT",  content = "local"},
+            {kind = "SPACE", multipleCapture = true},
+            {kind = "TEXT",  content = "macro"},
+            {kind = "SPACE", multipleCapture = true},
+            {kind = "TEXT",  name = "macroName", optional = true},
+            {kind = "SPACE", multipleCapture = true, optional = true},
+            {kind = "LPAR"}
+        }
+    },
+    {
+        name = "MACRO_DEFINITION",
+        pattern = {
+            {kind = "TEXT",  content = "macro"},
+            {kind = "SPACE", multipleCapture = true},
+            {kind = "TEXT",  name = "macroName"},
+            {kind = "SPACE", multipleCapture = true, optional = true},
+            {kind = "LPAR"},
+        }
+    },
+    
+    {
+        name = "INLINE_MACRO_DEFINITION",
+        pattern = {
+            {kind = "TEXT",  content = "macro"},
+            {kind = "SPACE", multipleCapture = true, optional=true},
+            {kind = "LPAR"}
+        }
+    },
+    {
+        name = "LINE_STATEMENT",
+        pattern = {
+            {
+                kind = "TEXT",
+                name = "statement",
+                content = {"for", "if", "elseif", "while" }
+            },
+            {
+                neg = {kind = {"ENDLINE", "NEWLINE", "COMMENT"}},
+                multipleCapture = true,
+                name = "line"
+            }
+        }
+    },
+    {
+        name = "RETURN",
+        pattern = {
+            {kind = "TEXT", content = "return"},
+            {
+                neg = {kind = {"ENDLINE", "NEWLINE", "COMMENT"}},
+                multipleCapture = true,
+                name = "line"
+            }
+        }
+    },
+    {name = "VOID",   pattern = {{kind = "TEXT", content = "void"}}},
+    {name = "ELSE",   pattern = {{kind = "TEXT", content = "else"}}},
+    {name = "BREAK",  pattern = {{kind = "TEXT", content = "break"}}},
+    {name = "COMMAND_EXPAND_LIST",  pattern = {
+        {kind = "OPERATOR", content = "*"},
+        {kind = "TEXT", name = "variable"},
+        {
+            ["or"] = {
+                {
+                    braced = {
+                        open  = {kind = "LBRK"},
+                        close = {kind = "RBRK"}
+                    }
+                },
+                {
+                    kind = "FIELD_ACCESS"
+                }
+            },
+            name = "index",
+            optional = true,
+            multipleCapture = true
+        },
+        {
+            kind = "LPAR",
+            optional = true,
+            name = "call"
+        }
+    }},
+    {name = "COMMAND_EXPAND_HASH",  pattern = {
+        {kind = "OPERATOR", content = "*"},
+        {kind = "OPERATOR", content = "*"},
+        {kind = "TEXT", name = "variable"},
+        {
+            ["or"] = {
+                {
+                    braced = {
+                        open  = {kind = "LBRK"},
+                        close = {kind = "RBRK"}
+                    }
+                },
+                {
+                    kind = "FIELD_ACCESS"
+                }
+            },
+            name = "index",
+            optional = true,
+            multipleCapture = true
+        },
+        {
+            kind = "LPAR",
+            optional = true,
+            name = "call"
+        }
+    }},
+    {
         name = "LIST_ITEM",
         pattern = {
             {kind = "DASH"},
@@ -132,115 +243,4 @@ return {
             {kind = {"NEWLINE", "ENDLINE"}, name = "endline", optional = true}
         }
     },
-    {
-        name = "LOCAL_MACRO_DEFINITION",
-        pattern = {
-            {kind = "TEXT",  content = "local"},
-            {kind = "SPACE", multipleCapture = true},
-            {kind = "TEXT",  content = "macro"},
-            {kind = "SPACE", multipleCapture = true},
-            {kind = "TEXT",  name = "macroName", optional = true},
-            {kind = "SPACE", multipleCapture = true, optional = true},
-            {kind = "LPAR"}
-        }
-    },
-    {
-        name = "MACRO_DEFINITION",
-        pattern = {
-            {kind = "TEXT",  content = "macro"},
-            {kind = "SPACE", multipleCapture = true},
-            {kind = "TEXT",  name = "macroName"},
-            {kind = "SPACE", multipleCapture = true, optional = true},
-            {kind = "LPAR"},
-        }
-    },
-    
-    {
-        name = "INLINE_MACRO_DEFINITION",
-        pattern = {
-            {kind = "TEXT",  content = "macro"},
-            {kind = "SPACE", multipleCapture = true, optional=true},
-            {kind = "LPAR"}
-        }
-    },
-    {
-        name = "LINE_STATEMENT",
-        pattern = {
-            {
-                kind = "TEXT",
-                name = "statement",
-                content = {"for", "if", "elseif", "while" }
-            },
-            {
-                neg = {kind = {"ENDLINE", "NEWLINE", "COMMENT"}},
-                multipleCapture = true,
-                name = "line"
-            }
-        }
-    },
-    {
-        name = "RETURN",
-        pattern = {
-            {kind = "TEXT", content = "return"},
-            {
-                neg = {kind = {"ENDLINE", "NEWLINE", "COMMENT"}},
-                multipleCapture = true,
-                name = "line"
-            }
-        }
-    },
-    {name = "VOID",   pattern = {{kind = "TEXT", content = "void"}}},
-    {name = "ELSE",   pattern = {{kind = "TEXT", content = "else"}}},
-    {name = "BREAK",  pattern = {{kind = "TEXT", content = "break"}}},
-    {name = "COMMAND_EXPAND_LIST",  pattern = {
-        {kind = "OPERATOR", content = "*"},
-        {kind = "TEXT", name = "variable"},
-        {
-            ["or"] = {
-                {
-                    braced = {
-                        open  = {kind = "LBRK"},
-                        close = {kind = "RBRK"}
-                    }
-                },
-                {
-                    kind = "FIELD_ACCESS"
-                }
-            },
-            name = "index",
-            optional = true,
-            multipleCapture = true
-        },
-        {
-            kind = "LPAR",
-            optional = true,
-            name = "call"
-        }
-    }},
-    {name = "COMMAND_EXPAND_HASH",  pattern = {
-        {kind = "OPERATOR", content = "*"},
-        {kind = "OPERATOR", content = "*"},
-        {kind = "TEXT", name = "variable"},
-        {
-            ["or"] = {
-                {
-                    braced = {
-                        open  = {kind = "LBRK"},
-                        close = {kind = "RBRK"}
-                    }
-                },
-                {
-                    kind = "FIELD_ACCESS"
-                }
-            },
-            name = "index",
-            optional = true,
-            multipleCapture = true
-        },
-        {
-            kind = "LPAR",
-            optional = true,
-            name = "call"
-        }
-    }},
 }
