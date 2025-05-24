@@ -27,10 +27,10 @@ return function(plume)
     local contains = plume.utils.containsWord
 
     -- Initialize the Lua code builder instance.
-    local transpiler = require "plume-engine/transpiler/lua/builder" (plume)
+    local transpiler = require "engine/transpiler/lua/builder" (plume)
     
-    require "plume-engine/transpiler/lua/transpileChildren" (plume, transpiler)
-    require "plume-engine/transpiler/lua/tokenHandlers"     (plume, transpiler)
+    require "engine/transpiler/lua/transpileChildren" (plume, transpiler)
+    require "engine/transpiler/lua/tokenHandlers"     (plume, transpiler)
     
     --- Post-processes generated Lua code to transform Plume-style function and method calls.
     -- This function converts:

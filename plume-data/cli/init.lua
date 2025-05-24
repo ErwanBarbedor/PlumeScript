@@ -18,7 +18,7 @@ local scriptDir = table.remove(arg, 1)
 
 -- Modify package.path to allow Plume to find its modules relative to its source directory.
 package.path = (scriptDir.."/?.lua;") .. package.path
-local plume = require ("plume-engine/init") -- Load the Plume engine
+local plume = require ("engine/init") -- Load the Plume engine
 
 -- Command-line interface documentation string
 local help = [[

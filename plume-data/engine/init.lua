@@ -41,7 +41,7 @@ for lib in ([[
     cache
     plumeDebug
 ]]):gmatch('%S+') do
-    require("plume-engine/" .. lib)(plume)
+    require("engine/" .. lib)(plume)
 end
 
 --- Transpile Plume code to Lua code.

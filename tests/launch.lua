@@ -13,7 +13,8 @@ You should have received a copy of the GNU General Public License along with Plu
 If not, see <https://www.gnu.org/licenses/>.
 ]]
 
-local plume = require("plume-engine/init")
+package.path = "plume-data/?.lua".. ";" .. package.path
+local plume = require("engine/init")
 
 --- Load test cases from specified files using custom comment syntax
 ---@param filenames string Space-separated list of base filenames

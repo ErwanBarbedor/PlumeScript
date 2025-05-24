@@ -24,8 +24,8 @@ return function(plume)
     local trim = plume.utils.trim
     local contains = plume.utils.containsWord
 
-    local statementPatternList  = require ("plume-engine/parser/statementPatterns")
-    local expressionPatternList = require ("plume-engine/parser/expressionPatterns")
+    local statementPatternList  = require ("engine/parser/statementPatterns")
+    local expressionPatternList = require ("engine/parser/expressionPatterns")
 
     --- Transforms a stream of lexical tokens into structured semantic elements
     ---@param tokens table[] Sequence of input tokens from lexical analysis
