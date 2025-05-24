@@ -1,3 +1,19 @@
+### 0.35
+
+#### CLI
+- New CLI option `--remove-cache`.
+- New CLI option `--no-cache`.
+
+#### Changes
+- Implement a caching system for transpiled files.
+- `void` cannot anymore be used as a variable name.
+- Add `[plume install dir]/lib` to file searching path.
+- Add `[name]/init.plume` to file searching path.
+- New variables `_FILE` and `_DIR`, containing current script path and parent directory.
+
+#### Enhancement
+- Argument check in `require`.
+
 ### 0.34
 
 ### CLI
