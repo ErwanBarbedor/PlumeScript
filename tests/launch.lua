@@ -13,36 +13,40 @@ You should have received a copy of the GNU General Public License along with Plu
 If not, see <https://www.gnu.org/licenses/>.
 ]]
 
-package.path = "plume-data/?.lua".. ";" .. package.path
+package.path  = "plume-data/?.lua;" .. package.path
+package.cpath = "plume-data/bin/?.so;" .. package.cpath
+
 local plume = require("engine/init")
+local lfs   = require ("lfs")
 
 --- Load test cases from specified files using custom comment syntax
----@param filenames string Space-separated list of base filenames
 ---@return table Array of test case objects with metadata
-local function loadPlumeTests(filenames)
+local function loadPlumeTests()
     local tests = {}
 
-    for filename in filenames:gmatch("%S+") do
-        local content = io.open("tests/plume/" .. filename .. ".plume"):read("*a"):gsub('\r', '')
-        -- Test block structure:
-        -- /// Test "Name"
-        -- [code]
-        -- /// ResultType (Error/Result)
-        -- [expected output]
-        -- /// End
-        for name, code, resultKind, result in content:gmatch('/// Test "(.-)"\r?\n(.-)\r?\n/// (.-)\r?\n(.-)\r?\n/// End') do
-            table.insert(tests, {
-                file = filename,
-                name = name,
-                code = code,
-                resultKind = resultKind,
-                result = result,
-                success = true,
-                failInfos = {
-                    resultKind = "",
-                    result = ""
-                }
-            })
+    for filename in lfs.dir ("tests/plume/") do
+        if filename:match('%.plume$') then
+            local content = io.open("tests/plume/" .. filename):read("*a"):gsub('\r', '')
+            -- Test block structure:
+            -- /// Test "Name"
+            -- [code]
+            -- /// ResultType (Error/Result)
+            -- [expected output]
+            -- /// End
+            for name, code, resultKind, result in content:gmatch('/// Test "(.-)"\r?\n(.-)\r?\n/// (.-)\r?\n(.-)\r?\n/// End') do
+                table.insert(tests, {
+                    file = filename,
+                    name = name,
+                    code = code,
+                    resultKind = resultKind,
+                    result = result,
+                    success = true,
+                    failInfos = {
+                        resultKind = "",
+                        result = ""
+                    }
+                })
+            end
         end
     end
     return tests
@@ -128,12 +132,15 @@ end
 local function loadCLITests(filenames)
     local tests = {}
 
-    for filename in filenames:gmatch("%S+") do
-        table.insert(tests, {
-            name=filename,
-            data=require("tests/cli/" .. filename),
-            failInfos={nofiles={}, files={}}
-        })
+    for filename in lfs.dir ("tests/cli/") do
+        local name, ext = filename:match('^(.*)%.(lua)$')
+        if ext == "lua" then
+            table.insert(tests, {
+                name=filename,
+                data=require("tests/cli/" .. name),
+                failInfos={nofiles={}, files={}}
+            })
+        end
     end
 
     return tests
@@ -238,7 +245,7 @@ end
 
 print("Test " .. plume._VERSION .. ' (luajit)')
 
-local plumeTests = loadPlumeTests("void indent convert errors eval if files loops lua macros macros_syntax_error macros_vararg std suggestions table text variables issues")
+local plumeTests = loadPlumeTests()
 local plumeSuccessCount = passPlumeTests(plumeTests)
 showPlumeTestsResult(plumeTests, plumeSuccessCount)
 
