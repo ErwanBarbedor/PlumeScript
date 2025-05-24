@@ -78,4 +78,7 @@ According some quick benchmark simulating standard use-cases, transpiled code ex
 ## Changelog
 ### 0.36 (last version)
 
+#### Internal changes
+- Use `lfs` for all files-related opperations
+
 [Older versions](doc/changelog.md)
