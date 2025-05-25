@@ -79,6 +79,7 @@ According some quick benchmark simulating standard use-cases, transpiled code ex
 ### 0.36 (last version)
 
 #### Internal changes
-- Use `lfs` for all files-related opperations
+- Use `lfs` for all files-related opperations.
+- Add `os` into transpiled infos.
 
 [Older versions](doc/changelog.md)

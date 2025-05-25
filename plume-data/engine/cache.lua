@@ -60,11 +60,12 @@ return function (plume)
             
             for line in content:gmatch('[^\n]+') do
                 -- Each line is expected to be in the format: <hashed_filename> <plume_version_string> <timestamp_string>
-                local filename, plumeVersion, date = line:match('(%S+)%s+(%S+)%s+(%S+)')
+                local filename, plumeVersion, os, date = line:match('(%S+)%s+(%S+)%s+(%S+)%s+(%S+)')
                 if filename then
                     index[filename] = {
                         plumeVersion = plumeVersion,
-                        date         = tonumber(date)
+                        date         = tonumber(date),
+                        os           = os
                     }
                 end
             end
@@ -83,7 +84,7 @@ return function (plume)
         if f then
             for filename, infos in pairs(index) do
 
-                f:write(table.concat({filename, infos.plumeVersion, infos.date}, " ") .. "\n")
+                f:write(table.concat({filename, infos.plumeVersion, infos.os, infos.date}, " ") .. "\n")
 
                 -- Save newCode and newMap if exists
                 if infos.newCode then
@@ -124,6 +125,11 @@ return function (plume)
         -- Check if cache is valid
         -- check version
         if cache and plume._VERSION ~= cache.plumeVersion then
+            cache = nil
+        end
+
+        -- check os (luajit serialization not compatible between differents OS)
+        if cache and cache.os ~= jit.os then
             cache = nil
         end
 
@@ -173,7 +179,8 @@ return function (plume)
                     date         = os.time(), 
                     plumeVersion = plume._VERSION,
                     newCode      = luaCode,
-                    newMap       = luaMap
+                    newMap       = luaMap,
+                    os           = jit.os
                 }
                 
                 plume.saveCache(index)

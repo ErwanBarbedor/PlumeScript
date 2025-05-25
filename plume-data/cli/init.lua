@@ -17,6 +17,11 @@ If not, see <https://www.gnu.org/licenses/>.
 local scriptDir = table.remove(arg, 1)
 
 -- Modify package.path to allow Plume to find its modules relative to its source directory.
+
+if jit.os == "Linux" then -- bin/?.dll is already on path
+    package.cpath = scriptDir.."/bin/?.so;" .. package.cpath
+end
+
 package.path = (scriptDir.."/?.lua;") .. package.path
 local plume = require ("engine/init") -- Load the Plume engine
 
