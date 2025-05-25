@@ -64,6 +64,9 @@ According some quick benchmark simulating standard use-cases, transpiled code ex
 ## Changelog
 ### 0.36 (last version)
 
+#### Changes
+- Made Plume compatible with Windows.
+
 #### CLI changes
 - Remove `--install` and `--remove` options.
 
