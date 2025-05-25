@@ -246,6 +246,8 @@ return function(plume)
         local triedPath   = {}
         local file, filename, fileext
 
+        libname = libname:gsub('^.[\\/]', '')
+
         -- Attempt to find and open the module file with the specified extensions and paths
         for ext in exts:gmatch "%S+" do
             for _, basepath in ipairs(env.plume.package.path) do
