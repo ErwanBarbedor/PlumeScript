@@ -71,7 +71,9 @@ return function (plume)
     ---@return nil
     function builder:newline()
         if #self.newlineCount > 0 then
-            self.newlineCount[#self.newlineCount] = self.newlineCount[#self.newlineCount]+1
+            for i=1, #self.newlineCount do
+                self.newlineCount[i] = self.newlineCount[i]+1
+            end
         end 
         self.forceBreak = false -- Reset forceBreak as a newline is explicitly handled.
         insert(self.map, {}) -- Create a new entry for the new line in the source map.
@@ -314,7 +316,6 @@ return function (plume)
         self.deep = self.deep - 1
         
         local nlc = table.remove(self.newlineCount)
-
         if nlc == 1 then -- if only one lineBreak, it's emitOPEN. Remove it
             for i = #self.code, 1, -1 do
                 if self.code[i] == "\n" then
@@ -329,6 +330,8 @@ return function (plume)
                     break
                 end
             end
+        elseif nlc == 0 then
+            self.forceBreak = false
         else
             self:newline() -- Ensures the closing character is on its own, correctly indented line.
         end

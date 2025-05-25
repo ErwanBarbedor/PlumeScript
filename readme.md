@@ -66,6 +66,7 @@ According some quick benchmark simulating standard use-cases, transpiled code ex
 
 #### Changes
 - Made Plume compatible with Windows.
+- Enhance transpiler output.
 
 #### CLI changes
 - Remove `--install` and `--remove` options.
