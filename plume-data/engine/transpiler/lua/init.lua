@@ -83,6 +83,7 @@ return function(plume)
         local map = {{}} -- Initialize the source map.
 
         local dir = filename:gsub('[^\\/]+$', '')
+        dir = dir:gsub('[\\/]$', '')
         if #dir == 0 then
             dir = "."
         end
