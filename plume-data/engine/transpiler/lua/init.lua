@@ -84,7 +84,7 @@ return function(plume)
 
         local dir = filename:gsub('[^\\/]+$', '')
         if #dir == 0 then
-            dir = "./"
+            dir = "."
         end
         -- Initialize the transpiler builder with the source map.
         transpiler:init (map)
@@ -112,7 +112,7 @@ return function(plume)
         -- Special variables
         transpiler:insert("local _FILE = \"" .. filename .. "\"")
         transpiler:newline()
-        transpiler:insert("local _DIR  = \"" .. dir:gsub('/$', '') .. "\"")
+        transpiler:insert("local _DIR  = \"" .. dir .. "\"")
         transpiler:newline()
 
         -- Start the recursive transpilation process from the root AST node.
