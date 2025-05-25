@@ -112,7 +112,7 @@ return function(plume)
         -- Special variables
         transpiler:insert("local _FILE = \"" .. filename .. "\"")
         transpiler:newline()
-        transpiler:insert("local _DIR  = \"" .. dir .. "\"")
+        transpiler:insert("local _DIR  = \"" .. dir:gsub('/$', '') .. "\"")
         transpiler:newline()
 
         -- Start the recursive transpilation process from the root AST node.
