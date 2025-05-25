@@ -25,7 +25,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 local plume = {}
 
-plume._VERSION = "Plume🪶-0.36"
+plume._VERSION = "Plume🪶-0.37"
 
 -- Load core components using dependency injection pattern
 for lib in ([[

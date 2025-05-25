@@ -1,3 +1,18 @@
+### 0.36
+
+#### Changes
+- Made Plume compatible with Windows.
+- Enhance transpiler output.
+- Remove ending `/` from `_DIR`.
+- Cleaner filename.
+
+#### CLI changes
+- Remove `--install` and `--remove` options.
+
+#### Internal changes
+- Use `lfs` for all files-related opperations.
+- Add `os` into transpiled infos.
+
 ### 0.35
 
 #### CLI
