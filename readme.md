@@ -36,7 +36,7 @@ Usage:
 
     PLUME MANAGEMENT
     plume --update
-        Download new plume version from github
+        BROKEN FOR NOW. Download new plume version from github
     plume --remove-cache
         Delete all cached file
     plume --no-cache
