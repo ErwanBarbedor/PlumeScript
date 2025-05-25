@@ -23,6 +23,8 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 -- Plume code. It sets up the runtime environment, handles error trapping during
 -- execution, and manages file tracing for module loading.
 
+package.cpath = "plume-data/bin/?.so;" .. package.cpath
+
 local plume = {}
 
 plume._VERSION = "Plume🪶-0.36"

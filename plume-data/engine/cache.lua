@@ -20,19 +20,7 @@ If not, see <https://www.gnu.org/licenses/>.
 return function (plume)
     local buffer = require("string.buffer")
     local bit = require("bit")
-
-    --- Executes a shell command and returns its standard output.
-    --- @param cmd string The command to execute.
-    --- @return string?
-    local function execute(cmd)
-        local p = io.popen(cmd)
-        if p then
-            local result = p:read('*a')
-            p:close()
-            return result
-        end
-        -- Implicitly returns nil if io.popen fails.
-    end
+    local lfs = require("lfs")
 
     -- Constants for the FNV-1a 32-bit hash algorithm.
     -- FNV-1a is a non-cryptographic hash function valued for speed and good distribution.
@@ -76,7 +64,7 @@ return function (plume)
                 if filename then
                     index[filename] = {
                         plumeVersion = plumeVersion,
-                        date         = date
+                        date         = tonumber(date)
                     }
                 end
             end
@@ -89,7 +77,7 @@ return function (plume)
     --- @param index table
     function plume.saveCache(index)
         local f
-        execute("mkdir -p .plume-cache")
+        lfs.mkdir(".plume-cache")
 
         f = io.open('.plume-cache/index', "w")
         if f then
@@ -126,7 +114,6 @@ return function (plume)
     function plume.loadOrTranspile(filename, env)
         local luaCode, luaMap, cache, index, internalFilename
 
-
         if env.plume.package.caching then
             -- hash the filename
             internalFilename = fnv1a32(filename)
@@ -142,7 +129,7 @@ return function (plume)
 
         -- check modification
         if cache then
-            local date= execute("stat -c %Y \"" .. filename .. "\"")
+            local date = lfs.attributes(filename, "modification")
             if date > cache.date then
                 cache = nil
             end
