@@ -45,17 +45,11 @@ Usage:
         Dont read nor write caching informations
 
     PLUME MANAGEMENT
-    plume --install
-    plume --install directory
-        Install plume in the given directory (~/.local/bin by default)
-    plume --remove
-        Remove plume installation
     plume --update
         Download new plume version from github
     plume --remove-cache
         Delete all cached file
 
-    
     OTHER
     plume [-h --help]
         Displays this help message.
@@ -161,62 +155,6 @@ local function checkDirOnPath(dir)
     return false
 end
 
-local plumeFiles = {"plume", "plume-engine", "plume.lua"}
---- Installs the Plume CLI tools.
----@param dir string The directory to install to. Defaults to '~/.local/bin'.
----@param src string
----@param showSuccessMessage bool
-local function CLIInstall(dir, src, showSuccessMessage)
-    if dir == true then
-        dir = "~/.local/bin"
-    end
-
-    -- Check if source files exist
-    for _, filename in ipairs(plumeFiles) do
-        print("Check: " .. src .. filename)
-        local file = io.open(src..filename)
-        if not file then
-            CLIError("'" .. src .. filename .. "' not found, abort.")
-        end
-        file:close()
-    end
-
-    -- Copy files to the installation directory
-    for _, filename in ipairs(plumeFiles) do
-        local srcPath  = src .. filename
-        local distPath = dir .. "/" .. filename
-        print("Copy: " .. srcPath .. " -> " .. distPath)
-        local p = io.popen("cp -r " .. srcPath .. " " .. distPath .. " 2>&1")
-        local result = p:read("*a")
-        if #result > 0 then
-            CLIError("Error during copy: " .. result)
-        end
-    end
-
-    print("Make Plume executable.")
-    io.popen("chmod +x " .. dir .. "/plume")
-
-    -- check if dir is in the path and warn if not
-    if not checkDirOnPath(dir) then
-        print("Warning: '" .. dir .."' is not on PATH.")
-    end
-
-    if showSuccessMessage then
-        print("Plume installed in '" .. dir .. "' with success.")
-    end
-end
-
-local function CLIRemove ()
-    for _, filename in ipairs(plumeFiles) do
-        print("Remove: " .. scriptDir .. "/" .. filename)
-        local p = io.popen("rm -r " .. scriptDir .. "/" .. filename .. " 2>&1")
-        local result = p:read("*a")
-        if #result > 0 then
-            CLIError("Error during supression: " .. result)
-        end
-    end
-end
-
 local function CLIUpdate ()
     local command = "git ls-remote --tags --sort=-v:refname " .. GITHUB .. " | head -n 1"
     local tag = io.popen(command):read("*a")
@@ -266,8 +204,6 @@ local acceptedParameters = {
     help             = true,
     print            = true,
     version          = true,
-    install          = true,
-    remove           = true,
     update           = true,
     ["remove-cache"] = true,
     ["no-cache"]     = true
@@ -282,8 +218,6 @@ local exclusive = {
 local all_exclusive = {
     help    = true,
     version = true,
-    install = true,
-    remove  = true,
     update  = true
 }
 -- A set of option names that require an accompanying value.
@@ -374,10 +308,6 @@ if options.help then
     CLIHelp()
 elseif options.version then
     CLIVersion()
-elseif options.install then
-    CLIInstall(options.install, "./", true)
-elseif options.remove then
-    CLIRemove()
 elseif options.update then
     CLIUpdate()
 elseif options["remove-cache"] then

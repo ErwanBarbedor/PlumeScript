@@ -15,16 +15,7 @@ Test it now [in your browser](https://app.barbedor.bzh/plume.html)! *older versi
 
 ## Installation
 
-### Linux
-
-You must have luajit installed.
-
-``` sh
-git clone https://github.com/ErwanBarbedor/PlumeScript
-cd PlumeScript
-chmod +x plume
-./plume --install
-```
+Unzip archive corresponding to your OS in a PATH location (for exemple, `/usr/bin` on Linux).
 
 ## Usage
 ```
@@ -44,11 +35,6 @@ Usage:
         Print the output to the console.
 
     PLUME MANAGEMENT
-    plume --install
-    plume --install directory
-        Install plume in the given directory (~/.local/bin by default)
-    plume --remove
-        Remove plume installation
     plume --update
         Download new plume version from github
     plume --remove-cache
@@ -77,6 +63,9 @@ According some quick benchmark simulating standard use-cases, transpiled code ex
 
 ## Changelog
 ### 0.36 (last version)
+
+#### CLI changes
+- Remove `--install` and `--remove` options.
 
 #### Internal changes
 - Use `lfs` for all files-related opperations.
