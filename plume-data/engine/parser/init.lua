@@ -24,15 +24,19 @@ return function(plume)
     local trim = plume.utils.trim
     local contains = plume.utils.containsWord
 
-    local statementPatternList  = require ("engine/parser/statementPatterns")
-    local expressionPatternList = require ("engine/parser/expressionPatterns")
+    local statementPatternList      = require ("engine/parser/statementPatterns")
+    local finalStatementPatternList = require ("engine/parser/finalStatementPatterns")
+    local expressionPatternList     = require ("engine/parser/expressionPatterns")
 
     --- Transforms a stream of lexical tokens into structured semantic elements
     ---@param tokens table[] Sequence of input tokens from lexical analysis
     ---@return table[] Structured tokens with semantic typing and context
     plume.parse = function(tokens)
         local pos = 1
-        local inStatementContext = true -- Flag for structural token recognition
+
+        local STATEMENT_MODE, FINAL_STATEMENT_MODE, EXPRESSION_MODE = 0, 1, 2
+        local mode = STATEMENT_MODE
+
         local textAccumulator           -- Buffer for text fragments between structural tokens
         local result = {}               -- Final structured token collection
         local lineCache = {}            -- Store informations about indentation and commands
@@ -102,12 +106,8 @@ return function(plume)
 
             -- Check rules for ASSIGNMENT and HASH_ITEM commands
             if contains("ASSIGNMENT HASH_ITEM", lineCache[1]) then
-                if lineCache[1] == lineCache[2] then
-                    plume.cannotChainSeveralCommand (source, lineCache[1])
-                elseif contains("ASSIGNMENT HASH_ITEM LIST_ITEM IF FOR ELSEIF WHILE", lineCache[2]) then
-                    plume.cannotChainCommands(source, lineCache[1], lineCache[2])
                 -- Check for invalid block opening
-                elseif lineCache[#lineCache] == "BLOCK_OPEN" then  
+                if lineCache[#lineCache] == "BLOCK_OPEN" then  
                     if #lineCache > 2 then
                         if not contains("INLINE_MACRO_DEFINITION MACRO_CALL_BEGIN", lineCache[2])   then
                             plume.cannotOpenBlock(source, lineCache[1])
@@ -144,7 +144,7 @@ return function(plume)
         local function checkCommandsRules(token)
             local kind = (token and token.kind) or ("TEXT")
 
-            if kind and inStatementContext then
+            if kind and mode ~= EXPRESSION_MODE then
                 lineCache.indent = currentIndent
                 lineCache.firstCommand = token  
             end
@@ -210,7 +210,7 @@ return function(plume)
                 }  
             end
 
-            inStatementContext = false
+            mode = EXPRESSION_MODE
         end
 
         ---@param match table The matched command expansion.
@@ -245,7 +245,7 @@ return function(plume)
             local kind = ""
             -- Distinguish between command expansions with and without calls.
             if match.call.kind ~= "EMPTY" then
-                inStatementContext = false
+                mode = EXPRESSION_MODE
                 kind = "COMMAND_EXPAND_" .. expandKind .. "_CALL_BEGIN"
             else
                 kind = "COMMAND_EXPAND_" .. expandKind
@@ -267,7 +267,7 @@ return function(plume)
                 content = match.variable.content
             }
 
-            inStatementContext = false
+            mode = EXPRESSION_MODE
         end
         
         local statementHandler
@@ -309,6 +309,8 @@ return function(plume)
                     content = key,
                     eval    = #match.evalmode.content>0
                 }
+
+                mode = FINAL_STATEMENT_MODE
             end,
             HASH_ITEM_ENDLINE = function(match)
                 if #match.evalmode.content>0 then
@@ -351,6 +353,8 @@ return function(plume)
                         content = "",
                         indent = match.endline.indent
                     }
+                else
+                    mode = FINAL_STATEMENT_MODE
                 end
             end,
             ASSIGNMENT = function(match)
@@ -395,6 +399,8 @@ return function(plume)
                         content = "",
                         indent = match.endline.indent
                     }
+                else
+                    mode = FINAL_STATEMENT_MODE
                 end
             end,
             LOCAL_MACRO_DEFINITION = function(match)
@@ -457,7 +463,7 @@ return function(plume)
                     content = "",
                     indent = match.tokens[#match.tokens].indent
                 }
-                inStatementContext = true
+                mode = STATEMENT_MODE
             end,
             COMMENT = function(match)
                 local indent = 0
@@ -470,7 +476,7 @@ return function(plume)
                     content = "",
                     indent = indent
                 }
-                inStatementContext = true
+                mode = STATEMENT_MODE
             end,
             MACRO_CALL_BEGIN = function(match)
                 handleMacroCall(match)
@@ -504,7 +510,7 @@ return function(plume)
                 local kind
                 
                 if match.call.kind ~= "EMPTY" then
-                    inStatementContext = false
+                    mode = EXPRESSION_MODE
                     kind = "MACRO_CALL_BEGIN"
                 else
                     kind = "VARIABLE"
@@ -621,12 +627,17 @@ return function(plume)
         -- Main parsing loop
         while pos <= #tokens do
             local patternName, match
-            if inStatementContext then
+            if mode == STATEMENT_MODE then
                 patternName, match = testAllPatterns(statementPatternList)
             end
 
+            if not patternName or mode == FINAL_STATEMENT_MODE then
+                mode = FINAL_STATEMENT_MODE
+                patternName, match = testAllPatterns(finalStatementPatternList)
+            end
+
             if not patternName then
-                inStatementContext = false
+                mode = EXPRESSION_MODE
                 patternName, match = testAllPatterns(expressionPatternList)
             end
 
@@ -640,7 +651,7 @@ return function(plume)
 
                 statementHandler[patternName](match)
 
-                if inStatementContext then
+                if mode == STATEMENT_MODE then
                     while tokens[pos] and tokens[pos].kind == "SPACE" do
                         pos = pos + 1
                     end

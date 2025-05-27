@@ -64,6 +64,7 @@ According some quick benchmark simulating standard use-cases, transpiled code ex
 ## Changelog
 ### 0.37 (last version)
 
-
+#### Changes
+- More flexible syntax (for exemple, `a = b = c` will not raise an error, but affect string `b = c` to variable `a`).
 
 [Older versions](doc/changelog.md)

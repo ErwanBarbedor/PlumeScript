@@ -41,15 +41,6 @@ return {
             {kind = "LPAR"},
         }
     },
-    
-    {
-        name = "INLINE_MACRO_DEFINITION",
-        pattern = {
-            {kind = "TEXT",  content = "macro"},
-            {kind = "SPACE", multipleCapture = true, optional=true},
-            {kind = "LPAR"}
-        }
-    },
     {
         name = "LINE_STATEMENT",
         pattern = {
@@ -134,7 +125,7 @@ return {
         name = "LIST_ITEM",
         pattern = {
             {kind = "DASH"},
-            {kind = "SPACE"}
+            {kind = "SPACE", multipleCapture = true}
         }
     },
     {
@@ -150,7 +141,7 @@ return {
             {kind = "EVAL", name = "evalmode", optional=true},
             {kind = "TEXT", name = "key"},
             {kind = "COLON"},
-            {kind = "SPACE"}
+            {kind = "SPACE", multipleCapture = true}
         }
     },
     {
@@ -165,7 +156,7 @@ return {
                 name = "keyExpression"
             },
             {kind = "COLON"},
-            {kind = "SPACE"}
+            {kind = "SPACE", multipleCapture = true}
         }
     },
     {
@@ -187,6 +178,7 @@ return {
             {kind = "SPACE", multipleCapture = true},
             {kind = "OPERATOR", name = "compound_operator", optional=true},
             {kind = "EQUAL"},
+            {kind = "SPACE", multipleCapture = true, optional=true},
             {kind = {"NEWLINE", "ENDLINE"}, name = "endline", optional = true}
         }
     },
@@ -215,6 +207,7 @@ return {
             {kind = "SPACE", multipleCapture = true},
             {kind = "OPERATOR", name = "compound_operator", optional=true},
             {kind = "EQUAL"},
+            {kind = "SPACE", multipleCapture = true, optional=true},
             {kind = {"NEWLINE", "ENDLINE"}, name = "endline", optional = true}
         }
     },
@@ -240,6 +233,7 @@ return {
             {kind = "SPACE", multipleCapture = true},
             {kind = "OPERATOR", name = "compound_operator", optional=true},
             {kind = "EQUAL"},
+            {kind = "SPACE", multipleCapture = true, optional=true},
             {kind = {"NEWLINE", "ENDLINE"}, name = "endline", optional = true}
         }
     },
