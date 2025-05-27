@@ -457,6 +457,12 @@ return function(plume)
                     content = ""
                 }
             end,
+            CONTINUE = function(match)
+                pushToken {
+                    kind = "CONTINUE",
+                    content = ""
+                }
+            end,
             ENDLINE = function(match)
                 pushToken {
                     kind = "ENDLINE",

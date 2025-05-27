@@ -234,9 +234,18 @@ return function(plume, transpiler)
         -- @return nil
         FOR = function (node)
             -- node.content contains the Plume code for the loop's iterator part (e.g., "i = 1, 10" or "k, v in pairs(t)").
+            if node.continue then
+                node.continue = transpiler:getUniqueLabel("for")
+            end
+
             transpiler:emitFOR(node, transpiler.editLuaCode(node.content))
             -- Transpile the body of the loop.
             transpiler.transpileChildren(node, false, false)
+
+            if node.continue then
+                transpiler:newline()
+                transpiler:write("::" .. node.continue .. "::")
+            end
             transpiler:emitEND()
         end,
 
@@ -244,10 +253,19 @@ return function(plume, transpiler)
         -- @param node table The while loop node to process.
         -- @return nil
         WHILE = function (node)
+            if node.continue then
+                node.continue = transpiler:getUniqueLabel("while")
+            end
+
             transpiler:emitWHILE(node, transpiler.editLuaCode(node.content))
             -- Transpile the body of the loop.
             transpiler.transpileChildren(node, false, false)
-            transpiler:emitEND() -- Emits 'end' for the loop.
+            
+            if node.continue then
+                transpiler:newline()
+                transpiler:write("::" .. node.continue .. "::")
+            end
+            transpiler:emitEND()
         end,
 
         --- Handles 'if' statements.
@@ -300,6 +318,14 @@ return function(plume, transpiler)
         -- @return nil
         BREAK = function (node)
             transpiler:emitBREAK()
+        end,
+
+        --- Handles 'continue' statements.
+        -- @param node table The break statement node to process.
+        -- @return nil
+        CONTINUE = function (node)
+            transpiler:emitCONTINUE(node.loop.continue)
+            node.loop = nil -- no need to save the reference in map
         end,
 
         --- Handles text literals, typically transpiled into Lua string literals.

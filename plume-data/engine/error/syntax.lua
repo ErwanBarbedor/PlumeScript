@@ -80,9 +80,10 @@ return function (plume)
 
     --- Throws an error when a 'break' statement is used outside of a loop.
     --- @param source table Source metadata, as expected by `getSourceLine`.
-    function plume.breakOutsideLoopError(source)
-        -- Error when 'break' is used outside a loop.
-        plume.sourcedError(source, "Syntax error: 'break' cannot be use outside of a loop." )
+    --- @param kind string
+    function plume.outsideLoopError(source, kind)
+        -- Error when 'break' or 'continue' is used outside a loop.
+        plume.sourcedError(source, "Syntax error: '"..kind.."' command cannot be use outside of a loop." )
     end
 
     --- Throws an error when multiple arguments with the same name are used in a function call.

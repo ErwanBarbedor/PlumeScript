@@ -231,7 +231,7 @@ return function (plume)
         local function isInside(kind, deep)
             for i=#context, #context - (deep or #context)+1, -1 do
                 if context[i].kind == kind then
-                    return true
+                    return context[i]
                 end
             end
             return false
@@ -475,12 +475,18 @@ return function (plume)
                 setReturnType(token, "VALUE", context) -- RETURN implies the block yields a value.
                 pushContext(token, token.kind, currentIndent+1, token.content)
 
-            elseif contains("BREAK", token.kind) then
-                if not (isInside("FOR") or isInside("WHILE")) then
-                    plume.breakOutsideLoopError(token.source)
+            elseif contains("BREAK CONTINUE", token.kind) then
+                local parent = isInside("FOR") or isInside("WHILE")
+                if not parent then
+                    plume.outsideLoopError(token.source, token.kind)
                 end
 
-                pushChild(token, "BREAK", "")
+                pushChild(token, token.kind, "")
+
+                if parent and token.kind == "CONTINUE" then
+                    parent.continue = true
+                    current.children[#current.children].loop = parent
+                end
 
             else
                 -- This indicates a token type that the parser doesn't know how to handle.

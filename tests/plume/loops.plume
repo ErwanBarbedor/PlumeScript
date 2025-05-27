@@ -24,15 +24,39 @@ $i
 99
 /// End
 
+/// Test "Continue"
+for i=1, 10
+    if i>2 and i<9
+        continue
+    Line $i\n
+/// Result
+Line 1
+Line 2
+Line 9
+Line 10
+
+/// End
+
 /// Test "Break outside loop"
 local i = 100
 break
 $i
 /// Error
-Syntax error: 'break' cannot be use outside of a loop.
+Syntax error: 'BREAK' command cannot be use outside of a loop.
 File <string_1>, line n°2:
     break
     ^^^^^
+/// End
+
+/// Test "Continue outside loop"
+local i = 100
+continue
+$i
+/// Error
+Syntax error: 'CONTINUE' command cannot be use outside of a loop.
+File <string_1>, line n°2:
+    continue
+    ^^^^^^^^
 /// End
 
 // // / Test "gmatch for"

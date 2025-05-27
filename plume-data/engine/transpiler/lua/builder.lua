@@ -30,7 +30,7 @@ return function (plume)
         self.code = {}  -- Stores the generated Lua code as a list of strings.
         self.map  = map -- Reference to the source map table, where each inner table collects nodes for a line.
         self.deep = 0   -- Current indentation level.
-        self.temp = 0   -- to make unique temp variables
+        self.temp = 0   -- to make unique temp variables/labels
 
         self.newlineCount = {}
 
@@ -218,7 +218,7 @@ return function (plume)
     ---@param node any The AST node for source mapping.
     ---@param condition string The condition for the while loop.
     ---@return nil
-    function builder:emitWHILE(node, condition)
+    function builder:emitWHILE(node, condition, label)
         self:newline()
         if node then self:use(node) end
         self:write("while")
@@ -241,6 +241,13 @@ return function (plume)
     function builder:emitBREAK()
         self:newline()
         self:write("break")
+    end
+
+    --- Emits a 'continue' statement.
+    ---@return nil
+    function builder:emitCONTINUE(label)
+        self:newline()
+        self:write("goto " .. label)
     end
 
     --- Emits a 'return' statement.
@@ -435,6 +442,11 @@ return function (plume)
         self:emitOPEN("__plume_expand_hash(__plume_temp, ")
         callback()
         self:emitCLOSE(")")
+    end
+
+    function builder:getUniqueLabel(name)
+        self.temp = self.temp + 1
+        return "label" .. self.temp .. "_" .. name
     end
 
     return builder

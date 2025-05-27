@@ -67,5 +67,6 @@ According some quick benchmark simulating standard use-cases, transpiled code ex
 #### Changes
 - More flexible syntax (for exemple, `a = b = c` will not raise an error, but affect string `b = c` to variable `a`).
 - Add `macro` in reserved word list.
+- Implement `continue` keyword.
 
 [Older versions](doc/changelog.md)

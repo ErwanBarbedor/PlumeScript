@@ -67,9 +67,10 @@ return {
             }
         }
     },
-    {name = "VOID",   pattern = {{kind = "TEXT", content = "void"}}},
-    {name = "ELSE",   pattern = {{kind = "TEXT", content = "else"}}},
-    {name = "BREAK",  pattern = {{kind = "TEXT", content = "break"}}},
+    {name = "VOID",      pattern = {{kind = "TEXT", content = "void"}}},
+    {name = "ELSE",      pattern = {{kind = "TEXT", content = "else"}}},
+    {name = "BREAK",     pattern = {{kind = "TEXT", content = "break"}}},
+    {name = "CONTINUE",  pattern = {{kind = "TEXT", content = "continue"}}},
     {name = "COMMAND_EXPAND_LIST",  pattern = {
         {kind = "OPERATOR", content = "*"},
         {kind = "TEXT", name = "variable"},
