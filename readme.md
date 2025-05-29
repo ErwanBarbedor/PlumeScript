@@ -69,5 +69,6 @@ According some quick benchmark simulating standard use-cases, transpiled code ex
 - Add `macro` in reserved word list.
 - Implement `continue` keyword.
 - Remove `;` as an equivalent to `\n`.
+- `BREAK` and `ELSE` must ends the line.
 
 [Older versions](doc/changelog.md)

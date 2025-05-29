@@ -110,7 +110,7 @@ return function(plume)
                 if lineCache[#lineCache] == "BLOCK_OPEN" then  
                     if #lineCache > 2 then
                         if not contains("INLINE_MACRO_DEFINITION MACRO_CALL_BEGIN", lineCache[2])   then
-                            plume.cannotOpenBlock(source, lineCache[1])
+                            plume.cannotOpenBlockError(source, lineCache[1])
                         end
                     end
 
@@ -120,7 +120,7 @@ return function(plume)
                             pos = pos + 1
                         end
                         if #lineCache > pos+1 then
-                            plume.cannotOpenBlock(source, lineCache[2])
+                            plume.cannotOpenBlockError(source, lineCache[2])
                         end
                     end
                 end
@@ -132,7 +132,11 @@ return function(plume)
                 end
 
                 if lineCache[#lineCache] == "BLOCK_OPEN" and #lineCache > pos+1 then
-                    plume.cannotOpenBlock(source, lineCache[1])
+                    plume.cannotOpenBlockError(source, lineCache[1])
+                end
+            elseif contains("BREAK ELSE CONTINUE", lineCache[1]) then
+                if lineCache[2] ~= "BLOCK_OPEN" then
+                    plume.mustLineBreakError(source, lineCache[1])
                 end
             end
         end

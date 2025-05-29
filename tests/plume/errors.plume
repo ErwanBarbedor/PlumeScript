@@ -114,3 +114,21 @@ macro foo()
 /// Result
 nil
 /// End
+
+/// Test "Must end line 1"
+break 1
+/// Error
+Syntax error: 'BREAK' must end the line.
+File <string_1>, line n°1:
+    break 1
+    ^^^^^
+/// End
+
+/// Test "Must end line 2"
+else 1
+/// Error
+Syntax error: 'ELSE' must end the line.
+File <string_1>, line n°1:
+    else 1
+    ^^^^
+/// End

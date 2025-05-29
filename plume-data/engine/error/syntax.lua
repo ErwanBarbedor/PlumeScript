@@ -74,7 +74,7 @@ return function (plume)
     --- Throws an error when a command that can be followed by either text or an indented block is followed by both.
     --- @param source table Source metadata, as expected by `getSourceLine`.
     --- @param name string The name of the command.
-    function plume.cannotOpenBlock(source, name)
+    function plume.cannotOpenBlockError(source, name)
         plume.sourcedError(source, "Syntax error: command '" .. name .."' can be followed by text or by an indented block, but not both." )
     end
 
@@ -104,6 +104,10 @@ return function (plume)
 
     function plume.cannotUseSelfError(source)
         plume.sourcedError(source, "Syntax error: cannot use 'self' as variable name." )
+    end
+
+    function plume.mustLineBreakError(source, name)
+        plume.sourcedError(source, "Syntax error: '"..name.."' must end the line." )
     end
 
 end
