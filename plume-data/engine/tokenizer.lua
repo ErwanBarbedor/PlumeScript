@@ -44,7 +44,7 @@ local tokenPatterns = {
     {name = "DASH",    pattern = "%-"},      -- List item identifier
     {name = "COLON",   pattern = ":"},       -- Type/Value separator
     {name = "EQUAL",   pattern = "="},       -- Assignment operator
-    {name = "ENDLINE", pattern = ";"},       -- Statement terminator
+    -- {name = "ENDLINE", pattern = ";"},       -- Statement terminator
     {name = "COMMA",   pattern = ",[ \t]*"}, -- Argument list separator
     {name = "LPAR",    pattern = "%("},      -- Expression group start
     {name = "RPAR",    pattern = "%)"},      -- Expression group end
