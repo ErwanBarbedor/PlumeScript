@@ -1,6 +1,6 @@
 <p align="center"><img src="plume_logo.svg" width="600" height="300"></p>
 
-![Version](https://img.shields.io/badge/version-0.37-blue.svg) [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
+![Version](https://img.shields.io/badge/version-0.38-blue.svg) [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 
 
 ## Plume🪶 - An Expressive Templating Language
@@ -62,13 +62,8 @@ On my 12600k, transpilation of a 100ko file takes less than 200ms, up to 2s for 
 According some quick benchmark simulating standard use-cases, transpiled code executes at between 80% and 100% of Lua's performance. So with LuaJIT, this makes it possible to include relatively costly calculations in templates.
 
 ## Changelog
-### 0.37 (last version)
+### 0.38 (last version)
 
-#### Changes
-- More flexible syntax (for exemple, `a = b = c` will not raise an error, but affect string `b = c` to variable `a`).
-- Add `macro` in reserved word list.
-- Implement `continue` keyword.
-- Remove `;` as an equivalent to `\n`.
-- `BREAK` and `ELSE` must ends the line.
+
 
 [Older versions](doc/changelog.md)
