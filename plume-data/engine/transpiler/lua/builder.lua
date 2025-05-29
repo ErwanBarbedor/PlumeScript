@@ -27,10 +27,11 @@ return function (plume)
     ---@param map table The table to store source mapping information.
     ---@return table self The initialized Builder instance.
     function builder:init (map)
-        self.code = {}  -- Stores the generated Lua code as a list of strings.
-        self.map  = map -- Reference to the source map table, where each inner table collects nodes for a line.
-        self.deep = 0   -- Current indentation level.
-        self.temp = 0   -- to make unique temp variables/labels
+        self.code = {}   -- Stores the generated Lua code as a list of strings.
+        self.map  = map  -- Reference to the source map table, where each inner table collects nodes for a line.
+        self.header = {} -- Code to insert at file start
+        self.deep = 0    -- Current indentation level.
+        self.temp = 0    -- to make unique temp variables/labels
 
         self.newlineCount = {}
 
@@ -41,6 +42,21 @@ return function (plume)
     function builder:getTempVarName()
         self.temp = self.temp + 1
         return "__plume_temp_u" .. self.temp
+    end
+
+    function builder:genHeader()
+        for i=#self.headerContent, 1, -1 do
+            local name    = self.headerContent[i].name
+            local content = self.headerContent[i].content
+
+            if self.header[name] then
+                table.insert(self.code, 1, content)
+
+                for j=1, #content:match('\n') do
+                    table.insert(self.map, 1, {})
+                end
+            end
+        end
     end
 
     -- Helper functions for managing the code buffer
@@ -394,7 +410,8 @@ return function (plume)
         self:insert(" = ")
         self.deep = self.deep + 1
         self:newline()
-        --- Call the __plume_init_args helper function.
+
+        self.header.initArgs = true
         self:insert("__plume_init_args(")
             self:insert("__plume_args, ")
             self:insert(#positionalArgs)
@@ -429,6 +446,7 @@ return function (plume)
     function builder:chunkEXPAND_LIST(callback)
         self:newline()
         -- Emits the call to __plume_expand_list, which handles the array part expansion.
+        self.header.expandList = true
         self:emitOPEN("__plume_expand_list(__plume_temp, ")
         callback()
         self:emitCLOSE(")")
@@ -439,6 +457,7 @@ return function (plume)
     function builder:chunkEXPAND_HASH(callback)
         self:newline()
         -- Emits the call to __plume_expand_hash, which handles the hash part expansion.
+        self.header.expandHash = true
         self:emitOPEN("__plume_expand_hash(__plume_temp, ")
         callback()
         self:emitCLOSE(")")

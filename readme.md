@@ -64,6 +64,8 @@ According some quick benchmark simulating standard use-cases, transpiled code ex
 ## Changelog
 ### 0.38 (last version)
 
+#### Transpiler
+- Add declaration in file start only if needed.
 
 
 [Older versions](doc/changelog.md)

@@ -31,6 +31,7 @@ return function(plume)
     
     require "engine/transpiler/lua/transpileChildren" (plume, transpiler)
     require "engine/transpiler/lua/tokenHandlers"     (plume, transpiler)
+    require "engine/transpiler/lua/header"            (plume, transpiler)
     
     --- Post-processes generated Lua code to transform Plume-style function and method calls.
     -- This function converts:
@@ -90,26 +91,6 @@ return function(plume)
         -- Initialize the transpiler builder with the source map.
         transpiler:init (map)
 
-        -- Insert a preamble into the generated Lua code.
-        -- This preamble includes localized Plume helper functions and aliases for
-        -- standard Lua functions, accessed via `__lua` environment table.
-        transpiler:insert("local __plume_check       = plume.checkConcat")
-        transpiler:newline()
-        transpiler:insert("local __plume_expand_list = plume.expandList")
-        transpiler:newline()
-        transpiler:insert("local __plume_expand_hash = plume.expandHash")
-        transpiler:newline()
-        transpiler:insert("local __plume_init_args   = plume.initArgs")
-        transpiler:newline()
-        transpiler:insert("local __plume_concat      = __lua.table.concat")
-        transpiler:newline()
-        transpiler:insert("local __plume_insert      = __lua.table.insert")
-        transpiler:newline()
-        transpiler:insert("local __plume_remove      = __lua.table.remove")
-        transpiler:newline()
-        transpiler:insert("local __plume_unpack      = __lua.unpack")
-        transpiler:newline()
-
         -- Special variables
         transpiler:insert("local _FILE = \"" .. filename .. "\"")
         transpiler:newline()
@@ -118,6 +99,9 @@ return function(plume)
 
         -- Start the recursive transpilation process from the root AST node.
         transpiler.transpileToLua(ast)
+
+        -- Add declarations
+        transpiler:genHeader()
         
         -- Return the concatenated Lua code and the source map.
         return table.concat(transpiler.code), map
