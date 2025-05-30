@@ -46,31 +46,9 @@ return function(plume)
     require ("engine/std/utils") (plume)
     require ("engine/std/std") (plume)
 
-    plume.plumeStdLib = {table={}, _VERSION = plume._VERSION}
-
+    plume.plumeStdLib = {table={}}
     plume.luaStdLib = importLuaStdLib()
-    plume.envStdLib = {}
 
-    function plume.plumeStdLib.table.merge(...)
-        local result = {}
-        local index = 1
-
-        for i = 1, select('#', ...) do
-            local tbl = select(i, ...)
-            if tbl then
-                local len = #tbl
-                table.move(tbl, 1, len, index, result)
-                index = index + len
-            end
-        end
-
-      return result
-    end
-    
-    -- Visibles from Plume:
-        -- table plume: methods/table exposed to user
-        -- all _G methods, to be use with Plume calling convention.
-        -- table __lua: use Lua calling convention, cannot be used by user.
     function plume.initRuntime (scriptDir)
         local env = {plume = {}}
 

@@ -35,6 +35,7 @@ return function(plume)
     plume.std.__utils = {
         __plume_insert = table.insert,
         __plume_concat = table.concat,
+        _VERSION       = plume._VERSION,
         
         __plume_checkConcat = function (x)
             local t = type(x)

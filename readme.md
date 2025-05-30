@@ -66,6 +66,7 @@ According some quick benchmark simulating standard use-cases, transpiled code ex
 
 #### Changes
 - Move utils functions used by transpiled code from `plume` to `_G`.
+- Move `_VERSION` from `plume` to `_G`.
 - Remove field `__lua`.
 
 #### Transpiler

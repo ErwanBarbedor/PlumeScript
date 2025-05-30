@@ -1,5 +1,5 @@
 /// Test "VERSION"
-$(plume._VERSION)
+$(_VERSION)
 /// Result
 Plume🪶-0.38
 /// End
