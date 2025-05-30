@@ -72,7 +72,7 @@ return function(plume)
         -- all _G methods, to be use with Plume calling convention.
         -- table __lua: use Lua calling convention, cannot be used by user.
     function plume.initRuntime (scriptDir)
-        local env = {plume = {}, __lua = _G}
+        local env = {plume = {}}
 
         for k, v in pairs(plume.plumeStdLib) do
             env.plume[k] = v
