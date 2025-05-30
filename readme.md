@@ -8,7 +8,6 @@
 - ✨ **Lightweight Syntax:** Minimal special characters and indentation-based structure make Plume easy to write and read.
 - 📖 **Expressive and Readable:** Inspired by YAML for lists and hashes, and common programming languages for the rest, Plume offers a clear and concise syntax.
 - ⚙️ **Versatile and Extensible:** While well-suited for rich text generation with macros, Plume allows you to achieve virtually anything possible with a general-purpose programming language, with almost no special syntax. This makes it highly adaptable to various use cases.
-- 🔗 **Lua Integration:** Written in and transpiling to Lua, seamlessly integrate Plume into your existing Luajit projects.
 
 Test it now [in your browser](https://app.barbedor.bzh/plume.html)! *older version waiting for update*
 
@@ -74,9 +73,6 @@ According some quick benchmark simulating standard use-cases, transpiled code ex
 - These methods are availables from lua files.
 - `lua` and `plume` don't run anymore in the same env. *Since call conventions are different in Plume and lua, it's best to separate them explicitly.*
 - Add field `_LUA` (for `plume` files) and `_PLUME` (for `lua` files).
-
-#### Transpiler
-- Add declaration in file start only if needed.
 
 #### Internal changes
 - Reorganize std functions
