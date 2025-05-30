@@ -1,6 +1,6 @@
 <p align="center"><img src="plume_logo.svg" width="600" height="300"></p>
 
-![Version](https://img.shields.io/badge/version-0.38-blue.svg) [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
+![Version](https://img.shields.io/badge/version-0.39-blue.svg) [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 
 
 ## Plume🪶 - An Expressive Templating Language
@@ -61,21 +61,6 @@ On my 12600k, transpilation of a 100ko file takes less than 200ms, up to 2s for 
 According some quick benchmark simulating standard use-cases, transpiled code executes at between 80% and 100% of Lua's performance. So with LuaJIT, this makes it possible to include relatively costly calculations in templates.
 
 ## Changelog
-### 0.38 (last version)
-
-#### Changes
-- Move utils functions used by transpiled code from `plume` to `_G`.
-- Move `_VERSION` from `plume` to `_G`.
-- New `_LUA_VERSION` and `_LUAJIT_VERSION`.
-- New `_PLUME_DIR`.
-- Remove field `__lua`.
-- Severely restricts the standard lua methods available to the user.
-- These methods are availables from lua files.
-- `lua` and `plume` don't run anymore in the same env. *Since call conventions are different in Plume and lua, it's best to separate them explicitly.*
-- Add field `_LUA` (for `plume` files) and `_PLUME` (for `lua` files).
-
-#### Internal changes
-- Reorganize std functions
-
+### 0.39 (last version)
 
 [Older versions](doc/changelog.md)
