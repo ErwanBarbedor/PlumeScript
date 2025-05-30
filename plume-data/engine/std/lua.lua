@@ -39,6 +39,7 @@ end
 
 return function(plume)
 
+    -- Available from plume
     -- Excluded: arg, collectgarbage, coroutine, debug, dofile, gcinfo, getfenv, getmetatable, io, jit, load, loadfile, loadstring, module, next, os, package, pcall, rawequal, rawget, rawset, require, select, setmetatable, string, table, unpack, xpcall
     for name in ("assert bit error ipairs pairs print tostring tonumber type"):gmatch('%S+') do
         plume.std.luaPlume[name] = importLuaFunction (_G[name])
@@ -46,5 +47,10 @@ return function(plume)
 
     for name in ("math"):gmatch('%S+') do
         plume.std.luaPlume[name] = importLuaTable (_G[name])
+    end
+
+    -- Available from lua
+    for name in ("arg collectgarbage coroutine debug dofile gcinfo getfenv getmetatable io jit load loadfile loadstring module next os package pcall rawequal rawget rawset require select, setmetatable string table unpack xpcall assert bit error ipairs pairs print tostring tonumber type"):gmatch('%S+') do
+        plume.std.lua[name] = _G[name]
     end
 end

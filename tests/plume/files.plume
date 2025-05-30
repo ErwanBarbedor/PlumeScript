@@ -62,7 +62,7 @@ nil
 foo = $require(tests/plume/toImport/lib, ext: lua)
 $plumeVar
 /// Result
-plumevar
+lua loaded (in field Plume)
 /// End
 
 /// Test "File not found"
