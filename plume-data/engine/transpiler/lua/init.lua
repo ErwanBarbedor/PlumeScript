@@ -31,7 +31,6 @@ return function(plume)
     
     require "engine/transpiler/lua/transpileChildren" (plume, transpiler)
     require "engine/transpiler/lua/tokenHandlers"     (plume, transpiler)
-    require "engine/transpiler/lua/header"            (plume, transpiler)
     
     --- Post-processes generated Lua code to transform Plume-style function and method calls.
     -- This function converts:
@@ -99,9 +98,6 @@ return function(plume)
 
         -- Start the recursive transpilation process from the root AST node.
         transpiler.transpileToLua(ast)
-
-        -- Add declarations
-        transpiler:genHeader()
         
         -- Return the concatenated Lua code and the source map.
         return table.concat(transpiler.code), map

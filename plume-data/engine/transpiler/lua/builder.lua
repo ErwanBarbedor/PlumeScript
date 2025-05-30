@@ -29,7 +29,6 @@ return function (plume)
     function builder:init (map)
         self.code = {}   -- Stores the generated Lua code as a list of strings.
         self.map  = map  -- Reference to the source map table, where each inner table collects nodes for a line.
-        self.header = {} -- Code to insert at file start
         self.deep = 0    -- Current indentation level.
         self.temp = 0    -- to make unique temp variables/labels
 
@@ -42,21 +41,6 @@ return function (plume)
     function builder:getTempVarName()
         self.temp = self.temp + 1
         return "__plume_temp_u" .. self.temp
-    end
-
-    function builder:genHeader()
-        for i=#self.headerContent, 1, -1 do
-            local name    = self.headerContent[i].name
-            local content = self.headerContent[i].content
-
-            if self.header[name] then
-                table.insert(self.code, 1, content)
-
-                for j=1, #content:match('\n') do
-                    table.insert(self.map, 1, {})
-                end
-            end
-        end
     end
 
     -- Helper functions for managing the code buffer

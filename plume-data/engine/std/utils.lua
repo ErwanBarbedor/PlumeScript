@@ -31,8 +31,11 @@ return function(plume)
 
         error(message, 4)
     end
-    
+
     plume.std.__utils = {
+        __plume_insert = table.insert,
+        __plume_concat = table.concat,
+        
         __plume_checkConcat = function (x)
             local t = type(x)
             if t == "nil" then

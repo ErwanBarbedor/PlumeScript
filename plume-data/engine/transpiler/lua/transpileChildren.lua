@@ -120,7 +120,6 @@ return function(plume, transpiler)
         end
 
         if concat then
-            transpiler.header.concat = true
             transpiler:write("__plume_concat ")
         end
 
@@ -229,7 +228,6 @@ return function(plume, transpiler)
                             else
                                 transpiler:newline()
                                 -- Insert value into the accumulator table.
-                                transpiler.header.insert = true
                                 transpiler:emitOPEN("__plume_insert (__plume_temp, ")
                                 if concat and value.kind ~= "TEXT" then 
                                     transpiler:emitOPEN("__plume_checkConcat(")
@@ -312,7 +310,6 @@ return function(plume, transpiler)
                     transpiler:insert("return \"\"") 
                 else
                     -- Concatenate accumulated text parts.
-                    transpiler.header.concat = true
                     transpiler:insert("return __plume_concat (__plume_temp)") 
                 end
             elseif node.returnType == "NIL" then
