@@ -46,15 +46,11 @@ return function(plume)
     require ("engine/std/utils") (plume)
     require ("engine/std/std") (plume)
 
-    plume.plumeStdLib = {table={}}
     plume.luaStdLib = importLuaStdLib()
 
     function plume.initRuntime (scriptDir)
         local env = {plume = {}}
 
-        for k, v in pairs(plume.plumeStdLib) do
-            env.plume[k] = v
-        end
         for k, v in pairs(plume.luaStdLib) do
             env[k] = v
         end
