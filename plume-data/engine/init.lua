@@ -68,8 +68,8 @@ function plume.execute(filename, isString, env)
     -- filename contain the code?
     if isString then
         local plumeCode = filename
-        env.plume.package.anonymous = env.plume.package.anonymous + 1
-        filename = "<string_" .. env.plume.package.anonymous .. ">"
+        env.config.package.anonymous = env.config.package.anonymous + 1
+        filename = "<string_" .. env.config.package.anonymous .. ">"
         luaCode, luaMap = plume.transpile(plumeCode, filename)
     -- else load it from the file. Handle caching
     else
@@ -77,12 +77,12 @@ function plume.execute(filename, isString, env)
     end
 
     -- Store source map for debugging purposes
-    env.plume.package.map["@"..filename] = luaMap
+    env.config.package.map["@"..filename] = luaMap
 
     -- Compile Lua code using sandboxed environment
     local compiledFunction, errorMessage = loadstring(luaCode, "@"..filename)
     if compiledFunction then
-        setfenv(compiledFunction, env)
+        setfenv(compiledFunction, env.plume)
     end
 
     if not compiledFunction then
@@ -100,8 +100,8 @@ function plume.run(filename, isString, options, scriptDir)
     options = options or {}
 
     local env = plume.initRuntime()
-    env._PLUME_DIR            = scriptDir
-    env.plume.package.caching = options.caching
+    env.config._PLUME_DIR      = scriptDir
+    env.config.package.caching = options.caching
                 
     -- Use xpcall for stack trace and context-aware error handling
     local success, result = xpcall(
@@ -112,6 +112,7 @@ function plume.run(filename, isString, options, scriptDir)
             return plume.errorHandler(err, env)
         end
     )
+    -- plume.execute(filename, isString, env)
 
     if not success then
         error(result, -1)

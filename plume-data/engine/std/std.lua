@@ -33,11 +33,11 @@ return function(plume)
 
             -- Attempt to find and open the module file with the specified extensions and paths
             for ext in exts:gmatch "%S+" do
-                for _, basepath in ipairs(env.plume.package.path) do
+                for _, basepath in ipairs(env.config.package.path) do
                     local path = basepath
                         :gsub('<name>', libname)
                         :gsub('<ext>', ext)
-                        :gsub('<plumeDir>', env._PLUME_DIR)
+                        :gsub('<plumeDir>', env.config._PLUME_DIR)
                     file = io.open(path)
                     if file then
                         filename, fileext = path, ext
@@ -64,11 +64,11 @@ return function(plume)
                     if not chunk then
                         error("Error when loading '" .. filename .. "': " .. tostring(err))
                     end
-                    setfenv(chunk, env)
+                    setfenv(chunk, env.lua)
 
-                    table.insert(env.plume.package.fileTrace, filename)
+                    table.insert(env.config.package.fileTrace, filename)
                     local result = chunk()
-                    table.remove(env.plume.package.fileTrace)
+                    table.remove(env.config.package.fileTrace)
                     return result
                 else
                     error("File '" .. filename .. "' found, but plume doesn't know how to handle '" .. fileext .. "' files.", -1)

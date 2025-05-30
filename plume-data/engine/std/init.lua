@@ -26,26 +26,31 @@ return function(plume)
     require ("engine/std/lua")   (plume)
 
     function plume.initRuntime ()
-        local env = {}
+        local env = {
+            lua    = {}, -- Used by required lua files
+            plume  = {}, -- Used by plume files
+            config = {}  -- runtime infos
+        }
         
-        env.plume = {}
+        env.config = {}
         for k, v in pairs(plume.std.getPlume()) do
-            env.plume[k] = v
+            env.config[k] = v
         end
 
         for k, v in pairs(plume.std.__lua) do
-            env[k] = v
+            env.plume[k] = v
         end
 
         for k, v in pairs(plume.std.__utils) do
-            env[k] = v
+            env.plume[k] = v
         end
 
         for k, v in pairs(plume.std.__std) do
-            env[k] = function (...) return v(env, ...) end
+            env.plume[k] = function (...) return v(env, ...) end
         end
 
-        env._G = env
+        env.plume._G = env.plume
+        env.lua._G   = env.lua
 
         return env
     end

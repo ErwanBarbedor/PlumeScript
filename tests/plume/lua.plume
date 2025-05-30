@@ -1,3 +1,9 @@
+/// Test "call ipairs in lua"
+$require(tests/plume/toImport/libstd, ext: lua)
+/// Result
+
+/// End
+
 // /// Test "string method 1 - indirect"
 // a = FooBarBaz
 // $string.gsub($a, Bar, Foo)

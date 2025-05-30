@@ -71,6 +71,7 @@ According some quick benchmark simulating standard use-cases, transpiled code ex
 - New `_PLUME_DIR`.
 - Remove field `__lua`.
 - Severely restricts the standard lua methods available to the user.
+- `lua` and `plume` don't run anymore in the same env. *Since call conventions are different in Plume and lua, it's best to separate them explicitly.*
 
 #### Transpiler
 - Add declaration in file start only if needed.

@@ -115,7 +115,7 @@ return function (plume)
     function plume.loadOrTranspile(filename, env)
         local luaCode, luaMap, cache, index, internalFilename
 
-        if env.plume.package.caching then
+        if env.config.package.caching then
             -- hash the filename
             internalFilename = fnv1a32(filename)
             index = plume.loadCache()
@@ -173,7 +173,7 @@ return function (plume)
 
             luaCode, luaMap = plume.transpile(plumeCode, filename)
 
-            if env.plume.package.caching then 
+            if env.config.package.caching then 
                 -- Cache informations
                 index[internalFilename] = {
                     date         = os.time(), 

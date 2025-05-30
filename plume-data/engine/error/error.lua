@@ -58,8 +58,6 @@ return function (plume)
             capturedLine = ""
         end
 
-
-
         -- Compose the context string. The '^@' is typically prepended by Lua for loaded files; remove it for cleaner display.
         local fullLine = string.format("File %s, line n°%i:%s", source.filename:gsub("^@", ""), lineCount, capturedLine)
 
@@ -107,7 +105,7 @@ return function (plume)
                 end
             elseif filename then
                 -- Try to find a source map for the file.
-                local map = env.plume.package.map['@'..filename]
+                local map = env.config.package.map['@'..filename]
                 if map then
                     local convertedMessage = plume.convertLuaError(
                         filename,
@@ -134,7 +132,7 @@ return function (plume)
         -- Try to map the main error to Plume's debug sources, if available.
         local mainMap
         if mainFilename then
-            mainMap = env.plume.package.map['@'..mainFilename]
+            mainMap = env.config.package.map['@'..mainFilename]
 
             if mainMap then
                 -- Convert the main error using Plume's source mapping.
@@ -221,7 +219,7 @@ return function (plume)
         end
 
         -- Capture all global variables and their types from the provided `env`.
-        for k, v in pairs(env) do
+        for k, v in pairs(env.plume) do
             if type(k) ~= "tonumber" then -- Exclude numeric keys, which are unlikely to be variable names.
                 if not visiblesVariables[name] then
                     visiblesVariables[k] = type(v)
