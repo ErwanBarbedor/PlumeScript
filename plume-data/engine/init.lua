@@ -99,7 +99,8 @@ end
 function plume.run(filename, isString, options, scriptDir)
     options = options or {}
 
-    local env = plume.initRuntime(scriptDir)
+    local env = plume.initRuntime()
+    env._PLUME_DIR            = scriptDir
     env.plume.package.caching = options.caching
                 
     -- Use xpcall for stack trace and context-aware error handling

@@ -34,7 +34,10 @@ return function(plume)
             -- Attempt to find and open the module file with the specified extensions and paths
             for ext in exts:gmatch "%S+" do
                 for _, basepath in ipairs(env.plume.package.path) do
-                    local path = basepath:gsub('<name>', libname):gsub('<ext>', ext)
+                    local path = basepath
+                        :gsub('<name>', libname)
+                        :gsub('<ext>', ext)
+                        :gsub('<plumeDir>', env._PLUME_DIR)
                     file = io.open(path)
                     if file then
                         filename, fileext = path, ext

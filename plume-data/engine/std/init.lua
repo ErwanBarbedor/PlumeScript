@@ -44,12 +44,18 @@ return function(plume)
     plume.std = {}
 
     require ("engine/std/utils") (plume)
-    require ("engine/std/std") (plume)
+    require ("engine/std/std")   (plume)
+    require ("engine/std/plume") (plume)
 
     plume.luaStdLib = importLuaStdLib()
 
-    function plume.initRuntime (scriptDir)
-        local env = {plume = {}}
+    function plume.initRuntime ()
+        local env = {}
+        
+        env.plume = {}
+        for k, v in pairs(plume.std.getPlume()) do
+            env.plume[k] = v
+        end
 
         for k, v in pairs(plume.luaStdLib) do
             env[k] = v
@@ -62,20 +68,6 @@ return function(plume)
         for k, v in pairs(plume.std.__std) do
             env[k] = function (...) return v(env, ...) end
         end
-
-        env.plume.package = {
-            loaded    = {},
-            path      = {
-                "./<name>.<ext>",
-                "./<name>/init.<ext>",
-                scriptDir .. "/plume-libs/<name>.<ext>",
-                scriptDir .. "/plume-libs/<name>/init.<ext>"
-            },
-            map       = {},
-            anonymous = 0,
-            fileTrace = {},
-            caching   = true
-        }
 
         env._G = env
 
