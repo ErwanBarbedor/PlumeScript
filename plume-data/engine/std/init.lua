@@ -44,6 +44,7 @@ return function(plume)
     plume.std = {}
 
     require ("engine/std/utils") (plume)
+    require ("engine/std/std") (plume)
 
     plume.plumeStdLib = {table={}, _VERSION = plume._VERSION}
 
@@ -76,16 +77,15 @@ return function(plume)
         for k, v in pairs(plume.plumeStdLib) do
             env.plume[k] = v
         end
+        for k, v in pairs(plume.luaStdLib) do
+            env[k] = v
+        end
 
         for k, v in pairs(plume.std.__utils) do
             env[k] = v
         end
 
-        for k, v in pairs(plume.luaStdLib) do
-            env[k] = v
-        end
-
-        for k, v in pairs(plume.envStdLib) do
+        for k, v in pairs(plume.std.__std) do
             env[k] = function (...) return v(env, ...) end
         end
 
@@ -109,68 +109,4 @@ return function(plume)
     end
     
     plume.plumeStdLib.importLuaFunction = importLuaFunction(importLuaFunction)
-
-    --- Loads a library/module into the given environment, searching for 'plume' or 'lua' files.
-    -- @param env Table The environment to use for loading the module.
-    -- @param __plume_args Table Table of arguments. __plume_args[1] is the module name. __plume_args.ext (optional) is a space-separated list of extensions to search for (default 'plume lua').
-    -- @return Any The result of loading/executing the module file.
-    -- @error Raises an error if the module cannot be found or loaded.
-    function plume.envStdLib.require(env, __plume_args)
-        local _, libname, exts = plume.std.__utils.__plume_initArgs(
-            __plume_args, 1, {{'ext', "plume lua"}}, false, false
-        )
-        local triedPath   = {}
-        local file, filename, fileext
-
-        libname = libname:gsub('^.[\\/]', '')
-
-        -- Attempt to find and open the module file with the specified extensions and paths
-        for ext in exts:gmatch "%S+" do
-            for _, basepath in ipairs(env.plume.package.path) do
-                local path = basepath:gsub('<name>', libname):gsub('<ext>', ext)
-                file = io.open(path)
-                if file then
-                    filename, fileext = path, ext
-                    break
-                else
-                    table.insert(triedPath, path)
-                end
-            end
-            if file then
-                break
-            end
-        end
-
-        if file then
-            if fileext == "plume" then
-                file:close()
-                return plume.execute(filename, false, env)
-            elseif fileext == "lua" then
-                -- Handle Lua files: load using Lua's standard loading mechanisms
-                file:close()
-                local chunk, err
-                
-                chunk, err = loadfile(filename)
-                if not chunk then
-                    error("Error when loading '" .. filename .. "': " .. tostring(err))
-                end
-                setfenv(chunk, env)
-
-                table.insert(env.plume.package.fileTrace, filename)
-                local result = chunk()
-                table.remove(env.plume.package.fileTrace)
-                return result
-            else
-                error("File '" .. filename .. "' found, but plume doesn't know how to handle '" .. fileext .. "' files.", -1)
-            end
-        else
-            -- Construct detailed error message with all paths attempted
-            local msg = {"Module '" .. libname .. "' not found:"}
-            for _, path in ipairs(triedPath) do
-                table.insert(msg, "    no file '" .. path .. "'")
-            end
-            error(table.concat(msg, "\n"), -1)
-        end
-    end
-
 end
