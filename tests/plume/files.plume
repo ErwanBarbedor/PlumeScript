@@ -65,6 +65,14 @@ $plumeVar
 lua loaded (in field Plume)
 /// End
 
+/// Test "Call plume in lua"
+macro foo()
+    bar
+$require(tests/plume/toImport/lib2, ext: lua)
+/// Result
+bar
+/// End
+
 /// Test "File not found"
 module = $require(azag)
 /// Error
