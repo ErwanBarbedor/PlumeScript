@@ -85,6 +85,4 @@ return function(plume)
 
         return env
     end
-    
-    plume.plumeStdLib.importLuaFunction = importLuaFunction(importLuaFunction)
 end
