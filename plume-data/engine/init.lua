@@ -34,7 +34,7 @@ for lib in ([[
     tokenizer
     parser/init
     makeAST
-    plume
+    std/init
     transpiler/init
     suggestion
     error/init

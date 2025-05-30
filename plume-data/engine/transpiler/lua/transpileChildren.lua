@@ -135,8 +135,7 @@ return function(plume, transpiler)
         for i, content in ipairs(infos[1].content) do
             -- If concatenating, ensure non-text values are converted to strings.
             if (directConcat or concat) and content.kind ~= "TEXT" then
-                transpiler.header.check = true
-                transpiler:write("__plume_check(")
+                transpiler:write("__plume_checkConcat(")
             end
             transpiler.transpileToLua(content)
             if (directConcat or concat) and content.kind ~= "TEXT" then
@@ -233,8 +232,7 @@ return function(plume, transpiler)
                                 transpiler.header.insert = true
                                 transpiler:emitOPEN("__plume_insert (__plume_temp, ")
                                 if concat and value.kind ~= "TEXT" then 
-                                    transpiler.header.check = true
-                                    transpiler:emitOPEN("__plume_check(")
+                                    transpiler:emitOPEN("__plume_checkConcat(")
                                 end
                                 transpiler.transpileToLua(value)
                                 if concat and value.kind ~= "TEXT" then
@@ -250,8 +248,7 @@ return function(plume, transpiler)
                         transpiler:emitOPEN("{")
                         for i_val, value in ipairs(values) do
                             if concat and value.kind ~= "TEXT" then
-                                transpiler.header.check = true
-                                transpiler:emitOPEN("__plume_check(")
+                                transpiler:emitOPEN("__plume_checkConcat(")
                             end
                             transpiler.transpileToLua(value)
                             if concat and value.kind ~= "TEXT" then

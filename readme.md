@@ -64,8 +64,14 @@ According some quick benchmark simulating standard use-cases, transpiled code ex
 ## Changelog
 ### 0.38 (last version)
 
+#### Changes
+- Move utils functions used by transpiled code from `plume` to `_G`.
+
 #### Transpiler
 - Add declaration in file start only if needed.
+
+#### Internal changes
+- Reorganize std functions
 
 
 [Older versions](doc/changelog.md)

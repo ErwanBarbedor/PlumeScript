@@ -16,22 +16,6 @@ If not, see <https://www.gnu.org/licenses/>.
 return function(plume, transpiler)
     transpiler.headerContent = {
         {
-            name = "expandList",
-            content = "local __plume_expand_list = plume.expandList\n"
-        },
-        {
-            name = "expandHash",
-            content = "local __plume_expand_hash = plume.expandHash\n"
-        },
-        {
-            name = "initArgs",
-            content = "local __plume_init_args = plume.initArgs\n"
-        },
-        {
-            name = "check",
-            content = "local __plume_check = plume.checkConcat\n"
-        },
-        {
             name = "insert",
             content = "local __plume_insert = __lua.table.insert\n"
         },

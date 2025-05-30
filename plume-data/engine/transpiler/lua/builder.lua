@@ -411,8 +411,7 @@ return function (plume)
         self.deep = self.deep + 1
         self:newline()
 
-        self.header.initArgs = true
-        self:insert("__plume_init_args(")
+        self:insert("__plume_initArgs(")
             self:insert("__plume_args, ")
             self:insert(#positionalArgs)
             self:insert(", ")
@@ -445,9 +444,7 @@ return function (plume)
     ---@param callback function The function that emits the table expression to expand.
     function builder:chunkEXPAND_LIST(callback)
         self:newline()
-        -- Emits the call to __plume_expand_list, which handles the array part expansion.
-        self.header.expandList = true
-        self:emitOPEN("__plume_expand_list(__plume_temp, ")
+        self:emitOPEN("__plume_expandList(__plume_temp, ")
         callback()
         self:emitCLOSE(")")
     end
@@ -456,9 +453,7 @@ return function (plume)
     ---@param callback function The function that emits the table expression to expand.
     function builder:chunkEXPAND_HASH(callback)
         self:newline()
-        -- Emits the call to __plume_expand_hash, which handles the hash part expansion.
-        self.header.expandHash = true
-        self:emitOPEN("__plume_expand_hash(__plume_temp, ")
+        self:emitOPEN("__plume_expandHash(__plume_temp, ")
         callback()
         self:emitCLOSE(")")
     end
