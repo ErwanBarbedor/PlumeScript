@@ -48,7 +48,7 @@ lua loaded
 foo = $require(tests/plume/toImport/lib, ext: lua)
 $globalVar
 /// Result
-lua loaded (global)
+nil
 /// End
 
 /// Test "Load lua 5"
@@ -56,6 +56,13 @@ foo = $require(tests/plume/toImport/lib, ext: lua)
 $localVar
 /// Result
 nil
+/// End
+
+/// Test "Load lua 6"
+foo = $require(tests/plume/toImport/lib, ext: lua)
+$plumeVar
+/// Result
+plumevar
 /// End
 
 /// Test "File not found"
