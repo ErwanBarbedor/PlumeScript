@@ -13,74 +13,74 @@ You should have received a copy of the GNU General Public License along with Plu
 If not, see <https://www.gnu.org/licenses/>.
 ]]
 
--- functions and variables exposed directly to users
+-- functions and variables exposed directly to users (in Plume)
 
 return function(plume)
-    plume.std.__std = {
-        --- Loads a library/module into the given environment, searching for 'plume' or 'lua' files.
-        -- @param env Table The environment to use for loading the module.
-        -- @param __plume_args Table Table of arguments. __plume_args[1] is the module name. __plume_args.ext (optional) is a space-separated list of extensions to search for (default 'plume lua').
-        -- @return Any The result of loading/executing the module file.
-        -- @error Raises an error if the module cannot be found or loaded.
-        require = function (env, __plume_args)
-            local _, libname, exts = plume.std.__utils.__plume_initArgs(
-                __plume_args, 1, {{'ext', "plume lua"}}, false, false
-            )
-            local triedPath   = {}
-            local file, filename, fileext
+    --- Loads a library/module into the given environment, searching for 'plume' or 'lua' files.
+    -- @param env Table The environment to use for loading the module.
+    -- @param __plume_args Table Table of arguments. __plume_args[1] is the module name. __plume_args.ext (optional) is a space-separated list of extensions to search for (default 'plume lua').
+    -- @return Any The result of loading/executing the module file.
+    -- @error Raises an error if the module cannot be found or loaded.
+    local function require (env, __plume_args)
+        local _, libname, exts = plume.std.utils.__plume_initArgs(
+            __plume_args, 1, {{'ext', "plume lua"}}, false, false
+        )
+        local triedPath   = {}
+        local file, filename, fileext
 
-            libname = libname:gsub('^.[\\/]', '')
+        libname = libname:gsub('^.[\\/]', '')
 
-            -- Attempt to find and open the module file with the specified extensions and paths
-            for ext in exts:gmatch "%S+" do
-                for _, basepath in ipairs(env.config.package.path) do
-                    local path = basepath
-                        :gsub('<name>', libname)
-                        :gsub('<ext>', ext)
-                        :gsub('<plumeDir>', env.config._PLUME_DIR)
-                    file = io.open(path)
-                    if file then
-                        filename, fileext = path, ext
-                        break
-                    else
-                        table.insert(triedPath, path)
-                    end
-                end
+        -- Attempt to find and open the module file with the specified extensions and paths
+        for ext in exts:gmatch "%S+" do
+            for _, basepath in ipairs(env.config.package.path) do
+                local path = basepath
+                    :gsub('<name>', libname)
+                    :gsub('<ext>', ext)
+                    :gsub('<plumeDir>', env.config._PLUME_DIR)
+                file = io.open(path)
                 if file then
+                    filename, fileext = path, ext
                     break
+                else
+                    table.insert(triedPath, path)
                 end
             end
-
             if file then
-                if fileext == "plume" then
-                    file:close()
-                    return plume.execute(filename, false, env)
-                elseif fileext == "lua" then
-                    -- Handle Lua files: load using Lua's standard loading mechanisms
-                    file:close()
-                    local chunk, err
-                    
-                    chunk, err = loadfile(filename)
-                    if not chunk then
-                        error("Error when loading '" .. filename .. "': " .. tostring(err))
-                    end
-                    setfenv(chunk, env.lua)
-
-                    table.insert(env.config.package.fileTrace, filename)
-                    local result = chunk()
-                    table.remove(env.config.package.fileTrace)
-                    return result
-                else
-                    error("File '" .. filename .. "' found, but plume doesn't know how to handle '" .. fileext .. "' files.", -1)
-                end
-            else
-                -- Construct detailed error message with all paths attempted
-                local msg = {"Module '" .. libname .. "' not found:"}
-                for _, path in ipairs(triedPath) do
-                    table.insert(msg, "    no file '" .. path .. "'")
-                end
-                error(table.concat(msg, "\n"), -1)
+                break
             end
         end
-    }
+
+        if file then
+            if fileext == "plume" then
+                file:close()
+                return plume.execute(filename, false, env)
+            elseif fileext == "lua" then
+                -- Handle Lua files: load using Lua's standard loading mechanisms
+                file:close()
+                local chunk, err
+                
+                chunk, err = loadfile(filename)
+                if not chunk then
+                    error("Error when loading '" .. filename .. "': " .. tostring(err))
+                end
+                setfenv(chunk, env.lua)
+
+                table.insert(env.config.package.fileTrace, filename)
+                local result = chunk()
+                table.remove(env.config.package.fileTrace)
+                return result
+            else
+                error("File '" .. filename .. "' found, but plume doesn't know how to handle '" .. fileext .. "' files.", -1)
+            end
+        else
+            -- Construct detailed error message with all paths attempted
+            local msg = {"Module '" .. libname .. "' not found:"}
+            for _, path in ipairs(triedPath) do
+                table.insert(msg, "    no file '" .. path .. "'")
+            end
+            error(table.concat(msg, "\n"), -1)
+        end
+    end
+
+    plume.std.plume.require = require
 end

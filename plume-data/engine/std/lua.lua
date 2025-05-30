@@ -38,14 +38,13 @@ local function importLuaTable (t)
 end
 
 return function(plume)
-    plume.std.__lua = {}
 
     -- Excluded: arg, collectgarbage, coroutine, debug, dofile, gcinfo, getfenv, getmetatable, io, jit, load, loadfile, loadstring, module, next, os, package, pcall, rawequal, rawget, rawset, require, select, setmetatable, string, table, unpack, xpcall
     for name in ("assert bit error ipairs pairs print tostring tonumber type"):gmatch('%S+') do
-        plume.std.__lua[name] = importLuaFunction (_G[name])
+        plume.std.luaPlume[name] = importLuaFunction (_G[name])
     end
 
     for name in ("math"):gmatch('%S+') do
-        plume.std.__lua[name] = importLuaTable (_G[name])
+        plume.std.luaPlume[name] = importLuaTable (_G[name])
     end
 end
