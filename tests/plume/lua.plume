@@ -1,13 +1,13 @@
-/// Test "string method 1 - indirect"
-a = FooBarBaz
-$string.gsub($a, Bar, Foo)
-/// Result
-FooFooBaz
-/// End
+// /// Test "string method 1 - indirect"
+// a = FooBarBaz
+// $string.gsub($a, Bar, Foo)
+// /// Result
+// FooFooBaz
+// /// End
 
-/// Test "string method 1 - direct"
-a = FooBarBaz
-$(string.gsub(a, "Bar", "Foo"))
-/// Result
-FooFooBaz
-/// End
+// /// Test "string method 1 - direct"
+// a = FooBarBaz
+// $(string.gsub(a, "Bar", "Foo"))
+// /// Result
+// FooFooBaz
+// /// End

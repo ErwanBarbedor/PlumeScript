@@ -283,9 +283,12 @@ a =
 
 a[1] = Baz
 
-$table.concat($a, -)
+for k, v in ipairs(a)
+    $v\n
 /// Result
-Baz-Bar
+Baz
+Bar
+
 /// End
 
 /// Test "Dynamic 1"

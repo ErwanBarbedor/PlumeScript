@@ -70,6 +70,7 @@ According some quick benchmark simulating standard use-cases, transpiled code ex
 - New `_LUA_VERSION` and `_LUAJIT_VERSION`.
 - New `_PLUME_DIR`.
 - Remove field `__lua`.
+- Severely restricts the standard lua methods available to the user.
 
 #### Transpiler
 - Add declaration in file start only if needed.
