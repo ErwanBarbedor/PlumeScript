@@ -63,6 +63,7 @@ According some quick benchmark simulating standard use-cases, transpiled code ex
 ## Changelog
 ### 0.39 (last version)
 - Remove `_LUA`. *In Lua, it is possible to adapt to the Plume calling convention. The reverse is not possible in a simple way, and basically letting Lua handle `_PLUME` is enough to allow the two languages to exchange without the need for `_LUA`.*
-- (`lua`) new function `plume.require`, that mimic the `plume` `require`.
+- (`lua`) New function `plume.require`, that mimic the `plume` `require`.
+- New macro `$file.Write`.
 
 [Older versions](doc/changelog.md)

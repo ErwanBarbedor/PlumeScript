@@ -17,6 +17,20 @@ If not, see <https://www.gnu.org/licenses/>.
 -- its standard library functions and the mechanism for importing Lua's standard
 -- library functions into a Plume-callable format.
 
+local function importEnvFunction(f, env)
+    if type(f) == "function" then
+        return function (...) return f(env, ...) end
+    elseif type(f) == "table" then
+        local result = {}
+        for k, v in pairs(f) do
+            result[k] = importEnvFunction(v, env)
+        end
+        return result
+    else
+        return f
+    end
+end
+
 return function(plume)
     plume.std = {plume={}, lua={}, luastd={}, luaPlume={}, utils={}}
 
@@ -50,7 +64,7 @@ return function(plume)
         end
 
         for k, v in pairs(plume.std.plume) do
-            env.plume[k] = function (...) return v(env, ...) end
+            env.plume[k] = importEnvFunction(v, env)
         end
 
         for k, v in pairs(plume.std.lua) do

@@ -16,6 +16,8 @@ If not, see <https://www.gnu.org/licenses/>.
 -- functions and variables exposed directly to users (in Plume)
 
 return function(plume)
+    local lfs = require('lfs')
+
     --- Loads a library/module into the given environment, searching for 'plume' or 'lua' files.
     -- @param env Table The environment to use for loading the module.
     -- @param __plume_args Table Table of arguments. __plume_args[1] is the module name. __plume_args.ext (optional) is a space-separated list of extensions to search for (default 'plume lua').
@@ -87,4 +89,58 @@ return function(plume)
         return plumeRequire(env, {path, ext=ext})
     end
 
+    -- Read/write files
+    plume.std.plume.file = {}
+    local function mkdir(path)
+        local sep = package.config:sub(1,1)
+        local currentPath = ""
+
+        for chunk in path:gmatch('[^\\/]+') do
+            currentPath = currentPath .. chunk .. "/"
+            local attr = lfs.attributes(currentPath)
+            if not attr then
+                local ok, err = lfs.mkdir(currentPath)
+                if not ok then
+                    return error(err, 4)
+                end
+            end
+        end
+    end
+
+    --- Write a file
+    --- @param path string
+    --- @param content string
+    --- @param binary bool
+    --- @param makeDirs bool Create path if not exists?
+    function plume.std.plume.file.Write(env, __plume_args)
+        local _, path, content, binary, makeDirs = plume.std.utils.__plume_initArgs(
+            __plume_args, 2, {{'binary', false}, {'makeDirs', false}}, false, false
+        )
+
+        if type(path) ~= "string" then
+            error("bad argument #1 (path) (string expected, got "..type(path)..")", 3)
+        end
+        if type(content) ~= "string" then
+            error("bad argument #2 (content) (string expected, got "..type(content)..")", 3)
+        end
+
+        if makeDirs then
+            local dirpath = path:match('(.+)[/\\]')
+            mkdir(dirpath)
+        end
+
+        local file
+        if binary then
+            file = io.open(path, "wb")
+        else
+            file = io.open(path, "w")
+        end
+
+        if not file then
+            error("Cannot write file '" .. path .. "'", 3)
+        end
+
+        file:write(content)
+        file:close()
+    end
 end
