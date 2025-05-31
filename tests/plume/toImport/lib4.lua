@@ -1,0 +1,1 @@
+return plume.require("tests/plume/toImport/lib")

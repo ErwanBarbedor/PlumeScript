@@ -18,7 +18,7 @@ If not, see <https://www.gnu.org/licenses/>.
 -- library functions into a Plume-callable format.
 
 return function(plume)
-    plume.std = {plume={}, lua={}, luaPlume={}, utils={}}
+    plume.std = {plume={}, lua={}, luastd={}, luaPlume={}, utils={}}
 
     require ("engine/std/utils")  (plume)
     require ("engine/std/std")    (plume)
@@ -27,7 +27,11 @@ return function(plume)
 
     function plume.initRuntime ()
         local env = {
-            lua    = {}, -- Used by required lua files
+            -- Used by required lua files
+            lua = {
+                plume={}
+            }, 
+
             plume  = {}, -- Used by plume files
             config = {}  -- runtime infos
         }
@@ -51,6 +55,10 @@ return function(plume)
 
         for k, v in pairs(plume.std.lua) do
             env.lua[k] = v
+        end
+
+        for k, v in pairs(plume.std.luastd) do
+            env.lua.plume[k] = function (...) return v(env, ...) end
         end
 
         env.plume._G = env.plume

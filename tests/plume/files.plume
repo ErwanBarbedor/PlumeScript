@@ -65,6 +65,18 @@ $plumeVar
 lua loaded (in field Plume)
 /// End
 
+/// Test "Lua load Lua"
+$require(tests/plume/toImport/lib3, ext: lua)
+/// Result
+lua loaded
+/// End
+
+/// Test "Lua load Plume"
+$require(tests/plume/toImport/lib4, ext: lua)
+/// Result
+plume loaded
+/// End
+
 /// Test "Call plume in lua"
 macro foo()
     bar

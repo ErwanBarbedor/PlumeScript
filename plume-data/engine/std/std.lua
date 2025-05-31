@@ -21,7 +21,7 @@ return function(plume)
     -- @param __plume_args Table Table of arguments. __plume_args[1] is the module name. __plume_args.ext (optional) is a space-separated list of extensions to search for (default 'plume lua').
     -- @return Any The result of loading/executing the module file.
     -- @error Raises an error if the module cannot be found or loaded.
-    local function require (env, __plume_args)
+    local function plumeRequire (env, __plume_args)
         local _, libname, exts = plume.std.utils.__plume_initArgs(
             __plume_args, 1, {{'ext', "plume lua"}}, false, false
         )
@@ -82,5 +82,9 @@ return function(plume)
         end
     end
 
-    plume.std.plume.require = require
+    plume.std.plume.require = plumeRequire
+    function plume.std.luastd.require (env, path, ext)
+        return plumeRequire(env, {path, ext=ext})
+    end
+
 end
