@@ -55,7 +55,6 @@ return function(plume)
 
         env.plume._G = env.plume
         env.lua._G   = env.lua
-        env.plume._LUA = env.lua
         env.lua._PLUME   = env.plume
 
         return env
