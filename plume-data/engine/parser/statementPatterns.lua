@@ -139,6 +139,7 @@ return {
     {
         name = "HASH_ITEM",
         pattern = {
+            {kind = "META", name = "meta",     optional=true},
             {kind = "EVAL", name = "evalmode", optional=true},
             {kind = "TEXT", name = "key"},
             {kind = "COLON"},

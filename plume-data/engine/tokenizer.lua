@@ -38,6 +38,7 @@ If not, see <https://www.gnu.org/licenses/>.
 local tokenPatterns = {
     -- Structural tokens (order-sensitive syntax elements)
     {name = "EVAL",    pattern = "%$"},      -- Expression evaluation marker
+    {name = "META",    pattern = "@"},       -- Metafields
     -- Line endings (CRLF or LF)
     {name = "NEWLINE", pattern = "\r?\n"},
     {name = "SPACE",   pattern = "[ \t]"},   -- Individual whitespace character

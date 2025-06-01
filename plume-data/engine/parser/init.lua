@@ -298,7 +298,21 @@ return function(plume)
                 }
             end,
             HASH_ITEM = function(match)
-                local key = match.key and match.key.content
+                local key  = match.key and match.key.content
+
+                local eval = match.evalmode and #match.evalmode.content>0
+                local meta = match.meta and #match.meta.content>0
+
+                if meta then
+                    if eval then
+                        plume.cannotMixEvalMetaError(match.evalmode.source)
+                    end
+                    
+                    -- Not included: metatable, gc, mode, div, sub, pow
+                    if not contains("add call index le len lt mul newindex tostring unm", key) then
+                        plume.unknownMetaFieldError(match.key.source, key)
+                    end
+                end
 
                 if not key then
                     local t = {}
@@ -311,7 +325,8 @@ return function(plume)
                 pushToken {
                     kind = "HASH_ITEM",
                     content = key,
-                    eval    = #match.evalmode.content>0
+                    eval    = eval,
+                    meta    = meta
                 }
 
                 mode = FINAL_STATEMENT_MODE

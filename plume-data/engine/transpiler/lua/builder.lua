@@ -152,6 +152,18 @@ return function (plume)
         self.deep = self.deep + 1
     end
 
+    function builder:emitMETA_DEFINITION(node, name, inline, args)
+        if not inline then
+            self:newline()
+        end
+
+        if node then self:use(node) end
+
+        -- All Plume functions receive their arguments in a single table named `__plume_args`.
+        self:write("function " .. (name or "") .. "(" .. table.concat(args, ", ") .. ")") 
+        self.deep = self.deep + 1
+    end
+
     --- Emits a function call (the function name part).
     ---@param node any The AST node for source mapping.
     ---@param name string The name of the function to call.
@@ -318,12 +330,13 @@ return function (plume)
 
     --- Emits a closing character (e.g., ')', '}') on a new line.
     ---@param char string The closing character (e.g. ")", "}").
+    ---@param noremove bool Prevent emitCLOSE to remove line breaks
     ---@return nil
-    function builder:emitCLOSE(char)
+    function builder:emitCLOSE(char, noremove)
         self.deep = self.deep - 1
         
         local nlc = table.remove(self.newlineCount)
-        if nlc == 1 then -- if only one lineBreak, it's emitOPEN. Remove it
+        if nlc == 1 and not noremove then -- if only one lineBreak, it's emitOPEN. Remove it
             for i = #self.code, 1, -1 do
                 if self.code[i] == "\n" then
                     table.remove(self.code, i)

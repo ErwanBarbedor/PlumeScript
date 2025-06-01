@@ -44,6 +44,7 @@ return function(plume, transpiler)
 
         for _, child in ipairs(node.children) do
             local isStatement = contains(STATEMENTS, child.kind)
+
             -- A child is considered a non-value if it's a statement or returns NIL.
             if child.returnType == "NIL" or isStatement then
                 -- If we encounter a statement or a NIL-returning child, not all children are simple values.
@@ -177,7 +178,7 @@ return function(plume, transpiler)
     function transpiler.transpileChildrenMixedCase(node, infos, valueCount, shouldInitAccumulator, wrapInFunction, forceReturn)
         local concat = (node.returnType == "TEXT")
 
-        -- Wrap the output in an IIFE if required. This creates a new scope.
+        -- Wrap the output in an IIFE if required.
         if wrapInFunction then
             transpiler:emitOPEN("(function()")
         end
@@ -218,6 +219,12 @@ return function(plume, transpiler)
 
                                 if value.sourceToken and value.sourceToken.eval then
                                     name = "__plume_temp[" .. name .. "]"
+                                elseif value.sourceToken.meta then
+                                    -- meta field may be transpiled differently
+                                    for _, child in ipairs(value.children) do
+                                        child.meta = name
+                                    end
+                                    name = "__plume_meta_temp.__" .. name
                                 else
                                     name = "__plume_temp[\"" .. name .. "\"]"
                                 end
@@ -336,6 +343,38 @@ return function(plume, transpiler)
         end
     end
 
+    function transpiler.checkIsMeta(node)
+        for _, child in ipairs(node.children) do
+            if child.kind == "HASH_ITEM" and child.sourceToken and child.sourceToken.meta then
+                return true
+            end
+        end
+        return false
+    end
+
+    function transpiler.transpileMeta(node, infos, valueCount, shouldInitAccumulator, wrapInFunction, forceReturn)
+
+        -- Wrap the output in an IIFE if required.
+        if wrapInFunction then
+            transpiler:emitOPEN("(function()")
+        end
+
+        transpiler:emitASSIGNMENT(nil, "__plume_temp", nil, true)
+        transpiler:write('{}')
+        transpiler:emitASSIGNMENT(nil, "__plume_meta_temp", nil, true)
+        transpiler:write('{}')
+
+        transpiler.transpileChildrenMixedCase(node, infos, valueCount, false, false, false)
+
+        transpiler:emitRETURN()
+        transpiler:write('__plume_smt(__plume_temp, __plume_meta_temp)')
+
+        -- Close the wrapping IIFE if it was opened.
+        if wrapInFunction then
+            transpiler:emitCLOSE("end)()")
+        end
+    end
+
     ---Transpiles child nodes of an AST element into executable Lua code.
     ---This is the main entry point for transpiling children of a node.
     ---It decides whether to use a simpler "only values" path or a more complex "mixed case" path.
@@ -350,19 +389,21 @@ return function(plume, transpiler)
         -- Handle nodes with no children, providing default empty values based on context.
         if #node.children == 0 then
             if contains("LIST_ITEM HASH_ITEM TEXT VALUE RETURN ", node.kind) then
-                -- For these kinds, an empty child list often implies an empty string or equivalent.
+                -- For these kinds, an empty child list implies an empty string.
                 transpiler:write('""')
                 return
             elseif contains("ASSIGNMENT LOCAL_ASSIGNMENT", node.kind) then
-                -- Assignments with no right-hand side might implicitly mean `nil`, handled by assignment logic.
+                -- Assignments with no right-hand side implicitly mean `nil`, handled by assignment logic.
                 return
             end
         end
 
         local infos, onlyValues, valueCount = transpiler.parseChildren(node)
 
+        if transpiler.checkIsMeta(node) then
+            transpiler.transpileMeta(node, infos, valueCount, shouldInitAccumulator, wrapInFunction, forceReturn)
         -- If all children are simple values and an accumulator is intended, use the optimized path.
-        if onlyValues and shouldInitAccumulator then
+        elseif onlyValues and shouldInitAccumulator then
             transpiler.transpileChildrenOnlyValuesCase(node, infos, valueCount, forceReturn)
         else
             -- Otherwise, use the more general path that handles mixed statements and values, or complex accumulation.
@@ -376,13 +417,9 @@ return function(plume, transpiler)
     ---@param inline boolean True if this macro is intended for inlining (potentially affects generation, though not explicitly used in this snippet).
     ---@return nil
     function transpiler.handleMacroDefinition (node, islocal, inline)
-
         local parameters_node = node.children[1] -- The first child is the parameter list node.
         local body_node       = node.children[2] -- The second child is the body of the macro.
-
-        -- Emit the Lua function signature.
-        transpiler:emitDEFINITION(node, node.content, islocal, inline)
-        
+     
         local positionalArgs = {}
         local namedArgs      = {}
         local varargPos, varargNamed
@@ -406,7 +443,40 @@ return function(plume, transpiler)
             end
         end
 
-        transpiler:chunkINIT_PARAM(positionalArgs, namedArgs, varargPos, varargNamed) 
+        if node.meta then
+            local expectedArgCount
+            if contains("add le len lt mul newindex", node.meta) then
+                expectedArgCount = 1
+            -- call, index, tostring, unm
+            else
+                expectedArgCount = 0
+            end
+
+            if #namedArgs ~= 0 then
+                plume.metaCannotUseNamedArguments(node.sourceToken.source)
+            end
+            if #positionalArgs ~= expectedArgCount then
+                plume.metaWrongArgumentNumber(node.sourceToken.source, node.meta, #positionalArgs, expectedArgCount)
+            end
+            
+
+            table.insert(positionalArgs, 1, "self")
+            -- Emit the Lua function signature.
+            transpiler:emitMETA_DEFINITION(node, node.content, inline, positionalArgs)
+
+            if contains("add mul", node.meta) then
+                local argname = positionalArgs[2]
+                transpiler:newline()
+                transpiler:emitOPEN("if __plume_gmt(self) ~= __plume_meta_temp then")
+                    transpiler:write("self, " .. argname .. " = " .. argname .. ", self")
+                transpiler:emitCLOSE("end", true)
+            end
+        else
+            -- Emit the Lua function signature.
+            transpiler:emitDEFINITION(node, node.content, islocal, inline)
+            -- Emit parameter extraction
+            transpiler:chunkINIT_PARAM(positionalArgs, namedArgs, varargPos, varargNamed) 
+        end
 
         -- Transpile the macro body.
         transpiler.transpileChildren (body_node, false, true, true)

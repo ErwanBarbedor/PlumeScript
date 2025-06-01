@@ -1,0 +1,90 @@
+/// Test "@mul"
+t =
+    - 1
+    - 2
+    @mul: macro(n)
+        for k, v in ipairs(self)
+            self[k] *= $n
+void $(t * 5)
+$t[1]\n
+$t[2]
+/// Result
+5
+10
+/// End
+
+/// Test "@mul (reverse)"
+t =
+    - 1
+    - 2
+    @mul: macro(n)
+        for k, v in ipairs(self)
+            self[k] *= $n
+void $(5 * t)
+$t[1]\n
+$t[2]
+/// Result
+5
+10
+/// End
+
+/// Test "@tostring"
+t =
+    foo: bar
+    @tostring: macro()
+        $self.foo
+$t
+/// Result
+bar
+/// End
+
+/// Test "@call"
+t =
+    foo: bar
+    @call: macro()
+        $self.foo
+$t()
+/// Result
+bar
+/// End
+
+/// Test "Non valid name"
+t =
+    @mymetafield: 5
+/// Error
+Syntax error: 'mymetafield' is not a valid metafield name.
+Valid names are: add call index le len lt mul newindex tostring unm.
+File <string_1>, line n°2:
+    @mymetafield: 5
+     ^^^^^^^^^^^
+/// End
+
+/// Test "Mixed eval/meta"
+t =
+    @$add: 5
+/// Error
+Syntax error: a hash key cannot both be a meta field and be evaluated.
+File <string_1>, line n°2:
+    @$add: 5
+     ^
+/// End
+
+/// Test "Wrong signature 1"
+t =
+    @add: macro(x, y, z)
+/// Error
+Syntax error: Wrong number of arguments for meta field 'add': expected 1, obtained 3.
+File <string_1>, line n°2:
+    @add: macro(x, y, z)
+          ^^^^^^
+/// End
+
+/// Test "Wrong signature 2"
+t =
+    @add: macro(x, y, z: foo)
+/// Error
+Syntax error: Cannot use named argument in a meta field.
+File <string_1>, line n°2:
+    @add: macro(x, y, z: foo)
+          ^^^^^^
+/// End

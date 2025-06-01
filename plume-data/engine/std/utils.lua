@@ -32,6 +32,8 @@ return function(plume)
         error(message, 4)
     end
 
+    plume.std.utils.__plume_smt     = setmetatable
+    plume.std.utils.__plume_gmt     = getmetatable
     plume.std.utils.__plume_insert  = table.insert
     plume.std.utils.__plume_concat  = table.concat
     plume.std.utils._VERSION        = plume._VERSION

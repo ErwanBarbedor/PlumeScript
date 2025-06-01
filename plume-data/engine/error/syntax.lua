@@ -110,4 +110,20 @@ return function (plume)
         plume.sourcedError(source, "Syntax error: '"..name.."' must end the line." )
     end
 
+    function plume.cannotMixEvalMetaError(source)
+        plume.sourcedError(source, "Syntax error: a hash key cannot both be a meta field and be evaluated." )
+    end
+
+    function plume.unknownMetaFieldError(source, name)
+        plume.sourcedError(source, "Syntax error: '"..name.."' is not a valid metafield name.\nValid names are: add call index le len lt mul newindex tostring unm." )
+    end
+
+    function plume.metaWrongArgumentNumber(source, name, obtained, expected)
+        plume.sourcedError(source, "Syntax error: Wrong number of arguments for meta field '" .. name .. "': expected " .. expected ..", obtained " .. obtained .. "." )
+    end
+
+    function plume.metaCannotUseNamedArguments(source)
+        plume.sourcedError(source, "Syntax error: Cannot use named argument in a meta field." )
+    end
+
 end
