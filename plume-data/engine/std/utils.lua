@@ -81,6 +81,26 @@ return function(plume)
             end
         end
     end
+
+    function plume.std.utils.__plume_validate(f, x, fname, name)
+        if not f then
+            error("Unknow validator '" .. fname .. "'.", 2)
+        end
+
+        if not f(x) then
+            error("Validation '"..fname.."' failed against argument '" .. name .. "'.", 4)
+        end
+    end
+
+    function plume.std.utils.__plume_validator_number(x)
+        return type(x) == "number"
+    end
+    function plume.std.utils.__plume_validator_string(x)
+        return type(x) == "string"
+    end
+    function plume.std.utils.__plume_validator_table(x)
+        return type(x) == "table"
+    end
    
     --- Check and initialize function arguments. It validates the number of arguments
     --- and assigns default values to named parameters if they are not provided.

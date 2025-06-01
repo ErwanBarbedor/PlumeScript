@@ -184,7 +184,6 @@ return function (plume)
                     content = token.content
                 elseif arg.kind == "HASH_ITEM" then
                     content = arg.content -- For HASH_ITEM, the key is stored in arg.content itself.
-
                     -- :option is a syntax sugar for option: $true in macro call,
                     -- but option: $false in macro definition
                     if arg.children[1].isShorthandKey then
@@ -193,34 +192,41 @@ return function (plume)
                 end
 
                 -- Regex to extract the parameter name and check for stray characters around it.
-                local inner, name, over = content:match('^%s*(%S-)%s*([a-zA-Z_][a-zA-Z0-9_]*)%s*(%S*)%s*$')
+                local name, validator
 
-                -- if token.kind == "VARARG" and i < #current.children then
-                --     -- Vararg must be the last parameter in a macro definition.
-                --     plume.unexpectedVarargError(token.sourceToken.source, "vararg must be in last position.")
-                -- end
+                for word in content:gmatch("%S+") do
+                    if not word:match('^[a-zA-Z_][a-zA-Z_0-9]*$') then
+                        plume.unexpectedTokenError(token.sourceToken.source, "parameter name", word)
+                    end
+
+                    if not name then
+                        name = word
+                    elseif not validator then
+                        validator = name
+                        name = word
+                    else
+                        plume.unexpectedTokenError(token.sourceToken.source, "a comma or closing parenthesis", word)
+                    end
+                end
 
                 if not name then
                     plume.unexpectedTokenError(token.sourceToken.source, "parameter name", content)
-                else
-                    -- External validation for name format.
-                    plume.checkParameterName(token.sourceToken.source, name)
-                    -- If 'over' is empty, but there are more children in a LIST_ITEM,
-                    -- it means there was content after the name that wasn't captured by the regex,
-                    -- potentially due to spacing issues not handled by %S.
-                    if not over and (#arg.children > 1 and arg.kind == "LIST_ITEM") then
-                        over = arg.children[2].content
-                    end
-
-                    if #over > 0 then
-                        plume.unexpectedTokenError(token.sourceToken.source, "a comma or closing parenthesis", over)
-                    end
-
-                    
-                    if #inner > 0 then
-                        plume.unexpectedTokenError(token.sourceToken.source, "parameter name", inner)
-                    end
                 end
+
+                -- If there are more children in a LIST_ITEM,
+                -- it means there was content after the name that wasn't captured by the regex,
+                -- potentially due to spacing issues not handled by %S.
+                if (#arg.children > 1 and arg.kind == "LIST_ITEM") then
+                    plume.unexpectedTokenError(token.sourceToken.source, "parameter name", arg.children[2].content)
+                end
+
+                plume.checkParameterName(token.sourceToken.source, name)
+                if validator then
+                    plume.checkParameterName(token.sourceToken.source, validator)
+                end
+
+                token.name = name
+                token.validator = validator
             end
         end
 
@@ -260,27 +266,37 @@ return function (plume)
 
                 -- Attempt to parse key:value from TEXT nodes
                 if textContent and firstChildOfArg.kind == "TEXT" then
-                    -- Detect `key:value` pattern for named parameters. Example: `name: "John"`
-                    -- `key` must be a valid identifier. `lft1` captures leading whitespace. `lft2` captures `:` and following whitespace.
-                    local lft1, key, lft2 = textContent:match('(%s*)([a-zA-Z_][a-zA-Z_0-9]*)(%s*:%s*)')
 
-                    -- :option is a syntax sugar for option: $true
-                    local isShorthandKey = textContent:match('^%s*:([a-zA-Z_][a-zA-Z_0-9]*)%s*$')
+                    
+                    local validator, key, shorthandKey
 
-                    if key then
-                        -- Convert LIST_ITEM to HASH_ITEM for named parameters.
+                    -- :key shortcut
+                    shorthandKey = textContent:match('^%s*:([a-zA-Z_][a-zA-Z_0-9]*)%s*$')
+
+                    -- key alone
+                    key = textContent:match('^%s*([a-zA-Z_][a-zA-Z_0-9]*)%s*:')
+
+                    -- key with validator
+                    if not key then
+                        key = textContent:match('^%s*([a-zA-Z_][a-zA-Z_0-9]*%s+[a-zA-Z_][a-zA-Z_0-9]*)%s*:')
+                    end
+
+                    if shorthandKey then
                         currentArgContext.kind = "HASH_ITEM"
-                        currentArgContext.content = key -- Store the key in the HASH_ITEM's content.
+                        currentArgContext.content = shorthandKey
+                        currentArgContext.children = {{kind="VARIABLE", isShorthandKey=true, content="true", sourceToken={}}}
+                    elseif key then
+                        currentArgContext.kind = "HASH_ITEM"
+                        currentArgContext.content = key
+
                         -- Remove the `key:` part from the first child's content.
-                        currentArgContext.children[1].content = textContent:gsub(lft1 .. key .. lft2, "", 1)
+                        currentArgContext.children[1].content = textContent:gsub("^.-:%s*", "", 1)
+
                         if #currentArgContext.children[1].content == 0
                            and #currentArgContext.children > 1 then
-                            table.remove(currentArgContext.children, 1) -- Remove child if it becomes empty.
+                            -- Remove child if it becomes empty.
+                            table.remove(currentArgContext.children, 1) 
                         end
-                    elseif isShorthandKey then
-                        currentArgContext.kind = "HASH_ITEM"
-                        currentArgContext.content = isShorthandKey
-                        currentArgContext.children = {{kind="VARIABLE", isShorthandKey=true, content="true", sourceToken={}}}
                     end
                 end
             end

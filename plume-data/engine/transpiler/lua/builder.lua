@@ -368,7 +368,7 @@ return function (plume)
         
         local stringNamedArgs = {}
         for _, node in ipairs(namedArgs) do
-            table.insert(stringNamedArgs, node.content)
+            table.insert(stringNamedArgs, node.name)
         end
         stringNamedArgs = table.concat(stringNamedArgs, ", ")
 
@@ -417,7 +417,7 @@ return function (plume)
             --- Insert named argument information into the table.
             for i, node in ipairs(namedArgs) do
                 self:insert("{")
-                self:insert("'"..node.content.."'")
+                self:insert("'"..node.name.."'")
                 self:insert(", ")
                 -- Transpile default values.
                 self.transpileChildren(node, true, true) 
@@ -453,6 +453,18 @@ return function (plume)
         self:emitOPEN("__plume_expandHash(__plume_temp, ")
         callback()
         self:emitCLOSE(")")
+    end
+
+    function builder:chunkVALIDATORS(t)
+        for _, info in ipairs(t) do
+            local name      = info[1]
+            local validator = info[2]
+            local label     = info[3]
+            local fvalidator = "__plume_validator_" .. info[2]
+
+            self:newline()
+            self:write("__plume_validate(" .. fvalidator .. ", " .. name .. ", '" .. validator .."', '"..label.."')")
+        end
     end
 
     function builder:getUniqueLabel(name)

@@ -1,0 +1,33 @@
+/// Test "Success 1"
+macro foo(number x)
+$foo(1)
+/// Result
+nil
+/// End
+
+/// Test "Success 2"
+macro foo(number x:0)
+$foo(x: 1)
+/// Result
+nil
+/// End
+
+/// Test "Fail 1"
+macro foo(string x)
+$foo(1)
+/// Error
+Error: Validation 'string' failed against argument '#1'.
+File <string_1>, line n°2:
+    $foo(1)
+    ^^^^^
+/// End
+
+/// Test "Fail 2"
+macro foo(string x: a)
+$foo(x: 1)
+/// Error
+Error: Validation 'string' failed against argument 'x'.
+File <string_1>, line n°2:
+    $foo(x: 1)
+    ^^^^^
+/// End

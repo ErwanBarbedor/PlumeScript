@@ -72,9 +72,21 @@ t =
     key: value
     @tostring: macro()
         my_table
-$t // return my_table instead of an error
+$t // return "my_table" instead of raising an error
 ```
 
-For now, only `add call index le len lt mul newindex tostring unm`
+For now, only: `add call index le len lt mul newindex tostring unm`
+- Implement an optional argument validator:
+```
+macro add(number x, number y)
+    ...
+// Quite similar to
+macro add(x, y)
+    if not __plume_validator_number(x)
+        error()
+    if not __plume_validator_number(y)
+        error()
+```
+Builtin: `number string table`.
 
 [Older versions](doc/changelog.md)

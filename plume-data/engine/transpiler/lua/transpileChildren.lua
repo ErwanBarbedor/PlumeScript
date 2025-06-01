@@ -422,11 +422,18 @@ return function(plume, transpiler)
      
         local positionalArgs = {}
         local namedArgs      = {}
+        local validators     = {}
         local varargPos, varargNamed
 
-        for _, children in ipairs(parameters_node.children) do
+        for i, children in ipairs(parameters_node.children) do
             if children.kind == "LIST_ITEM" then -- Positional parameter.
-                local name = children.children[1].content
+                local name      = children.children[1].name
+                local validator = children.children[1].validator
+
+                if validator then
+                    table.insert(validators, {name, validator, '#' .. i})
+                end
+
                 if name == "self" then
                     plume.cannotUseSelfError(children.children[1].sourceToken.source)
                 end
@@ -439,6 +446,15 @@ return function(plume, transpiler)
                     table.insert(positionalArgs, name)
                 end
             elseif children.kind == "HASH_ITEM" then -- named parameter
+                local name      = children.children[1].name
+                local validator = children.children[1].validator
+
+                if validator then
+                    table.insert(validators, {name, validator, name})
+                end
+
+                children.name = name
+
                 table.insert(namedArgs, children)
             end
         end
@@ -458,7 +474,6 @@ return function(plume, transpiler)
             if #positionalArgs ~= expectedArgCount then
                 plume.metaWrongArgumentNumber(node.sourceToken.source, node.meta, #positionalArgs, expectedArgCount)
             end
-            
 
             table.insert(positionalArgs, 1, "self")
             -- Emit the Lua function signature.
@@ -475,8 +490,10 @@ return function(plume, transpiler)
             -- Emit the Lua function signature.
             transpiler:emitDEFINITION(node, node.content, islocal, inline)
             -- Emit parameter extraction
-            transpiler:chunkINIT_PARAM(positionalArgs, namedArgs, varargPos, varargNamed) 
+            transpiler:chunkINIT_PARAM(positionalArgs, namedArgs, varargPos, varargNamed)
         end
+
+        transpiler:chunkVALIDATORS(validators)
 
         -- Transpile the macro body.
         transpiler.transpileChildren (body_node, false, true, true)
