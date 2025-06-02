@@ -1,6 +1,6 @@
 <p align="center"><img src="plume_logo.svg" width="600" height="300"></p>
 
-![Version](https://img.shields.io/badge/version-0.39-blue.svg) [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
+![Version](https://img.shields.io/badge/version-0.40-blue.svg) [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 
 
 ## Plume🪶 - An Expressive Templating Language
@@ -61,32 +61,7 @@ On my 12600k, transpilation of a 100ko file takes less than 200ms, up to 2s for 
 According some quick benchmark simulating standard use-cases, transpiled code executes at between 80% and 100% of Lua's performance. So with LuaJIT, this makes it possible to include relatively costly calculations in templates.
 
 ## Changelog
-### 0.39 (last version)
-- Remove `_LUA`. *In Lua, it is possible to adapt to the Plume calling convention. The reverse is not possible in a simple way, and basically letting Lua handle `_PLUME` is enough to allow the two languages to exchange without the need for `_LUA`.*
-- (`lua`) New function `plume.require`, that mimic the `plume` `require`.
-- New macro `$file.Write`.
-- Implement meta-field. *A plume equivalent to lua meta table*
-```
-t =
-    - item
-    key: value
-    @tostring: macro()
-        my_table
-$t // return "my_table" instead of raising an error
-```
+### 0.40 (last version)
 
-For now, only: `add call index le len lt mul newindex tostring unm`
-- Implement an optional argument validator:
-```
-macro add(number x, number y)
-    ...
-// Quite similar to
-macro add(x, y)
-    if not __plume_validator_number(x)
-        error()
-    if not __plume_validator_number(y)
-        error()
-```
-Builtin: `number string table`.
 
 [Older versions](doc/changelog.md)

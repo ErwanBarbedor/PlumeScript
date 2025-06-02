@@ -1,3 +1,31 @@
+### 0.39
+- Remove `_LUA`. *In Lua, it is possible to adapt to the Plume calling convention. The reverse is not possible in a simple way, and basically letting Lua handle `_PLUME` is enough to allow the two languages to exchange without the need for `_LUA`.*
+- (`lua`) New function `plume.require`, that mimic the `plume` `require`.
+- New macro `$file.Write`.
+- Implement meta-field. *A plume equivalent to lua meta table*
+```
+t =
+    - item
+    key: value
+    @tostring: macro()
+        my_table
+$t // return "my_table" instead of raising an error
+```
+
+For now, only: `add call index le len lt mul newindex tostring unm`
+- Implement an optional argument validator:
+```
+macro add(number x, number y)
+    ...
+// Quite similar to
+macro add(x, y)
+    if not __plume_validator_number(x)
+        error()
+    if not __plume_validator_number(y)
+        error()
+```
+Builtin: `number string table`.
+
 ### 0.38
 #### Changes
 - Move utils functions used by transpiled code from `plume` to `_G`.
