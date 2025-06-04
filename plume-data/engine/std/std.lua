@@ -143,4 +143,28 @@ return function(plume)
         file:write(content)
         file:close()
     end
+
+    --- Read the content of a file
+    --- @param path string
+    --- @param binary bool
+    function plume.std.plume.file.Read(env, __plume_args)
+        local _, path, binary = plume.std.utils.__plume_initArgs(
+            __plume_args, 1, {{'binary', false}}, false, false
+        )
+        local file
+        if binary then
+            file = io.open(path, "rb")
+        else
+            file = io.open(path, "r")
+        end
+
+        if not file then
+            error("Cannot read file '" .. path .. "'", 3)
+        end
+
+        local content = file:read("*a")
+        file:close()
+
+        return content
+    end
 end

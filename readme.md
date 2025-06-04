@@ -63,5 +63,6 @@ According some quick benchmark simulating standard use-cases, transpiled code ex
 ## Changelog
 ### 0.40 (last version)
 
+- New macro `$file.Read`
 
 [Older versions](doc/changelog.md)
