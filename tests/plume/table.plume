@@ -310,6 +310,19 @@ $a.name1
 bar
 /// End
 
+/// Test "Dynamic multiline"
+name = foo
+a =
+    $name:
+        bar
+        baz
+
+$a.foo
+/// Result
+barbaz
+/// End
+
+
 /// Test "Copy table"
 t =
   foo: bar

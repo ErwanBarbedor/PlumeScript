@@ -332,13 +332,12 @@ return function(plume)
                 mode = FINAL_STATEMENT_MODE
             end,
             HASH_ITEM_ENDLINE = function(match)
-                if #match.evalmode.content>0 then
-                    plume.multilineEvalError(match.key.source, ":")
-                end
+                local eval = match.evalmode and #match.evalmode.content>0
 
                 pushToken {
                     kind = "HASH_ITEM",
                     content = match.key.content,
+                    eval = eval
                 }
                 
                 statementHandler.ENDLINE(match)
@@ -377,7 +376,6 @@ return function(plume)
                 end
             end,
             ASSIGNMENT = function(match)
-
                 local variable = match.variable and match.variable.content
 
                 -- If not variable, use variableExpression field

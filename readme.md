@@ -64,5 +64,6 @@ According some quick benchmark simulating standard use-cases, transpiled code ex
 ### 0.40 (last version)
 
 - New macro `$file.Read`
+- Can use a block after a dynamic table key.
 
 [Older versions](doc/changelog.md)
