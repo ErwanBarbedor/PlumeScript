@@ -273,9 +273,12 @@ return function (plume)
             for _, token in ipairs(tokens) do
                 -- A token is mappable if it has a sourceToken field, which in turn has a source field.
                 if token.sourceToken and token.sourceToken.source then
-                    table.insert(result, getSourceLine(token.sourceToken.source, includeLine))
-                    lineFound = true
-                    break -- First mappable token is usually sufficient.
+                    -- Lua will never raise errors against assignement token
+                    if token.kind ~= "ASSIGNMENT" then
+                        table.insert(result, getSourceLine(token.sourceToken.source, includeLine))
+                        lineFound = true
+                        break -- First mappable token is usually sufficient.
+                    end
                 end
             end
         end

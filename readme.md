@@ -67,6 +67,9 @@ According some quick benchmark simulating standard use-cases, transpiled code ex
 - New macro `$file.Read`
 - Can use a block after a dynamic table key.
 
+#### Enhacement
+- Smarter token retrieval for error messages.
+
 #### Transpiler
 - Break line after `=` only if needed to target error (eg: dynamic affectation)
 
