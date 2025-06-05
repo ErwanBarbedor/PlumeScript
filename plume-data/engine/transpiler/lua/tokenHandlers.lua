@@ -135,8 +135,7 @@ return function(plume, transpiler)
                 targetVariable = targetVariable .. "[" .. transpiler.editLuaCode(node.sourceToken.index) .. "]"
             end
 
-            -- false indicates a global assignment.
-            transpiler:emitASSIGNMENT(node, targetVariable, node.sourceToken.compound_operator, false, true)
+            transpiler:emitASSIGNMENT(node, targetVariable, node.sourceToken.compound_operator, false, node.sourceToken.eval)
 
             if #node.children > 0 then
                 -- Transpile the value being assigned.
