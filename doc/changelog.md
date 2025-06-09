@@ -1,3 +1,14 @@
+### 0.40
+#### Changes
+- New macro `$file.Read`
+- Can use a block after a dynamic table key.
+
+#### Enhacement
+- Smarter token retrieval for error messages.
+
+#### Transpiler
+- Break line after `=` only if needed to target error (eg: dynamic affectation)
+
 ### 0.39
 - Remove `_LUA`. *In Lua, it is possible to adapt to the Plume calling convention. The reverse is not possible in a simple way, and basically letting Lua handle `_PLUME` is enough to allow the two languages to exchange without the need for `_LUA`.*
 - (`lua`) New function `plume.require`, that mimic the `plume` `require`.

@@ -3,6 +3,6 @@ return {
         "./plume -v"
     },
     expected = {
-        output = "Plume🪶-0.40"
+        output = "Plume🪶-0.41"
     }
 }
