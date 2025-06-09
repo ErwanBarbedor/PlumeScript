@@ -141,33 +141,27 @@ return {
         pattern = {
             {kind = "META", name = "meta",     optional=true},
             {kind = "EVAL", name = "evalmode", optional=true},
-            {kind = "TEXT", name = "key"},
-            {kind = "COLON"},
-            {kind = "SPACE", multipleCapture = true}
-        }
-    },
-    {
-        name = "HASH_ITEM",
-        pattern = {
-            {kind = "EVAL", name = "evalmode"},
             {
-                braced = {
-                    open  = {kind = "LPAR"},
-                    close = {kind = "RPAR"}
+                ['or'] = {
+                    {kind = "TEXT", name = "keyValue"},
+                    {
+                        braced = {
+                            open  = {kind = "LPAR"},
+                            close = {kind = "RPAR"}
+                        },
+                        name = "keyExpression"
+                    }
                 },
-                name = "keyExpression"
+                name = "key"
             },
             {kind = "COLON"},
-            {kind = "SPACE", multipleCapture = true}
-        }
-    },
-    {
-        name = "HASH_ITEM_ENDLINE",
-        pattern = {
-            {kind = "EVAL", name = "evalmode", optional=true},
-            {kind = "TEXT", name = "key"},
-            {kind = "COLON"},
-            {kind = {"NEWLINE", "ENDLINE"}, name = "tokens", multipleCapture = true}
+            {
+                ["or"] = {
+                    {kind = "SPACE", multipleCapture = true},
+                    {kind = {"NEWLINE", "ENDLINE"}}
+                },
+                name="final"
+            }
         }
     },
     {

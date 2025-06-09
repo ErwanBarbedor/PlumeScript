@@ -298,7 +298,12 @@ return function(plume)
                 }
             end,
             HASH_ITEM = function(match)
-                local key  = match.key and match.key.content
+                local keyValue, keyExpression
+                if match.key.kind == "TEXT" then
+                    keyValue = match.key.content
+                else
+                    keyExpression = match.key
+                end
 
                 local eval = match.evalmode and #match.evalmode.content>0
                 local meta = match.meta and #match.meta.content>0
@@ -309,40 +314,34 @@ return function(plume)
                     end
                     
                     -- Not included: metatable, gc, mode, div, sub, pow
-                    if not contains("add call index le len lt mul newindex tostring unm", key) then
-                        plume.unknownMetaFieldError(match.key.source, key)
+                    if not contains("add call index le len lt mul newindex tostring unm", keyValue) then
+                        plume.unknownMetaFieldError(match.key.source, keyValue)
                     end
                 end
 
-                if key then
-                    plume.checkParameterName(match.key.source, key, false)
+                if keyValue then
+                    plume.checkParameterName(match.key.source, keyValue, false)
                 else
                     local t = {}
-                    for _, token in ipairs(match.keyExpression) do
+                    for _, token in ipairs(keyExpression) do
                         table.insert(t, token.content)
                     end
-                    key = table.concat(t, "", 2, #t-1)
+                    keyValue = table.concat(t, "", 2, #t-1)
                 end
 
                 pushToken {
                     kind = "HASH_ITEM",
-                    content = key,
+                    content = keyValue,
                     eval    = eval,
                     meta    = meta
                 }
 
                 mode = FINAL_STATEMENT_MODE
-            end,
-            HASH_ITEM_ENDLINE = function(match)
-                local eval = match.evalmode and #match.evalmode.content>0
-                
-                pushToken {
-                    kind = "HASH_ITEM",
-                    content = match.key.content,
-                    eval = eval
-                }
-                
-                statementHandler.ENDLINE(match)
+
+                if contains("NEWLINE ENDLINE", match.final and match.final.kind)  then
+                    match.tokens = match.final
+                    statementHandler.ENDLINE(match, match.final.indent)
+                end
             end,
             LOCAL_ASSIGNMENT = function(match)
 
@@ -482,11 +481,11 @@ return function(plume)
                     content = ""
                 }
             end,
-            ENDLINE = function(match)
+            ENDLINE = function(match, indent)
                 pushToken {
                     kind = "ENDLINE",
                     content = "",
-                    indent = match.tokens[#match.tokens].indent
+                    indent = indent or match.tokens[#match.tokens].indent
                 }
                 mode = STATEMENT_MODE
             end,
