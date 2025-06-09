@@ -73,6 +73,7 @@ According some quick benchmark simulating standard use-cases, transpiled code ex
 - Correct parenthesis nesting even with macro call.
 - No more empty string inserted inside parameter in certains inline macro call.
 - No more syntax error when using `)` inside a macro definition.
+- No more strange error message when using `)` inside an extend call.
 
 #### Internal changes
 - Factorise hash parser code. (3 rules & 2 handlers -> 1 rule & 1 handler)

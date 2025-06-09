@@ -43,3 +43,13 @@ macro foo() )
 /// Result
 nil
 /// End
+
+/// Test "Issue 6"
+macro foo(**kw)
+  $bar()
+    k:
+      - )
+      **t
+/// Result
+nil
+/// End

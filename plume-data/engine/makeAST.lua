@@ -428,7 +428,10 @@ return function (plume)
                     popContext(-1, 1, false) -- Pop MACRO_ARG_TABLE.
                     pushContext(token, "MACRO_BODY", currentIndent+1) -- Open context for the macro's body.
 
-                elseif isInside("MACRO_CALL") or isInside("COMMAND_EXPAND_LIST_CALL") or isInside("COMMAND_EXPAND_HASH_CALL") then
+                elseif
+                    (isInside("MACRO_CALL") or isInside("COMMAND_EXPAND_LIST_CALL") or isInside("COMMAND_EXPAND_HASH_CALL"))
+                    and isInside("MACRO_ARG_TABLE", 2)
+                    then
                     -- This RPAR closes the argument list of a macro call.
                     popMacroArgument()   -- Finalize the last argument.
                     popParenthesisDepth()
