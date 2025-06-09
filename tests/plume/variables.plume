@@ -54,12 +54,44 @@ Hello $name!
 Hello John!
 /// End
 
-/// Test "Compound"
+/// Test "Compound 1"
 a = 1
 a += 1
 $a
 /// Result
 2
+/// End
+
+/// Test "Compound 2"
+a = 1
+a -= 1
+$a
+/// Result
+0
+/// End
+
+/// Test "Compound 3"
+a = 1
+a *= 2
+$a
+/// Result
+2
+/// End
+
+/// Test "Compound 4"
+a = 2
+a /= 2
+$a
+/// Result
+1
+/// End
+
+/// Test "Compound 5"
+a = Foo
+a ..= Bar
+$a
+/// Result
+FooBar
 /// End
 
 /// Test "Dynamic 1"
