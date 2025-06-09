@@ -246,7 +246,8 @@ return function (plume)
         --- Finalizes the current macro argument being parsed.
         --- It converts list items ("LIST_ITEM") to hash items ("HASH_ITEM") if they use `key:value` syntax.
         --- Also handles empty arguments and pops the argument context ("LIST_ITEM" or "HASH_ITEM") itself.
-        local function popMacroArgument()
+        ---@param canBeEmpty bool
+        local function popMacroArgument(canBeEmpty)
             local antecurrent = context[#context-1] -- The MACRO_ARG_TABLE node.
             local currentArgContext = context[#context] -- The LIST_ITEM/HASH_ITEM node for the current argument.
 
@@ -257,7 +258,9 @@ return function (plume)
             end
 
             -- Remove empty parameter if it's allowed (e.g., after an expand '*' or if it's the first one)
-            if #currentArgContext.children == 0 and (#antecurrent.children == 0 or currentArgContext.canBeEmpty) then
+            if #currentArgContext.children == 0
+                and (#antecurrent.children == 0 or currentArgContext.canBeEmpty)
+                or canBeEmpty then
                 table.remove(context) -- Pop the empty LIST_ITEM.
                 return
             elseif #currentArgContext.children > 0 then
@@ -462,9 +465,14 @@ return function (plume)
                         end
                     else -- Inside a macro call
                         -- This is expanding a variable into arguments
-                        popMacroArgument() -- Finalize potentially empty argument before expand.
-                        pushChild(token, "COMMAND_" .. token.kind, token.content) -- The actual var to expand.
-                        pushMacroArgument(true) -- Next argument (if any) can be empty.
+                        -- Finalize potentially empty argument before expand.
+                        popMacroArgument(true) -- true: Delete previous argument if empty
+
+                        -- The actual var to expand.
+                        pushChild(token, "COMMAND_" .. token.kind, token.content)
+
+                        -- Next argument (if any) can be empty. 
+                        pushMacroArgument(true) 
                     end
                 else
                     -- Expand operator outside an argument list, treat as literal text

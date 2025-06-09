@@ -23,3 +23,15 @@ $foo((x))
 (x)
 (x)
 /// End
+
+/// Test "Issue 4"
+macro foo(*args)
+    $(#args)
+t1 =
+    - foo
+t2 =
+    - bar
+$foo(*t1, *t2)
+/// Result
+2
+/// End
