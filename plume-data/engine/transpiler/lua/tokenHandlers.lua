@@ -304,9 +304,12 @@ return function(plume, transpiler)
         -- Not very optimized
         VOID = function (node)
             transpiler:newline()
-            -- add ';' avoid ambiguous syntax in situation like
-            -- `a = bar (function () ... end)`
-            transpiler:emitOPEN(';(function ()') 
+            -- useless affectation is the best way
+            -- to avoid syntax error in specific case:
+            -- `a = foo (function () ...` is ambiguous, but
+            -- `if foo then ;(function () ...` isn't valid
+            transpiler:emitASSIGNMENT(node, '__plume_void') 
+            transpiler:emitOPEN('(function ()') 
             transpiler:newline()
             transpiler.transpileChildren(node, false, true, true)
             transpiler:emitCLOSE('end)()')
