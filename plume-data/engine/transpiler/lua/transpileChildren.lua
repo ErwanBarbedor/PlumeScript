@@ -459,19 +459,20 @@ return function(plume, transpiler)
             end
         end
 
-        if node.meta then
+        if node.meta and node.meta ~= "call" then
             local expectedArgCount
             if contains("add le len lt mul newindex", node.meta) then
                 expectedArgCount = 1
-            -- call, index, tostring, unm
-            else
+            elseif contains("call", node.meta) then
+                expectedArgCount = nil
+            else -- index, tostring, unm
                 expectedArgCount = 0
             end
 
             if #namedArgs ~= 0 then
                 plume.metaCannotUseNamedArguments(node.sourceToken.source)
             end
-            if #positionalArgs ~= expectedArgCount then
+            if expectedArgCount and #positionalArgs ~= expectedArgCount then
                 plume.metaWrongArgumentNumber(node.sourceToken.source, node.meta, #positionalArgs, expectedArgCount)
             end
 
@@ -488,9 +489,9 @@ return function(plume, transpiler)
             end
         else
             -- Emit the Lua function signature.
-            transpiler:emitDEFINITION(node, node.content, islocal, inline)
+            transpiler:emitDEFINITION(node, node.content, islocal, inline, node.meta)
             -- Emit parameter extraction
-            transpiler:chunkINIT_PARAM(positionalArgs, namedArgs, varargPos, varargNamed)
+            transpiler:chunkINIT_PARAM(positionalArgs, namedArgs, varargPos, varargNamed, node.meta)
         end
 
         transpiler:chunkVALIDATORS(validators)

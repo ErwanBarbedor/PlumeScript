@@ -135,8 +135,9 @@ return function (plume)
     ---@param inline boolean True if the function definition is inline (affects newline before "function").
     ---@param nargs number The number of expected arguments.
     ---@param vararg boolean True if the function is variadic (accepts `...` after named/positional arguments).
+    ---@param meta string? Meta macro name
     ---@return nil
-    function builder:emitDEFINITION(node, name, islocal, inline)
+    function builder:emitDEFINITION(node, name, islocal, inline, meta)
         if not inline then
             self:newline()
         end
@@ -147,8 +148,12 @@ return function (plume)
             self:write("local ")
         end
 
-        -- All Plume functions receive their arguments in a single table named `__plume_args`.
-        self:write("function " .. (name or "") .. "(__plume_args)") 
+        if meta then
+            self:write("function " .. (name or "") .. "(self, __plume_args)")
+        else
+            -- All Plume functions receive their arguments in a single table named `__plume_args`.
+            self:write("function " .. (name or "") .. "(__plume_args)")
+        end
         self.deep = self.deep + 1
     end
 
@@ -363,7 +368,10 @@ return function (plume)
 
     ---@param positionalArgs table List of positional arguments.
     ---@param namedArgs table List of named arguments nodes
-    function builder:chunkINIT_PARAM(positionalArgs, namedArgs, varargPos, varargNamed)
+    ---@param varargPos string Name of the positional variadic parameter
+    ---@param varargNamed string Name of the named variadic parameter
+    ---@param meta string? Meta macro name
+    function builder:chunkINIT_PARAM(positionalArgs, namedArgs, varargPos, varargNamed, meta)
         local stringPositionalArgs = table.concat(positionalArgs, ", ")
         
         local stringNamedArgs = {}
@@ -386,7 +394,12 @@ return function (plume)
 
         --- Start generating code for parameter initialization.
         self:newline()
-        self:insert("local self")
+        if meta then -- in metatable function, self is given by Lua
+            self:insert("local __plume_void")
+        else
+            self:insert("local self")
+        end
+
         if #stringPositionalArgs > 0 then
             self:insert(", ")
             self:insert(stringPositionalArgs)

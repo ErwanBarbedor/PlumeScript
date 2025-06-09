@@ -38,7 +38,7 @@ $t
 bar
 /// End
 
-/// Test "@call"
+/// Test "@call 1"
 t =
     foo: bar
     @call: macro()
@@ -46,6 +46,26 @@ t =
 $t()
 /// Result
 bar
+/// End
+
+/// Test "@call 2"
+t =
+    foo: bar
+    @call: macro(x)
+        $x is $self.foo
+$t(foo)
+/// Result
+foo is bar
+/// End
+
+/// Test "@call 3"
+t =
+    foo: bar
+    @call: macro(x: bar)
+        $x is $self.foo
+$t(x: foo)
+/// Result
+foo is bar
 /// End
 
 /// Test "Non valid name"
