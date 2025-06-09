@@ -368,6 +368,7 @@ return function (plume)
                 pushContext(token, token.kind, currentIndent+1, token.content) -- `content` has macro name.
                 pushContext(token, "MACRO_ARG_TABLE", currentIndent+1) -- Context for parameter list.
                 pushMacroArgument() -- Start context for the first (or AWAITED) parameter.
+                pushParenthesisDepth()
 
             -- Inline macros are defined to produce a single value.
             elseif contains("INLINE_MACRO_DEFINITION", token.kind) then
@@ -379,6 +380,7 @@ return function (plume)
 
                 pushContext(token, "MACRO_ARG_TABLE", currentIndent+1)
                 pushMacroArgument()
+                pushParenthesisDepth()
 
             -- Macro call initiation.
             elseif contains("MACRO_CALL_BEGIN COMMAND_EXPAND_LIST_CALL_BEGIN COMMAND_EXPAND_HASH_CALL_BEGIN", token.kind) then
@@ -415,7 +417,9 @@ return function (plume)
                     -- This RPAR closes a regular parenthesis pair within text or an expression.
                     decParenthesisDepth ()
                     pushChild(token, "TEXT", ")")
-                elseif isInside("MACRO_DEFINITION", 3) or isInside("INLINE_MACRO_DEFINITION", 3) then
+                elseif
+                    (isInside("MACRO_DEFINITION", 3) or isInside("INLINE_MACRO_DEFINITION", 3))
+                    and isInside("MACRO_ARG_TABLE", 2) then
                     -- This RPAR closes the argument list of a macro definition.
                     -- Depth check: current (LIST_ITEM) -> MACRO_ARG_TABLE -> MACRO_DEFINITION
                     popMacroArgument()   -- Finalize the last argument.

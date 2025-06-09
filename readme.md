@@ -72,6 +72,7 @@ According some quick benchmark simulating standard use-cases, transpiled code ex
 - No more syntax error when using `void` command after a control structure.
 - Correct parenthesis nesting even with macro call.
 - No more empty string inserted inside parameter in certains inline macro call.
+- No more syntax error when using `)` inside a macro definition.
 
 #### Internal changes
 - Factorise hash parser code. (3 rules & 2 handlers -> 1 rule & 1 handler)

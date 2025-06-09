@@ -35,3 +35,11 @@ $foo(*t1, *t2)
 /// Result
 2
 /// End
+
+/// Test "Issue 5"
+macro foo()
+  )
+macro foo() )
+/// Result
+nil
+/// End
