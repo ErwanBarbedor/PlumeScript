@@ -63,4 +63,7 @@ According some quick benchmark simulating standard use-cases, transpiled code ex
 ## Changelog
 ### 0.41 (last version)
 
+#### Bugfix
+- Compound opperator `-=` is correctly seen as a command, not a text.
+
 [Older versions](doc/changelog.md)
