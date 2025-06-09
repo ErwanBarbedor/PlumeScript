@@ -67,5 +67,6 @@ According some quick benchmark simulating standard use-cases, transpiled code ex
 - Compound opperator `-=` is correctly seen as a command, not a text.
 - `@call` meta-field can correctly be used with one or more parameters.
 - No more syntax error when using `void` command after a control structure.
+- Correct parenthesis nesting even with macro call.
 
 [Older versions](doc/changelog.md)

@@ -13,3 +13,13 @@ $foo(bar, baz)
 /// Result
 bar, baz
 /// End
+
+/// Test "Issue 3"
+macro foo(x)
+    $x
+($foo(x))\n
+$foo((x))
+/// Result
+(x)
+(x)
+/// End

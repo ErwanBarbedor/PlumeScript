@@ -28,7 +28,7 @@ return function (plume)
         local context         = {} -- Stack of currently open AST nodes, representing the path from the root to the current parsing location.
         local pos             = 0  -- Current position in the token stream.
         local currentIndent   = 0  -- Tracks indentation level for block scoping (Python-like).
-        local parenthesisDepth = 0 -- Tracks the current nesting depth of regular parentheses `(` `)` encountered within the content of a line. This helps distinguish them from parentheses used for macro argument lists.
+        local parenthesisDepth = {} -- Tracks the current nesting depth of regular parentheses `(` `)` encountered within the content of a line. This helps distinguish them from parentheses used for macro argument lists.
 
         --- Propagates return type constraints upwards through parent scopes.
         --- Ensures that control structures (like IF, FOR) and macro definitions
@@ -235,7 +235,7 @@ return function (plume)
         ---@param deep integer|nil Optional. The maximum depth to search upwards from the current context. Defaults to searching the entire stack.
         ---@return boolean True if a context of the specified kind is found within the search depth, false otherwise.
         local function isInside(kind, deep)
-            for i=#context, #context - (deep or #context)+1, -1 do
+            for i=#context, math.max(1, #context - (deep or #context)+1), -1 do
                 if context[i].kind == kind then
                     return context[i]
                 end
@@ -327,8 +327,26 @@ return function (plume)
             context[#context].canBeEmpty = canBeEmpty
         end
 
+        -- Manage nested parenthesis
+        local function incParenthesisDepth()
+            parenthesisDepth[#parenthesisDepth] = parenthesisDepth[#parenthesisDepth]+1
+        end
+        local function decParenthesisDepth()
+            parenthesisDepth[#parenthesisDepth] = parenthesisDepth[#parenthesisDepth]-1
+        end
+        local function pushParenthesisDepth()
+            table.insert(parenthesisDepth, 0)
+        end
+        local function popParenthesisDepth()
+            table.remove(parenthesisDepth)
+        end
+        local function lastParenthesisDepth()
+            return parenthesisDepth[#parenthesisDepth]
+        end
+
         -- Initialize with a root "BLOCK" node. All top-level elements will be children of this node.
         pushContext(nil, "BLOCK", -1) -- -1 indent ensures it's never popped by indentation rules.
+        pushParenthesisDepth()
 
         -- Begin token processing loop.
         while pos < #tokens do
@@ -381,22 +399,24 @@ return function (plume)
 
                 pushContext(token, "MACRO_ARG_TABLE", currentIndent+1)
                 pushMacroArgument()
+                pushParenthesisDepth()
 
             -- Left parenthesis handling.
             elseif contains("LPAR", token.kind) then
-                parenthesisDepth = parenthesisDepth + 1
+                incParenthesisDepth()
                 pushChild(token, "TEXT", "(") -- Default: treat as literal text.
 
             -- Right parenthesis handling.
             elseif contains("RPAR", token.kind) then
-                if parenthesisDepth > 0 then
+                if lastParenthesisDepth() > 0 then
                     -- This RPAR closes a regular parenthesis pair within text or an expression.
-                    parenthesisDepth = parenthesisDepth - 1
+                    decParenthesisDepth ()
                     pushChild(token, "TEXT", ")")
                 elseif isInside("MACRO_DEFINITION", 3) or isInside("INLINE_MACRO_DEFINITION", 3) then
                     -- This RPAR closes the argument list of a macro definition.
                     -- Depth check: current (LIST_ITEM) -> MACRO_ARG_TABLE -> MACRO_DEFINITION
                     popMacroArgument()   -- Finalize the last argument.
+                    popParenthesisDepth()
                     checkMacroArgument() -- Validate all arguments in the MACRO_ARG_TABLE.
                     popContext(-1, 1, false) -- Pop MACRO_ARG_TABLE.
                     pushContext(token, "MACRO_BODY", currentIndent+1) -- Open context for the macro's body.
@@ -404,6 +424,7 @@ return function (plume)
                 elseif isInside("MACRO_CALL") or isInside("COMMAND_EXPAND_LIST_CALL") or isInside("COMMAND_EXPAND_HASH_CALL") then
                     -- This RPAR closes the argument list of a macro call.
                     popMacroArgument()   -- Finalize the last argument.
+                    popParenthesisDepth()
                     popContext(-1, 1, false) -- Pop MACRO_ARG_TABLE.
                     -- Check for Plume's extended argument syntax:
                     -- If RPAR is a_immediately_ followed by ENDLINE, it might be the start of an extended block.
@@ -478,7 +499,10 @@ return function (plume)
 
             -- Line ending processing.
             elseif token.kind == "ENDLINE" then
-                parenthesisDepth = 0 -- Reset parenthesis counter for the new line.
+                -- Reset parenthesis counter for the new line.
+                popParenthesisDepth()
+                pushParenthesisDepth()
+
                 currentIndent = token.indent or currentIndent -- Update current indentation level.
                 popContext(currentIndent, nil, true)  -- Close completed contexts based on new indent.
 
