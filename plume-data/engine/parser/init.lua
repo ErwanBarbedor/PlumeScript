@@ -314,7 +314,9 @@ return function(plume)
                     end
                 end
 
-                if not key then
+                if key then
+                    plume.checkParameterName(match.key.source, key, false)
+                else
                     local t = {}
                     for _, token in ipairs(match.keyExpression) do
                         table.insert(t, token.content)
@@ -333,7 +335,7 @@ return function(plume)
             end,
             HASH_ITEM_ENDLINE = function(match)
                 local eval = match.evalmode and #match.evalmode.content>0
-
+                
                 pushToken {
                     kind = "HASH_ITEM",
                     content = match.key.content,

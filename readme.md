@@ -63,6 +63,9 @@ According some quick benchmark simulating standard use-cases, transpiled code ex
 ## Changelog
 ### 0.41 (last version)
 
+#### Enhancement
+- Better error message when table key isn't valid.
+
 #### Bugfix
 - Compound opperator `-=` is correctly seen as a command, not a text.
 - `@call` meta-field can correctly be used with one or more parameters.
