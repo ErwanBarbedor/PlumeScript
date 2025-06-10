@@ -36,7 +36,6 @@ for lib in ([[
     makeAST
     std/init
     transpiler/init
-    suggestion
     error/init
     cache
     plumeDebug

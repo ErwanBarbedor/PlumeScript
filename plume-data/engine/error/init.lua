@@ -14,7 +14,8 @@ If not, see <https://www.gnu.org/licenses/>.
 ]]
 
 return function (plume)
-    require "engine/error/error"   (plume)
-    require "engine/error/ast"     (plume)
-    require "engine/error/syntax"  (plume)
+    require "engine/error/error"      (plume)
+    require "engine/error/ast"        (plume)
+    require "engine/error/syntax"     (plume)
+    require "engine/error/suggestion" (plume)
 end
