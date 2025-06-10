@@ -22,8 +22,14 @@ return function(plume)
     --- Computes the Damerau-Levenshtein distance between two strings.
     ---@param s1 string The first string to compare.
     ---@param s2 string The second string to compare.
+    ---@param case bool Take into account the upper/lower case.
     ---@return number The Damerau-Levenshtein distance between s1 and s2.
-    local function word_distance(s1, s2)
+    local function word_distance(s1, s2, case)
+        if not case then
+            s1 = s1:lower()
+            s2 = s2:lower()
+        end
+
         local len1, len2 = #s1, #s2
         local matrix = {}
 

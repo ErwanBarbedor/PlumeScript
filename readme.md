@@ -65,6 +65,7 @@ According some quick benchmark simulating standard use-cases, transpiled code ex
 
 #### Enhancement
 - Better error message when table key isn't valid.
+- When searching a valid name to suggest after an error, ignore lower/upper case.
 
 #### Bugfix
 - Compound opperator `-=` is correctly seen as a command, not a text.
