@@ -76,6 +76,7 @@ According some quick benchmark simulating standard use-cases, transpiled code ex
 - No more strange error message when using `)` inside an extend call.
 
 #### Internal changes
-- Factorise hash parser code. (3 rules & 2 handlers -> 1 rule & 1 handler)
+- Factorise hash item parser code. (3 rules & 2 handlers -> 1 rule & 1 handler)
+- Factorise list item parser code. (2 rules & 2 handlers -> 1 rule & 1 handler)
 
 [Older versions](doc/changelog.md)

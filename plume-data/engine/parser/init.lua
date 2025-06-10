@@ -284,13 +284,6 @@ return function(plume)
                 match.tokens = {{indent = currentIndent + 1}}
                 statementHandler.ENDLINE(match)
             end,
-            LIST_ITEM_ENDLINE = function(match)
-                pushToken {
-                    kind = "LIST_ITEM",
-                    content = ""
-                }
-                statementHandler.ENDLINE(match)
-            end,
             VOID_LINE = function(match)
                 pushToken {
                     kind = "VOID_LINE",

@@ -126,14 +126,13 @@ return {
         name = "LIST_ITEM",
         pattern = {
             {kind = "DASH"},
-            {kind = "SPACE", multipleCapture = true}
-        }
-    },
-    {
-        name = "LIST_ITEM_ENDLINE",
-        pattern = {
-            {kind = "DASH"},
-            {kind = {"NEWLINE", "ENDLINE"}, name = "tokens", multipleCapture = true}
+            {
+                ["or"] = {
+                    {kind = "SPACE", multipleCapture = true},
+                    {kind = {"NEWLINE", "ENDLINE"}}
+                },
+                name="final"
+            }
         }
     },
     {
