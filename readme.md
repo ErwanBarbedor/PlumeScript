@@ -66,6 +66,7 @@ According some quick benchmark simulating standard use-cases, transpiled code ex
 #### Enhancement
 - Better error message when table key isn't valid.
 - When searching a valid name to suggest after an error, ignore lower/upper case.
+- When searching a valid name to suggest after an error, take snake case and camel case into accout. *For exemple, suggest `fooBaraz` instead of `barazFoo`, even if char to char these 2 word a far away from each other.*
 
 #### Bugfix
 - Compound opperator `-=` is correctly seen as a command, not a text.

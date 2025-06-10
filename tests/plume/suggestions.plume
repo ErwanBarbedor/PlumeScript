@@ -69,3 +69,23 @@ File <string_1>, line n°4:
     $(#azert)
     ^^^^^^^^^
 /// End
+
+/// Test "camel"
+fooBaraz = 4
+$(barazFoo+1)
+/// Error
+Error: attempt to perform arithmetic on global 'barazFoo' (a nil value). Perhaps you mean 'fooBaraz'?
+File <string_1>, line n°2:
+    $(barazFoo+1)
+    ^^^^^^^^^^^^^
+/// End
+
+/// Test "snake"
+foo_baraz = 4
+$(baraz_foo+1)
+/// Error
+Error: attempt to perform arithmetic on global 'baraz_foo' (a nil value). Perhaps you mean 'foo_baraz'?
+File <string_1>, line n°2:
+    $(baraz_foo+1)
+    ^^^^^^^^^^^^^^
+/// End

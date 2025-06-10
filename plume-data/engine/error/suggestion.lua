@@ -24,7 +24,7 @@ return function(plume)
     ---@param s2 string The second string to compare.
     ---@param case bool Take into account the upper/lower case.
     ---@return number The Damerau-Levenshtein distance between s1 and s2.
-    local function word_distance(s1, s2, case)
+    local function wordDistance(s1, s2, case)
         if not case then
             s1 = s1:lower()
             s2 = s2:lower()
@@ -57,6 +57,35 @@ return function(plume)
         return matrix[len1][len2]
     end
 
+    --- Like word_distance, but working with tables instead of string
+    local function tableWordDistance(t1, t2)
+        local len1, len2 = #t1, #t2
+        local matrix = {}
+
+        for i = 0, len1 do
+            matrix[i] = {[0] = i}
+        end
+        for j = 0, len2 do
+            matrix[0][j] = j
+        end
+
+        for i = 1, len1 do
+            for j = 1, len2 do
+                local cost = (t1[i] ~= t2[j]) and 1 or 0
+                matrix[i][j] = math.min(
+                    matrix[i-1][j] + 1,
+                    matrix[i][j-1] + 1,
+                    matrix[i-1][j-1] + cost
+                )
+                if i > 1 and j > 1 and t1[i] == t2[j-1] and t1[i-1] == t2[j] then
+                    matrix[i][j] = math.min(matrix[i][j], matrix[i-2][j-2] + cost)
+                end
+            end
+        end
+
+        return matrix[len1][len2]
+    end
+
     --- Creates a numerically-indexed table containing the alphabetically sorted keys of an associative table.
     ---@param t table The associative table whose keys are to be sorted.
     ---@return table A new numerically-indexed table containing the alphabetically sorted keys.
@@ -70,6 +99,23 @@ return function(plume)
         table.sort(sortedTable)
         
         return sortedTable
+    end
+
+    local function camelSplit(s)
+        local result = {}
+        s = s:sub(1, 1):upper() .. s:sub(2, -1)
+        for m in s:gmatch('[A-Z][0-1a-z]*') do
+            table.insert(result, m:lower())
+        end
+        return result
+    end
+
+    local function snakeSplit(s)
+        local result = {}
+        for m in s:gmatch('[^_]+') do
+            table.insert(result, m)
+        end
+        return result
     end
 
     --- Searches for words in a dictionary that are similar to a target word, filtering by type.
@@ -89,7 +135,30 @@ return function(plume)
                 -- Calculate Damerau-Levenshtein distance.
                 -- The threshold for similarity is the maximum of 1 or half the target word's length (integer division).
                 -- This allows more typos for longer words, providing a flexible matching criterion.
-                if word_distance(word, target) <= math.max(1, math.floor(#target/2)) then
+                local maxDistance = math.max(1, math.floor(#target/2))
+                local distance = wordDistance(word, target)
+
+                local camelWord = camelSplit(word)
+                local camelTarget = camelSplit(target)
+                local camelMaxDistance = math.max(1, math.floor(#camelTarget/2))
+                local camelDistance = tableWordDistance(camelWord, camelTarget)
+
+                if #camelWord == 1 or #camelTarget == 1 then
+                    camelDistance = 999
+                end
+
+                local snakeWord = snakeSplit(word)
+                local snakeTarget = snakeSplit(target)
+                local snakeMaxDistance = math.max(1, math.floor(#snakeTarget/2))
+                local snakeDistance = tableWordDistance(snakeWord, snakeTarget)
+
+                if #snakeWord == 1 or #snakeTarget == 1 then
+                    snakeDistance = 999
+                end
+
+                if distance <= maxDistance
+                or camelDistance <= camelMaxDistance
+                or snakeDistance <= snakeMaxDistance then
                     suggestions["'"..word.."'"] = true -- Add quoted word to suggestions set
                 end
             end
