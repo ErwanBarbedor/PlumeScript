@@ -7,3 +7,29 @@ Plume🪶-0.42
 Lua 5.1
 LuaJIT 2.1.1744318430
 /// End
+
+/// Test "Table : empty"
+local t = $table()
+$type($t), $(#t)
+/// Result
+table, 0
+/// End
+
+/// Test "Table : inline"
+local t = $table(foo, bar: baz)
+$t[1], $t.bar
+/// Result
+foo, baz
+/// End
+
+/// Test "Table : merge"
+local t1 =
+    - Foo
+    - Bar
+local t2 =
+    - Baz
+local t = $table(*t1, *t2)
+$(#t)
+/// Result
+3
+/// End

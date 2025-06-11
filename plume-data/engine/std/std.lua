@@ -167,4 +167,13 @@ return function(plume)
 
         return content
     end
+
+    --- Return all givens arguments as one table.
+    --- Usefull for 
+        --- Declaring empty tables:`t = $table()`
+        --- Declaring tables inlines: `t = $table(foo, bar: baz, *args)`
+        --- Mergin tables inline: `t = $table(**t1, **t2)`
+    function plume.std.plume.table(env, __plume_args)
+        return __plume_args
+    end
 end

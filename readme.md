@@ -63,4 +63,7 @@ According some quick benchmark simulating standard use-cases, transpiled code ex
 ## Changelog
 ### 0.42 (last version)
 
+#### Changes
+- New builtin function `table`. _Used to declare empty tables, declaring inline tables or merge tables._
+
 [Older versions](doc/changelog.md)
