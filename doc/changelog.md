@@ -1,3 +1,22 @@
+### 0.41
+#### Enhancement
+- Better error message when table key isn't valid.
+- When searching a valid name to suggest after an error, ignore lower/upper case.
+- When searching a valid name to suggest after an error, take snake case and camel case into accout. *For exemple, suggest `fooBaraz` instead of `barazFoo`, even if char to char these 2 word a far away from each other.*
+
+#### Bugfix
+- Compound opperator `-=` is correctly seen as a command, not a text.
+- `@call` meta-field can correctly be used with one or more parameters.
+- No more syntax error when using `void` command after a control structure.
+- Correct parenthesis nesting even with macro call.
+- No more empty string inserted inside parameter in certains inline macro call.
+- No more syntax error when using `)` inside a macro definition.
+- No more strange error message when using `)` inside an extend call.
+
+#### Internal changes
+- Factorise hash item parser code. (3 rules & 2 handlers -> 1 rule & 1 handler)
+- Factorise list item parser code. (2 rules & 2 handlers -> 1 rule & 1 handler)
+
 ### 0.40
 #### Changes
 - New macro `$file.Read`
