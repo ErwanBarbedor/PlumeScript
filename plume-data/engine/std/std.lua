@@ -176,4 +176,19 @@ return function(plume)
     function plume.std.plume.table(env, __plume_args)
         return __plume_args
     end
+
+    --- Exactly the `#` lua opperator
+    function plume.std.plume.len(env, __plume_args)
+        local _, x = plume.std.utils.__plume_initArgs(
+            __plume_args, 1, {}, false, false
+        )
+
+        local tx = type(x)
+        if tx == "table" or tx == "string" then
+            return #x
+        else
+            error("Error: attempt to get length of a " .. tx .. " value.", 2)
+        end
+
+    end
 end

@@ -10,7 +10,7 @@ LuaJIT 2.1.1744318430
 
 /// Test "Table : empty"
 local t = $table()
-$type($t), $(#t)
+$(type(t)), $(len(t))
 /// Result
 table, 0
 /// End
@@ -29,7 +29,7 @@ local t1 =
 local t2 =
     - Baz
 local t = $table(*t1, *t2)
-$(#t)
+$(len(t))
 /// Result
 3
 /// End
