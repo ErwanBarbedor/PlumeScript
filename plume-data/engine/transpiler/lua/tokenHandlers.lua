@@ -242,8 +242,8 @@ return function(plume, transpiler)
 
             -- for ... in ... syntax
             if luaIterator:match('in') then
-                local before, after = luaIterator:match('^(.*)%s*in%s*(.*)$')
-                luaIterator = before .. "in __plume_iter (" .. after .. ")"
+                local before, after = luaIterator:match('^(.-)%s+in%s+(.-)$')
+                luaIterator = before .. " in __plume_iter (" .. after .. ")"
             end
             -------------------------------------------------
 
