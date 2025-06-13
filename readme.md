@@ -67,5 +67,6 @@ According some quick benchmark simulating standard use-cases, transpiled code ex
 - New builtin function `table`. _Used to declare empty tables, declaring inline tables or merge tables._
 - New builtin function `len`. _Replace the lua `#`_
 - Can now iterate directly on table: `for x in t`
+- Replace `ipairs` by `enumerate`.
 
 [Older versions](doc/changelog.md)

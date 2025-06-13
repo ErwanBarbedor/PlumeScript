@@ -3,7 +3,7 @@ t =
     - 1
     - 2
     @mul: macro(n)
-        for k, v in ipairs(self)
+        for k, v in enumerate(self)
             self[k] *= $n
 void $(t * 5)
 $t[1]\n
@@ -18,7 +18,7 @@ t =
     - 1
     - 2
     @mul: macro(n)
-        for k, v in ipairs(self)
+        for k, v in enumerate(self)
             self[k] *= $n
 void $(5 * t)
 $t[1]\n

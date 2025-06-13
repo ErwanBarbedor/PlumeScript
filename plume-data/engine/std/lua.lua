@@ -40,10 +40,13 @@ end
 return function(plume)
 
     -- Available from plume
-    -- Excluded: arg, collectgarbage, coroutine, debug, dofile, gcinfo, getfenv, getmetatable, io, jit, load, loadfile, loadstring, module, next, os, package, pcall, rawequal, rawget, rawset, require, select, setmetatable, string, table, unpack, xpcall
-    for name in ("assert bit error ipairs pairs print tostring tonumber type"):gmatch('%S+') do
+    -- Excluded: arg, collectgarbage, coroutine, debug, dofile, gcinfo, getfenv, getmetatable, io, ipairs, jit, load, loadfile, loadstring, module, next, os, package, pcall, rawequal, rawget, rawset, require, select, setmetatable, string, table, unpack, xpcall
+    for name in ("assert bit error pairs print tostring tonumber type"):gmatch('%S+') do
         plume.std.luaPlume[name] = importLuaFunction (_G[name])
     end
+
+    -- rename ipairs
+    plume.std.luaPlume.enumerate = importLuaFunction (_G["ipairs"])
 
     for name in ("math"):gmatch('%S+') do
         plume.std.luaPlume[name] = importLuaTable (_G[name])
