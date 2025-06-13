@@ -71,7 +71,7 @@ evens =
     for i=1, 5
         - $(i*2)
 
-for _, x in ipairs(evens)
+for x in evens
     $x
 /// Result
 246810

@@ -174,4 +174,23 @@ return function(plume)
 
         return unpack(result) -- Return the processed arguments
     end
+
+    function plume.std.utils.__plume_iter(x, y, z)
+        if type(x) == "nil" then
+            error("Cannot iterate over a nil value.", 2)
+        end
+
+        if type(x) == "table" then
+            local mt = getmetatable(x)
+            if not mt or not mt.__call () then
+                local i = 0
+                return function ()
+                    i = i+1
+                    return x[i]
+                end
+            end
+        end
+
+        return x, y, z
+    end
 end

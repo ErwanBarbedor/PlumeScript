@@ -237,7 +237,17 @@ return function(plume, transpiler)
                 node.continue = transpiler:getUniqueLabel("for")
             end
 
-            transpiler:emitFOR(node, transpiler.editLuaCode(node.content))
+            --- Temp code, waiting for full script parser ---
+            local luaIterator = transpiler.editLuaCode(node.content)
+
+            -- for ... in ... syntax
+            if luaIterator:match('in') then
+                local before, after = luaIterator:match('^(.*)%s*in%s*(.*)$')
+                luaIterator = before .. "in __plume_iter (" .. after .. ")"
+            end
+            -------------------------------------------------
+
+            transpiler:emitFOR(node, luaIterator)
             -- Transpile the body of the loop.
             transpiler.transpileChildren(node, false, false)
 

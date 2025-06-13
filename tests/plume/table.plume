@@ -2,7 +2,7 @@
 a =
     - Foo
     - Bar
-for _, x in ipairs(a)
+for x in a
     $x
 /// Result
 FooBar
@@ -24,7 +24,7 @@ a =
     i = $(i*2)
     - $i
 
-for _, x in ipairs(a)
+for x in a
     $x
 /// Result
 510
@@ -283,7 +283,7 @@ a =
 
 a[1] = Baz
 
-for k, v in ipairs(a)
+for v in a
     $v\n
 /// Result
 Baz
