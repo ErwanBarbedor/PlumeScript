@@ -34,6 +34,7 @@ end
 return function(plume)
     plume.std = {plume={}, lua={}, luastd={}, luaPlume={}, utils={}}
 
+    require ("engine/std/table")  (plume)
     require ("engine/std/utils")  (plume)
     require ("engine/std/std")    (plume)
     require ("engine/std/lua")    (plume)

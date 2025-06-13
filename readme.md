@@ -68,5 +68,6 @@ According some quick benchmark simulating standard use-cases, transpiled code ex
 - New builtin function `len`. _Replace the lua `#`_
 - Can now iterate directly on table: `for x in t`
 - Replace `ipairs` by `enumerate`.
+- Remove `pairs`, partially replaced by `items`. Iteration order is deterministic. *Unlike `pairs`, `items` does not iterate over numeric keys.*
 
 [Older versions](doc/changelog.md)

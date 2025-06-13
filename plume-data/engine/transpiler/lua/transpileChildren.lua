@@ -271,7 +271,7 @@ return function(plume, transpiler)
                         firstValueFound = true
                         if node.returnType ~= "VALUE" then
                             transpiler:newline()
-                            transpiler:insert("local __plume_temp = {}")
+                            transpiler:insert("local __plume_temp = __plume_table()")
                         end
                     end
                 end

@@ -36,6 +36,7 @@ return function(plume)
     plume.std.utils.__plume_gmt     = getmetatable
     plume.std.utils.__plume_insert  = table.insert
     plume.std.utils.__plume_concat  = table.concat
+    plume.std.utils.__plume_table   = plume.table
     plume.std.utils._VERSION        = plume._VERSION
     plume.std.utils._LUA_VERSION    = _VERSION
     plume.std.utils._LUAJIT_VERSION = jit.version
@@ -182,7 +183,7 @@ return function(plume)
 
         if type(x) == "table" then
             local mt = getmetatable(x)
-            if not mt or not mt.__call () then
+            if not mt or not mt.__call then
                 local i = 0
                 return function ()
                     i = i+1
@@ -193,4 +194,6 @@ return function(plume)
 
         return x, y, z
     end
+
+    
 end

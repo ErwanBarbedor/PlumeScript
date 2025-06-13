@@ -189,6 +189,27 @@ return function(plume)
         else
             error("Error: attempt to get length of a " .. tx .. " value.", 2)
         end
-
     end
+
+    function plume.std.plume.items (env, __plume_args)
+        local _, t = plume.std.utils.__plume_initArgs(
+            __plume_args, 1, {}, false, false
+        )
+
+        local mt = getmetatable(t)
+        
+        if mt and mt.__plume_keys then
+            local i = 0
+            return function ()
+                i = i+1
+                local key = mt.__plume_keys[i]
+                if key then
+                    return key, t[key]
+                end
+            end
+        else
+            return function () end
+        end
+    end
+    
 end
