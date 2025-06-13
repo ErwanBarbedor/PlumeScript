@@ -120,8 +120,12 @@ return function (plume)
                     -- If mapping fails, convertedMessage will be nil.
                     if convertedMessage then
                         -- Plume conceptualizes its script blocks as "macros" rather than "functions".
-                        convertedMessage = convertedMessage .. " " .. message:gsub('^in function', 'in macro')
-                        table.insert(traceback, convertedMessage)
+
+                        -- remove anonymous functions from traceback
+                        if not message:match('in function <') then
+                            convertedMessage = convertedMessage .. " " .. message:gsub('^in function', 'in macro')
+                            table.insert(traceback, convertedMessage)
+                        end
                     end
                 end
             end
