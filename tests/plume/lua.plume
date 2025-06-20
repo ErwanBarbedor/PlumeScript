@@ -1,7 +1,7 @@
 /// Test "call ipairs in lua"
 $require(tests/plume/toImport/libstd, ext: lua)
 /// Result
-nil
+
 /// End
 
 // /// Test "string method 1 - indirect"

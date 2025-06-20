@@ -19,19 +19,6 @@ string
 /// End
 
 
-/// Test "concat 3"
-t =
-    - a
-    - b
-macro foo()
-    local b = 4
-    $t
-a = $foo()
-$(type(a))
-/// Result
-table
-/// End
-
 /// Test "concat 4"
 t =
     - a

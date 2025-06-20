@@ -299,7 +299,7 @@ return function(plume)
                 end
 
                 local eval = match.evalmode and #match.evalmode.content>0
-                local meta = match.meta and #match.meta.content>0
+                local meta = match.meta and #match.meta.content>0 and match.meta.content
 
                 if meta then
                     if eval then

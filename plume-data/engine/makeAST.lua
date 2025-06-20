@@ -131,7 +131,18 @@ return function (plume)
                     -- Defaulting to TEXT is a safe assumption for items whose content type isn't otherwise determined.
                     elseif contains("LIST_ITEM HASH_ITEM", lastContext.kind) and lastContext.returnType == "NIL" then
                          lastContext.returnType = "TEXT"
+                         
+                    elseif contains("HASH_ITEM", lastContext.kind) 
+                        and lastContext.sourceToken and lastContext.sourceToken.meta
+                        and #lastContext.children == 1 then
+                            
+                        lastContext.children[1].meta = lastContext.sourceToken.content
                     end
+                    
+                    
+                    -- if #currentArgContext.children == 1 then
+                    -- print(firstChildOfArg.sourceToken.meta, "!!")
+                    -- end
 
                     -- Some contexts require special validation when popped at an endline.
                     if endlinePop then
@@ -151,7 +162,12 @@ return function (plume)
                             plume.followedReturnError(token.source)
                        end
                     end
-
+                    
+                    -- Single value keep own type without text conversion
+                    if #lastContext.children == 1 and lastContext.returnType == "TEXT" and contains("ASSIGNMENT LIST_ITEM HASH_ITEM", lastContext.kind) then
+                        lastContext.returnType = "VALUE"
+                    end
+                    
                     -- Move the fully processed (closed) context to its parent's children list.
                     table.insert(parentContext.children, lastContext)
                     table.remove(context) -- Pop from the active context stack.
@@ -265,12 +281,12 @@ return function (plume)
                 return
             elseif #currentArgContext.children > 0 then
                 local firstChildOfArg = currentArgContext.children[1]
-                local textContent = firstChildOfArg and firstChildOfArg.content -- Ensure firstChildOfArg exists
+                
+                -- Ensure firstChildOfArg exists
+                local textContent = firstChildOfArg and firstChildOfArg.content 
 
                 -- Attempt to parse key:value from TEXT nodes
                 if textContent and firstChildOfArg.kind == "TEXT" then
-
-                    
                     local validator, key, shorthandKey
 
                     -- :key shortcut
@@ -374,7 +390,8 @@ return function (plume)
             elseif contains("INLINE_MACRO_DEFINITION", token.kind) then
                 -- First, set the expected return type for the parent context that will contain this inline macro.
                 setReturnType(token, "VALUE")
-                pushContext(token, token.kind, currentIndent+1, token.content)
+                pushContext(token, "MACRO_DEFINITION", currentIndent+1, token.content)
+                context[#context].inline = true
                 -- Then, set the return type for the INLINE_MACRO_DEFINITION node itself.
                 setReturnType(token, "VALUE")
 
@@ -386,20 +403,26 @@ return function (plume)
             elseif contains("MACRO_CALL_BEGIN COMMAND_EXPAND_LIST_CALL_BEGIN COMMAND_EXPAND_HASH_CALL_BEGIN", token.kind) then
                 -- Default return type for a block macro call is TEXT.
                 -- This can be overridden if the macro is known (e.g., via a manifest) to return a VALUE.
-
-                -- Expected type propagation to parent.
-                local kind
+                
                 if token.kind == "COMMAND_EXPAND_LIST_CALL_BEGIN" then
-                    kind = "COMMAND_EXPAND_LIST_CALL"
+                    -- context[#context].expandList = true
                     setReturnType(token, "TABLE")
                 elseif token.kind == "COMMAND_EXPAND_HASH_CALL_BEGIN" then
-                    kind = "COMMAND_EXPAND_HASH_CALL"
+                    -- context[#context].expandHash = true
                     setReturnType(token, "TABLE")
                 else
                     kind = "MACRO_CALL"
                     setReturnType(token, "TEXT")
                 end
-                pushContext(token, kind, currentIndent+1, token.content) -- `content` has macro name.
+                
+                pushContext(token, "MACRO_CALL", currentIndent+1, token.content) 
+                
+                if token.kind == "COMMAND_EXPAND_LIST_CALL_BEGIN" then
+                    context[#context].expandList = true
+                elseif token.kind == "COMMAND_EXPAND_HASH_CALL_BEGIN" then
+                    context[#context].expandHash = true
+                end
+                
                 setReturnType(token, "TEXT") -- Set type for the MACRO_CALL node itself.
 
                 pushContext(token, "MACRO_ARG_TABLE", currentIndent+1)
@@ -493,10 +516,13 @@ return function (plume)
 
             -- Variable assignment constructs.
             elseif token.kind == "ASSIGNMENT" then
-                pushContext(token, "ASSIGNMENT", currentIndent+1, token.content) -- `content` has var name.
+                -- `content` has var name.
+                pushContext(token, "ASSIGNMENT", currentIndent+1, token.content) 
 
             elseif token.kind == "LOCAL_ASSIGNMENT" then
-                pushContext(token, "LOCAL_ASSIGNMENT", currentIndent+1, token.content) -- `content` has var name.
+                -- `content` has var name.
+                pushContext(token, "ASSIGNMENT", currentIndent+1, token.content) 
+                context[#context].islocal = true
 
             -- Rest of the line is an expression
             elseif token.kind == "BEGIN_LINE_EXPRESSION" then

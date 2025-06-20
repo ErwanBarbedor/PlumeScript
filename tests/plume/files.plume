@@ -22,7 +22,7 @@ plume loaded (global)
 foo = $require(tests/plume/toImport/lib)
 $localVar
 /// Result
-nil
+
 /// End
 
 /// Test "Load lua 1"
@@ -48,14 +48,14 @@ lua loaded
 foo = $require(tests/plume/toImport/lib, ext: lua)
 $globalVar
 /// Result
-nil
+
 /// End
 
 /// Test "Load lua 5"
 foo = $require(tests/plume/toImport/lib, ext: lua)
 $localVar
 /// Result
-nil
+
 /// End
 
 /// Test "Load lua 6"

@@ -104,7 +104,7 @@ macro foo(x: $nil)
     $x
 $foo()
 /// Result
-nil
+
 /// End
 
 /// Test "Macro with default value 5"
@@ -313,6 +313,8 @@ Error: Wrong number of arguments, 1 instead of 0.
 File <string_1>, line n°2:
     $foo(x)
     ^^^^^
+Traceback:
+    File <string_1>, line n°1: in macro 'foo'
 /// End
 
 /// Test "Method wrong argument number 2"
@@ -323,6 +325,8 @@ Error: Wrong number of arguments, 0 instead of 1.
 File <string_1>, line n°2:
     $foo()
     ^^^^^
+Traceback:
+    File <string_1>, line n°1: in macro 'foo'
 /// End
 
 /// Test "Method wrong argument number 3"
@@ -357,6 +361,8 @@ Error: Wrong number of arguments, 0 instead of 1.
 File <string_1>, line n°2:
     $foo()
     ^^^^^
+Traceback:
+    File <string_1>, line n°1: in macro 'foo'
 /// End
 
 /// Test "Method wrong argument number 6"

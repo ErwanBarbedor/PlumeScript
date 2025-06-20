@@ -9,7 +9,7 @@ $a
 a = $()
 $a
 /// Result
-nil
+
 /// End
 
 /// Test "Parenthesis in eval"

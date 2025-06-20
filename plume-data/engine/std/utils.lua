@@ -16,6 +16,12 @@ If not, see <https://www.gnu.org/licenses/>.
 -- utils functions used by the transpiled code
 
 return function(plume)
+    local buffer = require("string.buffer")
+    
+    local function items(t)
+        return plume.std.plume.items(nil, {t})
+    end
+    
     local function raiseWrongParameterName(name, t)
         local message = "Unknow named parameter '" .. name .. "'."
         local suggestions = plume.searchWord(name, t)
@@ -32,22 +38,38 @@ return function(plume)
         error(message, 4)
     end
 
-    plume.std.utils.__plume_smt     = setmetatable
-    plume.std.utils.__plume_gmt     = getmetatable
-    plume.std.utils.__plume_insert  = table.insert
-    plume.std.utils.__plume_concat  = table.concat
-    plume.std.utils.__plume_table   = plume.table
-    plume.std.utils._VERSION        = plume._VERSION
-    plume.std.utils._LUA_VERSION    = _VERSION
-    plume.std.utils._LUAJIT_VERSION = jit.version
+    plume.std.utils.__plume_smt          = setmetatable
+    plume.std.utils.__plume_gmt          = getmetatable
+    plume.std.utils.__plume_table_insert = table.insert
+    plume.std.utils.__plume_concat       = table.concat
+    plume.std.utils.__plume_table        = plume.table
+    plume.std.utils._VERSION             = plume._VERSION
+    plume.std.utils._LUA_VERSION         = _VERSION
+    plume.std.utils._LUAJIT_VERSION      = jit.version
     
-    function plume.std.utils.__plume_checkConcat (x)
+    function plume.std.utils.__plume_table_set(t, k, v)
+        t[k] = v
+    end
+    
+    function plume.std.utils.__plume_table_metaset(t, k, v)
+        getmetatable(t)[k] = v
+    end
+    
+    function plume.std.utils.__plume_buffer()
+        return buffer.new()
+    end
+
+    function plume.std.utils.__plume_buffer_insert(buffer, s)
+        buffer:put(s)
+    end
+
+    function plume.std.utils.__plume_check_concat (x)
         local t = type(x)
         if t == "nil" then
             return ""
         elseif t == "table" then
-            if type(getmetatable(t).__tostring) == "function" then
-                return tostring(t)
+            if type(getmetatable(x).__tostring) == "function" then
+                return tostring(x)
             else
                 error("Cannot convert table to string implicitly.", 2)
             end
@@ -61,7 +83,7 @@ return function(plume)
     --- data order.
     --- @param source table
     --- @param dest table
-    function plume.std.utils.__plume_expandList (dest, source)
+    function plume.std.utils.__plume_expand_list (dest, source)
         if type(source) ~= "table" then
             error("Cannot expand a '" .. type(source) .. "' variable.", 2)
         end
@@ -71,15 +93,13 @@ return function(plume)
         end
     end
 
-    function plume.std.utils.__plume_expandHash (dest, source)
+    function plume.std.utils.__plume_expand_hash (dest, source)
         if type(source) ~= "table" then
             error("Cannot expand a '" .. type(source) .. "' variable.", 2)
         end
         
-        for k, v in pairs(source) do
-            if type(k) ~= "number" then
-                dest[k] = v
-            end
+        for k, v in items(source) do
+            dest[k] = v
         end
     end
 
@@ -110,7 +130,7 @@ return function(plume)
     ---@param namedArgs table<string,any> A list of named arguments with their default values. Format: {{name1, defaultValue1}, {name2, defaultValue2}, ...} 
     ---@param varargPos bool 
     ---@param varargNamed bool
-    function plume.std.utils.__plume_initArgs (argsTable, positionalArgsCount, namedArgs, varargPos, varargNamed)
+    function plume.std.utils.__plume_initArgs (argsTable, positionalArgsCount, namedArgs,  varargPos, varargNamed)
         local result = {argsTable.self or false} -- Store the 'self' parameter if present
 
         argsTable.self = nil -- Remove 'self' from argsTable

@@ -69,5 +69,9 @@ According some quick benchmark simulating standard use-cases, transpiled code ex
 - Can now iterate directly on table: `for x in t`
 - Replace `ipairs` by `enumerate`.
 - Remove `pairs`, partially replaced by `items`. Iteration order is deterministic. *Unlike `pairs`, `items` does not iterate over numeric keys.*
+- If an element is the only one in its text block, it is converted to a string instead of being returned as is.
+
+#### Internal Changes
+- Rewrite transpiler from scratch. _The new structure is more verbose, less optimized for specific cases, but also simplier and closer to the structure of Plume code and should therefore be easier to maintain. Enhance mapping too._
 
 [Older versions](doc/changelog.md)

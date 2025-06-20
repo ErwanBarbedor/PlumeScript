@@ -328,7 +328,7 @@ t =
   foo: bar
 
 nt =
-  for k, v in pairs(t)
+  for k, v in items(t)
     $k: $v
 
 $nt.foo
