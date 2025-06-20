@@ -1,6 +1,6 @@
 <p align="center"><img src="plume_logo.svg" width="600" height="300"></p>
 
-![Version](https://img.shields.io/badge/version-0.42-blue.svg) [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
+![Version](https://img.shields.io/badge/version-0.43-blue.svg) [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 
 
 ## Plume🪶 - An Expressive Templating Language
@@ -61,17 +61,6 @@ On my 12600k, transpilation of a 100ko file takes less than 200ms, up to 2s for 
 According some quick benchmark simulating standard use-cases, transpiled code executes at between 80% and 100% of Lua's performance. So with LuaJIT, this makes it possible to include relatively costly calculations in templates.
 
 ## Changelog
-### 0.42 (last version)
-
-#### Changes
-- New builtin function `table`. _Used to declare empty tables, declaring inline tables or merge tables._
-- New builtin function `len`. _Replace the lua `#`_
-- Can now iterate directly on table: `for x in t`
-- Replace `ipairs` by `enumerate`.
-- Remove `pairs`, partially replaced by `items`. Iteration order is deterministic. *Unlike `pairs`, `items` does not iterate over numeric keys.*
-- If an element is the only one in its text block, it is converted to a string instead of being returned as is.
-
-#### Internal Changes
-- Rewrite transpiler from scratch. _The new structure is more verbose, less optimized for specific cases, but also simplier and closer to the structure of Plume code and should therefore be easier to maintain. Enhance mapping too._
+### 0.43 (last version)
 
 [Older versions](doc/changelog.md)
