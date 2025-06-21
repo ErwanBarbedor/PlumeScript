@@ -24,7 +24,7 @@ return function(plume)
         return setmetatable({}, {
             __newindex = function (self, k, v)
                 rawset(t, k, v)
-                if type(k) ~= "number" or math.floor(k) == k then
+                if type(k) ~= "number" or math.floor(k) ~= k then
                     if v == nil then-- remove key
                         for i, key in ipairs(keys) do
                             if key == k then

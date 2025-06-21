@@ -72,5 +72,6 @@ According some quick benchmark simulating standard use-cases, transpiled code ex
 
 ### Bugfix
 - Fix anonymous macro returning behavior.
+- Fix an error occuring when using decimal key in tables.
 
 [Older versions](doc/changelog.md)
