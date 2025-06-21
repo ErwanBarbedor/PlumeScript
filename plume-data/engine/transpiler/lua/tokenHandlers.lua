@@ -386,7 +386,7 @@ return function(plume)
             local luaIterator = plume.editLuaCode(node.content)
 
             -- for ... in ... syntax
-            if luaIterator:match('in') then
+            if luaIterator:match('%s+in%s+') then
                 local before, after = luaIterator:match('^(.-)%s+in%s+(.-)$')
                 luaIterator = before .. " in __plume_iter (" .. after .. ")"
             end
