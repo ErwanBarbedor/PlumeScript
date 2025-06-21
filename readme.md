@@ -74,6 +74,7 @@ According some quick benchmark simulating standard use-cases, transpiled code ex
 ### Bugfix
 - Fix anonymous macro returning behavior.
 - Fix an error occuring when using decimal key in tables.
+- Can use `nil` parameter in macro call without error about a wrong number of parameters.
 
 ### Internal change
 - `Plume table` have now exactly the same behavior as a `Lua table`.

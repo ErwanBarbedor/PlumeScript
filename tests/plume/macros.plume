@@ -315,6 +315,15 @@ $foo()
 bar
 /// End
 
+/// Test "Nil arg without error"
+macro foo(x, y)
+    if x==nil
+        Foo
+$foo($nil, bar)
+/// Result
+Foo
+/// End
+
 /// Test "Method wrong argument number 1"
 macro foo()
 $foo(x)

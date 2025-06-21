@@ -15,29 +15,39 @@ If not, see <https://www.gnu.org/licenses/>.
 
 -- function imported from lua
 
-local function importLuaFunction (f)
-    return function(__plume_args)
-        return f(unpack(__plume_args))
-    end
-end
-
-local function importLuaTable (t)
-    local result = {}
-    
-    for k, v in pairs(t) do
-        if type(v) == "function" then
-            result[k] = importLuaFunction (v)
-        elseif type(v) == "table" then
-            result[k] = importLuaTable (v)
-        else
-            result[k] = v
+return function(plume)
+    local function importLuaFunction (f)
+        return function(__plume_args)
+            -- Replace plume.NIL by nil
+            local argCount = #__plume_args
+            local argTable = {}
+            for i=1, #__plume_args do
+                local arg = __plume_args[i]
+                if arg == plume.NIL then
+                    arg = nil
+                end
+                argTable[i] = arg
+            end
+            
+            return f(unpack(argTable, 1, argCount))
         end
     end
 
-    return result
-end
+    local function importLuaTable (t)
+        local result = {}
+        
+        for k, v in pairs(t) do
+            if type(v) == "function" then
+                result[k] = importLuaFunction (v)
+            elseif type(v) == "table" then
+                result[k] = importLuaTable (v)
+            else
+                result[k] = v
+            end
+        end
 
-return function(plume)
+        return result
+    end
 
     -- Available from plume
     -- Excluded: arg, collectgarbage, coroutine, debug, dofile, gcinfo, getfenv, getmetatable, io, ipairs, jit, load, loadfile, loadstring, module, next, os, package, pcall, rawequal, rawget, rawset, require, select, setmetatable, string, table, unpack, xpcall

@@ -33,10 +33,11 @@ return function(plume)
 
         error(message, 4)
     end
-
+    
+    plume.NIL = {}
+    
     plume.std.utils.__plume_smt          = setmetatable
     plume.std.utils.__plume_gmt          = getmetatable
-    plume.std.utils.__plume_table_insert = table.insert
     plume.std.utils.__plume_concat       = table.concat
     plume.std.utils.__plume_table        = plume.table
     plume.std.utils._VERSION             = plume._VERSION
@@ -45,6 +46,13 @@ return function(plume)
     
     function plume.std.utils.__plume_table_set(t, k, v)
         t[k] = v
+    end
+    
+    function plume.std.utils.__plume_table_insert(t, x, check)
+        if check and x == nil then
+            x = plume.NIL
+        end
+        table.insert(t, x)
     end
     
     function plume.std.utils.__plume_table_metaset(t, k, v)
@@ -138,10 +146,22 @@ return function(plume)
         for i=1, positionalArgsCount do
             local item = table.remove(argsTable, 1)
             if item then
-                table.insert(result, item)
+                -- NIL replace nil in macro call to preserve
+                -- parameter number
+                if item == plume.NIL then
+                    item = nil
+                end
+                result[i+1] = item
             else
                 notEnoughtArgs = true -- Flag if not enough positional arguments are provided
                 break
+            end
+        end
+        -- Remove nil values
+        for j=positionalArgsCount, #argsTable do
+            local item = argsTable[j]
+            if item == NIL then
+                argsTable[j] = nil
             end
         end
 
@@ -149,16 +169,19 @@ return function(plume)
         if notEnoughtArgs or (not  varargPos and #argsTable > 0) then
             error('Wrong number of arguments, ' .. (#result+#argsTable-1) .. ' instead of '..positionalArgsCount .. '.', 3)
         end
-
+        
+        local unpackCount = positionalArgsCount+1
+        
         -- Process named arguments
         for _, infos in ipairs(namedArgs) do
             local name  = infos[1]
             local value = infos[2]
+            unpackCount = unpackCount+1
             if argsTable[name] then
-                table.insert(result, argsTable[name])
+                result[unpackCount] = argsTable[name]
                 argsTable[name] = nil -- Remove the named argument from argsTable after processing
             else
-                table.insert(result, value) -- Use default value if named argument is not provided
+                result[unpackCount] = value -- Use default value if named argument is not provided
             end
         end
 
@@ -166,32 +189,31 @@ return function(plume)
         local excessNamed = plume.table()
         -- Iterate through remaining entries in argsTable
         for name, value in plume.items(argsTable) do
-            -- Check if the key is not a number (indicating a named argument)
-            if type(name) ~= "number" then
-                if varargNamed then
-                    excessNamed[name] = value
-                    argsTable[name] = nil
-                else
-                    local names = {}
-                    for _, infos in ipairs(namedArgs) do
-                        names[infos[1]] = true
-                    end
-                    -- Raise an error if an surplus named argument is found
-                    raiseWrongParameterName(name, names)
+            if varargNamed then
+                excessNamed[name] = value
+                argsTable[name] = nil
+            else
+                local names = {}
+                for _, infos in ipairs(namedArgs) do
+                    names[infos[1]] = true
                 end
+                -- Raise an error if an surplus named argument is found
+                raiseWrongParameterName(name, names)
             end
         end
-
+        
         -- Add varargs to the result if enabled
         if varargPos then
-            table.insert(result, argsTable) -- Vararg is the remaining entries
+            unpackCount = unpackCount+1 
+            result[unpackCount] = argsTable -- Vararg is the remaining entries
         end
 
         if varargNamed then
-            table.insert(result, excessNamed)
+            unpackCount = unpackCount+1 
+            result[unpackCount] = excessNamed
         end
-
-        return unpack(result) -- Return the processed arguments
+        
+        return unpack(result, 1, unpackCount)
     end
 
     function plume.std.utils.__plume_iter(x, y, z)

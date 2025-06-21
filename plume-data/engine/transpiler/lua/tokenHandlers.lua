@@ -221,14 +221,14 @@ return function(plume)
         return table.concat(result, "")
     end
     
-    local function writeValue(node, builder, accName, f, content, isValue, check)
+    local function writeValue(node, builder, accName, f, content, isValue, check, checkNil)
         if isValue then
             builder:write(node,  accName .. " = " .. content)
         else
             if check then
                 content = "__plume_check_concat(" .. content .. ")"
             end
-            builder:write(node, f .. "(" .. accName .. ", " .. content .. ")")
+            builder:write(node, f .. "(" .. accName .. ", " .. content .. (checkNil or "") .. ")")
         end
     end
     
@@ -281,15 +281,22 @@ return function(plume)
             writeValue(node, builder, accName, "__plume_buffer_insert", variableExpression, isValue, true)
         end,
 
-        LIST_ITEM = function(node, builder, accName, isValue)
+        LIST_ITEM = function(node, builder, accName, isValue, checkNil)
             local short = plume.shortNodeInfos(node.children)
             
+            -- Replace nil value by NIL to preserve list size
+            if checkNil then
+                checkNil = ", true"
+            else
+                checkNil = ""
+            end
+                
             if short then
-                writeValue(node, builder, accName, "__plume_table_insert", short, isValue)
+                writeValue(node, builder, accName, "__plume_table_insert", short, isValue, false, checkNil)
             else
                 plume.transpileBlock(node, builder, node.children, node.returnType,
                     function(blockAccName)
-                        return "__plume_table_insert(" .. accName .. ", " .. blockAccName .. ")"
+                        return "__plume_table_insert(" .. accName .. ", " .. blockAccName .. checkNil .. ")"
                     end
                 )
             end
@@ -566,15 +573,16 @@ return function(plume)
             builder:write(node, "local " .. argName .. " = __plume_table()")
             
             -- add args
+            local argCount = 0
             for _, child in ipairs(argTable.children) do
-                plume.tokenHandlers[child.kind] (child, builder, argName)
+                plume.tokenHandlers[child.kind] (child, builder, argName, false, true)
             end
             if argTableExt then
                 if argTableExt.returnType == "TEXT" then
-                    plume.tokenHandlers.LIST_ITEM (argTableExt, builder, argName)
+                    plume.tokenHandlers.LIST_ITEM (argTableExt, builder, argName, false, true)
                 else
                     for _, child in ipairs(argTableExt.children) do
-                        plume.tokenHandlers[child.kind] (child, builder, argName)
+                        plume.tokenHandlers[child.kind] (child, builder, argName, false, true)
                     end
                 end
             end
