@@ -363,7 +363,7 @@ $t.foo()
 barbaz
 /// End
 
-/// Test "Fix key order"
+/// Test "Fixed key order"
 t =
     foo: foo
     bar: bar
