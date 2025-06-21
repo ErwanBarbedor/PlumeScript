@@ -18,10 +18,6 @@ If not, see <https://www.gnu.org/licenses/>.
 return function(plume)
     local buffer = require("string.buffer")
     
-    local function items(t)
-        return plume.std.plume.items(nil, {t})
-    end
-    
     local function raiseWrongParameterName(name, t)
         local message = "Unknow named parameter '" .. name .. "'."
         local suggestions = plume.searchWord(name, t)
@@ -100,7 +96,7 @@ return function(plume)
             error("Cannot expand a '" .. type(source) .. "' variable.", 2)
         end
         
-        for k, v in items(source) do
+        for k, v in plume.items(source) do
             dest[k] = v
         end
     end
@@ -167,9 +163,9 @@ return function(plume)
         end
 
         -- Check for surplus named arguments if vararg is not used
-        local excessNamed = {}
+        local excessNamed = plume.table()
         -- Iterate through remaining entries in argsTable
-        for name, value in pairs(argsTable) do
+        for name, value in plume.items(argsTable) do
             -- Check if the key is not a number (indicating a named argument)
             if type(name) ~= "number" then
                 if varargNamed then

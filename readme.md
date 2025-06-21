@@ -63,6 +63,9 @@ According some quick benchmark simulating standard use-cases, transpiled code ex
 ## Changelog
 ### 0.43 (last version)
 
+### Changes
+- Named arguments passed to macro are now stored in a `Plume table` instead of a `Lua table`.
+
 ### Enhancement
 - New error message if trying to concat a function or userdata.
 - Better error message when trying to concat a table without metatable.

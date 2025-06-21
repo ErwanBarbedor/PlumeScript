@@ -566,7 +566,7 @@ return function(plume)
             end
         
             -- init args table
-            builder:write(node, "local " .. argName .. " = {}")
+            builder:write(node, "local " .. argName .. " = __plume_table()")
             
             -- add args
             for _, child in ipairs(argTable.children) do
