@@ -66,6 +66,7 @@ According some quick benchmark simulating standard use-cases, transpiled code ex
 ### Changes
 - Named arguments passed to macro are now stored in a `Plume table` instead of a `Lua table`.
 - Can use variable value inside variable declaration (`ex: k = Foo $k`).
+- Cannot anymore use `nil`, `false` or `true` as variables names.
 
 ### Enhancement
 - New error message if trying to concat a function or userdata.

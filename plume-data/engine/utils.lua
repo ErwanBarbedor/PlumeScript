@@ -31,7 +31,7 @@ return function (plume)
 
     --- Check if a given token contains a valid lua name
     function plume.checkVariableName(source, name)
-        if plume.utils.containsWord("for while do repeat until if elseif else then function macro in end void", name) then
+        if plume.utils.containsWord("for while do repeat until if elseif else then function macro in end void nil true false", name) then
             plume.invalidLuaNameError(source, name)
         end
     end
