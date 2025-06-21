@@ -389,11 +389,11 @@ return function (plume)
             -- Inline macros are defined to produce a single value.
             elseif contains("INLINE_MACRO_DEFINITION", token.kind) then
                 -- First, set the expected return type for the parent context that will contain this inline macro.
-                setReturnType(token, "VALUE")
+                setReturnType(token, "MACRO_VALUE")
                 pushContext(token, "MACRO_DEFINITION", currentIndent+1, token.content)
                 context[#context].inline = true
                 -- Then, set the return type for the INLINE_MACRO_DEFINITION node itself.
-                setReturnType(token, "VALUE")
+                setReturnType(token, "MACRO_VALUE")
 
                 pushContext(token, "MACRO_ARG_TABLE", currentIndent+1)
                 pushMacroArgument()

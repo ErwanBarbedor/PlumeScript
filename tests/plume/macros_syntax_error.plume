@@ -71,3 +71,14 @@ File <string_1>, line n°2:
     $foo(x: foo, :x)
     ^^^^^
 /// End
+
+/// Test "MixedBlockError"
+macro()
+  bar
+foo
+/// Error
+mixedBlockError: Given the previous expressions in this block, it was expected to be of type MACRO_VALUE, but a TEXT expression has been supplied.
+File <string_1>, line n°3:
+    foo
+    ^^^
+/// End

@@ -305,6 +305,16 @@ $t.foo(body: baz)
 baz
 /// End
 
+/// Test "Return macro"
+macro getMacro()
+    macro()
+        bar
+local foo = $getMacro()
+$foo()
+/// Result
+bar
+/// End
+
 /// Test "Method wrong argument number 1"
 macro foo()
 $foo(x)

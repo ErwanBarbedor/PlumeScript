@@ -63,4 +63,7 @@ According some quick benchmark simulating standard use-cases, transpiled code ex
 ## Changelog
 ### 0.43 (last version)
 
+### Bugfix
+- Fix anonymous macro returning behavior.
+
 [Older versions](doc/changelog.md)
