@@ -68,7 +68,7 @@ return function(plume)
         if t == "nil" then
             return ""
         elseif t == "table" then
-            if type(getmetatable(x).__tostring) == "function" then
+            if getmetatable(x) and type(getmetatable(x).__tostring) == "function" then
                 return tostring(x)
             else
                 error("Cannot convert table to string implicitly.", 2)

@@ -65,6 +65,7 @@ According some quick benchmark simulating standard use-cases, transpiled code ex
 
 ### Enhancement
 - New error message if trying to concat a function or userdata.
+- Better error message when trying to concat a table without metatable.
 
 ### Bugfix
 - Fix anonymous macro returning behavior.
