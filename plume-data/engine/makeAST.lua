@@ -164,7 +164,7 @@ return function (plume)
                     end
                     
                     -- Single value keep own type without text conversion
-                    if #lastContext.children == 1 and lastContext.returnType == "TEXT" and contains("ASSIGNMENT LIST_ITEM HASH_ITEM", lastContext.kind) then
+                    if #lastContext.children == 1 and lastContext.returnType == "TEXT" and contains("ASSIGNMENT LIST_ITEM HASH_ITEM MACRO_EXTENDED_ARG_TABLE", lastContext.kind) then
                         lastContext.returnType = "VALUE"
                     end
                     
