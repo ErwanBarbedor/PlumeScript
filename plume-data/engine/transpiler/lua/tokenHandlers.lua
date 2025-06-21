@@ -355,9 +355,6 @@ return function(plume)
             else
                 if node.islocal then
                     builder:write(node, "local " .. node.content)
-                else
-                    -- For behavior to be consistent with the local variant
-                   builder:write(node, targetVariable .. " = nil")
                 end
 
                 plume.transpileBlock(node, builder, node.children, node.returnType,

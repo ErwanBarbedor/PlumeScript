@@ -23,3 +23,11 @@ $(math.cos(0))
 /// Result
 1
 /// End
+
+/// Test "Eval inside declaration"
+k = Foo
+k = $k \(bar)
+$k
+/// Result
+Foo (bar)
+/// End
