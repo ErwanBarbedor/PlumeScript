@@ -146,3 +146,13 @@ foo
 /// Result
 foo
 /// End
+
+/// Test "Wrong concat type"
+macro foo()
+$foo
+/// Error
+Error: Cannot convert function to string implicitly.
+File <string_1>, line n°2:
+    $foo
+    ^^^^
+/// End

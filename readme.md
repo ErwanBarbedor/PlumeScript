@@ -63,6 +63,9 @@ According some quick benchmark simulating standard use-cases, transpiled code ex
 ## Changelog
 ### 0.43 (last version)
 
+### Enhancement
+- New error message if trying to concat a function or userdata.
+
 ### Bugfix
 - Fix anonymous macro returning behavior.
 

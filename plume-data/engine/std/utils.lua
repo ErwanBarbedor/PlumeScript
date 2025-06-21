@@ -73,6 +73,8 @@ return function(plume)
             else
                 error("Cannot convert table to string implicitly.", 2)
             end
+        elseif t ~= "string" and t ~= "number" then
+            error("Cannot convert " .. t .. " to string implicitly.", 2)
         else
             return x
         end
