@@ -198,9 +198,18 @@ return function(plume)
             local i = 0
             return function ()
                 i = i+1
-                local key = mt.__plume_keys[i]
-                if key then
-                    return key, t[key]
+                while true do
+                    local key = mt.__plume_keys[i]
+                    if not key then
+                        return
+                    end
+                    
+                    if t[key] then
+                        return key, t[key]
+                    else -- remove key if value is nil
+                        table.remove(mt.__plume_keys, i)
+                    end
+                    
                 end
             end
         else

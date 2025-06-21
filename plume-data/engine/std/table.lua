@@ -16,29 +16,24 @@ If not, see <https://www.gnu.org/licenses/>.
 -- functions and variables exposed directly to users (in Plume)
 
 return function(plume)
-    plume.table = function (t)
+    plume.table = function (initialTable)
         local keys = {}
-        t = t or {}
+        local plumeTable = {}
         
-        local n = 0
-        return setmetatable({}, {
+        setmetatable(plumeTable, {
             __newindex = function (self, k, v)
-                rawset(t, k, v)
+                rawset(plumeTable, k, v)
                 if type(k) ~= "number" or math.floor(k) ~= k then
-                    if v == nil then-- remove key
-                        for i, key in ipairs(keys) do
-                            if key == k then
-                                table.remove(keys, i)
-                                return
-                            end
-                        end
-                    else
-                        table.insert(keys, k)
-                    end
+                    table.insert(keys, k)
                 end
             end,
-            __index = t,
             __plume_keys = keys
         })
+        
+        for _, x in ipairs(initialTable or {}) do
+            table.insert(plumeTable, x)
+        end
+        
+        return plumeTable
     end
 end

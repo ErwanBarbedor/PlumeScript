@@ -74,4 +74,7 @@ According some quick benchmark simulating standard use-cases, transpiled code ex
 - Fix anonymous macro returning behavior.
 - Fix an error occuring when using decimal key in tables.
 
+### Internal change
+- `Plume table` have now exactly the same behavior as a `Lua table`.
+
 [Older versions](doc/changelog.md)
