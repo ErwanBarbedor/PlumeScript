@@ -362,3 +362,17 @@ $t.foo()
 /// Result
 barbaz
 /// End
+
+/// Test "Fix key order"
+t =
+    foo: foo
+    bar: bar
+    baz: baz
+for k, v in items(t)
+    $k\: $v\n
+/// Result
+foo: foo
+bar: bar
+baz: baz
+
+/// End
