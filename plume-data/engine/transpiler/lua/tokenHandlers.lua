@@ -578,7 +578,7 @@ return function(plume)
                 plume.tokenHandlers[child.kind] (child, builder, argName, false, true)
             end
             if argTableExt then
-                if argTableExt.returnType == "TEXT" then
+                if argTableExt.returnType == "TEXT" or argTableExt.returnType == "VALUE" then
                     plume.tokenHandlers.LIST_ITEM (argTableExt, builder, argName, false, true)
                 else
                     for _, child in ipairs(argTableExt.children) do
