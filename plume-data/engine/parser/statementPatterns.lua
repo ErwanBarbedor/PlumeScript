@@ -20,9 +20,9 @@ If not, see <https://www.gnu.org/licenses/>.
 
 return {
     {
-        name = "LOCAL_MACRO_DEFINITION",
+        name = "MACRO_DEFINITION",--local
         pattern = {
-            {kind = "TEXT",  content = "local"},
+            {kind = "TEXT",  content = "local", name="isLocal"},
             {kind = "SPACE", multipleCapture = true},
             {kind = "TEXT",  content = "macro"},
             {kind = "SPACE", multipleCapture = true},

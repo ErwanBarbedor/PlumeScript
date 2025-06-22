@@ -18,7 +18,7 @@ If not, see <https://www.gnu.org/licenses/>.
 
 return {
     {
-        name = "INLINE_MACRO_DEFINITION",
+        name = "MACRO_DEFINITION",
         pattern = {
             {kind = "TEXT",  content = "macro"},
             {kind = "SPACE", multipleCapture = true, optional=true},

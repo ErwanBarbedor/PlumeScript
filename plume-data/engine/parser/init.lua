@@ -27,6 +27,7 @@ return function(plume)
     local statementPatternList      = require ("engine/parser/statementPatterns")
     local finalStatementPatternList = require ("engine/parser/finalStatementPatterns")
     local expressionPatternList     = require ("engine/parser/expressionPatterns")
+    local macroArgumentPatternList  = require ("engine/parser/macroArgumentPatterns")
 
     --- Transforms a stream of lexical tokens into structured semantic elements
     ---@param tokens table[] Sequence of input tokens from lexical analysis
@@ -414,14 +415,23 @@ return function(plume)
                     mode = FINAL_STATEMENT_MODE
                 end
             end,
-            LOCAL_MACRO_DEFINITION = function(match)
-                handleMacroDef(match, true)
-            end,
             MACRO_DEFINITION = function(match)
-                handleMacroDef(match)
-            end,
-            INLINE_MACRO_DEFINITION = function(match)
-                handleMacroDef(match)
+                if match.macroName and match.macroName.content then
+                    -- Push a MACRO_DEFINITION token for named macros.
+                    pushToken {
+                        kind = "MACRO_DEFINITION",
+                        content = match.macroName.content,
+                        isLocal = match.isLocal and true
+                    }  
+                else
+                    -- Push an INLINE_MACRO_DEFINITION token for anonymous macros.
+                    pushToken {
+                        kind = "INLINE_MACRO_DEFINITION",
+                        content = ""
+                    }  
+                end
+
+                mode = EXPRESSION_MODE
             end,
             RETURN = function(match)
                 local line = {}
