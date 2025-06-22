@@ -103,37 +103,37 @@ return function(plume)
         local validators     = {}
         local varargPos, varargNamed
 
-        for i, children in ipairs(parameters.children) do
-            if children.kind == "LIST_ITEM" then -- Positional parameter.
-                local name      = children.children[1].name
-                local validator = children.children[1].validator
+        for i, child in ipairs(parameters.children) do
+            if child.kind == "LIST_ITEM" then -- Positional parameter.
+                local name      = child.children[1].name
+                local validator = child.children[1].validator
 
                 if validator then
                     table.insert(validators, {name, validator, '#' .. i})
                 end
 
                 if name == "self" then
-                    plume.cannotUseSelfError(children.children[1].sourceToken.source)
+                    plume.cannotUseSelfError(child.children[1].sourceToken.source)
                 end
 
-                if children.children[1].kind == "VARARG_POSITIONAL" then
+                if child.children[1].kind == "VARARG_POSITIONAL" then
                     varargPos = name
-                elseif children.children[1].kind == "VARARG_NAMED" then
+                elseif child.children[1].kind == "VARARG_NAMED" then
                     varargNamed = name
                 else
                     table.insert(positionalArgs, name)
                 end
-            elseif children.kind == "HASH_ITEM" then -- named parameter
-                local name      = children.children[1].name
-                local validator = children.children[1].validator
+            elseif child.kind == "HASH_ITEM" then -- named parameter
+                local name      = child.children[1].name
+                local validator = child.children[1].validator
 
                 if validator then
                     table.insert(validators, {name, validator, name})
                 end
 
-                children.name = name
+                child.name = name
 
-                table.insert(namedArgs, children)
+                table.insert(namedArgs, child)
             end
         end
         
