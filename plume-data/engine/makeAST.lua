@@ -260,8 +260,7 @@ return function (plume)
         end
 
         --- Finalizes the current macro argument being parsed.
-        --- It converts list items ("LIST_ITEM") to hash items ("HASH_ITEM") if they use `key:value` syntax.
-        --- Also handles empty arguments and pops the argument context ("LIST_ITEM" or "HASH_ITEM") itself.
+        --- Handles empty arguments and pops the argument context ("LIST_ITEM" or "HASH_ITEM") itself.
         ---@param canBeEmpty bool
         local function popMacroArgument(canBeEmpty)
             local antecurrent = context[#context-1] -- The MACRO_ARG_TABLE node.
@@ -279,45 +278,6 @@ return function (plume)
                 or canBeEmpty then
                 table.remove(context) -- Pop the empty LIST_ITEM.
                 return
-            elseif #currentArgContext.children > 0 then
-                local firstChildOfArg = currentArgContext.children[1]
-                
-                -- Ensure firstChildOfArg exists
-                local textContent = firstChildOfArg and firstChildOfArg.content 
-
-                -- Attempt to parse key:value from TEXT nodes
-                if textContent and firstChildOfArg.kind == "TEXT" then
-                    local validator, key, shorthandKey
-
-                    -- :key shortcut
-                    shorthandKey = textContent:match('^%s*:([a-zA-Z_][a-zA-Z_0-9]*)%s*$')
-
-                    -- key alone
-                    key = textContent:match('^%s*([a-zA-Z_][a-zA-Z_0-9]*)%s*:')
-
-                    -- key with validator
-                    if not key then
-                        key = textContent:match('^%s*([a-zA-Z_][a-zA-Z_0-9]*%s+[a-zA-Z_][a-zA-Z_0-9]*)%s*:')
-                    end
-
-                    if shorthandKey then
-                        currentArgContext.kind = "HASH_ITEM"
-                        currentArgContext.content = shorthandKey
-                        currentArgContext.children = {{kind="VARIABLE", isShorthandKey=true, content="true", sourceToken={}}}
-                    elseif key then
-                        currentArgContext.kind = "HASH_ITEM"
-                        currentArgContext.content = key
-
-                        -- Remove the `key:` part from the first child's content.
-                        currentArgContext.children[1].content = textContent:gsub("^.-:%s*", "", 1)
-
-                        if #currentArgContext.children[1].content == 0
-                           and #currentArgContext.children > 1 then
-                            -- Remove child if it becomes empty.
-                            table.remove(currentArgContext.children, 1) 
-                        end
-                    end
-                end
             end
 
             popContext(-1, 1, false) -- Pop the current argument context (LIST_ITEM/HASH_ITEM).
@@ -537,7 +497,48 @@ return function (plume)
             elseif token.kind == "HASH_ITEM" then
                 setReturnType(token, "TABLE") -- Parent context is expected to be a table.
                 pushContext(token, "HASH_ITEM", currentIndent+1, token.content) -- `content` has the key.
-
+               
+            -- Named arguments in macro call 
+            elseif token.kind == "MACRO_CALL_KEY" then
+                local isNamedParameter = isInside("MACRO_ARG_TABLE")
+                
+                if isNamedParameter then
+                    -- `foo:` is considered as key only after `(` or `,`
+                    if #current.children > 0 then
+                        isNamedParameter = false
+                    end
+                end
+                
+                if isNamedParameter then
+                    current.kind = "HASH_ITEM"
+                    current.content = token.content
+                else
+                    pushChild(token, "TEXT", token.content.. ':')
+                end
+            elseif token.kind == "MACRO_CALL_KEY_SHORT" then
+                local isNamedParameter = isInside("MACRO_ARG_TABLE")
+                
+                if isNamedParameter then
+                    -- `foo:` is considered as key only after `(` or `,`
+                    if #current.children > 0 then
+                        isNamedParameter = false
+                    end
+                end
+                
+                if isNamedParameter then
+                    current.kind = "HASH_ITEM"
+                    current.content = token.content
+                    -- `:foo` is a shortcut for `foo: $true` in macro call, 
+                    -- but `foo: $false` in macro def
+                    if isInside("MACRO_DEFINITION", 3) then
+                        pushChild(token, "VARIABLE", "false")
+                    else
+                        pushChild(token, "VARIABLE", "true")
+                    end
+                else
+                    pushChild(token, "TEXT", token.content.. ':')
+                end
+                
             -- Line ending processing.
             elseif token.kind == "ENDLINE" then
                 -- Reset parenthesis counter for the new line.

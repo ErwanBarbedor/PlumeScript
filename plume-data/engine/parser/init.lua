@@ -27,7 +27,6 @@ return function(plume)
     local statementPatternList      = require ("engine/parser/statementPatterns")
     local finalStatementPatternList = require ("engine/parser/finalStatementPatterns")
     local expressionPatternList     = require ("engine/parser/expressionPatterns")
-    local macroArgumentPatternList  = require ("engine/parser/macroArgumentPatterns")
 
     --- Transforms a stream of lexical tokens into structured semantic elements
     ---@param tokens table[] Sequence of input tokens from lexical analysis
@@ -608,6 +607,18 @@ return function(plume)
                 pushToken {
                     kind    = "COMMA",
                     content = match.token.content
+                }
+            end,
+            MACRO_CALL_KEY = function(match)
+                pushToken {
+                    kind    = "MACRO_CALL_KEY",
+                    content = match.keyValue.content
+                }
+            end,
+            MACRO_CALL_KEY_SHORT = function(match)
+                pushToken {
+                    kind    = "MACRO_CALL_KEY_SHORT",
+                    content = match.keyValue.content
                 }
             end,
             EXPAND_LIST = function(match)

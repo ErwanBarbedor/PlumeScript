@@ -66,4 +66,7 @@ According some quick benchmark simulating standard use-cases, transpiled code ex
 #### Bugfix
 - Fix a bug around validate parameter and variables names.
 
+#### Internal change
+- Remove any parsing of the ast code *In a dirty way, AST was doing treatments on the reassembled raw string*.
+
 [Older versions](doc/changelog.md)

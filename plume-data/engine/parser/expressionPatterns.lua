@@ -21,6 +21,20 @@ If not, see <https://www.gnu.org/licenses/>.
 
 return {
     {
+        name = "MACRO_CALL_KEY",
+        pattern = {
+            {kind = "TEXT",  name = "keyValue"},
+            {kind = "COLON", name = "token"}
+        }
+    },
+    {
+        name = "MACRO_CALL_KEY_SHORT",
+        pattern = {
+            {kind = "COLON", name = "token"},
+            {kind = "TEXT",  name = "keyValue"}
+        }
+    },
+    {
         name = "ENDLINE",
         pattern = {
             {kind = "SPACE", multipleCapture = true, optional=true},
