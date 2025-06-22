@@ -1,3 +1,22 @@
+### 0.43
+### Changes
+- Named arguments passed to macro are now stored in a `Plume table` instead of a `Lua table`.
+- Can use variable value inside variable declaration (`ex: k = Foo $k`).
+- Cannot anymore use `nil`, `false` or `true` as variables names.
+
+### Enhancement
+- New error message if trying to concat a function or userdata.
+- Better error message when trying to concat a table without metatable.
+
+### Bugfix
+- Fix anonymous macro returning behavior.
+- Fix an error occuring when using decimal key in tables.
+- Can use `nil` parameter in macro call without error about a wrong number of parameters.
+- Fix an error in iterator parsing.
+
+### Internal change
+- `Plume table` have now exactly the same behavior as a `Lua table`.
+
 ### 0.42
 #### Changes
 - New builtin function `table`. _Used to declare empty tables, declaring inline tables or merge tables._

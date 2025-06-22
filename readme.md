@@ -1,6 +1,6 @@
 <p align="center"><img src="plume_logo.svg" width="600" height="300"></p>
 
-![Version](https://img.shields.io/badge/version-0.43-blue.svg) [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
+![Version](https://img.shields.io/badge/version-0.44-blue.svg) [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 
 
 ## Plume🪶 - An Expressive Templating Language
@@ -61,24 +61,6 @@ On my 12600k, transpilation of a 100ko file takes less than 200ms, up to 2s for 
 According some quick benchmark simulating standard use-cases, transpiled code executes at between 80% and 100% of Lua's performance. So with LuaJIT, this makes it possible to include relatively costly calculations in templates.
 
 ## Changelog
-### 0.43 (last version)
-
-### Changes
-- Named arguments passed to macro are now stored in a `Plume table` instead of a `Lua table`.
-- Can use variable value inside variable declaration (`ex: k = Foo $k`).
-- Cannot anymore use `nil`, `false` or `true` as variables names.
-
-### Enhancement
-- New error message if trying to concat a function or userdata.
-- Better error message when trying to concat a table without metatable.
-
-### Bugfix
-- Fix anonymous macro returning behavior.
-- Fix an error occuring when using decimal key in tables.
-- Can use `nil` parameter in macro call without error about a wrong number of parameters.
-- Fix an error in iterator parsing.
-
-### Internal change
-- `Plume table` have now exactly the same behavior as a `Lua table`.
+### 0.44 (last version)
 
 [Older versions](doc/changelog.md)
