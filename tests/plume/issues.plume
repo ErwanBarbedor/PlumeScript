@@ -53,3 +53,12 @@ macro foo(**kw)
 /// Result
 nil
 /// End
+
+/// Test "Issue 6"
+macro div(x)
+$div()
+  for i=1, 2
+    $div(x)
+/// Result
+
+/// End
