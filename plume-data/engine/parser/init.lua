@@ -342,7 +342,7 @@ return function(plume)
                     plume.error(match.variable.source, "Syntax forbiden") -- todo: better error message
                 end
 
-                plume.checkVariableName(match.variable.source, match.variable.content)
+                plume.checkParameterName(match.variable.source, match.variable.content)
                 local tokenInfos = {
                     kind = "LOCAL_ASSIGNMENT",
                     content = match.variable.content,
@@ -374,7 +374,7 @@ return function(plume)
 
                 -- If not variable, use variableExpression field
                 if variable then
-                    plume.checkVariableName(match.variable.source, variable)
+                    plume.checkParameterName(match.variable.source, variable)
                 else
                     local t = {}
                     for _, token in ipairs(match.variableExpression) do

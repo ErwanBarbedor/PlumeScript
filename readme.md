@@ -63,4 +63,7 @@ According some quick benchmark simulating standard use-cases, transpiled code ex
 ## Changelog
 ### 0.44 (last version)
 
+#### Bugfix
+- Fix a bug around validate parameter and variables names.
+
 [Older versions](doc/changelog.md)
