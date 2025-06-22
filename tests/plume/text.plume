@@ -147,6 +147,15 @@ foo
 foo
 /// End
 
+/// Test "Escape in macro call"
+macro foo(x)
+    $x
+$foo(x\:)
+/// Result
+x:
+/// End
+
+
 /// Test "Wrong concat type"
 macro foo()
 $foo
