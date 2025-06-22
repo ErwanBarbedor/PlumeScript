@@ -23,15 +23,30 @@ return {
     {
         name = "MACRO_CALL_KEY",
         pattern = {
+            {kind = "SPACE", multipleCapture = true, optional=true, name="spaceBefore"},
             {kind = "TEXT",  name = "keyValue"},
-            {kind = "COLON", name = "token"}
+            {kind = "COLON", name = "token"},
+            {kind = "SPACE", multipleCapture = true, optional=true, name="spaceAfter"},
+        }
+    },
+    {
+        name = "MACRO_CALL_KEY",
+        pattern = {
+            {kind = "SPACE", multipleCapture = true, optional=true, name="spaceBefore"},
+            {kind = "TEXT",  name = "validator"},
+            {kind = "SPACE"},
+            {kind = "TEXT",  name = "keyValue"},
+            {kind = "COLON", name = "token"},
+            {kind = "SPACE", multipleCapture = true, optional=true, name="spaceAfter"},
         }
     },
     {
         name = "MACRO_CALL_KEY_SHORT",
         pattern = {
+            {kind = "SPACE", multipleCapture = true, optional=true, name="spaceBefore"},
             {kind = "COLON", name = "token"},
-            {kind = "TEXT",  name = "keyValue"}
+            {kind = "TEXT",  name = "keyValue"},
+            {kind = "SPACE", multipleCapture = true, optional=true, name="spaceAfter"},
         }
     },
     {
@@ -137,4 +152,16 @@ return {
         {kind = "OPERATOR", content = "*"},
         {kind = "TEXT", name = "variable"}
     }},
+    {
+        name = "SPACE",
+        pattern = {
+            {kind = "SPACE",  name = "content"},
+        }
+    },
+    {
+        name = "WORD",
+        pattern = {
+            {kind = "TEXT",  name = "content"},
+        }
+    },
 }

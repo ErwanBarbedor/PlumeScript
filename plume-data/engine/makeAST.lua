@@ -62,7 +62,7 @@ return function (plume)
             local last = current.children[#current.children]
 
             -- Merge adjacent text nodes to reduce AST size and simplify processing later.
-            if kind == "TEXT" and last and last.kind == "TEXT" then
+            if false and kind == "TEXT" and last and last.kind == "TEXT" then
                 last.content = last.content .. content
             else
                 table.insert(current.children, {
@@ -187,62 +187,55 @@ return function (plume)
             local current = context[#context] -- Should be MACRO_ARG_TABLE node.
 
             for i, arg in ipairs(current.children) do
-                local token = arg.children[1] -- The first child usually holds the parameter name or value.
-                local content
-
-                if not token then
+                if #arg.children == 0 then
                     -- This can happen if a comma is followed by a parenthesis, e.g., `macro(arg1,)`
                     plume.unexpectedTokenError(current.sourceToken.source, "parameter name after \",\"", ")")
                 end
 
                 -- Each 'arg' is expected to be a LIST_ITEM or HASH_ITEM representing a parameter.
-                if arg.kind == "LIST_ITEM" then
-                    content = token.content
-                elseif arg.kind == "HASH_ITEM" then
-                    content = arg.content -- For HASH_ITEM, the key is stored in arg.content itself.
-                    -- :option is a syntax sugar for option: $true in macro call,
-                    -- but option: $false in macro definition
-                    if arg.children[1].isShorthandKey then
-                        arg.children[1].content = "false"
+                    
+                if arg.kind == "HASH_ITEM" then
+                    arg.children[1].validator = arg.validator
+                    arg.children[1].name = arg.content
+                    plume.checkParameterName(arg.children[1].sourceToken.source, arg.content)
+                elseif arg.kind == "LIST_ITEM" then
+                    -- Remove spaces
+                    local i = 1
+                    while i<=#arg.children do
+                        if arg.children[i].kind == "SPACE" then
+                            table.remove(arg.children, i)
+                        else
+                            i = i + 1
+                        end
+                        
                     end
-                end
-
-                -- Regex to extract the parameter name and check for stray characters around it.
-                local name, validator
-
-                for word in content:gmatch("%S+") do
-                    if not word:match('^[a-zA-Z_][a-zA-Z_0-9]*$') then
-                        plume.unexpectedTokenError(token.sourceToken.source, "parameter name", word)
-                    end
-
-                    if not name then
-                        name = word
-                    elseif not validator then
-                        validator = name
-                        name = word
+                    
+                    local name, validator
+                    if #arg.children == 1 then
+                        name = arg.children[1]
+                    elseif #arg.children == 2 then
+                        validator = arg.children[1]
+                        name      = arg.children[2]
                     else
-                        plume.unexpectedTokenError(token.sourceToken.source, "a comma or closing parenthesis", word)
+                        plume.unexpectedTokenError(arg.children[3].sourceToken.source, "a comma or closing parenthesis", arg.children[3].content)
+                    end
+                    
+                    if validator and validator.kind ~= "WORD" then
+                        plume.unexpectedTokenError(validator.sourceToken.source, "validator name", validator.content)
+                    end
+                    if not contains("VARARG_POSITIONAL VARARG_NAMED WORD", name.kind) then
+                        plume.unexpectedTokenError(name.sourceToken.source, "parameter name", name.content)
+                    end
+                    
+                    name.name = name.content
+                    plume.checkParameterName(name.sourceToken.source, name.content)
+                    
+                    -- name must be the only child
+                    if validator then
+                        name.validator = validator.content
+                        table.remove(arg.children, 1)
                     end
                 end
-
-                if not name then
-                    plume.unexpectedTokenError(token.sourceToken.source, "parameter name", content)
-                end
-
-                -- If there are more children in a LIST_ITEM,
-                -- it means there was content after the name that wasn't captured by the regex,
-                -- potentially due to spacing issues not handled by %S.
-                if (#arg.children > 1 and arg.kind == "LIST_ITEM") then
-                    plume.unexpectedTokenError(token.sourceToken.source, "parameter name", arg.children[2].content)
-                end
-
-                plume.checkParameterName(token.sourceToken.source, name)
-                if validator then
-                    plume.checkParameterName(token.sourceToken.source, validator)
-                end
-
-                token.name = name
-                token.validator = validator
             end
         end
 
@@ -322,6 +315,18 @@ return function (plume)
         local function lastParenthesisDepth()
             return parenthesisDepth[#parenthesisDepth]
         end
+        
+        local function finalize(tokens)
+            for _, child in ipairs(tokens.children) do
+                if child.kind == "WORD" or child.kind == "SPACE" then
+                    child.kind = "TEXT"
+                end
+                
+                if child.children then
+                    finalize(child)
+                end
+            end
+        end
 
         -- Initialize with a root "BLOCK" node. All top-level elements will be children of this node.
         pushContext(nil, "BLOCK", -1) -- -1 indent ensures it's never popped by indentation rules.
@@ -334,9 +339,11 @@ return function (plume)
             local current = context[#context] -- The current active AST node/context.
 
             -- Handle content nodes (TEXT, VARIABLE, LUA_EXPRESSION).
-            if contains("TEXT VARIABLE LUA_EXPRESSION", token.kind) then
+            if contains("TEXT VARIABLE LUA_EXPRESSION WORD SPACE", token.kind) then
+                local kind = token.kind
+                
                 setReturnType(token, "TEXT", context) -- These tokens produce text content.
-                pushChild(token, token.kind, token.content)
+                pushChild(token, kind, token.content)
 
             elseif contains("MACRO_DEFINITION", token.kind) then
                 -- A macro definition itself doesn't have a "return type" in the same way a call does;
@@ -512,8 +519,9 @@ return function (plume)
                 if isNamedParameter then
                     current.kind = "HASH_ITEM"
                     current.content = token.content
+                    current.validator = token.validator
                 else
-                    pushChild(token, "TEXT", token.content.. ':')
+                    pushChild(token, "TEXT", token.raw)
                 end
             elseif token.kind == "MACRO_CALL_KEY_SHORT" then
                 local isNamedParameter = isInside("MACRO_ARG_TABLE")
@@ -536,7 +544,7 @@ return function (plume)
                         pushChild(token, "VARIABLE", "true")
                     end
                 else
-                    pushChild(token, "TEXT", token.content.. ':')
+                    pushChild(token, "TEXT", token.raw)
                 end
                 
             -- Line ending processing.
@@ -579,7 +587,10 @@ return function (plume)
 
         -- Finalize by popping any remaining contexts, typically up to the root "BLOCK".
         popContext(-1, nil, true) -- -1 indent ensures all user-level contexts are popped.
-
+        
+        -- Replace all WORD and SPACE token by TEXT one's
+       finalize(context[1])
+        
         return context[1] -- Return the root AST node.
     end
 end

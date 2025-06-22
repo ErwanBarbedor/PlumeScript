@@ -610,15 +610,36 @@ return function(plume)
                 }
             end,
             MACRO_CALL_KEY = function(match)
+                local raw = {}
+                for _, item in ipairs(match.spaceBefore) do
+                    table.insert(raw, item.content)
+                end
+                table.insert(raw, match.keyValue.content)
+                table.insert(raw, ":")
+                for _, item in ipairs(match.spaceAfter) do
+                    table.insert(raw, item.content)
+                end
                 pushToken {
                     kind    = "MACRO_CALL_KEY",
-                    content = match.keyValue.content
+                    content = match.keyValue.content,
+                    raw = table.concat(raw),
+                    validator = match.validator and match.validator.content
                 }
             end,
             MACRO_CALL_KEY_SHORT = function(match)
+                local raw = {}
+                for _, item in ipairs(match.spaceBefore) do
+                    table.insert(raw, item.content)
+                end
+                table.insert(raw, ":")
+                table.insert(raw, match.keyValue.content)
+                for _, item in ipairs(match.spaceAfter) do
+                    table.insert(raw, item.content)
+                end
                 pushToken {
                     kind    = "MACRO_CALL_KEY_SHORT",
-                    content = match.keyValue.content
+                    content = match.keyValue.content,
+                    raw = table.concat(raw)
                 }
             end,
             EXPAND_LIST = function(match)
@@ -641,6 +662,18 @@ return function(plume)
             COMMAND_EXPAND_HASH = function(match)
                 handleCommandExpand(match, "HASH")
             end,
+            WORD = function(match)
+                 pushToken {
+                    kind    = "WORD",
+                    content = match.content.content
+                }
+            end,
+            SPACE = function(match)
+                 pushToken {
+                    kind    = "SPACE",
+                    content = match.content.content
+                }
+            end
         }
 
         local function testAllPatterns(patternList)

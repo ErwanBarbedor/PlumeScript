@@ -4,7 +4,7 @@ macro foo(x y z)
 Syntax error: expected a comma or closing parenthesis, not "z".
 File <string_1>, line n°1:
     macro foo(x y z)
-              ^^^^^
+                  ^
 /// End
 
 /// Test "Expecting a name 1"
@@ -28,10 +28,10 @@ File <string_1>, line n°1:
 /// Test "Expecting a name 3"
 macro foo(x, !x)
 /// Error
-Syntax error: expected parameter name, not "!x".
+Syntax error: expected validator name, not "!".
 File <string_1>, line n°1:
     macro foo(x, !x)
-                 ^^
+                 ^
 /// End
 
 /// Test "Expecting a name 4"

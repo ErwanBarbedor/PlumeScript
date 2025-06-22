@@ -60,7 +60,7 @@ local tokenPatterns = {
     {name = "ESCAPE", pattern = "\\[-:=;,%(%)/snt]"},    -- Escaped character (any following character)
     {name = "ESCAPE_ALONE", pattern = "\\"},    -- Escaped character (any following character)
     -- Alphanumeric identifier
-    {name = "TEXT",  pattern = "[a-zA-Z_][a-zA-Z0-9%_%.:]*[a-zA-Z0-9%_]"},
+    {name = "TEXT",  pattern = "[a-zA-Z_][a-zA-Z0-9%_%.]*[a-zA-Z0-9%_]"},
     {name = "TEXT",  pattern = "[a-zA-Z_][a-zA-Z0-9%_]*"},
     {name = "FIELD_ACCESS",  pattern = "%.[a-zA-Z_][a-zA-Z0-9%_]*"},
     {name = "SYMBOL", pattern = "."}       -- Catch-all for unmatched single characters
