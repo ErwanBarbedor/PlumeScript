@@ -227,7 +227,11 @@ return function (plume)
                         plume.unexpectedTokenError(validator.sourceToken.source, "validator name", validator.content)
                     end
                     if not contains("VARARG_POSITIONAL VARARG_NAMED WORD", name.kind) then
-                        plume.unexpectedTokenError(name.sourceToken.source, "parameter name", name.content)
+                        if name.content:match('^%s:') then
+                            plume.unexpectedTokenError(validator.sourceToken.source, "nothing", validator.content, "cannot use validator with flag")
+                        else
+                            plume.unexpectedTokenError(name.sourceToken.source, "parameter name", name.content)
+                        end
                     end
                     
                     name.name = name.content

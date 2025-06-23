@@ -18,10 +18,16 @@ return function (plume)
     --- @param source table Source metadata, as expected by `getSourceLine`.
     --- @param expected string A description of the expected token or syntax element.
     --- @param given string The actual token value or type that was encountered.
-    function plume.unexpectedTokenError (source, expected, given)
+    function plume.unexpectedTokenError (source, expected, given, infos)
+        if infos then
+            infos = " (" .. infos .. ")"
+        else
+            infos = ""
+        end
+        
         plume.sourcedError(source, string.format(
-            "Syntax error: expected %s, not \"%s\".",
-            expected, given
+            "Syntax error: expected %s, not \"%s\"%s.",
+            expected, given, infos
         ))
     end
 

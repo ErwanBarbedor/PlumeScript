@@ -52,6 +52,15 @@ File <string_1>, line n°1:
     ^^^^^^^^^^
 /// End
 
+/// Test "Expecting a name 6"
+macro foo(bool :x)
+/// Error
+Syntax error: expected nothing, not "bool" (cannot use validator with flag).
+File <string_1>, line n°1:
+    macro foo(bool :x)
+              ^^^^
+/// End
+
 /// Test "Twice argument 1"
 macro foo(x: bar)
 $foo(x: foo, x: baz)

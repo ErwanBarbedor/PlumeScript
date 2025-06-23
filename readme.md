@@ -68,6 +68,7 @@ According some quick benchmark simulating standard use-cases, transpiled code ex
 
 #### Enhancement
 - More precise error location in the case of syntax errors in a macro.
+- Better error message when the user try to use validator on flag.
 
 #### Internal change
 - Remove any parsing of the ast code *In a dirty way, AST was doing treatments on the reassembled raw string*.
