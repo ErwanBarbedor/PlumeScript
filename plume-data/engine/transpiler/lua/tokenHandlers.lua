@@ -107,10 +107,9 @@ return function(plume)
             if child.kind == "LIST_ITEM" then -- Positional parameter.
                 local name      = child.children[1].name
                 local validator = child.children[1].validator
-
-                if validator then
-                    table.insert(validators, {name, validator, '#' .. i})
-                end
+                
+                local validatorVararg
+                
 
                 if name == "self" then
                     plume.cannotUseSelfError(child.children[1].sourceToken.source)
@@ -118,10 +117,16 @@ return function(plume)
 
                 if child.children[1].kind == "VARARG_POSITIONAL" then
                     varargPos = name
+                    validatorVararg = 1
                 elseif child.children[1].kind == "VARARG_NAMED" then
                     varargNamed = name
+                    validatorVararg = 2
                 else
                     table.insert(positionalArgs, name)
+                end
+                
+                if validator then
+                    table.insert(validators, {name, validator, '#' .. i, validatorVararg})
                 end
             elseif child.kind == "HASH_ITEM" then -- named parameter
                 local name      = child.children[1].name
@@ -525,10 +530,16 @@ return function(plume)
                 local name      = info[1]
                 local validator = info[2]
                 local label     = info[3]
+                local vararg    = info[4]
+                
                 local fvalidator = "__plume_validator_" .. info[2]
-            
+                
+                if not vararg then
+                    vararg = 0
+                end
+                
                 -- To enhance error reporting, should use parameters[x] instead of node
-                builder:write(node, "__plume_validate(" .. fvalidator .. ", " .. name .. ", '" .. validator .."', '"..label.."')")
+                builder:write(node, "__plume_validate(" .. fvalidator .. ", " .. name .. ", '" .. validator .."', '"..label.."', "..vararg..")")
             end
         
             plume.transpileBlock(body, builder, body.children, body.returnType,

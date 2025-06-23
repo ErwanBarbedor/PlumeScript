@@ -12,6 +12,26 @@ $foo(x: 1)
 
 /// End
 
+/// Test "Success 3"
+macro foo(number *x)
+$foo()
+    - 1
+    - 2
+    - 3
+/// Result
+
+/// End
+
+/// Test "Success 4"
+macro foo(number **x)
+$foo()
+    foo: 1
+    bar: 2
+    baz: 3
+/// Result
+
+/// End
+
 /// Test "Fail 1"
 macro foo(string x)
 $foo(1)
@@ -31,6 +51,36 @@ $foo(x: 1)
 Error: Validation 'string' failed against argument 'x'.
 File <string_1>, line n°2:
     $foo(x: 1)
+    ^^^^^
+Traceback:
+    File <string_1>, line n°1: in macro 'foo'
+/// End
+
+/// Test "Success 3"
+macro foo(number *x)
+$foo()
+    - 1
+    - $table()
+    - 3
+/// Error
+Error: Validation 'number' failed against item '#2' of argument '#1'.
+File <string_1>, line n°2:
+    $foo()
+    ^^^^^
+Traceback:
+    File <string_1>, line n°1: in macro 'foo'
+/// End
+
+/// Test "Success 4"
+macro foo(number **x)
+$foo()
+    foo: 1
+    bar: 2
+    baz: ff
+/// Error
+Error: Validation 'number' failed against item 'baz' of argument '#1'.
+File <string_1>, line n°2:
+    $foo()
     ^^^^^
 Traceback:
     File <string_1>, line n°1: in macro 'foo'

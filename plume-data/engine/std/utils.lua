@@ -109,13 +109,28 @@ return function(plume)
         end
     end
 
-    function plume.std.utils.__plume_validate(f, x, fname, name)
+    function plume.std.utils.__plume_validate(f, x, fname, name, vararg)
+        
         if not f then
             error("Unknow validator '" .. fname .. "'.", 2)
         end
-
-        if not f(x) then
-            error("Validation '"..fname.."' failed against argument '" .. name .. "'.", 4)
+        
+        if vararg == 1 then -- list of args
+            for i, xx in ipairs(x) do
+                if not f(xx) then
+                    error("Validation '"..fname.."' failed against item '#"..i.."' of argument '" .. name .. "'.", 4)
+                end
+            end
+        elseif vararg == 2 then -- table of args
+            for k, v in plume.items(x) do
+                if not f(v) then
+                    error("Validation '"..fname.."' failed against item '"..k.."' of argument '" .. name .. "'.", 4)
+                end
+            end
+        else -- single arg
+            if not f(x) then
+                error("Validation '"..fname.."' failed against argument '" .. name .. "'.", 4)
+            end
         end
     end
 

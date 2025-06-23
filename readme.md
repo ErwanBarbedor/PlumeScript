@@ -63,6 +63,9 @@ According some quick benchmark simulating standard use-cases, transpiled code ex
 ## Changelog
 ### 0.44 (last version)
 
+#### Changes
+- Can use validators on variadic parameters.
+
 #### Bugfix
 - Fix a bug around validate parameter and variables names.
 
