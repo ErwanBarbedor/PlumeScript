@@ -83,7 +83,7 @@ function plume.execute(filename, isString, env, namespace)
     local compiledFunction, errorMessage = loadstring(luaCode, "@"..filename)
     if compiledFunction then
         local executionEnv
-        if namespace then
+        if namespace and namespace ~= env.plume then
             executionEnv = setmetatable(namespace, {__index=env.plume})
         else
             executionEnv = env.plume
