@@ -324,6 +324,50 @@ $foo($nil, bar)
 Foo
 /// End
 
+/// Test "Leave 1"
+macro foo()
+    Foo
+    if 0==0
+        leave
+    Bar
+$foo()
+/// Result
+Foo
+/// End
+
+/// Test "Leave 2"
+macro foo()
+    Foo
+    if 0==1
+        leave
+    Bar
+$foo()
+/// Result
+FooBar
+/// End
+
+/// Test "Leave 3"
+macro foo()
+    - Foo
+    if 0==0
+        leave
+    - Bar
+$(#foo())
+/// Result
+1
+/// End
+
+/// Test "Leave 4"
+macro foo()
+    - Foo
+    if 0==1
+        leave
+    - Bar
+$(#foo())
+/// Result
+2
+/// End
+
 /// Test "Method wrong argument number 1"
 macro foo()
 $foo(x)

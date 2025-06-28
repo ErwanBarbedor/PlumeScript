@@ -14,7 +14,7 @@ If not, see <https://www.gnu.org/licenses/>.
 ]]
 
 return function(plume)
-    function plume.transpileBlock(node, builder, children, returnType, returnMethod, isFirstBlock)
+    function plume.transpileBlock(node, builder, children, returnType, returnMethod, isFirstBlock, endLabel)
         
         if not isFirstBlock then
             builder:open(node, "do")
@@ -39,6 +39,10 @@ return function(plume)
                     builder:write(node, "__plume_buffer_insert(" .. accName .. ", " .. value .. ")")
                 end
             end
+        end
+        
+        if endLabel then
+            builder:write(node, "::" .. endLabel .. "::")
         end
         
         if node.kind ~= "VOID" then

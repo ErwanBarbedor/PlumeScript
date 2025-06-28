@@ -64,6 +64,7 @@ According some quick benchmark simulating standard use-cases, transpiled code ex
 ### 0.45 (last version)
 #### Changes
 - New space character `\r`
+- New keyword `leave`. _Stop macro execution and return accumulated value_
 
 #### Bugfix
 - No more error when using macro call inside a void block.

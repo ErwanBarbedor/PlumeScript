@@ -448,6 +448,13 @@ return function(plume)
                     content = table.concat(line):gsub('^%s*', ''):gsub('%s*$', '')
                 }
             end,
+            LEAVE = function(match)
+                pushToken {
+                    kind = "LEAVE",
+                    content = ""
+                }
+
+            end,
             LINE_STATEMENT = function(match)
                 local line = {}
                 for _, token in ipairs(match.line) do

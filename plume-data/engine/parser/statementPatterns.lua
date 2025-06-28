@@ -67,6 +67,12 @@ return {
             }
         }
     },
+    {
+        name = "LEAVE",
+        pattern = {
+            {kind = "TEXT", content = "leave"},
+        }
+    },
     {name = "VOID",      pattern = {{kind = "TEXT", content = "void"}}},
     {name = "ELSE",      pattern = {{kind = "TEXT", content = "else"}}},
     {name = "BREAK",     pattern = {{kind = "TEXT", content = "break"}}},

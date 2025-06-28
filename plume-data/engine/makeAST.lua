@@ -586,7 +586,15 @@ return function (plume)
                     parent.continue = true
                     current.children[#current.children].loop = parent
                 end
+                
+            elseif contains("LEAVE", token.kind) then
+                local parent = isInside("MACRO_DEFINITION") or isInside("BLOCK")
+                -- BLOCK is the main parent of all tokens
 
+                pushChild(token, token.kind, "")
+
+                parent.leave = true
+                current.children[#current.children].macro = parent
             else
                 -- This indicates a token type that the parser doesn't know how to handle.
                 -- It could be a new feature or a bug in the lexer.

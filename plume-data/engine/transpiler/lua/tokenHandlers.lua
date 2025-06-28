@@ -439,6 +439,11 @@ return function(plume)
             node.loop = nil -- no need to save the reference in map
         end,
         
+        LEAVE = function(node, builder, accName)
+            builder:write(node, "goto " .. node.macro.leave)
+            node.leave = nil -- no need to save the reference in map
+        end,
+        
         BREAK = function(node, builder, accName)
             builder:write(node, "break")
         end,
@@ -545,14 +550,21 @@ return function(plume)
                 -- To enhance error reporting, should use parameters[x] instead of node
                 builder:write(node, "__plume_validate(" .. fvalidator .. ", " .. name .. ", '" .. validator .."', '"..label.."', "..vararg..")")
             end
-        
+            
+            local endLabel
+            if node.leave then
+                endLabel = builder:getUniqueLabel("macroReturn")
+                node.leave = endLabel
+            end
+            
             plume.transpileBlock(body, builder, body.children, body.returnType,
                 function(blockAccName)
                     if body.returnType ~= "VALUE" then
                         return "return " .. blockAccName
                     end
                 end,
-                true -- isFirstBlock
+                true, -- isFirstBlock
+                endLabel -- end label
             )
             builder:close(node, "end")
         end,
