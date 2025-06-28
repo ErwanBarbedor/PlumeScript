@@ -75,6 +75,7 @@ According some quick benchmark simulating standard use-cases, transpiled code ex
 
 #### Bugfix
 - No more error when using macro call inside a void block.
+- No more syntax error when using empty optional parameters.
 - `+1` is correctly considered as a string and not as a number.
 
 [Older versions](doc/changelog.md)

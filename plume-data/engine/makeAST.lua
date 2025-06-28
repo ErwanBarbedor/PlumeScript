@@ -192,17 +192,26 @@ return function (plume)
             local current = context[#context] -- Should be MACRO_ARG_TABLE node.
 
             for i, arg in ipairs(current.children) do
+                if #arg.children == 0 and arg.kind == "HASH_ITEM" then
+                    table.insert(arg.children, {
+                        kind = "TEXT",
+                        content = "",
+                        -- sourceToken = arg
+                    })                
+                end
+                
                 if #arg.children == 0 then
                     -- This can happen if a comma is followed by a parenthesis, e.g., `macro(arg1,)`
                     plume.unexpectedTokenError(current.sourceToken.source, "parameter name after \",\"", ")")
                 end
 
                 -- Each 'arg' is expected to be a LIST_ITEM or HASH_ITEM representing a parameter.
-                    
                 if arg.kind == "HASH_ITEM" then
                     arg.children[1].validator = arg.validator
                     arg.children[1].name = arg.content
-                    plume.checkParameterName(arg.children[1].sourceToken.source, arg.content)
+                    
+                    local sourceToken = arg.children[1].sourceToken or arg
+                    plume.checkParameterName(sourceToken.source, arg.content)
                 elseif arg.kind == "LIST_ITEM" then
                     -- Remove spaces
                     local i = 1

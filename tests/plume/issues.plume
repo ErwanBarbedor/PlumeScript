@@ -68,3 +68,9 @@ $div()
 /// Result
 (+1)
 /// End
+
+/// Test "Issue 8"
+macro Document(title: Document, style:)
+/// Result
+nil
+/// End
