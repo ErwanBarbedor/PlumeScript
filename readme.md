@@ -71,6 +71,7 @@ According some quick benchmark simulating standard use-cases, transpiled code ex
 - New parameter `namespace` for `require`.
 - `_G` is now a `plumeTable` instead of a `table`.
 - New validator `macro`.
+- `type` return `macro` instead of `function`.
 
 #### Bugfix
 - No more error when using macro call inside a void block.

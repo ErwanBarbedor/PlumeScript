@@ -50,8 +50,8 @@ return function(plume)
     end
 
     -- Available from plume
-    -- Excluded: arg, collectgarbage, coroutine, debug, dofile, gcinfo, getfenv, getmetatable, io, ipairs, jit, load, loadfile, loadstring, module, next, os, package, pcall, rawequal, rawget, rawset, require, select, setmetatable, string, table, unpack, xpcall
-    for name in ("assert bit error pairs print tostring tonumber type"):gmatch('%S+') do
+    -- Excluded: arg, collectgarbage, coroutine, debug, dofile, gcinfo, getfenv, getmetatable, io, ipairs, jit, load, loadfile, loadstring, module, next, os, package, pcall, rawequal, rawget, rawset, require, select, setmetatable, string, table, unpack, xpcall, type
+    for name in ("assert bit error pairs print tostring tonumber"):gmatch('%S+') do
         plume.std.luaPlume[name] = importLuaFunction (_G[name])
     end
 
@@ -65,5 +65,14 @@ return function(plume)
     -- Available from lua
     for name in ("arg collectgarbage coroutine debug dofile gcinfo getfenv getmetatable io jit load loadfile loadstring module next os package pcall rawequal rawget rawset require select, setmetatable string table unpack xpcall assert bit error ipairs pairs print tostring tonumber type"):gmatch('%S+') do
         plume.std.lua[name] = _G[name]
+    end
+    
+    function plume.std.luaPlume.type(__plume_args)
+        local x = __plume_args[1]
+        local t = type(x)
+        if t == "function" then
+            return "macro"
+        end
+        return t
     end
 end
