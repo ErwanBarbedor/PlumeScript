@@ -74,3 +74,10 @@ macro Document(title: Document, style:)
 /// Result
 nil
 /// End
+
+/// Test "Issue 9"
+local foo = bar
+return foo
+/// Result
+bar
+/// End

@@ -257,7 +257,9 @@ return function(plume)
         BLOCK = function(node, builder)
             plume.transpileBlock(node, builder, node.children, node.returnType,
                 function(blockAccName)
-                    return "return " .. blockAccName
+                    if node.returnType ~= "VALUE" then
+                        return "return " .. blockAccName
+                    end
                 end,
                 true -- isFirstBlock
             )
