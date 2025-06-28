@@ -18,15 +18,21 @@ If not, see <https://www.gnu.org/licenses/>.
 return function(plume)
     local function defaultBinarySymetric(t, mt, name)
         return function (self, x)
-            local f = mt.__plume["__"..name]
+            local base = "__"..name
+            local alt
+            if self == t then
+                alt = "r"
+            else
+                alt = "l"
+                self, x = x, self
+            end
+            
+            f = mt.__plume[base..alt] or mt.__plume[base]
             if f then
-                if self ~= t then
-                    self, x = x, self
-                end
                 local __plume_args = {self=self, x}
                 return f(__plume_args)
             else
-                error("This table has no @" .. name .. " metafield.", 2)
+                error("This table has no @" .. name .. " or @" .. name .. alt .. " metafield.", 2)
             end
         end
     end

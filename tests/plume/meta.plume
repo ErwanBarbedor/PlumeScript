@@ -28,6 +28,28 @@ $t[2]
 10
 /// End
 
+/// Test "@addr"
+t =
+    @addr: macro(x)
+        foo
+$(t+1)
+/// Result
+foo
+/// End
+
+/// Test "@addr vs @add"
+t =
+    @add: macro(x)
+        bar
+    @addr: macro(x)
+        foo
+$(t+1)\n
+$(1+t)
+/// Result
+foo
+bar
+/// End
+
 /// Test "@tostring"
 t =
     foo: bar
@@ -77,4 +99,14 @@ Syntax error: a hash key cannot both be a meta field and be evaluated.
 File <string_1>, line n°2:
     @$add: 5
      ^
+/// End
+
+/// Test "No @add"
+t = $table()
+$(t+1)
+/// Error
+Error: This table has no @add or @addr metafield.
+File <string_1>, line n°2:
+    $(t+1)
+    ^^^^^^
 /// End

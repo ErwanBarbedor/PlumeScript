@@ -66,6 +66,7 @@ According some quick benchmark simulating standard use-cases, transpiled code ex
 - New space character `\r`
 - New keyword `leave`. _Stop macro execution and return accumulated value_
 - Metafields are no longueur handled at transpilation, but at execution.
+- New metafields `addl`, `addr`, `mull` and `mulr`. _To handle `x+1` and `1+x` without type checking._
 - Better error message around metafields and tables.
 
 #### Bugfix
