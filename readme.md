@@ -1,6 +1,6 @@
 <p align="center"><img src="plume_logo.svg" width="600" height="300"></p>
 
-![Version](https://img.shields.io/badge/version-0.45-blue.svg) [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
+![Version](https://img.shields.io/badge/version-0.46-blue.svg) [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 
 
 ## Plume🪶 - An Expressive Templating Language
@@ -61,23 +61,6 @@ On my 12600k, transpilation of a 100ko file takes less than 200ms, up to 2s for 
 According some quick benchmark simulating standard use-cases, transpiled code executes at between 80% and 100% of Lua's performance. So with LuaJIT, this makes it possible to include relatively costly calculations in templates.
 
 ## Changelog
-### 0.45 (last version)
-#### Changes
-- New space character `\r`
-- New keyword `leave`. _Stop macro execution and return accumulated value_
-- Metafields are no longueur handled at transpilation, but at execution.
-- New metafields `addl`, `addr`, `mull` and `mulr`. _To handle `x+1` and `1+x` without type checking._
-- Better error message around metafields and tables.
-- New parameter `namespace` for `require`.
-- `_G` is now a `plumeTable` instead of a `table`.
-- New validator `macro`.
-- `type` return `macro` instead of `function`.
-
-#### Bugfix
-- No more error when using macro call inside a void block.
-- No more syntax error when using empty optional parameters.
-- No more syntax error when returning from main bloc.
-- Hash items are now correctly trimmed.
-- `+1` is correctly considered as a string and not as a number.
+### 0.46 (last version)
 
 [Older versions](doc/changelog.md)

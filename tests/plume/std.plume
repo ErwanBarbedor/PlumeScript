@@ -3,7 +3,7 @@ $(_VERSION)\n
 $(_LUA_VERSION)\n
 $(_LUAJIT_VERSION)
 /// Result
-Plume🪶-0.45
+Plume🪶-0.46
 Lua 5.1
 LuaJIT 2.1.1744318430
 /// End

@@ -1,3 +1,22 @@
+### 0.45
+#### Changes
+- New space character `\r`
+- New keyword `leave`. _Stop macro execution and return accumulated value_
+- Metafields are no longueur handled at transpilation, but at execution.
+- New metafields `addl`, `addr`, `mull` and `mulr`. _To handle `x+1` and `1+x` without type checking._
+- Better error message around metafields and tables.
+- New parameter `namespace` for `require`.
+- `_G` is now a `plumeTable` instead of a `table`.
+- New validator `macro`.
+- `type` return `macro` instead of `function`.
+
+#### Bugfix
+- No more error when using macro call inside a void block.
+- No more syntax error when using empty optional parameters.
+- No more syntax error when returning from main bloc.
+- Hash items are now correctly trimmed.
+- `+1` is correctly considered as a string and not as a number.
+
 ### 0.44
 
 #### Changes
