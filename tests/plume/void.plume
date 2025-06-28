@@ -16,3 +16,9 @@ void $math.sin(1)
 /// Result
 nil
 /// End
+
+/// Test "Table return"
+void $table()
+/// Result
+nil
+/// End

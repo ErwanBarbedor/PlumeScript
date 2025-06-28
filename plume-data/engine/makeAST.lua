@@ -113,6 +113,7 @@ return function (plume)
                 if context[i].indent <= indent then
                     break  -- Stop at the first context that is not over-indented.
                 else
+                   
                     local lastContext = context[i]
                     local parentContext = context[i-1] -- Assuming there's always a parent (root is -1 indent).
 
@@ -137,12 +138,13 @@ return function (plume)
                         and #lastContext.children == 1 then
                             
                         lastContext.children[1].meta = lastContext.sourceToken.content
+                    
+                    -- propagate void to children
+                    elseif contains("VOID", lastContext.kind) then
+                        for _, child in ipairs(lastContext.children) do
+                            child.void = true
+                        end
                     end
-                    
-                    
-                    -- if #currentArgContext.children == 1 then
-                    -- print(firstChildOfArg.sourceToken.meta, "!!")
-                    -- end
 
                     -- Some contexts require special validation when popped at an endline.
                     if endlinePop then

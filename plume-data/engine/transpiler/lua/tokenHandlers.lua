@@ -227,6 +227,10 @@ return function(plume)
     end
     
     local function writeValue(node, builder, accName, f, content, isValue, check, checkNil)
+        if node.void then
+            isValue = true
+            accName = "__plume_void"
+        end
         if isValue then
             builder:write(node,  accName .. " = " .. content)
         else
@@ -266,7 +270,7 @@ return function(plume)
         VOID = function(node, builder)
             plume.transpileBlock(node, builder, node.children, node.returnType,
                 function(blockAccName)
-                    return "-- void " .. blockAccName
+                    return "-- void"
                 end
             )
         end,
@@ -607,6 +611,8 @@ return function(plume)
             -- call and add to buffer
             if isValue then
                 builder:write(node, accName .. " = " .. name .. "(" .. argName .. ")")
+            elseif node.void then
+                builder:write(node, name .. "(" .. argName .. ")")
             elseif node.expandList then
                 builder:write(node, "__plume_expand_list(" .. accName .. ", " .. name .. "(" .. argName .. "))")
             elseif node.expandHash then

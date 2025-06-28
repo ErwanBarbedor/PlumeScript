@@ -22,29 +22,33 @@ return function(plume)
 
         local deep    = builder.deep
         local accName = "__plume_temp_" .. deep
-
-        if returnType == "TEXT" then
-            builder:write(node, "local " .. accName .. " = __plume_buffer()")
-        elseif returnType == "TABLE" then
-            builder:write(node, "local " .. accName .. " = __plume_table()")
+        
+        if node.kind ~= "VOID" then
+            if returnType == "TEXT" then
+                builder:write(node, "local " .. accName .. " = __plume_buffer()")
+            elseif returnType == "TABLE" then
+                builder:write(node, "local " .. accName .. " = __plume_table()")
+            end
         end
 
         for _, child in ipairs(children) do
             local value = plume.transpileASTToLua(child, builder, accName, node.returnType == "VALUE")
             
-            if value then
+            if value and node.kind ~= "VOID" then
                 if returnType == "TEXT" then
                     builder:write(node, "__plume_buffer_insert(" .. accName .. ", " .. value .. ")")
                 end
             end
         end
+        
+        if node.kind ~= "VOID" then
+            if returnType == "TEXT" then
+                builder:write(node, accName .. " = " .. accName .. ":tostring()")
+            end
 
-        if returnType == "TEXT" then
-            builder:write(node, accName .. " = " .. accName .. ":tostring()")
-        end
-
-        if returnType == "NIL" then
-            builder:write(node, "local " .. accName)
+            if returnType == "NIL" then
+                builder:write(node, "local " .. accName)
+            end
         end
         
         local returnedChunk = returnMethod(accName)
