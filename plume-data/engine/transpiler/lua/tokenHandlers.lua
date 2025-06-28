@@ -202,7 +202,7 @@ return function(plume)
                 -- For now, work only with short nodes
                 local short = plume.shortNodeInfos(node.children)
                 if not short then
-                    plume.sourcedError(node.children[2].sourceToken.source, "Transpiler Error: cannot use this as default value for now.")
+                    plume.sourcedError(node.children[1].sourceToken.source, "Transpiler Error: cannot use this as default value for now.")
                 end
                 
                 table.insert(result, short)
