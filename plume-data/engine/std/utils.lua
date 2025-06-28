@@ -143,6 +143,9 @@ return function(plume)
     function plume.std.utils.__plume_validator_table(x)
         return type(x) == "table"
     end
+    function plume.std.utils.__plume_validator_macro(x)
+        return type(x) == "function"
+    end
    
     --- Check and initialize function arguments. It validates the number of arguments
     --- and assigns default values to named parameters if they are not provided.

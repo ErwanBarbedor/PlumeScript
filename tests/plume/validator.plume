@@ -32,6 +32,16 @@ $foo()
 
 /// End
 
+/// Test "Success 5"
+macro bar()
+    bar
+macro foo(macro m)
+    $m()
+$foo($bar)
+/// Result
+bar
+/// End
+
 /// Test "Fail 1"
 macro foo(string x)
 $foo(1)
