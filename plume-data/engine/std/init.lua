@@ -47,7 +47,7 @@ return function(plume)
                 plume={}
             }, 
 
-            plume  = {}, -- Used by plume files
+            plume  = plume.table(), -- Used by plume files
             config = {}  -- runtime infos
         }
         

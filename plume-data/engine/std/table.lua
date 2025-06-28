@@ -92,8 +92,8 @@ return function(plume)
     
         setmetatable(plumeTable, plumeTableMT)
         
-        for _, x in ipairs(initialTable or {}) do
-            table.insert(plumeTable, x)
+        for k, v in pairs(initialTable or {}) do
+            plumeTable[k] = v --Initial order is lost
         end
         
         return plumeTable

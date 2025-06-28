@@ -69,6 +69,7 @@ According some quick benchmark simulating standard use-cases, transpiled code ex
 - New metafields `addl`, `addr`, `mull` and `mulr`. _To handle `x+1` and `1+x` without type checking._
 - Better error message around metafields and tables.
 - New parameter `namespace` for `require`.
+- `_G` is now a `plumeTable` instead of a `table`.
 
 #### Bugfix
 - No more error when using macro call inside a void block.
