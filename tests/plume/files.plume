@@ -85,6 +85,14 @@ $require(tests/plume/toImport/lib2, ext: lua)
 bar
 /// End
 
+/// Test "Namespace"
+lib = $table()
+$require(tests/plume/toImport/lib3, namespace: $lib)
+$lib.foo
+/// Result
+bar 2
+/// End
+
 /// Test "File not found"
 module = $require(azag)
 /// Error

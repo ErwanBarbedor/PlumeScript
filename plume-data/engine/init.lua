@@ -60,8 +60,9 @@ end
 --- @param filename string  Name of the file to run.
 --- @param isString boolean Should the filename be considered as the script to run.
 --- @param table env        The environment table to use during execution.
+--- @param table? namespace Capture global declaration
 --- @return Value returner by the code.
-function plume.execute(filename, isString, env)
+function plume.execute(filename, isString, env, namespace)
     local luaCode, luaMap
 
     -- filename contain the code?
@@ -81,7 +82,13 @@ function plume.execute(filename, isString, env)
     -- Compile Lua code using sandboxed environment
     local compiledFunction, errorMessage = loadstring(luaCode, "@"..filename)
     if compiledFunction then
-        setfenv(compiledFunction, env.plume)
+        local executionEnv
+        if namespace then
+            executionEnv = setmetatable(namespace, {__index=env.plume})
+        else
+            executionEnv = env.plume
+        end
+        setfenv(compiledFunction, executionEnv)
     end
 
     if not compiledFunction then

@@ -24,9 +24,12 @@ return function(plume)
     -- @return Any The result of loading/executing the module file.
     -- @error Raises an error if the module cannot be found or loaded.
     local function plumeRequire (env, __plume_args)
-        local _, libname, exts = plume.std.utils.__plume_initArgs(
-            __plume_args, 1, {{'ext', "plume lua"}}, false, false
+        local _, libname, exts, namespace = plume.std.utils.__plume_initArgs(
+            __plume_args, 1, {{'ext', "plume lua"}, {"namespace", nil}}, false, false
         )
+        if namespace then
+            plume.std.utils.__plume_validate(plume.std.utils.__plume_validator_table, namespace, 'table', 'namespace', 0)
+        end
         local triedPath   = {}
         local file, filename, fileext
 
@@ -55,7 +58,7 @@ return function(plume)
         if file then
             if fileext == "plume" then
                 file:close()
-                return plume.execute(filename, false, env)
+                return plume.execute(filename, false, env, namespace)
             elseif fileext == "lua" then
                 -- Handle Lua files: load using Lua's standard loading mechanisms
                 file:close()

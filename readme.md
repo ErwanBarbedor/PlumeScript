@@ -68,6 +68,7 @@ According some quick benchmark simulating standard use-cases, transpiled code ex
 - Metafields are no longueur handled at transpilation, but at execution.
 - New metafields `addl`, `addr`, `mull` and `mulr`. _To handle `x+1` and `1+x` without type checking._
 - Better error message around metafields and tables.
+- New parameter `namespace` for `require`.
 
 #### Bugfix
 - No more error when using macro call inside a void block.
