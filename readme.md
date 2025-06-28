@@ -1,6 +1,6 @@
 <p align="center"><img src="plume_logo.svg" width="600" height="300"></p>
 
-![Version](https://img.shields.io/badge/version-0.44-blue.svg) [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
+![Version](https://img.shields.io/badge/version-0.45-blue.svg) [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 
 
 ## Plume🪶 - An Expressive Templating Language
@@ -61,19 +61,6 @@ On my 12600k, transpilation of a 100ko file takes less than 200ms, up to 2s for 
 According some quick benchmark simulating standard use-cases, transpiled code executes at between 80% and 100% of Lua's performance. So with LuaJIT, this makes it possible to include relatively costly calculations in templates.
 
 ## Changelog
-### 0.44 (last version)
-
-#### Changes
-- Can use validators on variadic parameters.
-
-#### Bugfix
-- Fix a bug around validate parameter and variables names.
-
-#### Enhancement
-- More precise error location in the case of syntax errors in a macro.
-- Better error message when the user try to use validator on flag.
-
-#### Internal change
-- Remove any parsing of the ast code *In a dirty way, AST was doing treatments on the reassembled raw string*.
+### 0.45 (last version)
 
 [Older versions](doc/changelog.md)

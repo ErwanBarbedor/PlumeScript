@@ -1,3 +1,18 @@
+### 0.44
+
+#### Changes
+- Can use validators on variadic parameters.
+
+#### Bugfix
+- Fix a bug around validate parameter and variables names.
+
+#### Enhancement
+- More precise error location in the case of syntax errors in a macro.
+- Better error message when the user try to use validator on flag.
+
+#### Internal change
+- Remove any parsing of the ast code *In a dirty way, AST was doing treatments on the reassembled raw string*.
+
 ### 0.43
 ### Changes
 - Named arguments passed to macro are now stored in a `Plume table` instead of a `Lua table`.
