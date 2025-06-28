@@ -81,3 +81,10 @@ return foo
 /// Result
 bar
 /// End
+
+/// Test "Issue 10"
+local namespace =
+  utils:  $table()
+/// Result
+nil
+/// End

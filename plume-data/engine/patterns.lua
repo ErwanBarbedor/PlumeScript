@@ -192,10 +192,47 @@ return function (plume)
                 return nil, true, 0
             end
         elseif patternInfos["or"] then
+            
             for _, subPatternInfos in ipairs(patternInfos["or"]) do
-                local capture, isList, offset = plume.capturePattern(tokens, tokenPos, subPatternInfos)
-                if capture then
-                    return capture, isList, offset
+                -- Should be factorized with the same logic in matchPattern
+                if subPatternInfos.multipleCapture then
+                    local captureList = {}
+                    local totalOffset = 0
+                    local captureCount = 0
+                    while token do
+                        local capture, isList, offset = plume.capturePattern(tokens, tokenPos, subPatternInfos)
+
+                        if capture then
+                            table.insert(captureList, capture)
+                            if isList then
+                                tokenPos = tokenPos + offset + 1
+                                captureCount = captureCount + #capture
+                            else
+                                tokenPos = tokenPos + 1
+                                captureCount = captureCount + 1
+                            end
+                            if offset then
+                                totalOffset = totalOffset + offset
+                            end
+                            token = tokens[tokenPos]
+                        else
+                            break
+                        end
+                    end 
+
+                    -- Fail if mandatory capture has zero matches
+                    if captureCount > 0  then
+                        tokenPos = tokenPos - 1  -- Adjust for last non-matching token
+                        if subPatternInfos.name then
+                            capture[subPatternInfos.name] = captureList
+                        end
+                        return captureList, true, totalOffset
+                    end
+                else
+                    local capture, isList, offset = plume.capturePattern(tokens, tokenPos, subPatternInfos)
+                    if capture then
+                        return capture, isList, offset
+                    end
                 end
             end
         else
