@@ -167,11 +167,7 @@ return function(plume)
         end
         
         local result = {}
-        if meta then -- in metatable function, self is given by Lua
-            table.insert(result, "local __plume_void")
-        else
-            table.insert(result, "local self")
-        end
+        table.insert(result, "local self")
 
         if #stringPositionalArgs > 0 then
             table.insert(result, ", ")
@@ -488,52 +484,14 @@ return function(plume)
             local body       = node.children[2]
             
             local positionalArgs, namedArgs, validators, varargPos, varargNamed = readMacroDefinitionParameters(parameters)
-            
-            if node.meta and node.meta ~= "call" then
-                local expectedArgCount
-                if contains("add le len lt mul newindex", node.meta) then
-                    expectedArgCount = 1
-                elseif contains("call", node.meta) then
-                    expectedArgCount = nil
-                else -- index, tostring, unm
-                    expectedArgCount = 0
-                end
-
-                if #namedArgs ~= 0 then
-                    plume.metaCannotUseNamedArguments(node.sourceToken.source)
-                end
-                if expectedArgCount and #positionalArgs ~= expectedArgCount then
-                    plume.metaWrongArgumentNumber(node.sourceToken.source, node.meta, #positionalArgs, expectedArgCount)
-                end
-
-                table.insert(positionalArgs, 1, "self")
-                -- Emit the Lua function signature.
-                builder:open(node, "local function " .. macroName .. "(" .. table.concat( positionalArgs, ", ")..")")
-
-                if contains("add mul", node.meta) then
-                    local argname = positionalArgs[2]
-                    local parentName = "__plume_temp_" .. (builder.deep-2)
-                    builder:open(node, "if __plume_gmt(self) ~= __plume_gmt("..parentName..") then")
-                        builder:write(node, "self, " .. argname .. " = " .. argname .. ", self")
-                    builder:close(node, "end", true)
-                end
+                
+            if node.inline or node.sourceToken.isLocal then
+                builder:open(node, "local function " .. macroName .. "(__plume_args)")
             else
-                local signature
-                if node.meta then
-                    signature = "(self, __plume_args)"
-                else
-                    signature = "(__plume_args)"
-                end
-                
-                if node.inline or node.sourceToken.isLocal then
-                    builder:open(node, "local function " .. macroName .. signature)
-                else
-                    builder:open(node, "function " .. macroName .. signature)
-                end
-                
-                builder:write(node, makeMacroInit(positionalArgs, namedArgs, validators, varargPos, varargNamed, node.meta))
-                
+                builder:open(node, "function " .. macroName .. "(__plume_args)")
             end
+            
+            builder:write(node, makeMacroInit(positionalArgs, namedArgs, validators, varargPos, varargNamed, node.meta))
             
             for _, info in ipairs(validators) do
                 local name      = info[1]

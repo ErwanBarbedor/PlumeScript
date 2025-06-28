@@ -65,6 +65,8 @@ According some quick benchmark simulating standard use-cases, transpiled code ex
 #### Changes
 - New space character `\r`
 - New keyword `leave`. _Stop macro execution and return accumulated value_
+- Metafields are no longueur handled at transpilation, but at execution.
+- Better error message around metafields and tables.
 
 #### Bugfix
 - No more error when using macro call inside a void block.

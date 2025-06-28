@@ -56,7 +56,7 @@ return function(plume)
     end
     
     function plume.std.utils.__plume_table_metaset(t, k, v)
-        getmetatable(t)[k] = v
+        getmetatable(t).__plume[k] = v
     end
     
     function plume.std.utils.__plume_buffer()
@@ -238,13 +238,13 @@ return function(plume)
 
         if type(x) == "table" then
             local mt = getmetatable(x)
-            if not mt or not mt.__call then
+            -- if not mt or not mt.__call then
                 local i = 0
                 return function ()
                     i = i+1
                     return x[i]
                 end
-            end
+            -- end
         end
 
         return x, y, z

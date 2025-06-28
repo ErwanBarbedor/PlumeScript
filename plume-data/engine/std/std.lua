@@ -194,12 +194,12 @@ return function(plume)
     function plume.items (t)
         local mt = getmetatable(t)
         
-        if mt and mt.__plume_keys then
+        if mt and mt.__plume and mt.__plume.keys then
             local i = 0
             return function ()
                 i = i+1
                 while true do
-                    local key = mt.__plume_keys[i]
+                    local key = mt.__plume.keys[i]
                     if not key then
                         return
                     end
@@ -207,7 +207,7 @@ return function(plume)
                     if t[key] then
                         return key, t[key]
                     else -- remove key if value is nil
-                        table.remove(mt.__plume_keys, i)
+                        table.remove(mt.__plume.keys, i)
                     end
                     
                 end

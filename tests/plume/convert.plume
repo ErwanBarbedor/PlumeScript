@@ -28,7 +28,7 @@ macro foo()
 a = $foo()
 $(type(a))
 /// Error
-Error: Cannot convert table to string implicitly.
+Error: This table has no @tostring metafield.
 File <string_1>, line n°5:
     $t a
     ^^
@@ -47,7 +47,7 @@ macro foo()
 a = $foo()
 $(type(a))
 /// Error
-Error: Cannot convert table to string implicitly.
+Error: This table has no @tostring metafield.
 File <string_1>, line n°6:
     $t a
     ^^
@@ -65,7 +65,7 @@ macro foo()
 a = $foo()
 $(type(a))
 /// Error
-Error: Cannot convert table to string implicitly.
+Error: This table has no @tostring metafield.
 File <string_1>, line n°6:
     a $t
       ^^
