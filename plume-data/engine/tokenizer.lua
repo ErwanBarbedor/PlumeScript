@@ -57,7 +57,7 @@ local tokenPatterns = {
     {name = "OPERATOR",pattern = "%.%."},  -- .. operator
     -- Value tokens
     {name = "ESCAPE", pattern = "\\\\"},  
-    {name = "ESCAPE", pattern = "\\[-:=;,%(%)/snt]"},    -- Escaped character (any following character)
+    {name = "ESCAPE", pattern = "\\[-:=;,%(%)/snrt]"},    -- Escaped character (any following character)
     {name = "ESCAPE_ALONE", pattern = "\\"},    -- Escaped character (any following character)
     -- Alphanumeric identifier
     {name = "TEXT",  pattern = "[a-zA-Z_][a-zA-Z0-9%_%.]*[a-zA-Z0-9%_]"},

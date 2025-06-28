@@ -100,7 +100,7 @@ return {
     {
         name = "USER_SPACE",
         pattern = {
-            {kind = "ESCAPE", content={"\\n", "\\s", "\\t"}, name="content"},
+            {kind = "ESCAPE", content={"\\n", "\\s", "\\t", "\\r"}, name="content"},
         }
     },
     {

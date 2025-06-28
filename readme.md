@@ -62,6 +62,8 @@ According some quick benchmark simulating standard use-cases, transpiled code ex
 
 ## Changelog
 ### 0.45 (last version)
+#### Changes
+- New space character `\r`
 
 #### Bugfix
 - No more error when using macro call inside a void block.
