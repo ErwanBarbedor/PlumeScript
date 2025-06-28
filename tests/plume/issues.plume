@@ -62,3 +62,9 @@ $div()
 /// Result
 
 /// End
+
+/// Test "Issue 7"
+($t+1)
+/// Result
+(+1)
+/// End

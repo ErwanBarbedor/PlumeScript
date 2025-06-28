@@ -64,7 +64,7 @@ return function(plume)
         elseif #children == 1 then
             local child = children[1]
             if child.kind == "TEXT" then
-                if tonumber(child.content) and not child.content:match('%s') then
+                if child.content:match('^[0-9]+$') or child.content:match('^[0-9]+%.[0-9]+$') then
                     return child.content
                 else
                     return '"'..plume.escapeLuaString(child.content)..'"'
