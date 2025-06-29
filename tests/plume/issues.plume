@@ -54,7 +54,7 @@ macro foo(**kw)
 nil
 /// End
 
-/// Test "Issue 6"
+/// Test "Issue 7"
 macro div(x)
 $div()
   for i=1, 2
@@ -63,28 +63,28 @@ $div()
 
 /// End
 
-/// Test "Issue 7"
+/// Test "Issue 8"
 ($t+1)
 /// Result
 (+1)
 /// End
 
-/// Test "Issue 8"
+/// Test "Issue 9"
 macro Document(title: Document, style:)
 /// Result
 nil
 /// End
 
-/// Test "Issue 9"
+/// Test "Issue 10"
 local foo = bar
 return $foo
 /// Result
 bar
 /// End
 
-/// Test "Issue 10"
+/// Test "Issue 11"
 local namespace =
-  utils:  $table()
+  utils:  $Table()
 /// Result
 nil
 /// End

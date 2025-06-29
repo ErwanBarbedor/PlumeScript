@@ -70,7 +70,7 @@ Traceback:
 macro foo(number *x)
 $foo()
     - 1
-    - $table()
+    - $Table()
     - 3
 /// Error
 Error: Validation 'number' failed against item '#2' of argument '#1'.

@@ -69,6 +69,7 @@ According some quick benchmark simulating standard use-cases, transpiled code ex
 - `return` can now be followed by any expression.
 - Implement custom `String` type.
 - New `String` method.
+- Rename `table` to `Table`.
 - Add support for all Lua string methods.
 
 [Older versions](doc/changelog.md)

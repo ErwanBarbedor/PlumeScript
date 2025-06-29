@@ -86,7 +86,7 @@ bar
 /// End
 
 /// Test "Namespace"
-lib = $table()
+lib = $Table()
 $require(tests/plume/toImport/lib3, namespace: $lib)
 $lib.foo
 /// Result
