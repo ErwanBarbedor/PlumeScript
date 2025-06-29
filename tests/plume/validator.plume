@@ -78,6 +78,35 @@ $foo(6)
 
 /// End
 
+/// Test "Custom validator - table with @constructor 1"
+Even =
+  @constructor: macro(n)
+    self.value = $(n*2)
+macro foo(Even n)
+
+even = $Even(2)
+$foo($even)
+/// Result
+
+/// End
+
+/// Test "Custom validator - table with @constructor 2"
+Even =
+  @constructor: macro(n)
+    self.value = $(n*2)
+macro foo(Even n)
+
+$foo(3)
+/// Error
+Error: Validation 'Even' failed against argument '#1'.
+File <string_1>, line n°6:
+    $foo(3)
+    ^^^^^
+Traceback:
+    File <string_1>, line n°4: in macro 'foo'
+/// End
+
+
 /// Test "Fail 1"
 macro foo(string x)
 $foo(1)

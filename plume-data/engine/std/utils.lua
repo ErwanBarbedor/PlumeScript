@@ -126,14 +126,29 @@ return function(plume)
         local validator
         if t and type(t)=="table" then
             local mt = getmetatable(t)
-            if mt and mt.__plume and mt.__plume.__check then
-                validator = mt.__plume.__check
+            if mt and mt.__plume then
+                if mt.__plume.__check then
+                    validator = mt.__plume.__check
+                elseif mt.__plume.__constructor then
+                    validator = function (__plume_args)
+                        local x = __plume_args[1]
+                        if type(x) == "table" then
+                            local mt = getmetatable(x)
+                            if mt.__plume and mt.__plume.__constructor_ref then
+                                return mt.__plume.__constructor_ref == t
+                            end
+                        end
+                        return false
+                    end
+                end
             end
         end
         
         if not validator then
             if f then
                 validator = f
+            elseif t then
+                error("Unknow validator '" .. fname .. "'. Declare a '" .. fname .. "Validator' macro, or add a @check or a @constructor field to the existing table '" .. fname .. "'", 2)
             else
                 error("Unknow validator '" .. fname .. "'. Declare a '" .. fname .. "Validator' macro, a '" .. fname .. "' table with a @check or a @constructor field.", 2)
             end

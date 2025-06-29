@@ -73,5 +73,6 @@ According some quick benchmark simulating standard use-cases, transpiled code ex
 - New metafield `@constructor`. _An easy way to implement object-like logic._
 - User can now declare new validators.
 - Can use macro with `@check` metafield as validator.
+- Table with a `@constructor` metafield have a default `@check` behavior.
 
 [Older versions](doc/changelog.md)
