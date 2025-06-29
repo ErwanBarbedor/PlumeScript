@@ -145,7 +145,7 @@ $foo()
 /// End
 
 /// Test "Macro with default value 7"
-macro foo(a: $Table())
+macro foo(a: $table())
   return $a
 
 t =

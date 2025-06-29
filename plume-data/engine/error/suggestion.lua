@@ -193,11 +193,11 @@ return function(plume)
             elseif error_action:match("call") then
                 expected_types = "function macro"
             elseif error_action:match("index") then -- e.g., "index a nil value", "index a boolean value"
-                expected_types = "Table table" -- Strings can also be indexed, but tables are primary target for general indexing errors.
+                expected_types = "table" -- Strings can also be indexed, but tables are primary target for general indexing errors.
             elseif error_action:match("concatenate") then
-                expected_types = "String string" -- Numbers can be concatenated in Lua (coerced to string), but primary intent is usually string.
+                expected_types = "string" -- Numbers can be concatenated in Lua (coerced to string), but primary intent is usually string.
             elseif error_action:match("get length of") then
-                expected_types = "String Table string table" -- Both strings and tables support the length operator.
+                expected_types = "string table" -- Both strings and tables support the length operator.
             end
 
             -- Further refine the search only if the error message confirms a type mismatch or nil value access context.

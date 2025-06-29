@@ -9,14 +9,14 @@ LuaJIT 2.1.1744318430
 /// End
 
 /// Test "Table : empty"
-local t = $Table()
+local t = $table()
 $(type(t)), $(len(t))
 /// Result
-Table, 0
+table, 0
 /// End
 
 /// Test "Table : inline"
-local t = $Table(foo, bar: baz)
+local t = $table(foo, bar: baz)
 $t[1], $t.bar
 /// Result
 foo, baz
@@ -28,7 +28,7 @@ local t1 =
     - Bar
 local t2 =
     - Baz
-local t = $Table(*t1, *t2)
+local t = $table(*t1, *t2)
 $(len(t))
 /// Result
 3

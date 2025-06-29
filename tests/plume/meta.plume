@@ -102,7 +102,7 @@ File <string_1>, line n°2:
 /// End
 
 /// Test "No @add"
-t = $Table()
+t = $table()
 $(t+1)
 /// Error
 Error: This table has no @add or @addr metafield.

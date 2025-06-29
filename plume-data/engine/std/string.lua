@@ -28,14 +28,14 @@ return function(plume)
                     return s1 .. s
                 end
             end,
-            __type = "String"
+            __type = "string"
         }
         
         for k, v in pairs(string) do
             if type(v) == "function" then
                 stringT[k] = function(__plume_args)
                     for i, x in ipairs(__plume_args) do
-                        if type(x) == "table" and getmetatable(x) and getmetatable(x).__type == "String" then
+                        if type(x) == "table" and plume.type (x) == "string" then
                             __plume_args[i] = tostring(__plume_args[i])
                         end
                     end

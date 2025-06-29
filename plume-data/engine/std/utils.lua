@@ -90,7 +90,7 @@ return function(plume)
     end
     
     function plume.std.utils.__plume_check_string (x)
-        if getmetatable(x) and getmetatable(x).__type == "String" then
+        if getmetatable(x) and getmetatable(x).__type == "string" then
             return tostring(x)
         else
             return x

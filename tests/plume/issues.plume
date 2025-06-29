@@ -84,7 +84,7 @@ bar
 
 /// Test "Issue 11"
 local namespace =
-  utils:  $Table()
+  utils:  $table()
 /// Result
 nil
 /// End

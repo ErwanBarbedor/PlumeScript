@@ -88,7 +88,7 @@ return function(plume)
             keys = keys
         }
         
-        plumeTableMT.__type = "Table"
+        plumeTableMT.__type = "table"
     
         setmetatable(plumeTable, plumeTableMT)
         

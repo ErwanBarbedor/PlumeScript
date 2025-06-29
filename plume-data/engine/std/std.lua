@@ -176,11 +176,11 @@ return function(plume)
         --- Declaring empty tables:`t = $table()`
         --- Declaring tables inlines: `t = $table(foo, bar: baz, *args)`
         --- Mergin tables inline: `t = $table(**t1, **t2)`
-    function plume.std.plume.Table(env, __plume_args)
+    function plume.std.plume.table(env, __plume_args)
         return __plume_args
     end
     
-    function plume.std.plume.String(env, __plume_args)
+    function plume.std.plume.string(env, __plume_args)
         local _, x = plume.std.utils.__plume_initArgs(
             __plume_args, 1, {}, false, false
         )
