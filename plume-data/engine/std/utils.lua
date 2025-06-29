@@ -199,6 +199,9 @@ return function(plume)
                 result[unpackCount] = argsTable[name]
                 argsTable[name] = nil -- Remove the named argument from argsTable after processing
             else
+                if type(value) == "function" then
+                    value = value()
+                end
                 result[unpackCount] = value -- Use default value if named argument is not provided
             end
         end

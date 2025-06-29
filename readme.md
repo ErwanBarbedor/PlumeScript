@@ -63,4 +63,7 @@ According some quick benchmark simulating standard use-cases, transpiled code ex
 ## Changelog
 ### 0.46 (last version)
 
+#### Changes
+- Can use any value as macro default parameter.
+
 [Older versions](doc/changelog.md)

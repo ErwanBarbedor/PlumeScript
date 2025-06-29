@@ -127,8 +127,17 @@ return function(plume)
             -- Check rules for MACRO_DEFINITION and LOCAL_MACRO_DEFINITION commands
             elseif contains("MACRO_DEFINITION LOCAL_MACRO_DEFINITION", lineCache[1]) then
                 local pos = 1
-                while pos < #lineCache and lineCache[pos] ~= "RPAR" do
+                local deep = 1
+                while pos < #lineCache do
+                    if lineCache[pos] == "RPAR" then
+                        deep = deep-1
+                    elseif lineCache[pos] == "MACRO_CALL_BEGIN" then
+                        deep = deep+1
+                    end
+                    
+                    if deep==0 then break end
                     pos = pos + 1
+                    
                 end
 
                 if lineCache[#lineCache] == "BLOCK_OPEN" and #lineCache > pos+1 then

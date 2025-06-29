@@ -122,6 +122,43 @@ Flag is active
 
 /// End
 
+/// Test "Macro with default value 6"
+macro foo(a: $(1+1))
+  $a
+  
+$foo()
+/// Result
+2
+/// End
+
+/// Test "Macro with default value 7"
+macro foo(a: $table())
+  return a
+
+t =
+  *foo()
+/// Result
+nil
+/// End
+
+/// Test "Macro with default value 8"
+local a = 0
+macro foo()
+  a += 1
+  
+macro bar(baz: $foo())
+
+$a\n
+$bar()
+$a\n
+$bar(baz: 0)
+$a
+/// Result
+0
+1
+1
+/// End
+
 /// Test "Extended Parameters - single value"
 macro double(x)
     $x $x

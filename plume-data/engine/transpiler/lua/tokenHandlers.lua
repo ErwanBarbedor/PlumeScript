@@ -145,7 +145,7 @@ return function(plume)
         return positionalArgs, namedArgs, validators, varargPos, varargNamed
     end
     
-    local function makeMacroInit(positionalArgs, namedArgs, validators, varargPos, varargNamed, meta)
+    local function makeMacroInit(macroName, positionalArgs, namedArgs, validators, varargPos, varargNamed, meta)
         local stringPositionalArgs = table.concat(positionalArgs, ", ")
         
         local stringNamedArgs = {}
@@ -198,14 +198,8 @@ return function(plume)
                 table.insert(result, "{")
                 table.insert(result, "'"..node.name.."'")
                 table.insert(result, ", ")
-                -- Transpile default values.
-                -- For now, work only with short nodes
-                local short = plume.shortNodeInfos(node.children)
-                if not short then
-                    plume.sourcedError(node.children[1].sourceToken.source, "Transpiler Error: cannot use this as default value for now.")
-                end
                 
-                table.insert(result, short)
+                table.insert(result, "__plume_fdv_" .. macroName .. "_" .. node.name)
                 table.insert(result, "}")
                 if i < #namedArgs then
                     table.insert(result, ", ")
@@ -486,14 +480,25 @@ return function(plume)
             local body       = node.children[2]
             
             local positionalArgs, namedArgs, validators, varargPos, varargNamed = readMacroDefinitionParameters(parameters)
-                
+            
+            for _, node in ipairs(namedArgs) do
+                builder:open(node, "local function __plume_fdv_" .. macroName .. "_" .. node.name .. " (__plume_args)")
+               plume.transpileBlock(node, builder, node.children, node.returnType,
+                    function(blockAccName)
+                        return "return " .. blockAccName
+                    end,
+                    true -- isFirstBlock
+                )
+                builder:close(node, "end")
+            end
+            
             if node.inline or node.sourceToken.isLocal then
                 builder:open(node, "local function " .. macroName .. "(__plume_args)")
             else
                 builder:open(node, "function " .. macroName .. "(__plume_args)")
             end
             
-            builder:write(node, makeMacroInit(positionalArgs, namedArgs, validators, varargPos, varargNamed, node.meta))
+            builder:write(node, makeMacroInit(macroName, positionalArgs, namedArgs, validators, varargPos, varargNamed, node.meta))
             
             for _, info in ipairs(validators) do
                 local name      = info[1]

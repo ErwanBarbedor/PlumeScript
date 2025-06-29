@@ -561,6 +561,7 @@ return function (plume)
                     else
                         pushChild(token, "VARIABLE", "true")
                     end
+                    setReturnType(token, "VALUE")-- should not be converted to string
                 else
                     pushChild(token, "TEXT", token.raw)
                 end
