@@ -123,25 +123,36 @@ return function(plume)
     end
 
     function plume.std.utils.__plume_validate(t, f, x, fname, name, vararg)
+        local validator
+        if t and type(t)=="table" then
+            local mt = getmetatable(t)
+            if mt and mt.__plume and mt.__plume.__check then
+                validator = mt.__plume.__check
+            end
+        end
         
-        if not f then
-            error("Unknow validator '" .. fname .. "'.", 2)
+        if not validator then
+            if f then
+                validator = f
+            else
+                error("Unknow validator '" .. fname .. "'. Declare a '" .. fname .. "Validator' macro, a '" .. fname .. "' table with a @check or a @constructor field.", 2)
+            end
         end
         
         if vararg == 1 then -- list of args
             for i, xx in ipairs(x) do
-                if not f({xx}) then
+                if not validator({self=t, xx}) then
                     error("Validation '"..fname.."' failed against item '#"..i.."' of argument '" .. name .. "'.", 4)
                 end
             end
         elseif vararg == 2 then -- table of args
             for k, v in plume.items(x) do
-                if not f({v}) then
+                if not validator({self=t, v}) then
                     error("Validation '"..fname.."' failed against item '"..k.."' of argument '" .. name .. "'.", 4)
                 end
             end
         else -- single arg
-            if not f({x}) then
+            if not validator({self=t, x}) then
                 error("Validation '"..fname.."' failed against argument '" .. name .. "'.", 4)
             end
         end

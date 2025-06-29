@@ -72,5 +72,6 @@ According some quick benchmark simulating standard use-cases, transpiled code ex
 - Add support for all Lua string methods.
 - New metafield `@constructor`. _An easy way to implement object-like logic._
 - User can now declare new validators.
+- Can use macro with `@check` metafield as validator.
 
 [Older versions](doc/changelog.md)

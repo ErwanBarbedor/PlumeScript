@@ -67,6 +67,17 @@ Traceback:
     File <string_1>, line n°3: in macro 'foo'
 /// End
 
+/// Test "Custom validator - table with @check"
+even =
+  @check: macro(n)
+    return $(n%2 == 0)
+macro foo(even n)
+    
+$foo(6)
+/// Result
+
+/// End
+
 /// Test "Fail 1"
 macro foo(string x)
 $foo(1)
@@ -91,7 +102,7 @@ Traceback:
     File <string_1>, line n°1: in macro 'foo'
 /// End
 
-/// Test "Success 3"
+/// Test "Fail 3"
 macro foo(number *x)
 $foo()
     - 1
@@ -106,7 +117,7 @@ Traceback:
     File <string_1>, line n°1: in macro 'foo'
 /// End
 
-/// Test "Success 4"
+/// Test "Fail 4"
 macro foo(number **x)
 $foo()
     foo: 1
@@ -117,6 +128,18 @@ Error: Validation 'number' failed against item 'baz' of argument '#1'.
 File <string_1>, line n°2:
     $foo()
     ^^^^^
+Traceback:
+    File <string_1>, line n°1: in macro 'foo'
+/// End
+
+/// Test "Unknow validator"
+macro foo(bar x)
+$foo(x)
+/// Error
+Error: Unknow validator 'bar'. Declare a 'barValidator' macro, a 'bar' table with a @check or a @constructor field.
+File <string_1>, line n°1:
+    macro foo(bar x)
+    ^^^^^^^^^^
 Traceback:
     File <string_1>, line n°1: in macro 'foo'
 /// End

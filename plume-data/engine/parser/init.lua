@@ -324,7 +324,7 @@ return function(plume)
                     end
                     
                     -- Not included: metatable, gc, mode, div, sub, pow
-                    if not contains("add call index le len lt mul newindex tostring unm addr addl mulr mull constructor", keyValue) then
+                    if not contains("add call index le len lt mul newindex tostring unm addr addl mulr mull constructor check", keyValue) then
                         plume.unknownMetaFieldError(match.key.source, keyValue)
                     end
                 end

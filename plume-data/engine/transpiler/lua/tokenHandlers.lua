@@ -515,7 +515,7 @@ return function(plume)
                 end
                 
                 -- To enhance error reporting, should use parameters[x] instead of node
-                builder:write(node, "__plume_validate(nil, " .. fvalidator .. ", " .. name .. ", '" .. validator .."', '"..label.."', "..vararg..")")
+                builder:write(node, "__plume_validate("..info[2]..", " .. fvalidator .. ", " .. name .. ", '" .. validator .."', '"..label.."', "..vararg..")")
             end
             
             local endLabel
