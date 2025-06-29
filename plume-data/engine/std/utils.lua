@@ -148,16 +148,16 @@ return function(plume)
     end
 
     function plume.std.utils.__plume_validator_number(x)
-        return type(x) == "number"
+        return plume.type(x) == "number"
     end
     function plume.std.utils.__plume_validator_string(x)
-        return type(x) == "string"
+        return plume.type(x) == "string"
     end
     function plume.std.utils.__plume_validator_table(x)
-        return type(x) == "table"
+        return plume.type(x) == "table"
     end
     function plume.std.utils.__plume_validator_macro(x)
-        return type(x) == "function"
+        return plume.type(x) == "macro"
     end
    
     --- Check and initialize function arguments. It validates the number of arguments
