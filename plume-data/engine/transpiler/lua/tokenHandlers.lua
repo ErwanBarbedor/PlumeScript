@@ -60,14 +60,14 @@ return function(plume)
     
     function plume.shortNodeInfos(children, canPutParens)
         if #children == 0 then
-            return '""'
+            return '__plume_string("")'
         elseif #children == 1 then
             local child = children[1]
             if child.kind == "TEXT" then
                 if child.content:match('^[0-9]+$') or child.content:match('^[0-9]+%.[0-9]+$') then
                     return child.content
                 else
-                    return '"'..plume.escapeLuaString(child.content)..'"'
+                    return '__plume_string("'..plume.escapeLuaString(child.content)..'")'
                 end
             elseif child.kind == "LUA_EXPRESSION" then
                 local code = plume.editLuaCode(child.content)
@@ -315,7 +315,9 @@ return function(plume)
                 f = "__plume_table_set"
             end
             
-            if not (node.sourceToken and node.sourceToken.eval) then
+            if (node.sourceToken and node.sourceToken.eval) then
+                name = '__plume_check_string(' .. name .. ')'
+            else
                 name = '"' .. name .. '"'
             end
             
@@ -337,7 +339,7 @@ return function(plume)
             if node.sourceToken.eval then
                 -- If node.sourceToken.eval is true, assign to the global table _G
                 -- using varName as a key.
-                targetVariable = "_G[" .. varName .. "]"
+                targetVariable = "_G[__plume_check_string(" .. varName .. ")]"
             else
                 targetVariable = varName
             end

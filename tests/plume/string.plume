@@ -1,0 +1,20 @@
+/// Test "Match 1"
+local s = Foo
+$s.match(F)
+/// Result
+F
+/// End
+
+/// Test "Match 2"
+local s = Foo
+$s.match(.*)
+/// Result
+Foo
+/// End
+
+/// Test "Gsub 1"
+local s = Foo
+$s.gsub(o, b)
+/// Result
+Fbb
+/// End

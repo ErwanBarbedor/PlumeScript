@@ -67,5 +67,7 @@ According some quick benchmark simulating standard use-cases, transpiled code ex
 - Can use any value as macro default parameter.
 - `return` is no longer followed by default by a script.
 - `return` can now be followed by any expression.
+- Implement custom `String` type.
+- Add support for all Lua string methods.
 
 [Older versions](doc/changelog.md)

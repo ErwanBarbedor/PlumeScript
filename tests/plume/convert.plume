@@ -4,7 +4,7 @@ macro foo()
 a = $foo()
 $(type(a))
 /// Result
-string
+String
 /// End
 
 
@@ -15,7 +15,7 @@ macro foo()
 a = $foo()
 $(type(a))
 /// Result
-string
+String
 /// End
 
 

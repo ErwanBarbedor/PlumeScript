@@ -33,12 +33,12 @@ return function(plume)
         local triedPath   = {}
         local file, filename, fileext
 
-        libname = libname:gsub('^.[\\/]', '')
+        libname = tostring(libname):gsub('^.[\\/]', '')
 
         -- Attempt to find and open the module file with the specified extensions and paths
-        for ext in exts:gmatch "%S+" do
+        for ext in tostring(exts):gmatch "%S+" do
             for _, basepath in ipairs(env.config.package.path) do
-                local path = basepath
+                local path = tostring(basepath)
                     :gsub('<name>', libname)
                     :gsub('<ext>', ext)
                     :gsub('<plumeDir>', env.config._PLUME_DIR)

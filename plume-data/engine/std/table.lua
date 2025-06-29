@@ -13,8 +13,6 @@ You should have received a copy of the GNU General Public License along with Plu
 If not, see <https://www.gnu.org/licenses/>.
 ]]
 
--- functions and variables exposed directly to users (in Plume)
-
 return function(plume)
     local function defaultBinarySymetric(t, mt, name)
         return function (self, x)
@@ -89,6 +87,8 @@ return function(plume)
         plumeTableMT.__plume = {
             keys = keys
         }
+        
+        plumeTableMT.__type = "Table"
     
         setmetatable(plumeTable, plumeTableMT)
         

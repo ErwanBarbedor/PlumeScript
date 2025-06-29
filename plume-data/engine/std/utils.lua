@@ -40,6 +40,7 @@ return function(plume)
     plume.std.utils.__plume_gmt          = getmetatable
     plume.std.utils.__plume_concat       = table.concat
     plume.std.utils.__plume_table        = plume.table
+    plume.std.utils.__plume_string       = plume.string
     plume.std.utils._VERSION             = plume._VERSION
     plume.std.utils._LUA_VERSION         = _VERSION
     plume.std.utils._LUAJIT_VERSION      = jit.version
@@ -62,6 +63,10 @@ return function(plume)
     function plume.std.utils.__plume_buffer()
         return buffer.new()
     end
+    
+    function plume.std.utils.__plume_buffer_tostring(x)
+        return plume.string(x:tostring())
+    end
 
     function plume.std.utils.__plume_buffer_insert(buffer, s)
         buffer:put(s)
@@ -79,6 +84,14 @@ return function(plume)
             end
         elseif t ~= "string" and t ~= "number" then
             error("Cannot convert " .. t .. " to string implicitly.", 2)
+        else
+            return x
+        end
+    end
+    
+    function plume.std.utils.__plume_check_string (x)
+        if getmetatable(x) and getmetatable(x).__type == "String" then
+            return tostring(x)
         else
             return x
         end

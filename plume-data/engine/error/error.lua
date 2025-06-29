@@ -226,7 +226,7 @@ return function (plume)
         for k, v in pairs(env.plume) do
             if type(k) ~= "tonumber" then -- Exclude numeric keys, which are unlikely to be variable names.
                 if not visiblesVariables[name] then
-                    visiblesVariables[k] = type(v)
+                    visiblesVariables[k] = plume.type(v)
                 end
             end
         end

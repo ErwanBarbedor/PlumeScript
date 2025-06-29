@@ -47,7 +47,7 @@ return function(plume)
         
         if node.kind ~= "VOID" then
             if returnType == "TEXT" then
-                builder:write(node, accName .. " = " .. accName .. ":tostring()")
+                builder:write(node, accName .. " = __plume_buffer_tostring(" .. accName .. ")")
             end
 
             if returnType == "NIL" then

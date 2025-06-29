@@ -12,7 +12,7 @@ LuaJIT 2.1.1744318430
 local t = $table()
 $(type(t)), $(len(t))
 /// Result
-table, 0
+Table, 0
 /// End
 
 /// Test "Table : inline"

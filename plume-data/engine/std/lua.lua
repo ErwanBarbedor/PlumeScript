@@ -67,12 +67,21 @@ return function(plume)
         plume.std.lua[name] = _G[name]
     end
     
-    function plume.std.luaPlume.type(__plume_args)
-        local x = __plume_args[1]
+    function plume.type(x)
         local t = type(x)
         if t == "function" then
             return "macro"
         end
+        if t == "table" then
+            local mt = getmetatable(x)
+            if mt and mt.__type then
+                return mt.__type
+            end
+        end
         return t
+    end
+    
+    function plume.std.luaPlume.type(__plume_args)
+        return plume.type(__plume_args[1])
     end
 end
