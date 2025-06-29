@@ -18,6 +18,7 @@ If not, see <https://www.gnu.org/licenses/>.
 -- A specific class is therefore needed to “emulate” a string.
 return function(plume)
     plume.string = function (s)
+        s = tostring(s)
         local stringT = {}
         local stringMT = {
             __tostring = function () return s end,
@@ -34,6 +35,7 @@ return function(plume)
         for k, v in pairs(string) do
             if type(v) == "function" then
                 stringT[k] = function(__plume_args)
+                    
                     for i, x in ipairs(__plume_args) do
                         if type(x) == "table" and plume.type (x) == "string" then
                             __plume_args[i] = tostring(__plume_args[i])
