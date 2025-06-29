@@ -179,6 +179,14 @@ return function(plume)
     function plume.std.plume.table(env, __plume_args)
         return __plume_args
     end
+    
+    function plume.std.plume.String(env, __plume_args)
+        local _, x = plume.std.utils.__plume_initArgs(
+            __plume_args, 1, {}, false, false
+        )
+
+        return plume.string(x)
+    end
 
     --- Exactly the `#` lua opperator
     function plume.std.plume.len(env, __plume_args)
