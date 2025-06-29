@@ -70,5 +70,6 @@ According some quick benchmark simulating standard use-cases, transpiled code ex
 - Implement custom `string` type.
 - New `string` method.
 - Add support for all Lua string methods.
+- New metafield `@constructor`. _An easy way to implement object-like logic._
 
 [Older versions](doc/changelog.md)

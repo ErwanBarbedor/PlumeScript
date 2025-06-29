@@ -90,6 +90,43 @@ $t(x: foo)
 foo is bar
 /// End
 
+/// Test "@constructor 1"
+Vect =
+  @constructor: macro(x: 0, y: 0)
+    self.x = $x
+    self.y = $y
+  @tostring: macro()
+    ($self.x, $self.y)
+  @add: macro(u)
+    return $Vect()
+      x: $(self.x + u.x)
+      y: $(self.y + u.y)
+  @mul: macro(k)
+    return $Vect()
+      x: $(self.x * k)
+      y: $(self.y * k)
+    
+u = $Vect(x: 1, y: 2)
+v = $Vect(x: 10)
+
+$(2*u+v)
+
+/// Result
+(12, 4)
+/// End
+
+/// Test "@constructor 2"
+Object =
+  @constructor: macro()
+  @call: macro()
+    foo
+
+foo = $Object()
+$foo()
+
+/// Result
+foo
+/// End
 
 /// Test "Mixed eval/meta"
 t =
@@ -109,4 +146,14 @@ Error: This table has no @add or @addr metafield.
 File <string_1>, line n°2:
     $(t+1)
     ^^^^^^
+/// End
+
+/// Test "No @call"
+t = $table()
+$t()
+/// Error
+Error: This table has no @call or @constructor metafield.
+File <string_1>, line n°2:
+    $t()
+    ^^^
 /// End

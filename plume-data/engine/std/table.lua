@@ -38,24 +38,45 @@ return function(plume)
     local function defaultUnary(t, mt, name)
         return function (self, ...)
             local f = mt.__plume["__"..name]
+            
             if f then
                 local __plume_args = plume.table({...})
                 __plume_args.self = self
-                return f(__plume_args)
+                return tostring(f(__plume_args))
             else
                 error("This table has no @" .. name .. " metafield.", 2)
             end
         end
     end
     
-    local function defaultCall(t, mt, name)
+    local function defaultCall(t, mt)
         return function (self, __plume_args)
-            local f = mt.__plume["__"..name]
-            if f then
+            
+            local constructor = mt.__plume.__constructor
+            local call        = mt.__plume.__call
+            if constructor then
+                local instance   = plume.table()
+                local instanceMT = getmetatable(instance)
+                for k, v in ipairs(self) do
+                    instance[k] = v
+                end
+                for k, v in plume.items(self) do
+                    instance[k] = v
+                end
+                for k, v in pairs(mt.__plume) do
+                    if k:match('^__') and k ~= "__constructor" then
+                        instanceMT.__plume[k] = v
+                    end
+                end
+                instanceMT.__plume.__constructor_ref = self
+                __plume_args.self = instance
+                constructor(__plume_args)
+                return instance
+            elseif call then
                 __plume_args.self = self
-                return f(__plume_args)
+                return call(__plume_args)
             else
-                error("This table has no @" .. name .. " metafield.", 2)
+                error("This table has no @call or @constructor metafield.", 2)
             end
         end
     end
@@ -76,13 +97,11 @@ return function(plume)
             plumeTableMT["__" .. method] = defaultBinarySymetric(plumeTable, plumeTableMT, method)
         end
         
-        for method in ("call"):gmatch('%S+') do
-            plumeTableMT["__" .. method] = defaultCall(plumeTable, plumeTableMT, method)
-        end
-        
         for method in ("tostring"):gmatch('%S+') do
             plumeTableMT["__" .. method] = defaultUnary(plumeTable, plumeTableMT, method)
         end
+        
+        plumeTableMT.__call = defaultCall(plumeTable, plumeTableMT, method)
             
         plumeTableMT.__plume = {
             keys = keys
