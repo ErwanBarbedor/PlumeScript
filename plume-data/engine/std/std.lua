@@ -119,13 +119,15 @@ return function(plume)
         local _, path, content, binary, makeDirs = plume.std.utils.__plume_initArgs(
             __plume_args, 2, {{'binary', false}, {'makeDirs', false}}, false, false
         )
-
-        if type(path) ~= "string" then
-            error("bad argument #1 (path) (string expected, got "..type(path)..")", 3)
+        
+        if plume.type(path) ~= "string" then
+            error("bad argument #1 (path) (string expected, got "..plume.type(path)..")", 3)
         end
-        if type(content) ~= "string" then
-            error("bad argument #2 (content) (string expected, got "..type(content)..")", 3)
+        if plume.type(content) ~= "string" then
+            error("bad argument #2 (content) (string expected, got "..plume.type(content)..")", 3)
         end
+        
+        path, content = tostring(path), tostring(content) -- plume string to lua string
 
         if makeDirs then
             local dirpath = path:match('(.+)[/\\]')
@@ -154,6 +156,7 @@ return function(plume)
         local _, path, binary = plume.std.utils.__plume_initArgs(
             __plume_args, 1, {{'binary', false}}, false, false
         )
+        path = tostring(path)
         local file
         if binary then
             file = io.open(path, "rb")
