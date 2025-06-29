@@ -42,6 +42,31 @@ $foo($bar)
 bar
 /// End
 
+/// Test "Custom validator - macro 1"
+macro evenValidator(n)
+    return $(n%2 == 0)
+macro foo(even n)
+    
+$foo(6)
+/// Result
+
+/// End
+
+/// Test "Custom validator - macro 2"
+macro evenValidator(n)
+    return $(n%2 == 0)
+macro foo(even n)
+    
+$foo(5)
+/// Error
+Error: Validation 'even' failed against argument '#1'.
+File <string_1>, line n°5:
+    $foo(5)
+    ^^^^^
+Traceback:
+    File <string_1>, line n°3: in macro 'foo'
+/// End
+
 /// Test "Fail 1"
 macro foo(string x)
 $foo(1)

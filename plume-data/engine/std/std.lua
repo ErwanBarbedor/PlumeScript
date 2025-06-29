@@ -28,7 +28,7 @@ return function(plume)
             __plume_args, 1, {{'ext', "plume lua"}, {"namespace", nil}}, false, false
         )
         if namespace then
-            plume.std.utils.__plume_validate(plume.std.utils.__plume_validator_table, namespace, 'table', 'namespace', 0)
+            plume.std.utils.__plume_validate(nil, plume.std.utils.tableValidator, namespace, 'table', 'namespace', 0)
         end
         local triedPath   = {}
         local file, filename, fileext
@@ -236,4 +236,28 @@ return function(plume)
         return plume.items(t)
     end
     
+    function plume.std.utils.numberValidator(__plume_args)
+        local _, x = plume.std.utils.__plume_initArgs(
+            __plume_args, 1, {}, false, false
+        )
+        return plume.type(x) == "number"
+    end
+    function plume.std.utils.stringValidator(__plume_args)
+        local _, x = plume.std.utils.__plume_initArgs(
+            __plume_args, 1, {}, false, false
+        )
+        return plume.type(x) == "string"
+    end
+    function plume.std.utils.tableValidator(__plume_args)
+        local _, x = plume.std.utils.__plume_initArgs(
+            __plume_args, 1, {}, false, false
+        )
+        return plume.type(x) == "table"
+    end
+    function plume.std.utils.macroValidator(__plume_args)
+        local _, x = plume.std.utils.__plume_initArgs(
+            __plume_args, 1, {}, false, false
+        )
+        return plume.type(x) == "macro"
+    end
 end

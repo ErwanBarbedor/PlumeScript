@@ -122,7 +122,7 @@ return function(plume)
         end
     end
 
-    function plume.std.utils.__plume_validate(f, x, fname, name, vararg)
+    function plume.std.utils.__plume_validate(t, f, x, fname, name, vararg)
         
         if not f then
             error("Unknow validator '" .. fname .. "'.", 2)
@@ -130,34 +130,21 @@ return function(plume)
         
         if vararg == 1 then -- list of args
             for i, xx in ipairs(x) do
-                if not f(xx) then
+                if not f({xx}) then
                     error("Validation '"..fname.."' failed against item '#"..i.."' of argument '" .. name .. "'.", 4)
                 end
             end
         elseif vararg == 2 then -- table of args
             for k, v in plume.items(x) do
-                if not f(v) then
+                if not f({v}) then
                     error("Validation '"..fname.."' failed against item '"..k.."' of argument '" .. name .. "'.", 4)
                 end
             end
         else -- single arg
-            if not f(x) then
+            if not f({x}) then
                 error("Validation '"..fname.."' failed against argument '" .. name .. "'.", 4)
             end
         end
-    end
-
-    function plume.std.utils.__plume_validator_number(x)
-        return plume.type(x) == "number"
-    end
-    function plume.std.utils.__plume_validator_string(x)
-        return plume.type(x) == "string"
-    end
-    function plume.std.utils.__plume_validator_table(x)
-        return plume.type(x) == "table"
-    end
-    function plume.std.utils.__plume_validator_macro(x)
-        return plume.type(x) == "macro"
     end
    
     --- Check and initialize function arguments. It validates the number of arguments

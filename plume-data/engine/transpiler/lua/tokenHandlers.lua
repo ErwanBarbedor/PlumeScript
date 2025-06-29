@@ -508,14 +508,14 @@ return function(plume)
                 local label     = info[3]
                 local vararg    = info[4]
                 
-                local fvalidator = "__plume_validator_" .. info[2]
+                local fvalidator = info[2] .. "Validator"
                 
                 if not vararg then
                     vararg = 0
                 end
                 
                 -- To enhance error reporting, should use parameters[x] instead of node
-                builder:write(node, "__plume_validate(" .. fvalidator .. ", " .. name .. ", '" .. validator .."', '"..label.."', "..vararg..")")
+                builder:write(node, "__plume_validate(nil, " .. fvalidator .. ", " .. name .. ", '" .. validator .."', '"..label.."', "..vararg..")")
             end
             
             local endLabel
