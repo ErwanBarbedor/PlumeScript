@@ -60,7 +60,7 @@ return {
         name = "RETURN",
         pattern = {
             {kind = "TEXT", content = "return"},
-            {kind = "SPACE"}
+            {kind = "SPACE", multipleCapture = true, optional=true}
         }
     },
     {
