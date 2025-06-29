@@ -443,18 +443,10 @@ return function(plume)
             end,
             RETURN = function(match)
                 local line = {}
-                for _, token in ipairs(match.line) do
-                    table.insert(line, token.content)
-                end
 
                 pushToken {
                     kind = "RETURN",
                     content = ""
-                }
-
-                pushToken {
-                    kind = "LUA_EXPRESSION",
-                    content = table.concat(line):gsub('^%s*', ''):gsub('%s*$', '')
                 }
             end,
             LEAVE = function(match)

@@ -612,14 +612,11 @@ return function(plume)
         
         -- Others
         RETURN = function(node, builder, accName)
-            -- Return must have only one child, a lua expression
-            local returnedValue = plume.editLuaCode(node.children[1].content)
-            
-            -- Plume's return statements use a temporary variable to break tailcall.
-            builder:write(node, "local " .. accName .. " = " .. returnedValue)
-            
-            -- Remove Lua tailcall to better traceback
-            builder:write(node, "return " .. accName)
+            plume.transpileBlock(node, builder, node.children, node.returnType,
+                function(blockAccName)
+                    return "return " .. blockAccName
+                end
+            )
         end
     }
 end

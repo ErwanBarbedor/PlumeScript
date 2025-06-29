@@ -77,7 +77,7 @@ nil
 
 /// Test "Issue 9"
 local foo = bar
-return foo
+return $foo
 /// Result
 bar
 /// End

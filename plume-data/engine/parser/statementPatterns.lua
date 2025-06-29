@@ -60,11 +60,7 @@ return {
         name = "RETURN",
         pattern = {
             {kind = "TEXT", content = "return"},
-            {
-                neg = {kind = {"ENDLINE", "NEWLINE", "COMMENT"}},
-                multipleCapture = true,
-                name = "line"
-            }
+            {kind = "SPACE"}
         }
     },
     {

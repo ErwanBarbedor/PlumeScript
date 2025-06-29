@@ -168,8 +168,8 @@ return function (plume)
                     -- Single value keep own type without text conversion
                     if #lastContext.children == 1
                         and lastContext.returnType == "TEXT"
-                        and contains("ASSIGNMENT LIST_ITEM HASH_ITEM MACRO_EXTENDED_ARG_TABLE", lastContext.kind)
-                        and contains("TEXT MACRO_CALL", lastContext.children[1].kind) then
+                        and contains("ASSIGNMENT LIST_ITEM HASH_ITEM RETURN", lastContext.kind)
+                        and contains("TEXT MACRO_CALL VARIABLE LUA_EXPRESSION", lastContext.children[1].kind) then
                         lastContext.returnType = "VALUE"
                     end
                     

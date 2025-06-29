@@ -65,5 +65,7 @@ According some quick benchmark simulating standard use-cases, transpiled code ex
 
 #### Changes
 - Can use any value as macro default parameter.
+- `return` is no longer followed by default by a script.
+- `return` can now be followed by any expression.
 
 [Older versions](doc/changelog.md)

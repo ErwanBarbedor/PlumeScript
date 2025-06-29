@@ -46,13 +46,26 @@ $foo()
 bar
 /// End
 
-/// Test "Macro return"
+/// Test "Macro return 1"
 macro foo()
-    return "bar"
+    return bar
 
 $foo()
 /// Result
 bar
+/// End
+
+/// Test "Macro return 2"
+macro bar(**kw)
+    for k, v in items(kw)
+        $k\: $v
+macro foo()
+    return $bar()
+        foo: baz
+
+$foo()
+/// Result
+foo: baz
 /// End
 
 /// Test "Factorial"
@@ -60,7 +73,7 @@ macro fact(n)
     if n==0
         return 1
     else
-        return n * fact(n-1)
+        return $(n * fact(n-1))
 
 10! = $fact(10)
 /// Result
@@ -133,7 +146,7 @@ $foo()
 
 /// Test "Macro with default value 7"
 macro foo(a: $table())
-  return a
+  return $a
 
 t =
   *foo()
@@ -344,7 +357,7 @@ baz
 
 /// Test "Return macro"
 macro getMacro()
-    macro()
+    return macro()
         bar
 local foo = $getMacro()
 $foo()
