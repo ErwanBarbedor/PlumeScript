@@ -1,0 +1,50 @@
+/// Test Simple text
+Foo
+/// Output
+Foo
+/// End
+
+/// Test No space capture 1
+Foo
+Bar
+/// Output
+FooBar
+/// End
+
+/// Test No space capture 2
+    Foo
+         Bar
+/// Output
+FooBar
+/// End
+
+/// Test Space capture 1
+Foo Bar
+/// Output
+Foo Bar
+/// End
+
+/// Test Space capture 2
+Foo  Bar
+/// Output
+Foo  Bar
+/// End
+
+/// Test Raw space 1
+Foo\sBar
+/// Output
+Foo  Bar
+/// End
+
+/// Test Raw space 2
+Foo\nBar
+/// Output
+Foo
+Bar
+/// End
+
+/// Test Raw space 3
+\tFoo
+/// Output
+	Foo
+/// End

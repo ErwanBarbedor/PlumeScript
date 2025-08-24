@@ -1,0 +1,31 @@
+/// Test simple affectation
+let x = Foo
+/// Output
+/// End
+
+/// Test simple affectation and eval
+let x = Foo
+$x
+/// Output
+Foo
+/// End
+
+/// Test shadowing
+let x = 1
+if 1==1
+	let x = 2
+end
+$x
+/// Output
+1
+/// End
+
+/// Test not shadowing
+let x = 1
+if 1==1
+	set x = 2
+end
+$x
+/// Output
+2
+/// End
