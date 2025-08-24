@@ -1,0 +1,772 @@
+{
+	"auto_complete":
+	{
+		"selected_items":
+		[
+			[
+				"chil",
+				"childsHandler"
+			],
+			[
+				"nodeH",
+				"nodeHandler"
+			],
+			[
+				"ch",
+				"chainableCommands"
+			],
+			[
+				"no",
+				"notChainableCommands"
+			],
+			[
+				"bo",
+				"bodyType"
+			],
+			[
+				"get",
+				"getBlockType"
+			],
+			[
+				"el",
+				"elseif"
+			],
+			[
+				"nodHn",
+				"nodeHandler"
+			],
+			[
+				"node",
+				"nodeHandler"
+			],
+			[
+				"para",
+				"paramlist"
+			],
+			[
+				"escape",
+				"escapeSubPattern"
+			],
+			[
+				"e",
+				"escapePattern"
+			],
+			[
+				"regi",
+				"registerGoto"
+			],
+			[
+				"hand",
+				"childsHandler"
+			],
+			[
+				"macr",
+				"macroOffset"
+			],
+			[
+				"re",
+				"registerVariable"
+			],
+			[
+				"ha",
+				"childsHandler"
+			],
+			[
+				"o",
+				"registerOP"
+			],
+			[
+				"chi",
+				"childsHandler"
+			],
+			[
+				"quo",
+				"quoteText"
+			],
+			[
+				"quote",
+				"quoteEscape"
+			],
+			[
+				"eva",
+				"evalRules"
+			],
+			[
+				"cre",
+				"createConstant"
+			],
+			[
+				"E",
+				"expandedArgList"
+			],
+			[
+				"expanded",
+				"expandedArg"
+			],
+			[
+				"has",
+				"hashCount"
+			],
+			[
+				"un",
+				"unstackNamed"
+			],
+			[
+				"las",
+				"getLastScope"
+			],
+			[
+				"nex",
+				"nextLine"
+			],
+			[
+				"in",
+				"instrname"
+			],
+			[
+				"isnt",
+				"instrname"
+			],
+			[
+				"macro",
+				"macroCall"
+			],
+			[
+				"mac",
+				"macroDef"
+			],
+			[
+				"print",
+				"printTable"
+			],
+			[
+				"begin",
+				"beginIndex"
+			],
+			[
+				"tabl",
+				"tableIndex"
+			],
+			[
+				"to",
+				"top_empty"
+			],
+			[
+				"sta",
+				"static"
+			],
+			[
+				"inde",
+				"indentLevel"
+			],
+			[
+				"inden",
+				"indentLevel"
+			],
+			[
+				"prin",
+				"printTable"
+			],
+			[
+				"rpn_",
+				"rpn_fold"
+			],
+			[
+				"fi",
+				"first"
+			],
+			[
+				"op",
+				"operand"
+			],
+			[
+				"remove",
+				"removeUselessScope"
+			],
+			[
+				"reg",
+				"registerLabel"
+			],
+			[
+				"byt",
+				"bytecode"
+			],
+			[
+				"labe",
+				"labelCount"
+			],
+			[
+				"com",
+				"computedBytecode"
+			],
+			[
+				"me",
+				"meta_hash_item"
+			],
+			[
+				"text",
+				"textInsideCall"
+			],
+			[
+				"PARA",
+				"PARAMETER_END"
+			],
+			[
+				"ve",
+				"venv_path"
+			],
+			[
+				"conf",
+				"python_config"
+			],
+			[
+				"colum",
+				"column2"
+			],
+			[
+				"py",
+				"python_executable"
+			],
+			[
+				"pyth",
+				"python_config"
+			],
+			[
+				"pyt",
+				"python_executable"
+			]
+		]
+	},
+	"buffers":
+	[
+		{
+			"file": "z/z.md",
+			"settings":
+			{
+				"buffer_size": 242,
+				"encoding": "UTF-8",
+				"line_ending": "Windows"
+			},
+			"undo_stack":
+			[
+				[
+					3,
+					2,
+					"left_delete",
+					null,
+					"AgAAAPMAAAAAAAAA8wAAAAAAAACZAQAACgpWb2ljaSBsYSBsaWduZSAxMDQ6IHN0YWNrW2xpbWl0XSA9IHRhYmxlLmNvbmNhdChzdGFjaywgIiIsIGxpbWl0LCBzcCkKTGEgbGlnbmUgNTkgZXN0IHBsdXMuLi4gc3VycHJlbmFudGU6IGxvY2FsIGZ0ID0gZnJhbWVzW2ZwXQooc2ltcGxlIGFjY8OocyBkZSB0YWJsZWF1IGRhbnMgbGEgYm91Y2xlIHByaW5jaXBhbCkKCgpSYWNjb3VyY2lzPwooQHRvcCB4IGQ9MCkgLT4gJHhbJHhwLSRkXQooQGZ0b3AgeCBkMT0wIGQyPTApIC0+ICR4WyR4ZlskeGZwKyRkMV0rJGQyXQoKbXNbbXNmW21zZnBdXVttc1ttc3BdXSA9IG1zW21zcC0xXQotPgpAZnRvcCBtcyBbIEB0b3AgbXMgXSA9IEB0b3AgbXMgMQoKbXNbbXNwLTJdW21zW21zcC0xXV0gPSBtc1ttc3BdCi0+CkB0b3AgbXMgMiBbIEB0b3AgbXMgMSBdID0gQHRvcCBtc/IAAAAAAAAA8gAAAAAAAAABAAAACg",
+					"AQAAAAAAAAABAAAAiwIAAAAAAADzAAAAAAAAAAAAAAAAAPC/"
+				]
+			]
+		},
+		{
+			"file": "z/test2.lua",
+			"settings":
+			{
+				"buffer_size": 15,
+				"line_ending": "Windows"
+			}
+		}
+	],
+	"build_system": "Packages/User/builds/luajit.sublime-build",
+	"build_system_choices":
+	[
+		[
+			[
+				[
+					"Packages/Lua/Lua.sublime-build",
+					""
+				],
+				[
+					"Packages/Lua/Lua.sublime-build",
+					"Syntax Check"
+				],
+				[
+					"Packages/User/builds/luajit.sublime-build",
+					""
+				]
+			],
+			[
+				"Packages/User/builds/luajit.sublime-build",
+				""
+			]
+		]
+	],
+	"build_varint": "",
+	"command_palette":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+			[
+				"insta",
+				"Package Control: Install Package"
+			],
+			[
+				"install",
+				"Package Control: Install Package"
+			],
+			[
+				"instal",
+				"Package Control: Install Package"
+			],
+			[
+				"package",
+				"Preferences: Browse Packages"
+			]
+		],
+		"width": 0.0
+	},
+	"console":
+	{
+		"height": 571.0,
+		"history":
+		[
+		]
+	},
+	"distraction_free":
+	{
+		"menu_visible": true,
+		"show_minimap": false,
+		"show_open_files": false,
+		"show_tabs": false,
+		"side_bar_visible": false,
+		"status_bar_visible": false
+	},
+	"expanded_folders":
+	[
+		"/F/Dropbox/proj/code/dev/plume/plume",
+		"/F/Dropbox/proj/code/dev/plume/plume/z"
+	],
+	"file_history":
+	[
+		"/F/Dropbox/proj/code/dev/plume/plume/utils.lua",
+		"/F/Dropbox/proj/code/dev/plume/plume/compiler.lua",
+		"/F/Dropbox/proj/code/dev/plume/plume/z/test.plume",
+		"/F/Dropbox/proj/code/dev/plume/plume/objects.lua",
+		"/F/Dropbox/proj/code/dev/plume/plume/z/test.lua",
+		"/F/Dropbox/proj/code/dev/plume/plume/std.lua",
+		"/F/Dropbox/proj/code/dev/plume/plume/z/readme.fr.md",
+		"/F/Dropbox/proj/code/dev/plume/plume/z/roadmap.md",
+		"/F/Dropbox/proj/code/dev/plume/plume/engine.plua",
+		"/F/Dropbox/proj/code/dev/plume/plume/debug_tools.lua",
+		"/F/Dropbox/proj/code/dev/plume/plume/parser.lua",
+		"/F/Dropbox/proj/code/dev/plume/plume/z/zgpt.md",
+		"/F/Dropbox/proj/code/dev/plume/plume/z/test2.lua",
+		"/F/Dropbox/proj/code/dev/plume/plume/preprocessor.lua",
+		"/F/Dropbox/proj/code/dev/plume/plume/engine.lua",
+		"/F/Dropbox/proj/code/dev/plume/plume/plume.lua",
+		"/F/Dropbox/proj/code/dev/plume/plume/_",
+		"/F/Dropbox/proj/code/dev/plume/plume/compiler-oo.lua",
+		"/F/Dropbox/proj/code/dev/plume/plume/finalizer.lua",
+		"/F/Dropbox/proj/code/dev/plume/plume/_compiler.lua",
+		"/F/Dropbox/proj/code/dev/plume/plume/ast.lua",
+		"/C/Erwan/sd/prompt/femdom.yaml",
+		"/F/Dropbox/proj/code/dev/plume/plume/_parser.lua",
+		"/C/Erwan/sd/prompt/pegging.yaml",
+		"/C/Erwan/sd/prompt/prompt.yaml",
+		"/F/Dropbox/proj/code/dev/plume/plume/z/z.md",
+		"/C/Erwan/sd/prompt/girl.yaml",
+		"/C/Erwan/sd/prompt/tentacles.yaml",
+		"/F/Dropbox/proj/code/dev/plume/plume/preprocessor/preprocessor.lua",
+		"/F/Dropbox/proj/code/dev/plume/plume/syntax_check.lua",
+		"/F/Dropbox/proj/code/dev/plume/plume/preprocessor/main.lua",
+		"/F/Dropbox/proj/code/dev/plume/plume/preprocessor/test.lua",
+		"/F/Dropbox/proj/code/dev/plume/plume/preprocessor/test.plua",
+		"/F/Dropbox/proj/code/dev/plume/plume/preprocessor/_main.lua",
+		"/F/Dropbox/proj/code/dev/plume/plume/preprocessor/_engine.lua",
+		"/F/Dropbox/proj/code/dev/plume/plume/backup.lua",
+		"/F/Dropbox/proj/code/dev/plume/plume/bench/fibo/main.plume",
+		"/F/Dropbox/proj/code/dev/plume/plume/bench/fibo/main.py",
+		"/F/Dropbox/proj/code/dev/plume/plume/bench/fibo/main.lua",
+		"/F/Dropbox/proj/code/dev/plume/plume/bench/bench.md",
+		"/F/Dropbox/proj/code/dev/plume/plume/bench/fibo/launch.lua",
+		"/F/Dropbox/proj/code/dev/plume/plume/bench/heavyloop/main.lua",
+		"/F/Dropbox/proj/code/dev/plume/plume/bench/heavyloop/main.plume",
+		"/F/Dropbox/proj/code/dev/plume/plume/bench/heavyloop/main.py",
+		"/F/Dropbox/proj/code/dev/plume/plume/bench/heavyloop/launch.lua",
+		"/F/Dropbox/proj/code/dev/plume/plume/optimizer.lua",
+		"/F/Dropbox/soft/win/luajit/src/jit/p.lua",
+		"/F/Dropbox/soft/win/lua.bat",
+		"/F/Dropbox/proj/code/dev/plume/plume/bench/heavyloop/plume.lua",
+		"/F/Dropbox/arch/proj/code/plume/plume2025/readme.md",
+		"/F/Dropbox/scripts/py/script_subl_project_update.py",
+		"/F/Dropbox/scripts/win/py.bat",
+		"/F/Dropbox/scripts/nu/py.nu",
+		"/C/Erwan/python-venv/python13/kadran/6cf94/requirements.txt",
+		"/C/Users/ewokb/AppData/Roaming/Sublime Text/Packages/User/builds/py.sublime-build",
+		"/C/Erwan/Dropbox/scripts/nu/test.py",
+		"/C/Erwan/Dropbox/scripts/pyproject.toml",
+		"/C/Erwan/Dropbox/scripts/py/script_subl_project_update.py",
+		"/C/Erwan/Dropbox/doc/install.md",
+		"/C/Erwan/Dropbox/proj/iag/.pdm-python",
+		"/C/Users/ewokb/AppData/Roaming/nushell/history.txt",
+		"/C/Erwan/Dropbox/doc/subl.md",
+		"/C/Erwan/Dropbox/doc/documentation.md",
+		"/C/Users/ewokb/AppData/Roaming/nushell/config.nu",
+		"/C/Users/ewokb/AppData/Roaming/nushell/theme/ayu-light.nu",
+		"/C/Erwan/Dropbox/soft/sys-soft.sublime-project",
+		"/C/Erwan/Dropbox/soft/sys-soft.sublime-workspace"
+	],
+	"find":
+	{
+		"height": 60.4
+	},
+	"find_in_files":
+	{
+		"height": 170.800003052,
+		"where_history":
+		[
+			"<current file>",
+			""
+		]
+	},
+	"find_state":
+	{
+		"case_sensitive": false,
+		"find_history":
+		[
+			"ms[msp-2]",
+			"TABLE_INDEX",
+			"list_i",
+			"accBlock",
+			"acc",
+			"type",
+			"nil",
+			"NIL",
+			"Cc",
+			"ESC",
+			"HASH_ITEM",
+			"opLoadVar",
+			"LOAD",
+			"HASH",
+			"textic",
+			"eval",
+			"CALL",
+			"macro",
+			"gsub",
+			"print",
+			":gs",
+			":gma",
+			":match",
+			"ESCAPED",
+			"ARG",
+			"\\t",
+			"block",
+			"blockCall",
+			"hash_item",
+			"\\bfp\\b",
+			"\\bframes\\b",
+			"\\bvp\\b",
+			"\\bvar\\b",
+			"\\bap\\b",
+			"\\bacc\\b",
+			"\\bframes\\b",
+			"\\bsp\\b",
+			"\\bstack\\b",
+			"\\bstack",
+			".*?stack",
+			".*stack",
+			"().*stack",
+			"stack",
+			"sctack",
+			"CALL",
+			"item",
+			"TABLE",
+			"hash_item",
+			"CALL",
+			"call",
+			"arglist",
+			"CALL",
+			"call",
+			"popStack",
+			"insideEval",
+			"EVAL_SHORT",
+			"print",
+			"storeParam",
+			"error",
+			"return",
+			"MACRO",
+			"print",
+			":  -",
+			"unusued",
+			"(unusued)",
+			"---arg",
+			"@arg2",
+			"@arg1",
+			"LOAD_CONSTANT",
+			"arg",
+			"--#define",
+			"--#end",
+			"--#define",
+			".args",
+			"bp",
+			"blocks",
+			"block",
+			"BEGIN_",
+			"macro_end",
+			"eval=",
+			"tableIndexDirect",
+			"Memo",
+			"print",
+			"tableIndex",
+			"call",
+			"CALL",
+			"beginOffset",
+			"registerOp(0",
+			"BEGIN",
+			"|",
+			"LOAD_CON",
+			"byte",
+			"link",
+			"function",
+			"registerLabel",
+			"registerOP(0",
+			"ACC_TEXT",
+			"list_item",
+			"PARAMETER_END",
+			"ft",
+			"RETURN",
+			"venv ",
+			"venv",
+			"config_path"
+		],
+		"highlight": true,
+		"in_selection": false,
+		"preserve_case": false,
+		"regex": true,
+		"replace_history":
+		[
+			"    ",
+			"vsfp",
+			"vsf",
+			"vsp",
+			"vs",
+			"msfp",
+			"msf",
+			"msp",
+			"ms",
+			"_ERROR",
+			": -",
+			" -",
+			"unusued",
+			"--- arg",
+			"arg2:",
+			"arg1:",
+			"@define",
+			"@end",
+			"ap",
+			"acc",
+			""
+		],
+		"reverse": false,
+		"scrollbar_highlights": true,
+		"show_context": true,
+		"use_buffer2": true,
+		"use_gitignore": true,
+		"whole_word": false,
+		"wrap": true
+	},
+	"groups":
+	[
+		{
+			"sheets":
+			[
+				{
+					"buffer": 0,
+					"file": "z/z.md",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 242,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								242,
+								242
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Markdown/Markdown.sublime-syntax",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 1,
+					"stack_multiselect": false,
+					"type": "text"
+				},
+				{
+					"buffer": 1,
+					"file": "z/test2.lua",
+					"selected": true,
+					"semi_transient": true,
+					"settings":
+					{
+						"buffer_size": 15,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								0,
+								0
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Lua/Lua.sublime-syntax"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 0,
+					"stack_multiselect": false,
+					"type": "text"
+				}
+			]
+		}
+	],
+	"incremental_find":
+	{
+		"height": 37.6
+	},
+	"input":
+	{
+		"height": 153.6
+	},
+	"layout":
+	{
+		"cells":
+		[
+			[
+				0,
+				0,
+				1,
+				1
+			]
+		],
+		"cols":
+		[
+			0.0,
+			1.0
+		],
+		"rows":
+		[
+			0.0,
+			1.0
+		]
+	},
+	"menu_visible": true,
+	"output.exec":
+	{
+		"height": 484.0,
+		"history":
+		[
+		]
+	},
+	"output.find_results":
+	{
+		"height": 0.0,
+		"history":
+		[
+		]
+	},
+	"pinned_build_system": "",
+	"project": "proj-code-plume-plume.sublime-project",
+	"replace":
+	{
+		"height": 72.0
+	},
+	"save_all_on_build": true,
+	"select_file":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"select_project":
+	{
+		"height": 499.8,
+		"last_filter": "",
+		"selected_items":
+		[
+			[
+				"doc",
+				"F:\\Dropbox\\doc\\sys-doc.sublime-project"
+			],
+			[
+				"plume",
+				"F:\\Dropbox\\proj\\code\\dev\\plume\\plume\\proj-code-plume-plume.sublime-project"
+			],
+			[
+				"script",
+				"F:\\Dropbox\\scripts\\sys-scripts.sublime-project"
+			],
+			[
+				"plume-",
+				"F:\\Dropbox\\proj\\code\\dev\\plume\\proj-code-plume.sublime-project"
+			],
+			[
+				"conf",
+				"C:\\Erwan\\Dropbox\\conf\\sys-conf.sublime-project"
+			],
+			[
+				"scrip",
+				"C:\\Erwan\\Dropbox\\scripts\\sys-scripts.sublime-project"
+			],
+			[
+				"con",
+				"C:\\Erwan\\Dropbox\\conf\\sys-conf.sublime-project"
+			],
+			[
+				"ia",
+				"C:\\Erwan\\Dropbox\\proj\\iag\\proj-iag.sublime-project"
+			],
+			[
+				"scr",
+				"C:\\Erwan\\Dropbox\\scripts\\sys-scripts.sublime-project"
+			],
+			[
+				"",
+				"C:\\Erwan\\Dropbox\\scripts\\sys-scripts.sublime-project"
+			]
+		],
+		"width": 379.6
+	},
+	"select_symbol":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"selected_group": 0,
+	"settings":
+	{
+	},
+	"show_minimap": true,
+	"show_open_files": false,
+	"show_tabs": true,
+	"side_bar_visible": true,
+	"side_bar_width": 325.0,
+	"status_bar_visible": true,
+	"template_settings":
+	{
+	}
+}
