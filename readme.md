@@ -100,6 +100,6 @@ end
 end
 ```
 
-
-
-### Quickstart
+### Changelog
+#### 0.50 (Initial Commit)
+Project restarted from scratch.
