@@ -57,7 +57,6 @@ return function (plume)
         local macro, x, y
         ::DISPATCH::
                         	if ip>0 then
-                plume.debug.printState(ip, vsfp, cp, msp, vsp, msfp, mp, jump, ms, vsf, calls, vs, msf, memory, runtime)
             end
             if jump>0 then
                 ip=jump
@@ -489,6 +488,6 @@ return function (plume)
 	            ms[msp]=ms[msp] or ms[msp+1]
 				goto DISPATCH
 		::END::
-        	return true, ms[1]
+        	return true, ms[1], ip
     end
 end
