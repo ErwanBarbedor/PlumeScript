@@ -551,6 +551,6 @@ return function (plume)
             @_DISPATCH
             @_INSTRUCTIONS
 
-        return true, ms[1]
+        return true, ms[1], ip
     end
 end

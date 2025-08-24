@@ -30,4 +30,32 @@ require 'plume-data/engine/compiler'  (plume)
 require 'plume-data/engine/engine'    (plume)
 require 'plume-data/engine/finalizer' (plume)
 
+function plume.execute(code, filename, runtime)
+	if not runtime then
+		runtime = plume.initRuntime()
+	end
+
+	plume.compileFile(code, filename, runtime)
+	plume.finalize(runtime)
+	local success, result, ip = plume.run(runtime)
+
+	if success then
+		return result
+	else
+		error("Error at instruction " .. ip .. ": " .. result)
+	end
+end
+
+function plume.executeFile(filename)
+	local f = io.open(filename)
+		if not f then
+			error("The file '" .. filename .. "' don't exist or isn't readable.")
+		end
+
+		local code = f:read("*a")
+	f:close()
+
+	return plume.execute(code, filename)
+end
+
 return plume
