@@ -91,7 +91,7 @@ return function (plume)
         ----------------
         @define _START
             if ip>0 then
-                plume.debug.printState(ip, vsfp, cp, msp, vsp, msfp, mp, jump, ms, vsf, calls, vs, msf, memory, runtime)
+                --plume.debug.printState(ip, vsfp, cp, msp, vsp, msfp, mp, jump, ms, vsf, calls, vs, msf, memory, runtime)
             end
 
             if jump>0 then
