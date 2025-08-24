@@ -20,14 +20,14 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 local plume = {}
 
-require 'plume-data/debug_tools' (plume)
+require 'plume-data/engine/debug_tools' (plume)
 
-require 'plume-data/utils'     (plume)
-require 'plume-data/objects'   (plume)
-require 'plume-data/std'       (plume)
-require 'plume-data/parser'    (plume)
-require 'plume-data/compiler'  (plume)
-require 'plume-data/engine'    (plume)
-require 'plume-data/finalizer' (plume)
+require 'plume-data/engine/utils'     (plume)
+require 'plume-data/engine/objects'   (plume)
+require 'plume-data/engine/std'       (plume)
+require 'plume-data/engine/parser'    (plume)
+require 'plume-data/engine/compiler'  (plume)
+require 'plume-data/engine/engine'    (plume)
+require 'plume-data/engine/finalizer' (plume)
 
 return plume
