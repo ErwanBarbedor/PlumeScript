@@ -144,7 +144,7 @@ return function (plume)
 				goto DISPATCH
 			::LOAD_EMPTY::
 	            	msp=msp+1
-	            ms[msp]=plume.obj.empty
+	            ms[msp]=empty
 				goto DISPATCH
 			::STORE_LOCAL::
 	            	vs[vsf[vsfp] + arg2-1]=ms[msp]
@@ -181,7 +181,7 @@ return function (plume)
 	            vsf[vsfp]=vsp+1-arg1
 	            for i=1, arg2-arg1 do
 	                vsp=vsp+1
-	                vs[vsp]=plume.obj.empty
+	                vs[vsp]=empty
 	            end
 				goto DISPATCH
 			::LEAVE_SCOPE::
@@ -224,7 +224,7 @@ return function (plume)
 				goto DISPATCH
 			::ACC_EMPTY::
 	            	msp=msp+1
-	            ms[msp]=plume.obj.empty
+	            ms[msp]=empty
 	                        msfp=msfp-1
 				goto DISPATCH
 			::ACC_CALL::
@@ -235,7 +235,7 @@ return function (plume)
 	            vsf[vsfp]=vsp+1-0
 	            for i=1, macro[3]+#macro[4]-0 do
 	                vsp=vsp+1
-	                vs[vsp]=plume.obj.empty
+	                vs[vsp]=empty
 	            end
 	                            x=msp-msf[msfp]
 	            if x ~=macro[3] then
@@ -280,7 +280,7 @@ return function (plume)
 	            msp=msp-1
 				goto DISPATCH
 			::JUMP_IF_NOT_EMPTY::
-	            	if ms[msp] ~=plume.obj.empty then
+	            	if ms[msp] ~=empty then
 	                jump=arg2
 	            end
 	            msp=msp-1
