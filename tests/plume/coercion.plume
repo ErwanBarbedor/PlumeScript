@@ -1,0 +1,14 @@
+/// Test string+string
+let x = 1 // string
+let y = 1 // string
+$(x+y)
+/// Output
+2
+/// End
+
+/// Test string+number
+let x = 1 // string
+$(x+1) // 1 is a number
+/// Output
+2
+/// End
