@@ -223,7 +223,11 @@ return function (plume)
 			::ACC_TEXT::
 	            	limit=msf[msfp]
 	            if msp-limit>=1 then
-	                print(">>>", ms[msp])
+	                for i=limit, msp do
+	                    if ms[i]==empty then
+	                        ms[i]=""
+	                    end
+	                end
 	                ms[limit]=table.concat(ms, "", limit, msp)
 	            elseif msp-limit==0 then
 	                ms[limit]=ms[msp]

@@ -17,9 +17,7 @@ return function(plume)
 	require "table.new"
 	
 	plume.obj = {}
-	plume.obj.empty = setmetatable({}, {
-		__tostring = function()return""end
-	})
+	plume.obj.empty = {}
 
 	function plume.obj.macro (offset, name)
 		return {
