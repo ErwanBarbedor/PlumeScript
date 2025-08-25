@@ -241,22 +241,22 @@ return function (plume)
 	            if _type(macro)=="macro" then
 	                            vsfp=vsfp+1
 	            vsf[vsfp]=vsp+1-0
-	            for i=1, macro[3]+#macro[4]-0 do
+	            for i=1, macro[3]+macro[4]-0 do
 	                vsp=vsp+1
 	                vs[vsp]=empty
 	            end
 	                            x=msp-msf[msfp]
 	            if x ~=macro[3] then
-	                            return false, "Wrong number of positionnal arguments for macro '" .. macro[5] .. "', " ..   x .. " instead of " .. macro[3], ip
+	                            return false, "Wrong number of positionnal arguments for macro '" .. macro[6] .. "', " ..   x .. " instead of " .. macro[3], ip
 	            end
 	            for i=1, x do
 	                vs[vsf[vsfp]+i-1]=ms[msp+i-x]
 	            end
 	            msp=msf[msfp]
 	                            for k, v in pairs(ms[msf[msfp]]) do
-	                local i=macro[4][k]
+	                local i=macro[5][k]
 	                if not i then
-	                                return false, "Unknow named parameter '" .. k .."' for macro '" .. macro[5] .."'.", ip
+	                                return false, "Unknow named parameter '" .. k .."' for macro '" .. macro[6] .."'.", ip
 	                end
 	                vs[vsf[vsfp]+i-1]=v
 	            end

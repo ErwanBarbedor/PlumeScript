@@ -26,7 +26,8 @@ return function(plume)
 			"macro", -- type
 			offset,  -- location
 			0,       -- number of positionnal parameters
-			{},      -- named parameters
+			0,       -- number of nameds parameters
+			{},      -- named parameters offsets
 			name
 		}
 	end
