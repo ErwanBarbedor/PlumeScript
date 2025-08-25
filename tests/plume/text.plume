@@ -48,3 +48,33 @@ Bar
 /// Output
 	Foo
 /// End
+
+/// Test Escape 1
+$(1+1)\$(1+1)
+/// Output
+2$(1+1)
+/// End
+
+/// Test Escape 2
+Foo\$(1+1)
+/// Output
+Foo$(1+1)
+/// End
+
+/// Test Escape 3
+\$(1+1)
+/// Output
+$(1+1)
+/// End
+
+/// Test Escape 4
+\F
+/// Output
+F
+/// End
+
+/// Test Escape 5
+a\F
+/// Output
+aF
+/// End
