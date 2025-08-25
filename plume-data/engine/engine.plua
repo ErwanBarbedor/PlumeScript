@@ -213,7 +213,7 @@ return function (plume)
         @define _UNSTACK_POS
             x = msp-msf[msfp] --argcount
             if x ~= macro[3] then
-                @_ERROR{{"Wrong number of positionnal arguments for macro '" .. macro[5] .. "', " ..   x .. " instead of " .. macro[3]}}
+                @_ERROR{{"Wrong number of positionnal arguments for macro '" .. macro[6] .. "', " ..   x .. " instead of " .. macro[3]}}
             end
 
             for i=1, x do
@@ -225,9 +225,9 @@ return function (plume)
 
         @define _UNSTACK_NAMED
             for k, v in pairs(ms[msf[msfp]]) do
-                local i = macro[4][k]
+                local i = macro[5][k]
                 if not i then
-                    @_ERROR{{"Unknow named parameter '" .. k .."' for macro '" .. macro[5] .."'."}}
+                    @_ERROR{{"Unknow named parameter '" .. k .."' for macro '" .. macro[6] .."'."}}
                 end
                 vs[vsf[vsfp]+i-1] = v
             end    
@@ -248,7 +248,7 @@ return function (plume)
             msp = msp - 1
 
             if _type(macro) == "macro" then
-                @ENTER_SCOPE 0 macro[3]+#macro[4]
+                @ENTER_SCOPE 0 macro[3]+macro[4]
 
                 @_UNSTACK_POS
                 @_UNSTACK_NAMED

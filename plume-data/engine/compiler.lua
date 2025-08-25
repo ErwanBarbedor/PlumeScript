@@ -243,8 +243,6 @@ return function(plume)
 			end
 		end
 
-		
-		
 		-----------
 		-- ENTER --
 		-----------
@@ -484,7 +482,7 @@ return function(plume)
 					macroName,
 					true -- static
 				)
-				macroObj[5] = macroName
+				macroObj[6] = macroName
 				registerOP(ops.STORE_STATIC, 0, variable.offset)
 			end
 
@@ -507,8 +505,8 @@ return function(plume)
 						registerOP(ops.STORE_LOCAL, 0, i)
 						registerLabel("macro_var_" .. i .. "_" .. uid)
 
-						table.insert(macroObj[4], paramName)
-						macroObj[4][paramName] = #macroObj[4]
+						macroObj[4] = macroObj[4]+1
+						macroObj[5][paramName] = param.offset
 					else
 						macroObj[3] = macroObj[3]+1
 					end
