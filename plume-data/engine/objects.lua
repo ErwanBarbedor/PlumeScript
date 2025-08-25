@@ -15,7 +15,7 @@ If not, see <https://www.gnu.org/licenses/>.
 
 return function(plume)
 	require "table.new"
-
+	
 	plume.obj = {}
 	plume.obj.empty = setmetatable({}, {
 		__tostring = function()return""end
@@ -32,10 +32,12 @@ return function(plume)
 		}
 	end
 
-	function plume.obj.luaFunction (f)
+	--- lua fonction take 1 parameters: the plume table of all given arguments
+	function plume.obj.luaFunction (name, f)
 		return {
 			"luaFunction", -- type
 			f,  -- function
+			name -- optionnal
 		}
 	end
 

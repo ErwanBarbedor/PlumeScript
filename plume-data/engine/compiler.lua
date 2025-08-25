@@ -70,11 +70,11 @@ return function(plume)
 			return constants[key]
 		end
 
-		local function registerVariable(name, isStatic, isConst)
+		local function registerVariable(name, isStatic, isConst, staticValue)
 			local scope
 			if isStatic then
 				scope = static
-				table.insert(runtime.filesMemory[fileNo], plume.obj.empty)
+				table.insert(runtime.filesMemory[fileNo], staticValue or plume.obj.empty)
 			else
 				scope = scopes[#scopes]
 			end
@@ -87,6 +87,13 @@ return function(plume)
 			scope[name] = {offset=#scope, isStatic = isStatic, isConst = isConst}
 
 			return scope[name]
+		end
+
+		-- All lua std function are stored as static variables
+		local function loadSTD()
+			for name, f in pairs(plume.std) do
+				registerVariable(name, true, false, f)
+			end
 		end
 
 		local function getLabel(name)
@@ -530,6 +537,8 @@ return function(plume)
 
 			-- registerOP(ops.ACC_CALL, 0, 0)
 		end
+
+		loadSTD()
 
 		local ast = plume.parse(code)
 		nodeHandler(ast)

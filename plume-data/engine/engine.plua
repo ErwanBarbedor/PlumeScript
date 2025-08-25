@@ -252,16 +252,23 @@ return function (plume)
 
                 @_UNSTACK_POS
                 @_UNSTACK_NAMED
+                @_END_ACC
 
                 jump = macro[2]
 
                 cp = cp + 1
                 calls[cp] = ip+1
+
+            elseif _type(macro) == "luaFunction" then
+                @ACC_TABLE
+                x = macro[2](ms[msp])
+                if x == nil then
+                    x = empty
+                end
+                ms[msp] = x
             else
                 @_ERROR {{"Try to call a '" .. _type(macro) .. "' value"}}
             end
-
-            @_END_ACC
         @end
         
         @define RETURN arg1 arg2
