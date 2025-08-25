@@ -224,8 +224,10 @@ return function (plume)
 	            	limit=msf[msfp]
 	            if msp-limit>=1 then
 	                ms[limit]=table.concat(ms, "", limit, msp)
-	            else
+	            elseif msp-limit==0 then
 	                ms[limit]=ms[msp]
+	            else
+	                ms[limit]=empty
 	            end
 	            msp=limit
 	                        msfp=msfp-1
