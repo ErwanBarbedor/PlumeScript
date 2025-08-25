@@ -236,48 +236,63 @@ return function (plume)
 		end
 	end
 
-	function plume.debug.printState(ip, fp, cp, sp, vp, bp, mp, jump, stack, frames, calls, var, blocks, memory, runtime)
-		local instr = runtime.bytecode[ip]
-		local instrInfos = getInstrInfos(instr, runtime)
-
-		local pstack = {}
-		local pvar   = {}
-
-		for i=1, sp do
-			table.insert(pstack, escapeString(stack[i], 20))
+	local function getStack(t, s, sp, sf, sfp)
+		table.insert(t, "[")
+		for i=0, sp do
+			local frame = false
+			for j=1, sfp do
+				if sf[j] == i+1 then
+					frame = true
+				end
+			end
+			if i>0 then
+				if i<=sp then
+					table.insert(t, escapeString(s[i]))
+				end
+				if i<sp then
+					if frame then
+						table.insert(t, " || ")
+					else
+						table.insert(t, " | ")
+					end
+				elseif frame then
+					table.insert(t, " |")
+				else
+					table.insert(t, " ")
+				end
+			elseif frame then
+				table.insert(t, "| ")
+			else
+				table.insert(t, " ")
+			end
 		end
-		for i=1, vp do
-			table.insert(pvar, escapeString(var[i], 20))
+		table.insert(t, "]")
+		return result
+	end
+
+	function plume.debug.hookPrintVMState(tic, ip, jump, instr, op, arg1, arg2, ms, msp, msf, msfp, vs, vsp, vsf, vsfp, calls, cp, memory, mp)
+
+		if jump==0 then
+			jump = ip+1
 		end
 
-		spstack = "Stack: {" .. table.concat(pstack, ", ") .. "}"
-		spfvar =  "Var: {"  .. table.concat(pvar, ", ") .. "}"
+		local sinstr = ""
+		if ip>0 then
+			sinstr = string.format("%s %i %i", invTable(plume.ops)[op], arg1, arg2)
+		end
+		local header = string.format("Step %i, instr %i->%i: %s", tic, ip, jump, sinstr)
+
+		local s_ms = {"main stack: "}
+		local s_vs = {"var  stack: "}
+
+		getStack(s_ms, ms, msp, msf, msfp)
+		getStack(s_vs, vs, vsp, vsf, vsfp)
+
+		local cm = string.format("Calls: {%s}, Memory: {%s}", table.concat(calls, "", 1, cp), table.concat(memory, "", 1, mp))
+
+		local show = {header, table.concat(s_ms), table.concat(s_vs), cm, ""}
+
+		print(table.concat(show, "\n\t"))
 		
-		local spframes = "Frames: {"  .. table.concat(frames, ", ", 1, fp) .. "}"
-		local spblocks = "Blocks: {"  .. table.concat(blocks, ", ", 1, bp) .. "}"
-		local spcalls = "Calls: {"   .. table.concat(calls, ", ", 1, cp) .. "}"
-
-		local infos = "sp: " .. sp .. "; vp: " .. vp .. "; bp: " .. bp .. "; fp: " .. fp
-
-		if jump then
-			infos  = infos .. "; Jump: " .. jump
-		end
-
-		local length = math.max(#spstack, #spfvar, #infos)
-		print(("-"):rep(length))
-		print(string.format("%i. %08x %s %i+%i", 
-			ip, instr,
-			instrInfos.name, instrInfos.arg1, instrInfos.arg2
-		))
-
-		
-		print(infos)
-		print(spframes)
-		print(spblocks)
-		print(spcalls)
-		print(spstack)
-		print(spfvar)
-
-		print(("-"):rep(length).."\n")
 	end
 end

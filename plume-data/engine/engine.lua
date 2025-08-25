@@ -39,8 +39,7 @@ return function (plume)
         local constants=runtime.constants
         local filesMemory=runtime.filesMemory
         local ip=0
-        local cp=0
-        local mp=0
+        local tic=0
         local ms=table.new(2^14, 0)
         local msf=table.new(2^8, 0)
         local msp=0
@@ -50,13 +49,26 @@ return function (plume)
         local vsp=0
         local vsfp=0
         local calls=table.new(2^8, 0)
+        local cp=0
         local memory=table.new(2^8, 0)
+        local mp=0
         local jump=0
         local instr, op, arg1, arg2=0, 0, 0, 0
         local limit=0
         local macro, x, y
+        local hook=plume.hook
         ::DISPATCH::
-                        	if ip>0 then
+                        	if hook then
+                if ip>0 then
+                    hook(
+                        tic, ip, jump,
+                        instr, op, arg1, arg2,
+                        ms, msp, msf, msfp,
+                        vs, vsp, vsf, vsfp,
+                        calls, cp,
+                        memory, mp
+                    )
+                end
             end
             if jump>0 then
                 ip=jump
@@ -64,6 +76,7 @@ return function (plume)
             else
                 ip=ip+1
             end
+            tic=tic+1
                         instr=bytecode[ip]
             op=bit.band(bit.rshift(instr, OP_SHIFT), MASK_OP)
             arg1=bit.band(bit.rshift(instr, ARG1_SHIFT), MASK_ARG1)

@@ -54,9 +54,7 @@ return function (plume)
         local filesMemory = runtime.filesMemory
 
         local ip      = 0 -- instruction pointer
-        
-        local cp      = 0 -- call pointer
-        local mp      = 0 -- file memory pointer
+        local tic     = 0 -- total instruction count
 
         local ms   = table.new(2^14, 0) -- main stack
         local msf  = table.new(2^8, 0)  -- main stack frames (accumulators)
@@ -69,15 +67,21 @@ return function (plume)
         local vsfp = 0
 
         local calls   = table.new(2^8, 0)  -- return from functions
+        local cp      = 0 -- call pointer
         local memory  = table.new(2^8, 0)  -- return from files
                                            -- (not offsets, handled by functions,
                                            -- but static memory pointer)
+        local mp      = 0 -- file memory pointer
         
         local jump    = 0 -- easier debuging than setting ip
         local instr, op, arg1, arg2 = 0, 0, 0, 0
+
         -- utils
         local limit = 0
         local macro, x, y 
+
+        --debug
+        local hook = plume.hook
 
         -----------
         -- ERROR -- 
@@ -90,8 +94,17 @@ return function (plume)
         -- LOOP ENTRY -- 
         ----------------
         @define _START
-            if ip>0 then
-                --plume.debug.printState(ip, vsfp, cp, msp, vsp, msfp, mp, jump, ms, vsf, calls, vs, msf, memory, runtime)
+            if hook then
+                if ip>0 then
+                    hook(
+                        tic, ip, jump,
+                        instr, op, arg1, arg2,
+                        ms, msp, msf, msfp,
+                        vs, vsp, vsf, vsfp,
+                        calls, cp,
+                        memory, mp
+                    )
+                end
             end
 
             if jump>0 then
@@ -100,6 +113,7 @@ return function (plume)
             else
                 ip = ip+1
             end
+            tic = tic+1
         @end
 
         @define _DECODING
