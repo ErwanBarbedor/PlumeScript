@@ -17,7 +17,9 @@ If not, see <https://www.gnu.org/licenses/>.
 
 return function (plume)
     function plume.run(runtime)
-        local empty = plume.obj.empty
+        local empty  = plume.obj.empty
+        local ptable = plume.obj.table
+
         local function _type(x)
             local t = type(x)
             if t=="table" then
@@ -311,15 +313,19 @@ return function (plume)
             --- Add keys to the table
             --- Stack the table
             --- Unstack main stack frame
-            --- arg1: Number of slots to reserve for hash part
+            --- arg1: -
             --- arg2: -
-            limit = msf[msfp]+1
-            x = table.new(msp-limit+1, $arg1)
-            for i=1, msp-limit+1 do
-                x[i] = ms[limit+i-1]
-            end
+            limit = msf[msfp]+1 -- Count items
+            y = 0 -- Count keys
             for k, v in pairs(ms[limit-1]) do
-                x[k] = v
+                y = y+1
+            end
+            x = ptable(msp-limit+1, y)
+            for i=1, msp-limit+1 do -- dump items
+                x[2][i] = ms[limit+i-1]
+            end
+            for k, v in pairs(ms[limit-1]) do --dump keys 
+                @_TABLE_SET x k v
             end
             ms[limit-1] = x
             msp = limit - 1
@@ -357,6 +363,14 @@ return function (plume)
             --- arg2: -
             ms[msp-1] = ms[msp][ms[msp-1]]
             msp = msp-1
+        @end
+
+        @define _TABLE_SET t k v
+            -- if dont exists, register key
+            if not $t[2][$k] then
+                table.insert($t[3], $k)
+            end
+            $t[2][$k] = $v --set
         @end
 
         @define TABLE_SET arg1 arg2

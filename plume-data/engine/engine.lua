@@ -13,6 +13,7 @@ If not, see <https://www.gnu.org/licenses/>.
 return function (plume)
     function plume.run(runtime)
         local empty=plume.obj.empty
+        local ptable=plume.obj.table
         local function _type(x)
             local t=type(x)
             if t=="table" then
@@ -201,12 +202,19 @@ return function (plume)
 				goto DISPATCH
 			::ACC_TABLE::
 	            	limit=msf[msfp]+1
-	            x=table.new(msp-limit+1, arg1)
+	            y=0
+	            for k, v in pairs(ms[limit-1]) do
+	                y=y+1
+	            end
+	            x=ptable(msp-limit+1, y)
 	            for i=1, msp-limit+1 do
-	                x[i]=ms[limit+i-1]
+	                x[2][i]=ms[limit+i-1]
 	            end
 	            for k, v in pairs(ms[limit-1]) do
-	                x[k]=v
+	                            if not x[2][k] then
+	                table.insert(x[3], k)
+	            end
+	            x[2][k]=v
 	            end
 	            ms[limit-1]=x
 	            msp=limit - 1

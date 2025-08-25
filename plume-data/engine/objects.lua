@@ -14,6 +14,8 @@ If not, see <https://www.gnu.org/licenses/>.
 ]]
 
 return function(plume)
+	require "table.new"
+
 	plume.obj = {}
 	plume.obj.empty = setmetatable({}, {
 		__tostring = function()return""end
@@ -33,6 +35,14 @@ return function(plume)
 		return {
 			"luaFunction", -- type
 			f,  -- function
+		}
+	end
+
+	function plume.obj.table (listSlots, hashSlots)
+		return {
+			"table", --type
+			table.new(listSlots, hashSlots), -- lua table
+			table.new(hashSlots, 0) -- key order
 		}
 	end
 
