@@ -339,11 +339,11 @@ end
 -- The output is a `<details>` block that is either collapsed (on pass) or
 -- expanded (on fail). It includes the test name, status, source code, and a
 -- detailed comparison view for failed tests.
--- @param testFullName A string representing the unique name of the test (e.g., "file.plume/Test Name").
+-- @param testName A string representing the name of the test.
 -- @param testData A table containing the test's `input`, `expected` result,
 -- `obtained` result, and calculated `status` ("pass" or "fail").
 -- @return A string containing the complete HTML for the test block.
-function lib.generateTestBlockHtml(testFullName, testData)
+function lib.generateTestBlockHtml(testName, testData)
     local htmlParts = {}
     
     local isFail = (testData.status == "fail")
@@ -357,7 +357,7 @@ function lib.generateTestBlockHtml(testFullName, testData)
     table.insert(htmlParts, "<summary>")
     table.insert(htmlParts, string.format(
         "<span class=\"status-icon %s\">%s</span> %s",
-        summaryClass, summaryIcon, escapeHtml(testFullName)
+        summaryClass, summaryIcon, escapeHtml(testName)
     ))
     table.insert(htmlParts, "</summary>")
     
@@ -371,24 +371,37 @@ function lib.generateTestBlockHtml(testFullName, testData)
     table.insert(htmlParts, "</code></pre>")
     
     if isFail then
-        -- 2.2 For failed tests, show a detailed diff table
-        table.insert(htmlParts, "<div class=\"diff-container\">")
-        table.insert(htmlParts, "<table>")
-        table.insert(htmlParts, "<thead><tr><th>Attendu</th><th>Obtenu</th></tr></thead>")
-        table.insert(htmlParts, "<tbody>")
-        
-        -- Row for result type (Output vs Error) and content diff
+        -- 2.2 For failed tests, show a detailed comparison grid
         local expectedType = testData.expected.error and "Error" or "Output"
         local obtainedType = testData.obtained.error and "Error" or "Output"
-        
+
+        local typeMismatchClass_Expected = ""
+        local typeMismatchClass_Obtained = ""
+        if testData.expected.error ~= testData.obtained.error then
+            typeMismatchClass_Expected = " result-type-mismatch"
+            typeMismatchClass_Obtained = " result-type-mismatch"
+        end
+
         local diff = lib.generateDiffHtml(testData.expected.output, testData.obtained.output)
         
+        table.insert(htmlParts, "<div class=\"comparison-grid\">")
+        -- Headers
+        table.insert(htmlParts, "<h4>Attendu</h4>")
+        table.insert(htmlParts, "<h4>Obtenu</h4>")
+        -- Content
         table.insert(htmlParts, string.format(
-            "<tr><td><div class=\"result-type-header\">%s</div><pre><code>%s</code></pre></td><td><div class=\"result-type-header\">%s</div><pre><code>%s</code></pre></td></tr>",
-            expectedType, diff.expectedHtml, obtainedType, diff.obtainedHtml
+            "<div><div class=\"result-type-header%s\">%s</div><pre><code>%s</code></pre></div>",
+            typeMismatchClass_Expected,
+            expectedType,
+            diff.expectedHtml
         ))
-        
-        table.insert(htmlParts, "</tbody></table></div>")
+        table.insert(htmlParts, string.format(
+            "<div><div class=\"result-type-header%s\">%s</div><pre><code>%s</code></pre></div>",
+            typeMismatchClass_Obtained,
+            obtainedType,
+            diff.obtainedHtml
+        ))
+        table.insert(htmlParts, "</div>") 
     else
         -- 2.3 For passed tests, show the simple (correct) result
         local resultType = testData.expected.error and "Error" or "Output"
@@ -428,6 +441,30 @@ local function getSortedTests(fileData)
     return tests
 end
 
+local function generateStatsString(stats)
+    local parts = {}
+    if stats.success > 0 then
+        table.insert(parts, string.format('%d success', stats.success))
+    end
+    if stats.fails > 0 then
+        table.insert(parts, string.format('<span class="fail-count">%d</span> fails', stats.fails))
+    end
+    
+    local text = table.concat(parts, " and ")
+    
+    local final_text
+    if text == "" then
+        if stats.total > 0 then
+            final_text = string.format('on %d tests', stats.total)
+        else
+            final_text = "0 tests"
+        end
+    else
+        final_text = string.format('%s on %d tests', text, stats.total)
+    end
+    
+    return string.format('<span style="font-weight: normal;">%s</span>', final_text)
+end
 
 --- Generates a static HTML report file from the executed test results.
 -- The function creates a self-contained HTML file with embedded CSS.
@@ -453,43 +490,51 @@ function lib.generateReport(allTests, outputPath)
             background-color: #f4f4f9; color: #333; margin: 0; padding: 20px; }
         .container { max-width: 1000px; margin: 0 auto; background-color: #fff;
             padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
-        h1, h2 { border-bottom: 2px solid #eee; padding-bottom: 10px; }
-        h1 { font-size: 24px; } h2 { font-size: 20px; margin-top: 40px; }
+        h1, h2 { padding-bottom: 0px; margin-bottom: 0px}
+        h1 { font-size: 28px; } h2 { font-size: 24px; margin-top: 40px; }
+        .fail-count { color: #c62828; font-weight: bold; }
+        .progress-bar { display: flex; height: 8px; border-radius: 4px; overflow: hidden; background: #e0e0e0; margin-top: 5px; margin-bottom: 20px;}
+        .progress-success { background-color: #2e7d32; }
+        .progress-fail { background-color: #c62828; }
         details { border: 1px solid #ddd; border-radius: 4px; margin-bottom: 10px; overflow: hidden; }
         summary { cursor: pointer; padding: 12px; font-weight: bold; list-style: none; background-color: #fafafa}
         summary::-webkit-details-marker { display: none; }
         .status-icon { display: inline-block; width: 20px; text-align: center; font-weight: bold; }
-        .status-pass { background-color: #e8f5e9; color: #2e7d32; }
-        .status-fail { background-color: #ffebee; color: #c62828; }
+        .status-pass { background-color: #e8f5e9; }
+        .status-fail { background-color: #ffebee; }
         .status-pass .status-icon { color: #2e7d32; }
         .status-fail .status-icon { color: #c62828; }
         .test-content { padding: 0 15px 15px 15px; border-top: 1px solid #ddd; }
-        h4 { margin-top: 15px; margin-bottom: 5px; }
-        pre { background-color: #fff; color: #000; padding: 15px; border-radius: 4px;
+        h4 { margin-top: 15px; margin-bottom: 5px; font-weight: bold; font-size: 1.1em; }
+        pre { background-color: #fdfdfd; color: #000; padding: 15px; border-radius: 4px;
             white-space: pre-wrap; word-wrap: break-word; font-family: "Courier New", Courier, monospace; border: 1px solid #ddd}
-        .diff-container table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-        .diff-container th, .diff-container td { border: 1px solid #ddd; padding: 8px;
-            text-align: left; vertical-align: top; }
-        .diff-container th { background-color: #f2f2f2; }
-        .diff-container pre { margin: 0; padding: 8px; }
-        .diff-match { background-color: rgba(46, 125, 50, 0.2); }
-        .diff-expected { background-color: rgba(25, 118, 210, 0.2); }
-        .diff-obtained { background-color: rgba(198, 40, 40, 0.2); }
-        .result-type-header { font-size: 0.85em; color: #555; font-style: italic;
-            margin-bottom: 4px; padding-left: 2px; position: absolute; left: 50%; transform: translateX(-50%);top: 0; background-color: white}
-            td {position: relative}
+        .comparison-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 15px; }
+        .comparison-grid h4 { margin: 0 0 5px 0; }
+        .comparison-grid > div { border: 1px solid #ddd; padding: 8px; border-radius: 4px; background-color: #fdfdfd; }
+        .comparison-grid pre { margin: 0; padding: 8px; border: none; background-color: transparent; }
+        .diff-match { background-color: rgba(46, 125, 50, 0.1); }
+        .diff-expected { background-color: rgba(25, 118, 210, 0.1); }
+        .diff-obtained { background-color: rgba(198, 40, 40, 0.1);}
+        .result-type-header { font-size: 0.85em; color: #555; font-style: italic; margin-bottom: 4px; padding-left: 2px; position: absolute; top:0; left: 50%; transform: translate(-50%,-50%); background: white;}
+        .result-type-mismatch { color: #c62828; font-weight: bold; }
+        .comparison-grid > div {position: relative}
     </style>
 </head>
 <body>
 <div class="container">
     ]])
     
-    -- 2. Global Header from stats
+    -- 2. Global Header and Progress Bar
     local globalStats = allTests.stats or { success = 0, fails = 0, total = 0 }
-    table.insert(htmlParts, string.format(
-        "<h1>Global: %d success and %d fails on %d tests</h1>",
-        globalStats.success, globalStats.fails, globalStats.total
-    ))
+    table.insert(htmlParts, string.format("<h1>Global: %s</h1>", generateStatsString(globalStats)))
+    if globalStats.total > 0 then
+        local successPercent = globalStats.success / globalStats.total * 100
+        local failPercent = globalStats.fails / globalStats.total * 100
+        table.insert(htmlParts, string.format(
+            '<div class="progress-bar"><div class="progress-success" style="width: %.2f%%"></div><div class="progress-fail" style="width: %.2f%%"></div></div>',
+            successPercent, failPercent
+        ))
+    end
     
     -- 3. Collect and sort files by number of fails (descending)
     local fileEntries = {}
@@ -500,14 +545,11 @@ function lib.generateReport(allTests, outputPath)
     end
     
     table.sort(fileEntries, function(a, b)
-        -- Ensure stats exist before comparing
         local failsA = (a.data.stats and a.data.stats.fails) or 0
         local failsB = (b.data.stats and b.data.stats.fails) or 0
-        
         if failsA ~= failsB then
             return failsA > failsB -- Sort by number of fails, descending
         end
-        -- As a fallback for stability, sort by name
         return a.name < b.name
     end)
     
@@ -517,20 +559,20 @@ function lib.generateReport(allTests, outputPath)
         local fileData = entry.data
         
         if fileData.stats then
-            -- Add file-specific header
-            table.insert(htmlParts, string.format(
-                "<h2>%s: %d success and %d fails on %d tests</h2>",
-                fileName, fileData.stats.success, fileData.stats.fails, fileData.stats.total
-            ))
-            
-            -- Get tests for this file, sorted with fails first
+            local cleanFileName = fileName:gsub("%.plume$", "")
+            table.insert(htmlParts, string.format("<h2>%s: %s</h2>", escapeHtml(cleanFileName), generateStatsString(fileData.stats)))
+            if fileData.stats.total > 0 then
+                local successPercent = fileData.stats.success / fileData.stats.total * 100
+                local failPercent = fileData.stats.fails / fileData.stats.total * 100
+                table.insert(htmlParts, string.format(
+                    '<div class="progress-bar"><div class="progress-success" style="width: %.2f%%"></div><div class="progress-fail" style="width: %.2f%%"></div></div>',
+                    successPercent, failPercent
+                ))
+            end
+
             local sortedTests = getSortedTests(fileData)
             for _, test in ipairs(sortedTests) do
-                local testName = test.name
-                local testData = test.data
-                local testFullName = fileName .. "/" .. testName
-                -- Generate the HTML for one test block
-                table.insert(htmlParts, lib.generateTestBlockHtml(testFullName, testData))
+                table.insert(htmlParts, lib.generateTestBlockHtml(test.name, test.data))
             end
         end
     end
