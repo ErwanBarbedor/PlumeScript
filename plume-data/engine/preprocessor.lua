@@ -232,8 +232,10 @@ for name in ops_names:gmatch("%S+") do
 		local instrname = "\t\t::" .. name .. "::"
 		instrname = "\t" .. instrname
 		table.insert(instructions, instrname)
+		table.insert(instructions, "do")
 		table.insert(instructions, "\t@"..name.." arg1 arg2")
 		table.insert(instructions, "\t\t\t\tgoto DISPATCH")
+		table.insert(instructions, "end")
 	end
 end
 
