@@ -1,7 +1,7 @@
 ---
 name: Syntax / behavior change
 about: "..."
-title: ''
+title: "[PROPOSITION]"
 labels: ''
 assignees: ''
 
