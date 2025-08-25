@@ -199,7 +199,7 @@ end
 end
 			::TABLE_INDEX::
 	do
-	            ms[msp-1]=ms[msp][ms[msp-1]]
+	            ms[msp-1]=ms[msp][2][ms[msp-1]]
 	            msp=msp-1
 				goto DISPATCH
 end
