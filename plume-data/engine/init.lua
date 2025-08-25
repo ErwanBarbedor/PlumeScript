@@ -58,4 +58,6 @@ function plume.executeFile(filename)
 	return plume.execute(code, filename)
 end
 
+plume.hook = nil -- A function call at each step of the vm
+
 return plume
