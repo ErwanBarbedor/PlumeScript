@@ -23,7 +23,7 @@ return function (plume)
             local value = arg[1]
 			local t = type(value)
             if t=="table" then
-                if t==plume.obj.empty then
+                if value==plume.obj.empty then
                     return "empty"
                 else
                     return value[1]
@@ -42,6 +42,18 @@ return function (plume)
         end,
 
         void = function(args)
+        end,
+
+        -- temporary name
+        tostring = function(args)
+            local result = {}
+            for _, x in ipairs(args[2]) do
+                if x == plume.obj.empty then
+                else
+                    table.insert(result, tostring(x))
+                end
+            end
+            return table.concat(result)
         end
 	}
 

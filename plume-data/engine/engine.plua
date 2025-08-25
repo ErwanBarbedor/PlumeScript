@@ -593,6 +593,6 @@ return function (plume)
             @_DISPATCH
             @_INSTRUCTIONS
 
-        return true, ms[1], ip
+        return true, plume.std.tostring[2]({"", {ms[1]}}), ip
     end
 end

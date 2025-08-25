@@ -540,6 +540,6 @@ return function (plume)
 	            ms[msp]=ms[msp] or ms[msp+1]
 				goto DISPATCH
 		::END::
-        	return true, ms[1], ip
+        	return true, plume.std.tostring[2]({"", {ms[1]}}), ip
     end
 end
