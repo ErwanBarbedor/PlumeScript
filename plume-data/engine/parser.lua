@@ -68,7 +68,12 @@ return function (plume)
 	    local os = S" \t"^0
 	    local lt = (os * S";\n")^1 * os -- linestart
 	    local num = C("NUMBER", R"09"^1 + (R"09"^1 * P"." * R"09"^1))
-	    local idn = C("IDENTIFIER", (R"az"+R"AZ"+P"_") * (R"az"+R"AZ"+P"_"+R"09")^0)
+	    -- strict identifier
+	    local idns = C("IDENTIFIER", (R"az"+R"AZ"+P"_") * (R"az"+R"AZ"+P"_"+R"09")^0)
+	    local idn = C("TRUE", P"true")
+	    		  + C("FALSE", P"false")
+	    		  + C("EMPTY", P"empty")
+	    		  + idns
 	    local escaped = P"\\s" * Cc("TEXT", " ")
 	                  + P"\\t" * Cc("TEXT", "\t")
 	                  + P"\\n" * Cc("TEXT", "\n")

@@ -144,11 +144,27 @@ return function (plume)
         @end
 
         @define LOAD_EMPTY arg1 arg2
-            --- Stack 1 constant nil
+            --- Stack 1 constant empty
             --- arg1: -
             --- arg2: -
             msp = msp+1
             ms[msp] = empty
+        @end
+
+        @define LOAD_TRUE arg1 arg2
+            --- Stack 1 constant true
+            --- arg1: -
+            --- arg2: -
+            msp = msp+1
+            ms[msp] = true
+        @end
+
+        @define LOAD_FALSE arg1 arg2
+            --- Stack 1 constant false
+            --- arg1: -
+            --- arg2: -
+            msp = msp+1
+            ms[msp] = false
         @end
 
         
@@ -420,7 +436,13 @@ return function (plume)
             end
         @end
 
-        @define _BIN_OPP opp
+        @define _CHECK_BOOL x
+            if $x == empty then
+                $x = false
+            end
+        @end
+
+        @define _BIN_OPP opp check
             --- Classic opperations
             --- Unstack 2
             --- Stack 1, the result
@@ -429,25 +451,14 @@ return function (plume)
             x = ms[msp-1]
             y = ms[msp]
 
-            @_CHECK_NUMBER x
-            @_CHECK_NUMBER y
+            @_CHECK_$check x
+            @_CHECK_$check y
 
             msp = msp-1
             ms[msp] = x $opp y
         @end
 
-        @define _BIN_OPP_nc opp
-            --- Classic opperations
-            --- Unstack 2
-            --- Stack 1, the result
-            --- arg1: -
-            --- arg2: -
-
-            msp = msp-1
-            ms[msp] = ms[msp] $opp ms[msp+1]
-        @end
-
-        @define _UN_OPP opp
+        @define _UN_OPP opp check
             --- Classic opperations
             --- Unstack 1
             --- Stack 1, the result
@@ -455,41 +466,32 @@ return function (plume)
             --- arg2: -
             x = ms[msp]
 
-            @_CHECK_NUMBER x
+            @_CHECK_$check x
 
-            ms[msp] = $opp y
+            ms[msp] = $opp x
         @end
 
-        @define _UN_OPP_nc opp
-            --- Classic opperations
-            --- Unstack 1
-            --- Stack 1, the result
-            --- arg1: -
-            --- arg2: -
 
-            ms[msp] = $opp ms[msp]
-        @end
-
-        @define OPP_ADD @_BIN_OPP + @end
-        @define OPP_SUB @_BIN_OPP - @end
-        @define OPP_MUL @_BIN_OPP * @end
-        @define OPP_DIV @_BIN_OPP / @end
-        @define OPP_MOD @_BIN_OPP % @end
-        @define OPP_POW @_BIN_OPP ^ @end
-        @define OPP_NEG @_UN_OPP  - @end
+        @define OPP_ADD @_BIN_OPP + NUMBER @end
+        @define OPP_SUB @_BIN_OPP - NUMBER @end
+        @define OPP_MUL @_BIN_OPP * NUMBER @end
+        @define OPP_DIV @_BIN_OPP / NUMBER @end
+        @define OPP_MOD @_BIN_OPP % NUMBER @end
+        @define OPP_POW @_BIN_OPP ^ NUMBER @end
+        @define OPP_NEG @_UN_OPP  - NUMBER @end
         
         -- comp
-        @define OPP_GTE  @_BIN_OPP >= @end
-        @define OPP_LTE  @_BIN_OPP <= @end
-        @define OPP_GT   @_BIN_OPP >  @end
-        @define OPP_LT   @_BIN_OPP <  @end
-        @define OPP_EQ   @_BIN_OPP == @end
-        @define OPP_NEQ  @_BIN_OPP ~= @end
+        @define OPP_GTE  @_BIN_OPP >= NUMBER @end
+        @define OPP_LTE  @_BIN_OPP <= NUMBER @end
+        @define OPP_GT   @_BIN_OPP >  NUMBER @end
+        @define OPP_LT   @_BIN_OPP <  NUMBER @end
+        @define OPP_EQ   @_BIN_OPP == NUMBER @end
+        @define OPP_NEQ  @_BIN_OPP ~= NUMBER @end
 
         -- bool
-        @define OPP_AND  @_BIN_OPP_nc and @end
-        @define OPP_OR   @_BIN_OPP_nc or  @end
-        @define OPP_NOT  @_UN_OPP_nc  not @end
+        @define OPP_AND  @_BIN_OPP and BOOL @end
+        @define OPP_OR   @_BIN_OPP or  BOOL @end
+        @define OPP_NOT  @_UN_OPP  not BOOL @end
 
         -----------
         -- Jumps --
@@ -505,7 +507,9 @@ return function (plume)
             --- Jump to offset if true
             --- arg1: -
             --- arg2: target offset
-            if ms[msp] then
+            local test = ms[msp]
+            @_CHECK_BOOL test
+            if test then
                 jump = arg2
             end
             msp = msp-1
@@ -515,7 +519,9 @@ return function (plume)
             --- Jump to offset if false
             --- arg1: -
             --- arg2: target offset
-            if not ms[msp] then
+            local test = ms[msp]
+            @_CHECK_BOOL test
+            if not test then
                 jump = $arg2
             end
             msp = msp-1

@@ -415,6 +415,18 @@ return function(plume)
 			registerOP(ops.ACC_CALL, 0, 0)
 		end
 
+		nodeHandlerTable.TRUE = function(node)
+			registerOP(ops.LOAD_TRUE, 0, 0)
+		end
+
+		nodeHandlerTable.FALSE = function(node)
+			registerOP(ops.LOAD_FALSE, 0, 0)
+		end
+
+		nodeHandlerTable.EMPTY = function(node)
+			registerOP(ops.LOAD_EMPTY, 0, 0)
+		end
+
 		-----------
 		-- LOOPS --
 		-----------

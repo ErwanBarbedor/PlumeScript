@@ -83,54 +83,74 @@ return function (plume)
             arg1=bit.band(bit.rshift(instr, ARG1_SHIFT), MASK_ARG1)
             arg2=bit.band(instr, MASK_ARG2)
             			if op==1 then goto LOAD_CONSTANT
-			elseif op==2 then goto LOAD_LOCAL
-			elseif op==3 then goto LOAD_LEXICAL
-			elseif op==4 then goto LOAD_STATIC
-			elseif op==5 then goto LOAD_EMPTY
-			elseif op==6 then goto STORE_LOCAL
-			elseif op==7 then goto STORE_LEXICAL
-			elseif op==8 then goto STORE_STATIC
-			elseif op==9 then goto TABLE_NEW
-			elseif op==10 then goto TABLE_ADD
-			elseif op==11 then goto TABLE_SET
-			elseif op==12 then goto TABLE_SET_ACC
-			elseif op==13 then goto TABLE_INDEX
-			elseif op==14 then goto ENTER_SCOPE
-			elseif op==15 then goto LEAVE_SCOPE
-			elseif op==16 then goto ENTER_FILE
-			elseif op==17 then goto LEAVE_FILE
-			elseif op==18 then goto BEGIN_ACC
-			elseif op==19 then goto ACC_TABLE
-			elseif op==20 then goto ACC_TEXT
-			elseif op==21 then goto ACC_EMPTY
-			elseif op==22 then goto ACC_CALL
-			elseif op==23 then goto RETURN
-			elseif op==24 then goto JUMP_IF
-			elseif op==25 then goto JUMP_IF_NOT
-			elseif op==26 then goto JUMP_IF_NOT_EMPTY
-			elseif op==27 then goto JUMP
-			elseif op==28 then goto OPP_ADD
-			elseif op==29 then goto OPP_MUL
-			elseif op==30 then goto OPP_SUB
-			elseif op==31 then goto OPP_DIV
-			elseif op==32 then goto OPP_NEG
-			elseif op==33 then goto OPP_MOD
-			elseif op==34 then goto OPP_POW
-			elseif op==35 then goto OPP_GTE
-			elseif op==36 then goto OPP_LTE
-			elseif op==37 then goto OPP_GT
-			elseif op==38 then goto OPP_LT
-			elseif op==39 then goto OPP_EQ
-			elseif op==40 then goto OPP_NEQ
-			elseif op==41 then goto OPP_AND
-			elseif op==42 then goto OPP_NOT
-			elseif op==43 then goto OPP_OR
-			elseif op==44 then goto END
+			elseif op==2 then goto LOAD_TRUE
+			elseif op==3 then goto LOAD_FALSE
+			elseif op==4 then goto LOAD_EMPTY
+			elseif op==5 then goto LOAD_LOCAL
+			elseif op==6 then goto LOAD_LEXICAL
+			elseif op==7 then goto LOAD_STATIC
+			elseif op==8 then goto STORE_LOCAL
+			elseif op==9 then goto STORE_LEXICAL
+			elseif op==10 then goto STORE_STATIC
+			elseif op==11 then goto TABLE_NEW
+			elseif op==12 then goto TABLE_ADD
+			elseif op==13 then goto TABLE_SET
+			elseif op==14 then goto TABLE_SET_ACC
+			elseif op==15 then goto TABLE_INDEX
+			elseif op==16 then goto ENTER_SCOPE
+			elseif op==17 then goto LEAVE_SCOPE
+			elseif op==18 then goto ENTER_FILE
+			elseif op==19 then goto LEAVE_FILE
+			elseif op==20 then goto BEGIN_ACC
+			elseif op==21 then goto ACC_TABLE
+			elseif op==22 then goto ACC_TEXT
+			elseif op==23 then goto ACC_EMPTY
+			elseif op==24 then goto ACC_CALL
+			elseif op==25 then goto RETURN
+			elseif op==26 then goto JUMP_IF
+			elseif op==27 then goto JUMP_IF_NOT
+			elseif op==28 then goto JUMP_IF_NOT_EMPTY
+			elseif op==29 then goto JUMP
+			elseif op==30 then goto OPP_ADD
+			elseif op==31 then goto OPP_MUL
+			elseif op==32 then goto OPP_SUB
+			elseif op==33 then goto OPP_DIV
+			elseif op==34 then goto OPP_NEG
+			elseif op==35 then goto OPP_MOD
+			elseif op==36 then goto OPP_POW
+			elseif op==37 then goto OPP_GTE
+			elseif op==38 then goto OPP_LTE
+			elseif op==39 then goto OPP_GT
+			elseif op==40 then goto OPP_LT
+			elseif op==41 then goto OPP_EQ
+			elseif op==42 then goto OPP_NEQ
+			elseif op==43 then goto OPP_AND
+			elseif op==44 then goto OPP_NOT
+			elseif op==45 then goto OPP_OR
+			elseif op==46 then goto END
 			end
             			::LOAD_CONSTANT::
 	do
 	            msp=msp+1
 	            ms[msp]=constants[arg2]
+				goto DISPATCH
+end
+			::LOAD_TRUE::
+	do
+	            msp=msp+1
+	            ms[msp]=true
+				goto DISPATCH
+end
+			::LOAD_FALSE::
+	do
+	            msp=msp+1
+	            ms[msp]=false
+				goto DISPATCH
+end
+			::LOAD_EMPTY::
+	do
+	            msp=msp+1
+	            ms[msp]=empty
 				goto DISPATCH
 end
 			::LOAD_LOCAL::
@@ -149,12 +169,6 @@ end
 	do
 	            msp=msp+1
 	            ms[msp]=filesMemory[memory[mp]][arg2]
-				goto DISPATCH
-end
-			::LOAD_EMPTY::
-	do
-	            msp=msp+1
-	            ms[msp]=empty
 				goto DISPATCH
 end
 			::STORE_LOCAL::
@@ -355,7 +369,11 @@ end
 end
 			::JUMP_IF::
 	do
-	            if ms[msp] then
+	            local test=ms[msp]
+	                        if test==empty then
+	                test=false
+	            end
+	            if test then
 	                jump=arg2
 	            end
 	            msp=msp-1
@@ -363,7 +381,11 @@ end
 end
 			::JUMP_IF_NOT::
 	do
-	            if not ms[msp] then
+	            local test=ms[msp]
+	                        if test==empty then
+	                test=false
+	            end
+	            if not test then
 	                jump=arg2
 	            end
 	            msp=msp-1
@@ -462,7 +484,7 @@ end
 	            elseif _type(x) ~="number" then
 	                            return false, "Cannot do comparison or arithmetic with " .. _type(x).. " value.", ip
 	            end
-	            ms[msp]=- y
+	            ms[msp]=- x
 				goto DISPATCH
 end
 			::OPP_MOD::
@@ -611,19 +633,39 @@ end
 end
 			::OPP_AND::
 	do
+	            x=ms[msp-1]
+	            y=ms[msp]
+	                        if x==empty then
+	                x=false
+	            end
+	                        if y==empty then
+	                y=false
+	            end
 	            msp=msp-1
-	            ms[msp]=ms[msp] and ms[msp+1]
+	            ms[msp]=x and y
 				goto DISPATCH
 end
 			::OPP_NOT::
 	do
-	            ms[msp]=not ms[msp]
+	            x=ms[msp]
+	                        if x==empty then
+	                x=false
+	            end
+	            ms[msp]=not x
 				goto DISPATCH
 end
 			::OPP_OR::
 	do
+	            x=ms[msp-1]
+	            y=ms[msp]
+	                        if x==empty then
+	                x=false
+	            end
+	                        if y==empty then
+	                y=false
+	            end
 	            msp=msp-1
-	            ms[msp]=ms[msp] or ms[msp+1]
+	            ms[msp]=x or y
 				goto DISPATCH
 end
 		::END::
