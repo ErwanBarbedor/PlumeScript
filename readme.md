@@ -99,3 +99,7 @@ end
     bar // content, if text, is send as last positionnal argument
 end
 ```
+
+### Documentation
+
+[Reference](doc/doc.md) (not necessarily very pedagogical) and, for the curious, [documentation of the VM](doc/vm.md).
