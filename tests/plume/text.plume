@@ -33,7 +33,7 @@ Foo  Bar
 /// Test Raw space 1
 Foo\sBar
 /// Output
-Foo  Bar
+Foo Bar
 /// End
 
 /// Test Raw space 2
