@@ -19,7 +19,7 @@ return function (plume)
                 if t==empty then
                     return "empty"
                 else
-                    return t[1]
+                    return x[1]
                 end
             else
                 return t
