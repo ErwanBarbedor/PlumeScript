@@ -1,0 +1,98 @@
+/// Test if true
+let a = 5
+if a > 2
+  Foo
+end
+/// Output
+Foo
+/// End
+
+/// Test if false
+let a = -1
+if a > 2
+  Foo
+end
+/// Output
+/// End
+
+/// Test if-else true
+let a = 5
+if a > 2
+  Foo
+else
+  Bar
+end
+/// Output
+Foo
+/// End
+
+/// Test if-else false
+let a = -1
+if a > 2
+  Foo
+else
+  Bar
+end
+/// Output
+Bar
+/// End
+
+/// Test if-elseif-elseif-else 1
+let a = 0
+if a == 0
+  Foo
+elseif a == 1
+  Bar
+elseif a == 2
+  Baz
+else
+  ???
+end
+/// Output
+Foo
+/// End
+
+/// Test if-elseif-elseif-else 2
+let a = 1
+if a == 0
+  Foo
+elseif a == 1
+  Bar
+elseif a == 2
+  Baz
+else
+  ???
+end
+/// Output
+Bar
+/// End
+
+/// Test if-elseif-elseif-else 3
+let a = 2
+if a == 0
+  Foo
+elseif a == 1
+  Bar
+elseif a == 2
+  Baz
+else
+  ???
+end
+/// Output
+Baz
+/// End
+
+/// Test if-elseif-elseif-else 4
+let a = 3
+if a == 0
+  Foo
+elseif a == 1
+  Bar
+elseif a == 2
+  Baz
+else
+  ???
+end
+/// Output
+???
+/// End

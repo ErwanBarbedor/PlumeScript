@@ -1,0 +1,113 @@
+/// Test Add
+$(10+5)
+/// Output
+15
+/// End
+
+/// Test Sub
+$(10-5)
+/// Output
+5
+/// End
+
+/// Test Mul
+$(10*5)
+/// Output
+50
+/// End
+
+/// Test Div
+$(10/5)
+/// Output
+2
+/// End
+
+/// Test Mod
+$(10%5)
+/// Output
+0
+/// End
+
+/// Test Pow
+$(10^5)
+/// Output
+100000
+/// End
+
+/// Test Priorities 1
+$(15+2*5)
+/// Output
+25
+/// End
+
+/// Test Priorities 2
+$(15/(4-1))
+/// Output
+5
+/// End
+
+/// Test Eq
+$(7==5+2)
+/// Output
+true
+/// End
+
+/// Test neq
+$(7!=5+2)
+/// Output
+false
+/// End
+
+/// Test lt
+$(7>5+2)
+/// Output
+false
+/// End
+
+/// Test lte
+$(7>=5+2)
+/// Output
+true
+/// End
+
+/// Test gt
+$(7<5+2)
+/// Output
+false
+/// End
+
+/// Test gte
+$(7<=5+2)
+/// Output
+true
+/// End
+
+/// Test and 1
+$(1+1==2 and 5<9)
+/// Output
+true
+/// End
+
+/// Test and 2
+$(1+1==2 and 5>9)
+/// Output
+false
+/// End
+
+/// Test or 1
+$(1+1==2 or 5>9)
+/// Output
+true
+/// End
+
+/// Test or 2
+$(1+1==3 or 5>9)
+/// Output
+false
+/// End
+
+/// Test not
+$(not 1+1==3)
+/// Output
+true
+/// End

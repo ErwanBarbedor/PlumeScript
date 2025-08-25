@@ -1,0 +1,61 @@
+/// Test simple macro & call
+macro foo()
+  Bar
+end
+$foo()
+/// Output
+Bar
+/// End
+
+/// Test macro & call (1 param)
+macro double(x)
+  $x $x
+end
+$double(Foo)
+/// Output
+Foo Foo
+/// End
+
+/// Test macro & call (2 params)
+macro f(x, y)
+  $x $y
+end
+$f(Foo, Bar)
+/// Output
+Foo Bar
+/// End
+
+/// Test macro & call (named params)
+macro f(optn: value)
+  $optn
+end
+$f()\n
+$f(optn: another value)
+/// Output
+value
+another value
+/// End
+
+/// Test macro & call (mixed params)
+macro f(x, y, optn: value)
+  $x $y $optn
+end
+$f(foo, bar)\n
+$f(foo, baz, optn: another value)
+/// Output
+foo bar value
+foo baz another value
+/// End
+
+/// Test macro scope
+let x = 5
+macro f()
+  let x = 3
+  $x
+end
+$f()\n
+$x
+/// Output
+3
+5
+/// End
