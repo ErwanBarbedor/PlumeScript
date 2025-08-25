@@ -14,22 +14,40 @@ If not, see <https://www.gnu.org/licenses/>.
 ]]
 
 return function (plume)
-	plume.std = {
-		print = function(positionnals, named)
-			print(table.unpack(positionnals))
+	local std = {
+		print = function(arg)
+			print(table.unpack(arg))
 		end,
 
-		type = function(positionnals, named)
-			local t = type(positionnals[1])
+		type = function(args)
+            local value = arg[1]
+			local t = type(value)
             if t=="table" then
                 if t==plume.obj.empty then
                     return "empty"
                 else
-                    return t[1]
+                    return value[1]
                 end
             else
                 return t
             end
+        end,
+
+        table = function(args)
+            return args
+        end,
+
+        join = function(args)
+            return table.concat(args[2], args[2].sep or "")
+        end,
+
+        void = function(args)
         end
 	}
+
+    plume.std = {}
+    for name, f in pairs(std) do
+        plume.std[name] = plume.obj.luaFunction(name, f)
+    end
+
 end

@@ -223,6 +223,7 @@ return function (plume)
 			::ACC_TEXT::
 	            	limit=msf[msfp]
 	            if msp-limit>=1 then
+	                print(">>>", ms[msp])
 	                ms[limit]=table.concat(ms, "", limit, msp)
 	            elseif msp-limit==0 then
 	                ms[limit]=ms[msp]
@@ -263,13 +264,37 @@ return function (plume)
 	                vs[vsf[vsfp]+i-1]=v
 	            end
 	            msp=msp-1
+	                            msfp=msfp-1
 	                jump=macro[2]
 	                cp=cp + 1
 	                calls[cp]=ip+1
+	            elseif _type(macro)=="luaFunction" then
+	                            limit=msf[msfp]+1
+	            y=0
+	            for k, v in pairs(ms[limit-1]) do
+	                y=y+1
+	            end
+	            x=ptable(msp-limit+1, y)
+	            for i=1, msp-limit+1 do
+	                x[2][i]=ms[limit+i-1]
+	            end
+	            for k, v in pairs(ms[limit-1]) do
+	                            if not x[2][k] then
+	                table.insert(x[3], k)
+	            end
+	            x[2][k]=v
+	            end
+	            ms[limit-1]=x
+	            msp=limit - 1
+	                        msfp=msfp-1
+	                x=macro[2](ms[msp])
+	                if x==nil then
+	                    x=empty
+	                end
+	                ms[msp]=x
 	            else
 	                            return false, "Try to call a '" .. _type(macro) .. "' value", ip
 	            end
-	                        msfp=msfp-1
 				goto DISPATCH
 			::RETURN::
 	            	jump=calls[cp]

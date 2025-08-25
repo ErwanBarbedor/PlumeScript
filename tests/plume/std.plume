@@ -1,0 +1,40 @@
+/// Test join
+@join
+  Foo
+  Bar
+end
+/// Output
+FooBar
+/// End
+
+/// Test join with sep
+@join(sep: \n)
+  - Foo
+  - Bar
+end
+/// Output
+Foo
+Bar
+/// End
+
+/// Test table
+let t = @table
+  - Foo
+  - Bar
+  foo: baz
+end
+$t[2], $t.foo
+/// Output
+Foo, baz
+/// End
+
+/// Test void
+Foo
+@void
+  Bar
+  Baz
+end
+Foo
+/// Output
+FooFoo
+/// End

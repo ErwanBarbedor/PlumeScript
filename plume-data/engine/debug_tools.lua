@@ -20,7 +20,9 @@ return function (plume)
 			if s == plume.obj.empty then
 				s = "empty"
 			elseif s[1] == "macro" then
-				s = "macro x0" .. s[2] .. ""
+				s = "macro x0" .. s[2]
+			elseif s[1] == "luaFunction" then
+				s = "luaFunction '" .. s[3] .. "'"
 			end
 		end
 
