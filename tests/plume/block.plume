@@ -67,6 +67,7 @@ Foo Bar baz
 /// Test macro & block call (mixed params)
 macro f(x, y, optn: value)
   $x, $y, $optn
+end
 @f(Foo, Bar)
   optn: baz
 end
