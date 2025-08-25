@@ -128,100 +128,139 @@ return function (plume)
 			elseif op==44 then goto END
 			end
             			::LOAD_CONSTANT::
-	            	msp=msp+1
+	do
+	            msp=msp+1
 	            ms[msp]=constants[arg2]
 				goto DISPATCH
+end
 			::LOAD_LOCAL::
-	            	msp=msp+1
+	do
+	            msp=msp+1
 	            ms[msp]=vs[vsf[vsfp] + arg2-1]
 				goto DISPATCH
+end
 			::LOAD_LEXICAL::
-	            	msp=msp+1
+	do
+	            msp=msp+1
 	            ms[msp]=vs[vsf[vsfp-arg1]+arg2-1]
 				goto DISPATCH
+end
 			::LOAD_STATIC::
-	            	msp=msp+1
+	do
+	            msp=msp+1
 	            ms[msp]=filesMemory[memory[mp]][arg2]
 				goto DISPATCH
+end
 			::LOAD_EMPTY::
-	            	msp=msp+1
+	do
+	            msp=msp+1
 	            ms[msp]=empty
 				goto DISPATCH
+end
 			::STORE_LOCAL::
-	            	vs[vsf[vsfp] + arg2-1]=ms[msp]
+	do
+	            vs[vsf[vsfp] + arg2-1]=ms[msp]
 	            msp=msp-1
 				goto DISPATCH
+end
 			::STORE_LEXICAL::
-	            	vs[vsf[vsfp-arg1]+arg2-1]=ms[msp]
+	do
+	            vs[vsf[vsfp-arg1]+arg2-1]=ms[msp]
 	            msp=msp-1
 				goto DISPATCH
+end
 			::STORE_STATIC::
-	            	filesMemory[memory[mp]][arg2]=ms[msp]
+	do
+	            filesMemory[memory[mp]][arg2]=ms[msp]
 	            msp=msp-1
 				goto DISPATCH
+end
 			::TABLE_NEW::
-	            	msp=msp + 1
+	do
+	            msp=msp + 1
 	            ms[msp]=table.new(0, arg1)
 				goto DISPATCH
+end
 			::TABLE_ADD::
-					goto DISPATCH
+	do
+				goto DISPATCH
+end
 			::TABLE_SET::
-	            	ms[msp-2][ms[msp-1]]=ms[msp]
+	do
+	            ms[msp-2][ms[msp-1]]=ms[msp]
 	            msp=msp-3
 				goto DISPATCH
+end
 			::TABLE_SET_ACC::
-	            	ms[msf[msfp]][ms[msp]]=ms[msp-1]
+	do
+	            ms[msf[msfp]][ms[msp]]=ms[msp-1]
 	            msp=msp-2
 				goto DISPATCH
+end
 			::TABLE_INDEX::
-	            	ms[msp-1]=ms[msp][ms[msp-1]]
+	do
+	            ms[msp-1]=ms[msp][ms[msp-1]]
 	            msp=msp-1
 				goto DISPATCH
+end
 			::ENTER_SCOPE::
-	            	vsfp=vsfp+1
+	do
+	            vsfp=vsfp+1
 	            vsf[vsfp]=vsp+1-arg1
 	            for i=1, arg2-arg1 do
 	                vsp=vsp+1
 	                vs[vsp]=empty
 	            end
 				goto DISPATCH
+end
 			::LEAVE_SCOPE::
-	            	vsp=vsf[vsfp]-1
+	do
+	            vsp=vsf[vsfp]-1
 	            vsfp=vsfp-1
 				goto DISPATCH
+end
 			::ENTER_FILE::
-	            	mp=mp+1
+	do
+	            mp=mp+1
 	            memory[mp]=arg2
 				goto DISPATCH
+end
 			::LEAVE_FILE::
-	            	mp=mp-1
+	do
+	            mp=mp-1
 				goto DISPATCH
+end
 			::BEGIN_ACC::
-	            	msfp=msfp + 1
+	do
+	            msfp=msfp + 1
 	            msf[msfp]=msp+1
 				goto DISPATCH
+end
 			::ACC_TABLE::
-	            	limit=msf[msfp]+1
-	            y=0
+	do
+	            limit=msf[msfp]+1
+	            local keyCount=0
 	            for k, v in pairs(ms[limit-1]) do
-	                y=y+1
+	                keyCount=keyCount+1
 	            end
-	            x=ptable(msp-limit+1, y)
+	            local args=ptable(msp-limit+1, keyCount)
 	            for i=1, msp-limit+1 do
-	                x[2][i]=ms[limit+i-1]
+	                args[2][i]=ms[limit+i-1]
 	            end
 	            for k, v in pairs(ms[limit-1]) do
-	                            if not x[2][k] then
-	                table.insert(x[3], k)
+	                            if not args[2][k] then
+	                table.insert(args[3], k)
 	            end
-	            x[2][k]=v
+	            args[2][k]=v
 	            end
-	            ms[limit-1]=x
+	            ms[limit-1]=args
 	            msp=limit - 1
 	                        msfp=msfp-1
 				goto DISPATCH
+end
 			::ACC_TEXT::
-	            	limit=msf[msfp]
+	do
+	            limit=msf[msfp]
 	            if msp-limit>=1 then
 	                for i=limit, msp do
 	                    if ms[i]==empty then
@@ -237,27 +276,32 @@ return function (plume)
 	            msp=limit
 	                        msfp=msfp-1
 				goto DISPATCH
+end
 			::ACC_EMPTY::
-	            	msp=msp+1
+	do
+	            msp=msp+1
 	            ms[msp]=empty
 	                        msfp=msfp-1
 				goto DISPATCH
+end
 			::ACC_CALL::
-	            	macro=ms[msp]
+	do
+	            macro=ms[msp]
 	            msp=msp - 1
-	            if _type(macro)=="macro" then
+	            local t=_type(macro)
+	            if t=="macro" then
 	                            vsfp=vsfp+1
 	            vsf[vsfp]=vsp+1-0
 	            for i=1, macro[3]+macro[4]-0 do
 	                vsp=vsp+1
 	                vs[vsp]=empty
 	            end
-	                            x=msp-msf[msfp]
-	            if x ~=macro[3] then
-	                            return false, "Wrong number of positionnal arguments for macro '" .. macro[6] .. "', " ..   x .. " instead of " .. macro[3], ip
+	                            local argcount=msp-msf[msfp]
+	            if argcount ~=macro[3] then
+	                            return false, "Wrong number of positionnal arguments for macro '" .. macro[6] .. "', " ..   argcount .. " instead of " .. macro[3], ip
 	            end
-	            for i=1, x do
-	                vs[vsf[vsfp]+i-1]=ms[msp+i-x]
+	            for i=1, argcount do
+	                vs[vsf[vsfp]+i-1]=ms[msp+i-argcount]
 	            end
 	            msp=msf[msfp]
 	                            for k, v in pairs(ms[msf[msfp]]) do
@@ -272,63 +316,75 @@ return function (plume)
 	                jump=macro[2]
 	                cp=cp + 1
 	                calls[cp]=ip+1
-	            elseif _type(macro)=="luaFunction" then
+	            elseif t=="luaFunction" then
 	                            limit=msf[msfp]+1
-	            y=0
+	            local keyCount=0
 	            for k, v in pairs(ms[limit-1]) do
-	                y=y+1
+	                keyCount=keyCount+1
 	            end
-	            x=ptable(msp-limit+1, y)
+	            local args=ptable(msp-limit+1, keyCount)
 	            for i=1, msp-limit+1 do
-	                x[2][i]=ms[limit+i-1]
+	                args[2][i]=ms[limit+i-1]
 	            end
 	            for k, v in pairs(ms[limit-1]) do
-	                            if not x[2][k] then
-	                table.insert(x[3], k)
+	                            if not args[2][k] then
+	                table.insert(args[3], k)
 	            end
-	            x[2][k]=v
+	            args[2][k]=v
 	            end
-	            ms[limit-1]=x
+	            ms[limit-1]=args
 	            msp=limit - 1
 	                        msfp=msfp-1
-	                x=macro[2](ms[msp])
-	                if x==nil then
-	                    x=empty
+	                local result=macro[2](ms[msp])
+	                if result==nil then
+	                    result=empty
 	                end
-	                ms[msp]=x
+	                ms[msp]=result
 	            else
-	                            return false, "Try to call a '" .. _type(macro) .. "' value", ip
+	                            return false, "Try to call a '" .. t .. "' value", ip
 	            end
 				goto DISPATCH
+end
 			::RETURN::
-	            	jump=calls[cp]
+	do
+	            jump=calls[cp]
 	            cp=cp - 1
 	                        vsp=vsf[vsfp]-1
 	            vsfp=vsfp-1
 				goto DISPATCH
+end
 			::JUMP_IF::
-	            	if ms[msp] then
+	do
+	            if ms[msp] then
 	                jump=arg2
 	            end
 	            msp=msp-1
 				goto DISPATCH
+end
 			::JUMP_IF_NOT::
-	            	if not ms[msp] then
+	do
+	            if not ms[msp] then
 	                jump=arg2
 	            end
 	            msp=msp-1
 				goto DISPATCH
+end
 			::JUMP_IF_NOT_EMPTY::
-	            	if ms[msp] ~=empty then
+	do
+	            if ms[msp] ~=empty then
 	                jump=arg2
 	            end
 	            msp=msp-1
 				goto DISPATCH
+end
 			::JUMP::
-	            	jump=arg2
+	do
+	            jump=arg2
 				goto DISPATCH
+end
 			::OPP_ADD::
-	            	x=ms[msp-1]
+	do
+	            x=ms[msp-1]
 	            y=ms[msp]
 	                        if _type(x)=="string" then
 	                x=tonumber(x)
@@ -343,8 +399,10 @@ return function (plume)
 	            msp=msp-1
 	            ms[msp]=x + y
 				goto DISPATCH
+end
 			::OPP_MUL::
-	            	x=ms[msp-1]
+	do
+	            x=ms[msp-1]
 	            y=ms[msp]
 	                        if _type(x)=="string" then
 	                x=tonumber(x)
@@ -359,8 +417,10 @@ return function (plume)
 	            msp=msp-1
 	            ms[msp]=x * y
 				goto DISPATCH
+end
 			::OPP_SUB::
-	            	x=ms[msp-1]
+	do
+	            x=ms[msp-1]
 	            y=ms[msp]
 	                        if _type(x)=="string" then
 	                x=tonumber(x)
@@ -375,8 +435,10 @@ return function (plume)
 	            msp=msp-1
 	            ms[msp]=x - y
 				goto DISPATCH
+end
 			::OPP_DIV::
-	            	x=ms[msp-1]
+	do
+	            x=ms[msp-1]
 	            y=ms[msp]
 	                        if _type(x)=="string" then
 	                x=tonumber(x)
@@ -391,8 +453,10 @@ return function (plume)
 	            msp=msp-1
 	            ms[msp]=x / y
 				goto DISPATCH
+end
 			::OPP_NEG::
-	            	x=ms[msp]
+	do
+	            x=ms[msp]
 	                        if _type(x)=="string" then
 	                x=tonumber(x)
 	            elseif _type(x) ~="number" then
@@ -400,8 +464,10 @@ return function (plume)
 	            end
 	            ms[msp]=- y
 				goto DISPATCH
+end
 			::OPP_MOD::
-	            	x=ms[msp-1]
+	do
+	            x=ms[msp-1]
 	            y=ms[msp]
 	                        if _type(x)=="string" then
 	                x=tonumber(x)
@@ -416,8 +482,10 @@ return function (plume)
 	            msp=msp-1
 	            ms[msp]=x % y
 				goto DISPATCH
+end
 			::OPP_POW::
-	            	x=ms[msp-1]
+	do
+	            x=ms[msp-1]
 	            y=ms[msp]
 	                        if _type(x)=="string" then
 	                x=tonumber(x)
@@ -432,8 +500,10 @@ return function (plume)
 	            msp=msp-1
 	            ms[msp]=x ^ y
 				goto DISPATCH
+end
 			::OPP_GTE::
-	            	x=ms[msp-1]
+	do
+	            x=ms[msp-1]
 	            y=ms[msp]
 	                        if _type(x)=="string" then
 	                x=tonumber(x)
@@ -448,8 +518,10 @@ return function (plume)
 	            msp=msp-1
 	            ms[msp]=x >=y
 				goto DISPATCH
+end
 			::OPP_LTE::
-	            	x=ms[msp-1]
+	do
+	            x=ms[msp-1]
 	            y=ms[msp]
 	                        if _type(x)=="string" then
 	                x=tonumber(x)
@@ -464,8 +536,10 @@ return function (plume)
 	            msp=msp-1
 	            ms[msp]=x <=y
 				goto DISPATCH
+end
 			::OPP_GT::
-	            	x=ms[msp-1]
+	do
+	            x=ms[msp-1]
 	            y=ms[msp]
 	                        if _type(x)=="string" then
 	                x=tonumber(x)
@@ -480,8 +554,10 @@ return function (plume)
 	            msp=msp-1
 	            ms[msp]=x > y
 				goto DISPATCH
+end
 			::OPP_LT::
-	            	x=ms[msp-1]
+	do
+	            x=ms[msp-1]
 	            y=ms[msp]
 	                        if _type(x)=="string" then
 	                x=tonumber(x)
@@ -496,8 +572,10 @@ return function (plume)
 	            msp=msp-1
 	            ms[msp]=x < y
 				goto DISPATCH
+end
 			::OPP_EQ::
-	            	x=ms[msp-1]
+	do
+	            x=ms[msp-1]
 	            y=ms[msp]
 	                        if _type(x)=="string" then
 	                x=tonumber(x)
@@ -512,8 +590,10 @@ return function (plume)
 	            msp=msp-1
 	            ms[msp]=x==y
 				goto DISPATCH
+end
 			::OPP_NEQ::
-	            	x=ms[msp-1]
+	do
+	            x=ms[msp-1]
 	            y=ms[msp]
 	                        if _type(x)=="string" then
 	                x=tonumber(x)
@@ -528,17 +608,24 @@ return function (plume)
 	            msp=msp-1
 	            ms[msp]=x ~=y
 				goto DISPATCH
+end
 			::OPP_AND::
-	            	msp=msp-1
+	do
+	            msp=msp-1
 	            ms[msp]=ms[msp] and ms[msp+1]
 				goto DISPATCH
+end
 			::OPP_NOT::
-	            	ms[msp]=not ms[msp]
+	do
+	            ms[msp]=not ms[msp]
 				goto DISPATCH
+end
 			::OPP_OR::
-	            	msp=msp-1
+	do
+	            msp=msp-1
 	            ms[msp]=ms[msp] or ms[msp+1]
 				goto DISPATCH
+end
 		::END::
         	return true, plume.std.tostring[2]({"", {ms[1]}}), ip
     end

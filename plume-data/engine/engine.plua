@@ -211,13 +211,13 @@ return function (plume)
         -- Call --
         ----------
         @define _UNSTACK_POS
-            x = msp-msf[msfp] --argcount
-            if x ~= macro[3] then
-                @_ERROR{{"Wrong number of positionnal arguments for macro '" .. macro[6] .. "', " ..   x .. " instead of " .. macro[3]}}
+            local argcount = msp-msf[msfp]
+            if argcount ~= macro[3] then
+                @_ERROR{{"Wrong number of positionnal arguments for macro '" .. macro[6] .. "', " ..   argcount .. " instead of " .. macro[3]}}
             end
 
-            for i=1, x do
-                vs[vsf[vsfp]+i-1] = ms[msp+i-x]
+            for i=1, argcount do
+                vs[vsf[vsfp]+i-1] = ms[msp+i-argcount]
             end
 
             msp = msf[msfp]
@@ -246,8 +246,8 @@ return function (plume)
             --- arg2: -
             macro = ms[msp]
             msp = msp - 1
-
-            if _type(macro) == "macro" then
+            local t = _type(macro)
+            if t == "macro" then
                 @ENTER_SCOPE 0 macro[3]+macro[4]
 
                 @_UNSTACK_POS
@@ -259,15 +259,15 @@ return function (plume)
                 cp = cp + 1
                 calls[cp] = ip+1
 
-            elseif _type(macro) == "luaFunction" then
+            elseif t == "luaFunction" then
                 @ACC_TABLE
-                x = macro[2](ms[msp])
-                if x == nil then
-                    x = empty
+                local result = macro[2](ms[msp])
+                if result == nil then
+                    result = empty
                 end
-                ms[msp] = x
+                ms[msp] = result
             else
-                @_ERROR {{"Try to call a '" .. _type(macro) .. "' value"}}
+                @_ERROR {{"Try to call a '" .. t .. "' value"}}
             end
         @end
         
@@ -330,18 +330,18 @@ return function (plume)
             --- arg1: -
             --- arg2: -
             limit = msf[msfp]+1 -- Count items
-            y = 0 -- Count keys
+            local keyCount = 0
             for k, v in pairs(ms[limit-1]) do
-                y = y+1
+                keyCount = keyCount+1
             end
-            x = ptable(msp-limit+1, y)
+            local args = ptable(msp-limit+1, keyCount)
             for i=1, msp-limit+1 do -- dump items
-                x[2][i] = ms[limit+i-1]
+                args[2][i] = ms[limit+i-1]
             end
             for k, v in pairs(ms[limit-1]) do --dump keys 
-                @_TABLE_SET x k v
+                @_TABLE_SET args k v
             end
-            ms[limit-1] = x
+            ms[limit-1] = args
             msp = limit - 1
             @_END_ACC
         @end
