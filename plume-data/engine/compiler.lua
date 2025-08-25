@@ -527,17 +527,6 @@ return function(plume)
 			registerLabel("macro_end_" .. uid)
 		end
 
-		nodeHandlerTable.CALL = function(node)
-			-- registerOP(ops.BEGIN_ACC, 0, 0)
-			-- registerOP(ops.TABLE_NEW, 0, 0)
-
-			-- for _, child in ipairs(node.childs) do
-
-			-- end
-
-			-- registerOP(ops.ACC_CALL, 0, 0)
-		end
-
 		loadSTD()
 
 		local ast = plume.parse(code)
