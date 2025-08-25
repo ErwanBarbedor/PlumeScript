@@ -27,9 +27,13 @@ local lib = {}
 -- @param str The input string or value to normalize. Can be any type, will be
 -- converted to string.
 -- @return The normalized string.
-local function normalizeOutput(str)
+local function normalizeOutput(s)
     -- Ensure we are working with a string
-    local s = tostring(str or "")
+    if s == false then
+        s = "false"
+    else
+        s = tostring(s)
+    end
     
     -- 1. Replace Windows-style newlines (\r\n) with Unix-style (\n)
     -- 2. Replace classic Mac-style newlines (\r) with Unix-style (\n)
