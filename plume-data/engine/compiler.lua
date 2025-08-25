@@ -196,6 +196,7 @@ return function(plume)
 					f(node)
 					registerOP(ops.ACC_TABLE, 0, 0)
 				elseif type == "EMPTY" then
+					-- Exactly same behavior as BEGIN_ACC (nothing) ACC_TEXT
 					f(node)
 					registerOP(ops.LOAD_EMPTY, 0, 0)
 				end
