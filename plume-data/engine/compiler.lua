@@ -364,7 +364,7 @@ return function(plume)
 				elseif child.name == "INDEX" then
 					childsHandler(child)
 				elseif child.name == "DIRECT_INDEX" then
-					local name = plume.ast.get(node, "IDENTIFIER")
+					local name = plume.ast.get(child, "IDENTIFIER").content
 					local offset = registerConstant(name)
 					registerOP(ops.LOAD_CONSTANT, 0, offset)
 				end
@@ -379,6 +379,8 @@ return function(plume)
 				if child.name == "CALL" then
 					registerOP(ops.ACC_CALL, 0, 0)
 				elseif child.name == "INDEX" then
+					registerOP(ops.TABLE_INDEX, 0, 0)
+				elseif child.name == "DIRECT_INDEX" then
 					registerOP(ops.TABLE_INDEX, 0, 0)
 				end
 			end

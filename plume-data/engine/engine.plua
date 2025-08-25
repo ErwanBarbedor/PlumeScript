@@ -375,7 +375,7 @@ return function (plume)
             --- Stack 1, table[key]
             --- arg1: -
             --- arg2: -
-            ms[msp-1] = ms[msp][ms[msp-1]]
+            ms[msp-1] = ms[msp][2][ms[msp-1]]
             msp = msp-1
         @end
 

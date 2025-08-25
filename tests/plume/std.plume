@@ -25,7 +25,7 @@ let t = @table
 end
 $t[2], $t.foo
 /// Output
-Foo, baz
+Bar, baz
 /// End
 
 /// Test void
