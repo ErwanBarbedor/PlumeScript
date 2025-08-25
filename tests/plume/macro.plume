@@ -59,3 +59,23 @@ $x
 3
 5
 /// End
+
+/// Test macro nested
+macro double(x)
+  $x $x
+end
+
+$double($double(foo))
+/// Output
+foo foo foo foo
+/// End
+
+/// Test long argument
+macro id(x)
+  $x
+end
+
+$id(This is quite long\, i think.)
+/// Output
+This is quite long, i think.
+/// End
