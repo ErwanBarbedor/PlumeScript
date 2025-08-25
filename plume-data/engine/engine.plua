@@ -144,7 +144,7 @@ return function (plume)
             --- arg1: -
             --- arg2: -
             msp = msp+1
-            ms[msp] = plume.obj.empty
+            ms[msp] = empty
         @end
 
         
@@ -332,7 +332,7 @@ return function (plume)
             --- arg1: -
             --- arg2: -
             msp = msp+1
-            ms[msp] = plume.obj.empty
+            ms[msp] = empty
             @_END_ACC
         @end
 
@@ -496,7 +496,7 @@ return function (plume)
             --- Used by macro when setting defaut values
             --- arg1: -
             --- arg2: target offset
-            if ms[msp] ~= plume.obj.empty then
+            if ms[msp] ~= empty then
                 jump = $arg2
             end
             msp = msp-1
@@ -516,7 +516,7 @@ return function (plume)
 
             for i = 1, $arg2-$arg1 do
                 vsp = vsp+1
-                vs[vsp] = plume.obj.empty
+                vs[vsp] = empty
             end
         @end
 
