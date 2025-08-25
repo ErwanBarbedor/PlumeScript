@@ -29,3 +29,36 @@ $x
 /// Output
 2
 /// End
+
+/// Test block capture: if 1
+let x = if 1==1
+	5
+else
+	3
+end
+$x
+/// Output
+5
+/// End
+
+/// Test block capture: if 2
+let x = if 1==2
+	5
+else
+	3
+end
+$x
+/// Output
+3
+/// End
+
+/// Test block capture: while
+let i = 0
+let x = while i<5
+	$i
+	set i = $(i+1)
+end
+$x
+/// Output
+01234
+/// End
