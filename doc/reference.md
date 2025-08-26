@@ -18,6 +18,7 @@ To distinguish control flow and logic from text, Plume recognizes a set of **sta
 *   `let`, `set`
 *   `-` (initiates a table item)
 *   `key:` (initiates a named table item, where `key` is any valid identifier)
+*   `...` (expand a table)
 *   `@name` (initiates a block call)
 
 Anywhere else, these keywords are rendered as plain text.
@@ -45,14 +46,14 @@ Within an evaluation context:
 
 ```plume
 let x = 5
-\\ y will be assigned the number 6, not the string "x+1"
+// y will be assigned the number 6, not the string "x+1"
 let y = $(x + 1)
 
 let myMacro = macro(a, b)
     $(a * b)
 end
 
-\\ The expression is evaluated before being assigned to z
+// The expression is evaluated before being assigned to z
 let z = $(1 + myMacro(x, y))
 ```
 
@@ -64,16 +65,21 @@ There are four types of accumulation blocks:
 
 *   **`TEXT` Block:** Contains one or more expressions but **no** table items (`-` or `key:`). All expression results are converted to strings and concatenated.
     ```plume
-    \\ The program returns the string "Hello,World!"
+    // The program returns the string "Hello,World!"
     Hello,
     World!
     ```
-*   **`TABLE` Block:** Contains one or more table items (`-` or `key:`). Text or `$(...)` evaluations are not allowed at the same level. The block returns a table.
+*   **`TABLE` Block:** Contains one or more table items. A line in a `TABLE` block must be one of the following:
+    *   A list item, starting with `-`.
+    *   A named item, starting with `key:`.
+    *   A table expansion, starting with `...` (see *Syntax > Table Expansion and Unpacking*).
+
+    Text or `$(...)` evaluations are not allowed at the same level as table items. The block returns a table.
     ```plume
     - First item
     - Second item
     id: 123
-    \\ Returns {"First item", "Second item", "id": "123"}
+    // Returns {"First item", "Second item", "id": "123"}
     ```
 *   **`VALUE` Block:** Contains **exactly one** expression. The block returns the value of this single expression *without any type conversion*. This is essential for preserving data types like tables or numbers.
     ```plume
@@ -81,7 +87,7 @@ There are four types of accumulation blocks:
         - Foo
     end
 
-    \\ This block returns the table itself, not a string representation of it.
+    // This block returns the table itself, not a string representation of it.
     let same_table = $my_table 
     ```
 *   **`EMPTY` Block:** Contains no expressions. The block returns the `empty` constant.
@@ -90,11 +96,11 @@ There are four types of accumulation blocks:
 
 ### Comments
 
-Comments start with `\\` and extend to the end of the line.
+Comments start with `//` and extend to the end of the line.
 
 ```plume
-\\ This is a comment.
-let x = 1 \\ This is also a comment.
+// This is a comment.
+let x = 1 // This is also a comment.
 ```
 
 ### Statements
@@ -104,12 +110,12 @@ All statements must start at the beginning of a line, though they may be precede
 Some statements that initiate a value assignment or a data structure (`let`, `set`, `-`, `key:`) can be **chained** on the same line with a statement that produces a value (`if`, `for`, `while`, `macro`, `@name`).
 
 ```plume
-\\ Assigning the result of an @-call to a variable
+// Assigning the result of an @-call to a variable
 let config = @load_config
     port: 8080
 end
 
-\\ Adding a conditional item to a table
+// Adding a conditional item to a table
 - if user.is_admin
     "Admin Panel"
   end
@@ -155,9 +161,9 @@ macro name(positional1, named: default_value, ?flag)
 	...
 end
 
-\\ The `?flag` syntax is sugar for:
-\\ - `flag: $false` in a definition
-\\ - `flag: $true` in a call
+// The `?flag` syntax is sugar for:
+// - `flag: $false` in a definition
+// - `flag: $true` in a call
 ```
 Macros are nearly pure: they cannot access variables from their parent scope, but they **can** access `static` variables defined at the file's root. The statement `macro name ...` is syntactic sugar for `let static name = macro ...`.
 
@@ -170,9 +176,9 @@ end
 ```
 The following call formats are available:
 
-1.  **Standard Call:** Arguments are passed in a parenthesized list.
+1.  **Standard Call:** Arguments are passed in a parenthesized list. This format supports positional arguments, named arguments, and table unpacking using the `...` operator (see *Syntax > Table Expansion and Unpacking*).
     ```plume
-    $build_tag("div", "main-content", class: "container", ?active)
+    $build_tag(div, mainContent, ...default)
     ```
 2.  **Block Call (`@`)**: Arguments are passed as an accumulation block.
     ```plume
@@ -208,6 +214,68 @@ set name = value
 ```
 *   `set` searches for `name` first in the current scope, then in parent scopes, and finally in the static scope.
 *   An error is raised if the variable is not found or is declared as `const`.
+
+### Table Expansion and Unpacking (`...`)
+
+Plume provides a `...` operator to expand or unpack a table's contents into another structure. This is applicable in two contexts: table accumulation blocks and macro calls.
+
+The expression following `...` must evaluate to a table. Attempting to expand any other data type (number, string, etc.) will result in an error.
+
+#### In Table Accumulation Blocks
+
+When used inside a `TABLE` accumulation block, the `...` operator inserts all items (list and named) from the specified table into the table being constructed.
+
+The items are inserted at the position of the `...` statement. If there are key collisions, the principle of "last write wins" applies:
+
+*   If a key is defined in the block *before* being expanded from another table, the value from the expanded table will overwrite it.
+*   If a key from an expanded table is later redefined in the block, the final value will be the one defined last.
+
+```plume
+let defaults = @table
+    host: localhost
+    port: 8000
+    - initial_item
+end
+
+let config = @table
+    port: 9090 // This will be overwritten by the value from 'defaults'
+    ...defaults
+    - second_item
+    host: "production.server" // This overwrites the value from 'defaults'
+end
+
+// The final 'config' table will be:
+// { 9090, "initial_item", "second_item", host: "production.server", port: 8000 }
+// Note: The integer-keyed items are ordered as they appear. The final port value is 8000
+// because the conflicting definition (9090) appeared before the expansion.
+// The final host value is "production.server" as it appeared after.
+```
+
+#### In Macro Calls
+
+When used inside the argument list of a standard macro call, the `...` operator unpacks the items of a table into arguments.
+
+*   **List items** (e.g., `- value`) are passed as positional arguments.
+*   **Named items** (e.g., `key: value`) are passed as named arguments.
+
+The items are unpacked in the order they were declared in the source table.
+
+```plume
+let my_macro = macro(arg1, arg2, named_arg: "default", ?flag)
+    // ...
+end
+
+let params = @table
+    - value_for_arg2
+    flag: $true
+end
+
+// This call:
+$my_macro(value_for_arg1, ...params, named_arg: override)
+
+// Is equivalent to:
+$my_macro(value_for_arg1, value_for_arg2, ?flag, named_arg: override)
+```
 
 ### Expressions and Value Access
 

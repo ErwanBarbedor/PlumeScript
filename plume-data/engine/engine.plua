@@ -473,6 +473,24 @@ return function (plume)
             msp = msp-2
         @end
 
+        @define TABLE_EXPAND arg1 arg2
+            --- Unstack 1: a table
+            --- Stack all list item
+            --- Put all hash item on the acc table
+            --- arg1: -
+            --- arg2: -
+            local t = ms[msp]
+            msp = msp-1
+            for _, item in ipairs(t[2]) do
+                msp = msp+1
+                ms[msp] = item
+            end
+            for _, key in ipairs(t[3]) do
+                table.insert(ms[msf[msfp]], key)
+                table.insert(ms[msf[msfp]], t[2][key])
+            end
+        @end
+
         ---------
         -- ALU --
         ---------

@@ -23,7 +23,8 @@ return function (plume)
 		TABLE_NEW TABLE_ADD
 		TABLE_SET TABLE_INDEX
 		TABLE_SET_META TABLE_INDEX_META
-		TABLE_SET_ACC 
+		TABLE_SET_ACC
+		TABLE_EXPAND
 		
 		ENTER_SCOPE LEAVE_SCOPE
 		ENTER_FILE  LEAVE_FILE
@@ -152,7 +153,9 @@ return function (plume)
 		end
 
 		-- primitive types
-		if node.name == "LIST_ITEM" or node.name == "HASH_ITEM" then
+		if node.name == "LIST_ITEM"
+		or node.name == "HASH_ITEM"
+		or node.name == "EXPAND" then
 			return "TABLE"
 		elseif node.name == "TEXT"
 			or node.name == "EVAL"

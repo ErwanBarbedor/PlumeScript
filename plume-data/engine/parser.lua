@@ -174,7 +174,8 @@ return function (plume)
 	    end
 
 	    local expr = Ct("EXPR", genALU())
-	    local eval = Ct("EVAL", (P"$(" * expr * P")" + P"$" * idn) * V"evalOpperator"^0)
+	    local evalBase = Ct("EVAL", (P"(" * expr * P")" + idn) * V"evalOpperator"^0)
+	    local eval = P"$" * evalBase
 	    local index = Ct("INDEX", P"[" * expr * P"]")
 	    local directindex = Ct("DIRECT_INDEX", P"." * idn)
 
@@ -204,7 +205,9 @@ return function (plume)
 	    local macro      = Ct("MACRO", P"macro" * (s * idn)^-1 * os * paramlistM * body * _end)
 
 	    local arg       = Ct("HASH_ITEM", idn * os * P":" * os * Ct("BODY", V"textic"^-1))
+	                    + Ct("EXPAND", P"..."*evalBase)
 	                    + Ct("LIST_ITEM", V"textic")
+
 	    local call      = Ct("CALL", P"(" * arg^-1 * (os * P"," * os * arg)^0 * P")")
 	    local block     = Ct("BLOCK", P"@" * idn * os * call^-1 * body * _end)
 
@@ -221,6 +224,7 @@ return function (plume)
 	    -- table
 	    local listitem = Ct("LIST_ITEM", P"- " * os *V"text") 
 	    local hashitem = Ct("HASH_ITEM", idn * P":" *  os * Ct("BODY", V"text")) 
+	    local expand   = Ct("EXPAND", P"..." * evalBase) 
 
 	    ----------
 	    -- main --
@@ -234,7 +238,7 @@ return function (plume)
 	                            * (V"command" +  V"invalid"^-1 * V"text"),
 	        statement    = lt * V"firstStatement",
 
-	        command = _if + _while + _for + macro + block + let + set + listitem + hashitem,
+	        command = _if + _while + _for + macro + block + let + set + listitem + hashitem + expand,
 
 	        text =   (escaped + eval + V"comment" + V"rawtext")^1,
 	        textic = (escaped + eval + V"comment" + V"rawtextic")^1,

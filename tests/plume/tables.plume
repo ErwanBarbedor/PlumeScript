@@ -12,3 +12,81 @@ $t[1]
 /// Output
 wing
 /// End
+
+/// Test table expand 1
+let t1 = $table(write, paint, make)
+
+let t2 = @table
+	...t1
+end
+
+@join(sep: \s)
+	...t2
+end
+/// Output
+write paint make
+/// End
+
+/// Test table expand 2
+let t1 = $table(write, paint, make)
+
+let t2 = @table
+	- ink
+	...t1
+	- quill
+end
+
+@join(sep: \s)
+	...t2
+end
+/// Output
+ink write paint make quill
+/// End
+
+/// Test table expand 3
+let t1 = $table(write: quill, paint: song)
+
+let t2 = @table
+	...t1
+end
+
+$t2.write\n
+$t2.paint
+/// Output
+quill
+song
+/// End
+
+/// Test table expand 4
+let t1 = $table(write: quill, paint: song)
+
+let t2 = @table
+	write: nib
+	...t1
+	paint: words
+end
+
+$t2.write\n
+$t2.paint
+/// Output
+quill
+words
+/// End
+
+/// Test table expand inline
+let t = @table
+	- write
+	- paint
+	- song
+	quill: mark
+end
+
+macro wing(x, y, z, quill: word)
+	$x - $y - $z - $quill
+end
+
+$wing(...t)
+
+/// Output
+write - paint - song - mark
+/// End

@@ -252,6 +252,11 @@ return function(plume)
 			registerOP(ops.TABLE_SET_ACC, 0, 0)
 		end
 
+		nodeHandlerTable.EXPAND = function(node)
+			childsHandler(node)
+			registerOP(ops.TABLE_EXPAND, 0, 0)
+		end
+
 		--------------
 		-- VARIABLE --
 		--------------
