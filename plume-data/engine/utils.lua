@@ -109,4 +109,56 @@ return function (plume)
 
 		return result
 	end
+
+	function plume.ast.markType(node)
+		node.type = "EMPTY"
+		for _, child in ipairs(node.childs or {}) do
+			child.parent = node
+			local childType = plume.ast.markType(child)
+
+			if node.type == "EMPTY" then
+				if childType == "TEXT"
+				and (child.name ~= "FOR" and child.name ~= "WHILE") then
+					node.type = "VALUE"
+				else
+					node.type = childType
+				end
+			elseif node.type == "VALUE"
+			and (childType == "TEXT" or childType == "VALUE") then
+				node.type = "TEXT"
+			elseif childType ~= "EMPTY" and node.type ~= childType then
+				error("MixedBlockError")
+			end
+		end
+
+		-- For / While cannot produce VALUE
+		if node.name == "FOR" or node.name == "WHILE" then
+			if node.type == "VALUE" then
+				node.type = "TEXT"
+			end
+		end
+
+		-- primitive types
+		if node.name == "LIST_ITEM" or node.name == "HASH_ITEM" then
+			return "TABLE"
+		elseif node.name == "TEXT"
+			or node.name == "EVAL"
+			or node.name == "BLOCK" then
+			return "TEXT"
+		elseif node.name == "FOR"
+			or node.name == "WHILE"
+			or node.name == "IF"
+			or node.name == "BODY" then
+			return node.type
+		elseif node.name == "MACRO" then
+			if plume.ast.get(node, "IDENTIFIER") then
+				return "EMPTY"
+			else
+				return "VALUE"
+			end
+		else
+			return "EMPTY"
+		end
+		
+	end
 end

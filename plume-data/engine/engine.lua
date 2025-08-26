@@ -275,18 +275,12 @@ end
 			::ACC_TEXT::
 	do
 	            limit=msf[msfp]
-	            if msp-limit>=1 then
 	                for i=limit, msp do
 	                    if ms[i]==empty then
 	                        ms[i]=""
 	                    end
 	                end
 	                ms[limit]=table.concat(ms, "", limit, msp)
-	            elseif msp-limit==0 then
-	                ms[limit]=ms[msp]
-	            else
-	                ms[limit]=empty
-	            end
 	            msp=limit
 	                        msfp=msfp-1
 				goto DISPATCH

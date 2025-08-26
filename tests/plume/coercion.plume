@@ -12,3 +12,21 @@ $(x+1) // 1 is a number
 /// Output
 2
 /// End
+
+/// Test type conservation
+let x = $table()
+$type($x)
+/// Output
+table
+/// End
+
+/// Test type conservation (if)
+let x = if 2==1+1
+	$table()
+else
+	$table(x)
+end
+$type($x)
+/// Output
+table
+/// End

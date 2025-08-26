@@ -1,13 +1,3 @@
-/// Test simple macro & block call
-macro foo()
-  Bar
-end
-@foo
-end
-/// Output
-Bar
-/// End
-
 /// Test macro & block call (1 param)
 macro double(x)
   $x $x

@@ -270,6 +270,7 @@ return function (plume)
 			error("Malformed code near position " .. (pos+1) .. ".")
 		end
 
+		plume.ast.markType(ast)
 		ast.pos = pos
 		return ast
 	end

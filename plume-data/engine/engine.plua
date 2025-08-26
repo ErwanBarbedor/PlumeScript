@@ -322,18 +322,18 @@ return function (plume)
             --- arg1: -
             --- arg2: -
             limit = msf[msfp]
-            if msp-limit>=1 then
+            --if msp-limit>=1 then
                 for i=limit, msp do
                     if ms[i] == empty then
                         ms[i] = ""
                     end
                 end
                 ms[limit] = table.concat(ms, "", limit, msp)
-            elseif msp-limit==0 then -- so exactly 1 var
-                ms[limit] = ms[msp]
-            else
-                ms[limit] = empty
-            end
+            --elseif msp-limit==0 then -- so exactly 1 var
+            --    ms[limit] = ms[msp]
+            --else
+            --    ms[limit] = empty
+            --end
             msp = limit
             @_END_ACC
         @end
