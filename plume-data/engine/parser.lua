@@ -164,7 +164,6 @@ return function (plume)
 	    	local directindex = Ct("DIRECT_INDEX", P"." * idn)
 
 	        local evalOpperator = arglist + index + directindex
-
 	    	local access = Ct("EVAL", idn * evalOpperator^1)
 	    	---
 
@@ -215,7 +214,9 @@ return function (plume)
 	    local let = Ct("LET", P"let" * statcont * s * idn * (os * P"=" * lbody)^-1)
 	    local compound = Ct("COMPOUND", C("ADD", P"+") + C("SUB", P"-")
 	                   + C("MUL", P"*") + C("DIV", P"/"))
-	    local set = Ct("SET", P"set" * s * idn * (os * compound^-1 * P"=" * lbody))
+
+	    local setvar = Ct("EVAL", (idn * V"evalOpperator"^1)) + idn
+	    local set = Ct("SET", P"set" * s * setvar * (os * compound^-1 * P"=" * lbody))
 
 	    -- table
 	    local listitem = Ct("LIST_ITEM", P"- " * os *V"text") 
