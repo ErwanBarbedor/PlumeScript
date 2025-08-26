@@ -95,39 +95,41 @@ return function (plume)
 			elseif op==11 then goto TABLE_NEW
 			elseif op==12 then goto TABLE_ADD
 			elseif op==13 then goto TABLE_SET
-			elseif op==14 then goto TABLE_SET_ACC
-			elseif op==15 then goto TABLE_INDEX
-			elseif op==16 then goto ENTER_SCOPE
-			elseif op==17 then goto LEAVE_SCOPE
-			elseif op==18 then goto ENTER_FILE
-			elseif op==19 then goto LEAVE_FILE
-			elseif op==20 then goto BEGIN_ACC
-			elseif op==21 then goto ACC_TABLE
-			elseif op==22 then goto ACC_TEXT
-			elseif op==23 then goto ACC_EMPTY
-			elseif op==24 then goto ACC_CALL
-			elseif op==25 then goto RETURN
-			elseif op==26 then goto JUMP_IF
-			elseif op==27 then goto JUMP_IF_NOT
-			elseif op==28 then goto JUMP_IF_NOT_EMPTY
-			elseif op==29 then goto JUMP
-			elseif op==30 then goto OPP_ADD
-			elseif op==31 then goto OPP_MUL
-			elseif op==32 then goto OPP_SUB
-			elseif op==33 then goto OPP_DIV
-			elseif op==34 then goto OPP_NEG
-			elseif op==35 then goto OPP_MOD
-			elseif op==36 then goto OPP_POW
-			elseif op==37 then goto OPP_GTE
-			elseif op==38 then goto OPP_LTE
-			elseif op==39 then goto OPP_GT
-			elseif op==40 then goto OPP_LT
-			elseif op==41 then goto OPP_EQ
-			elseif op==42 then goto OPP_NEQ
-			elseif op==43 then goto OPP_AND
-			elseif op==44 then goto OPP_NOT
-			elseif op==45 then goto OPP_OR
-			elseif op==46 then goto END
+			elseif op==14 then goto TABLE_INDEX
+			elseif op==15 then goto TABLE_SET_META
+			elseif op==16 then goto TABLE_INDEX_META
+			elseif op==17 then goto TABLE_SET_ACC
+			elseif op==18 then goto ENTER_SCOPE
+			elseif op==19 then goto LEAVE_SCOPE
+			elseif op==20 then goto ENTER_FILE
+			elseif op==21 then goto LEAVE_FILE
+			elseif op==22 then goto BEGIN_ACC
+			elseif op==23 then goto ACC_TABLE
+			elseif op==24 then goto ACC_TEXT
+			elseif op==25 then goto ACC_EMPTY
+			elseif op==26 then goto ACC_CALL
+			elseif op==27 then goto RETURN
+			elseif op==28 then goto JUMP_IF
+			elseif op==29 then goto JUMP_IF_NOT
+			elseif op==30 then goto JUMP_IF_NOT_EMPTY
+			elseif op==31 then goto JUMP
+			elseif op==32 then goto OPP_ADD
+			elseif op==33 then goto OPP_MUL
+			elseif op==34 then goto OPP_SUB
+			elseif op==35 then goto OPP_DIV
+			elseif op==36 then goto OPP_NEG
+			elseif op==37 then goto OPP_MOD
+			elseif op==38 then goto OPP_POW
+			elseif op==39 then goto OPP_GTE
+			elseif op==40 then goto OPP_LTE
+			elseif op==41 then goto OPP_GT
+			elseif op==42 then goto OPP_LT
+			elseif op==43 then goto OPP_EQ
+			elseif op==44 then goto OPP_NEQ
+			elseif op==45 then goto OPP_AND
+			elseif op==46 then goto OPP_NOT
+			elseif op==47 then goto OPP_OR
+			elseif op==48 then goto END
 			end
             			::LOAD_CONSTANT::
 	do
@@ -201,20 +203,32 @@ end
 end
 			::TABLE_SET::
 	do
-	            ms[msp-2][ms[msp-1]]=ms[msp]
+	            ms[msp-2][2][ms[msp-1]]=ms[msp]
 	            msp=msp-3
-				goto DISPATCH
-end
-			::TABLE_SET_ACC::
-	do
-	            ms[msf[msfp]][ms[msp]]=ms[msp-1]
-	            msp=msp-2
 				goto DISPATCH
 end
 			::TABLE_INDEX::
 	do
 	            ms[msp-1]=ms[msp][2][ms[msp-1]]
 	            msp=msp-1
+				goto DISPATCH
+end
+			::TABLE_SET_META::
+	do
+	            ms[msp-2][4][ms[msp-1]]=ms[msp]
+	            msp=msp-3
+				goto DISPATCH
+end
+			::TABLE_INDEX_META::
+	do
+	            ms[msp-1]=ms[msp][4][ms[msp-1]]
+	            msp=msp-1
+				goto DISPATCH
+end
+			::TABLE_SET_ACC::
+	do
+	            ms[msf[msfp]][ms[msp]]=ms[msp-1]
+	            msp=msp-2
 				goto DISPATCH
 end
 			::ENTER_SCOPE::
