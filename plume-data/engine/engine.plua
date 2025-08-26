@@ -273,12 +273,14 @@ return function (plume)
         @end
 
         @define _UNSTACK_NAMED
-            for k, v in pairs(ms[msf[msfp]]) do
-                local i = macro[5][k]
-                if not i then
+            for i=1, #ms[msf[msfp]], 2 do
+                local k=ms[msf[msfp]][i]
+                local v=ms[msf[msfp]][i+1]
+                local j = macro[5][k]
+                if not j then
                     @_ERROR{{"Unknow named parameter '" .. k .."' for macro '" .. macro[6] .."'."}}
                 end
-                vs[vsf[vsfp]+i-1] = v
+                vs[vsf[vsfp]+j-1] = v
             end    
             msp = msp-1
         @end
@@ -379,16 +381,13 @@ return function (plume)
             --- arg1: -
             --- arg2: -
             limit = msf[msfp]+1 -- Count items
-            local keyCount = 0
-            for k, v in pairs(ms[limit-1]) do
-                keyCount = keyCount+1
-            end
+            local keyCount = #ms[limit-1] / 2
             local args = ptable(msp-limit+1, keyCount)
             for i=1, msp-limit+1 do -- dump items
                 args[2][i] = ms[limit+i-1]
             end
-            for k, v in pairs(ms[limit-1]) do --dump keys 
-                @_TABLE_SET args k v
+            for i=1, #ms[limit-1], 2 do --dump keys 
+                @_TABLE_SET args ms[limit-1][i] ms[limit-1][i+1]
             end
             ms[limit-1] = args
             msp = limit - 1
@@ -466,10 +465,11 @@ return function (plume)
         @define TABLE_SET_ACC arg1 arg2
             --- Unstack 2: a key, then a value
             --- Assume the main stack frame first value is a table
-            --- Set the table.key to value
+            --- Register key, then value in
             --- arg1: -
             --- arg2: -
-            ms[msf[msfp]][ms[msp]] = ms[msp-1]
+            table.insert(ms[msf[msfp]], ms[msp])
+            table.insert(ms[msf[msfp]], ms[msp-1])
             msp = msp-2
         @end
 
