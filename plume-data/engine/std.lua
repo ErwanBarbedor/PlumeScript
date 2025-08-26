@@ -20,7 +20,7 @@ return function (plume)
 		end,
 
 		type = function(args)
-            local value = arg[1]
+            local value = args[2][1]
 			local t = type(value)
             if t=="table" then
                 if value==plume.obj.empty then

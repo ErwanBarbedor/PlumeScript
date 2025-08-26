@@ -38,3 +38,13 @@ Foo
 /// Output
 FooFoo
 /// End
+
+/// Test type
+$type($table())\n
+$type(nib)\n
+$type($(1+1))
+/// Output
+table
+string
+number
+/// End
