@@ -153,56 +153,25 @@ return function(plume)
 			end
 		end
 
-		local function getBlockType(node, block)
-			local type = "EMPTY"
-			for _, child in ipairs(node.childs) do
-				local detectedType
-				if child.name == "TEXT" 
-				or child.name == "EVAL"
-				or child.name == "BLOCK" then
-					detectedType = "TEXT"
-				elseif child.name == "LIST_ITEM" 
-					or child.name == "HASH_ITEM" then
-					detectedType = "TABLE"
-				elseif child.name == "IF"
-				       or child.name == "ELSEIF"
-				       or child.name == "ELSE"
-				       or child.name == "FOR"
-				       or child.name == "WHILE"
-				       or child.name == "BODY" then
-					detectedType = getBlockType(child)
-				end
-
-				if detectedType then
-					if type == "EMPTY" then
-						type = detectedType
-					elseif type == detectedType then
-					else
-						error("MixedBlockError")
-					end
-				end
-			end
-			return type
-		end
-
 		local function accBlock(f)
 			f = f or childsHandler
 			return function (node)
-				local type = getBlockType(node)
-				if type == "TEXT" then
-					if #node.childs ~= 1 then
-						registerOP(ops.BEGIN_ACC, 0, 0)
-						f(node)
-						registerOP(ops.ACC_TEXT, 0, 0)
-					else
-						f(node)
-					end
+				if node.type == "TEXT" then
+					registerOP(ops.BEGIN_ACC, 0, 0)
+					f(node)
+					registerOP(ops.ACC_TEXT, 0, 0)
+				
+				-- More or less a TEXT block with 1 element
+				elseif node.type == "VALUE" then
+					f(node)
+				
 				-- Handled by block in most cases
-				elseif type == "TABLE" then
+				elseif node.type == "TABLE" then
 					_accTableInit()
 					f(node)
 					registerOP(ops.ACC_TABLE, 0, 0)
-				elseif type == "EMPTY" then
+				
+				elseif node.type == "EMPTY" then
 					-- Exactly same behavior as BEGIN_ACC (nothing) ACC_TEXT
 					f(node)
 					registerOP(ops.LOAD_EMPTY, 0, 0)
@@ -397,10 +366,9 @@ return function(plume)
 				_accTable(argList)
 			end
 
-			local bodyType = getBlockType(body)
-			if bodyType == "TABLE" then
+			if node.type == "TABLE" then
 				_accTable(body)
-			elseif bodyType == "TEXT" then
+			else
 				accBlock()(body)
 			end
 
@@ -453,6 +421,21 @@ return function(plume)
 			local _else     = plume.ast.get(node, "ELSE")
 			local uid = getUID()
 
+			
+			local specialValueMode = (
+				node.parent.type == "VALUE"
+				and node.type ~= "EMPTY"
+			)
+
+			local _else_body
+			if specialValueMode then
+				-- Special case: if inside a VALUE block,
+				-- create an ELSE branch to emit LOAD_EMPTY
+				if not _else then
+					_else_body = {type="EMPTY"}
+				end
+			end
+
 			local branchs = {body, condition}
 			for _, child in ipairs(_elseif) do
 				local condition = plume.ast.get(child, "CONDITION")
@@ -465,6 +448,8 @@ return function(plume)
 			if _else then
 				local body = plume.ast.get(_else, "BODY")
 				table.insert(branchs, body)
+			elseif _else_body then
+				table.insert(branchs, _else_body)
 			end
 
 			local finalBranch = #branchs+1
@@ -477,6 +462,10 @@ return function(plume)
 					registerGoto("branch_"..(i+2).."_"..uid, "JUMP_IF_NOT")
 				end
 				scope()(body)
+				if specialValueMode and body.type == "EMPTY" then
+					registerOP(ops.LOAD_EMPTY, 0, 0)
+				end
+
 				registerGoto("branch_"..finalBranch.."_"..uid)
 			end
 
