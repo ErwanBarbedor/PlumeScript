@@ -230,7 +230,8 @@ end
 end
 			::TABLE_SET_ACC::
 	do
-	            ms[msf[msfp]][ms[msp]]=ms[msp-1]
+	            table.insert(ms[msf[msfp]], ms[msp])
+	            table.insert(ms[msf[msfp]], ms[msp-1])
 	            msp=msp-2
 				goto DISPATCH
 end
@@ -270,19 +271,16 @@ end
 			::ACC_TABLE::
 	do
 	            limit=msf[msfp]+1
-	            local keyCount=0
-	            for k, v in pairs(ms[limit-1]) do
-	                keyCount=keyCount+1
-	            end
+	            local keyCount=#ms[limit-1] / 2
 	            local args=ptable(msp-limit+1, keyCount)
 	            for i=1, msp-limit+1 do
 	                args[2][i]=ms[limit+i-1]
 	            end
-	            for k, v in pairs(ms[limit-1]) do
-	                            if not args[2][k] then
-	                table.insert(args[3], k)
+	            for i=1, #ms[limit-1], 2 do
+	                            if not args[2][ms[limit-1][i]] then
+	                table.insert(args[3], ms[limit-1][i])
 	            end
-	            args[2][k]=v
+	            args[2][ms[limit-1][i]]=ms[limit-1][i+1]
 	            end
 	            ms[limit-1]=args
 	            msp=limit - 1
@@ -329,12 +327,14 @@ end
 	                vs[vsf[vsfp]+i-1]=ms[msp+i-argcount]
 	            end
 	            msp=msf[msfp]
-	                            for k, v in pairs(ms[msf[msfp]]) do
-	                local i=macro[5][k]
-	                if not i then
+	                            for i=1, #ms[msf[msfp]], 2 do
+	                local k=ms[msf[msfp]][i]
+	                local v=ms[msf[msfp]][i+1]
+	                local j=macro[5][k]
+	                if not j then
 	                                return false, "Unknow named parameter '" .. k .."' for macro '" .. macro[6] .."'.", ip
 	                end
-	                vs[vsf[vsfp]+i-1]=v
+	                vs[vsf[vsfp]+j-1]=v
 	            end
 	            msp=msp-1
 	                            msfp=msfp-1
@@ -343,19 +343,16 @@ end
 	                calls[cp]=ip+1
 	            elseif t=="luaFunction" then
 	                            limit=msf[msfp]+1
-	            local keyCount=0
-	            for k, v in pairs(ms[limit-1]) do
-	                keyCount=keyCount+1
-	            end
+	            local keyCount=#ms[limit-1] / 2
 	            local args=ptable(msp-limit+1, keyCount)
 	            for i=1, msp-limit+1 do
 	                args[2][i]=ms[limit+i-1]
 	            end
-	            for k, v in pairs(ms[limit-1]) do
-	                            if not args[2][k] then
-	                table.insert(args[3], k)
+	            for i=1, #ms[limit-1], 2 do
+	                            if not args[2][ms[limit-1][i]] then
+	                table.insert(args[3], ms[limit-1][i])
 	            end
-	            args[2][k]=v
+	            args[2][ms[limit-1][i]]=ms[limit-1][i+1]
 	            end
 	            ms[limit-1]=args
 	            msp=limit - 1
