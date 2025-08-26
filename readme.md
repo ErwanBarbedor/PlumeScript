@@ -102,6 +102,6 @@ end
 
 ### Documentation
 
-[Reference](doc/doc.md) (not necessarily very pedagogical) and, for the curious, [documentation of the VM](doc/vm.md).
+[Reference](doc/reference.md) (not necessarily very pedagogical) and, for the curious, [documentation of the VM](doc/vm.md).
 
-[Lot of examples](https://html-preview.github.io/?url=https://github.com/Erwanwingbedor/PlumeScript/blob/v0.52/tests/report.html) in the tests suite.
+[Lot of examples](https://html-preview.github.io/?url=https://github.com/ErwanBarbedor/PlumeScript/blob/main/tests/report.html) in the tests suite.
