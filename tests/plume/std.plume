@@ -1,40 +1,92 @@
 /// Test join
 @join
-  Foo
-  Bar
+  quill
+  mark
 end
 /// Output
-FooBar
+quillmark
 /// End
 
 /// Test join with sep
 @join(sep: \n)
-  - Foo
-  - Bar
+  - quill
+  - mark
 end
 /// Output
-Foo
-Bar
+quill
+mark
 /// End
 
 /// Test table
 let t = @table
-  - Foo
-  - Bar
-  foo: baz
+  - quill
+  - mark
+  quill: ink
 end
-$t[2], $t.foo
+$t[2], $t.quill
 /// Output
-Foo, baz
+mark, ink
 /// End
 
 /// Test void
-Foo
+quill
 @void
-  Bar
-  Baz
+  mark
+  ink
 end
-Foo
+quill
 /// Output
-FooFoo
+quillquill
+/// End
+
+/// Test type
+$type($table())\n
+$type(nib)\n
+$type($(1+1))
+/// Output
+table
+string
+number
+/// End
+
+/// Test seq 1
+for write in seq(1, 5)
+  $write
+end
+/// Output
+12345
+/// End
+
+/// Test seq 2
+for write in seq(3)
+  $write
+end
+/// Output
+123
+/// End
+
+/// Test enumerate
+let t = $table(quill, wing, bird)
+@join(sep:\n)
+  for item in enumerate(t)
+    - Item $item.index is $item.value.
+  end
+end
+/// Output
+Item 1 is quill.
+Item 2 is wing.
+Item 3 is bird.
+/// End
+
+/// Test items
+let t = $table(first: quill, second: wing, bonus: bird)
+@join(sep:\n)
+  for item in items(t)
+    - Item "$item.key" is _($item.value)_.
+  end
+end
+/// Output
+Item "first" is _(quill)_.
+Item "second" is _(wing)_.
+Item "bonus" is _(bird)_.
 /// End

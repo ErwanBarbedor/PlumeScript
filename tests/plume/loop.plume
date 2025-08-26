@@ -10,3 +10,27 @@ Iterate 2 times...
 Iterate 3 times...
 Iterate 4 times...
 /// End
+
+/// Test for over table
+let t = $table(nib, quill, wing)
+
+for write in t
+  $write;
+end
+/// Output
+nib;quill;wing;
+/// End
+
+/// Test for over table (idiomatic)
+let t = $table(nib, quill, wing)
+
+@join(sep:\n)
+  for write in t
+    - A new item: "$write"
+  end
+end
+/// Output
+A new item: "nib"
+A new item: "quill"
+A new item: "wing"
+/// End

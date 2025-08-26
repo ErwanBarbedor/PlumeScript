@@ -153,56 +153,25 @@ return function(plume)
 			end
 		end
 
-		local function getBlockType(node, block)
-			local type = "EMPTY"
-			for _, child in ipairs(node.childs) do
-				local detectedType
-				if child.name == "TEXT" 
-				or child.name == "EVAL"
-				or child.name == "BLOCK" then
-					detectedType = "TEXT"
-				elseif child.name == "LIST_ITEM" 
-					or child.name == "HASH_ITEM" then
-					detectedType = "TABLE"
-				elseif child.name == "IF"
-				       or child.name == "ELSEIF"
-				       or child.name == "ELSE"
-				       or child.name == "FOR"
-				       or child.name == "WHILE"
-				       or child.name == "BODY" then
-					detectedType = getBlockType(child)
-				end
-
-				if detectedType then
-					if type == "EMPTY" then
-						type = detectedType
-					elseif type == detectedType then
-					else
-						error("MixedBlockError")
-					end
-				end
-			end
-			return type
-		end
-
 		local function accBlock(f)
 			f = f or childsHandler
 			return function (node)
-				local type = getBlockType(node)
-				if type == "TEXT" then
-					if #node.childs ~= 1 then
-						registerOP(ops.BEGIN_ACC, 0, 0)
-						f(node)
-						registerOP(ops.ACC_TEXT, 0, 0)
-					else
-						f(node)
-					end
+				if node.type == "TEXT" then
+					registerOP(ops.BEGIN_ACC, 0, 0)
+					f(node)
+					registerOP(ops.ACC_TEXT, 0, 0)
+				
+				-- More or less a TEXT block with 1 element
+				elseif node.type == "VALUE" then
+					f(node)
+				
 				-- Handled by block in most cases
-				elseif type == "TABLE" then
+				elseif node.type == "TABLE" then
 					_accTableInit()
 					f(node)
 					registerOP(ops.ACC_TABLE, 0, 0)
-				elseif type == "EMPTY" then
+				
+				elseif node.type == "EMPTY" then
 					-- Exactly same behavior as BEGIN_ACC (nothing) ACC_TEXT
 					f(node)
 					registerOP(ops.LOAD_EMPTY, 0, 0)
@@ -210,12 +179,12 @@ return function(plume)
 			end		
 		end
 
-		local function scope(f)
+		local function scope(f, internVar)
 			f = f or childsHandler
 			return function (node)
-				local lets = plume.ast.getAll(node, "LET")
-				if #lets>0 then
-					registerOP(ops.ENTER_SCOPE, 0, #lets)
+				local lets = #plume.ast.getAll(node, "LET") + (internVar or 0)
+				if lets>0 then
+					registerOP(ops.ENTER_SCOPE, 0, lets)
 					table.insert(scopes, {})
 					f(node)
 					table.remove(scopes)
@@ -283,6 +252,11 @@ return function(plume)
 			registerOP(ops.TABLE_SET_ACC, 0, 0)
 		end
 
+		nodeHandlerTable.EXPAND = function(node)
+			childsHandler(node)
+			registerOP(ops.TABLE_EXPAND, 0, 0)
+		end
+
 		--------------
 		-- VARIABLE --
 		--------------
@@ -310,24 +284,44 @@ return function(plume)
 		end
 
 		nodeHandlerTable.SET = function(node)
-			local varName = plume.ast.get(node, "IDENTIFIER").content
-			local body    = plume.ast.get(node, "BODY")
+			local idn   = plume.ast.get(node, "IDENTIFIER")
+			local eval  = plume.ast.get(node, "EVAL")
+			local body  = plume.ast.get(node, "BODY")
 			
-			local var = getVariable(varName)
-			if not var then
-				error("Cannot set variable '" .. varName .. "', it doesn't exist.")
-			elseif var.isConst then
-				error("Cannot set variable '" .. varName .. "', is a constant.")
-			end
+			local varName
+			if idn then
+				local var = getVariable(idn.content)
+				if not var then
+					error("Cannot set variable '" .. varName .. "', it doesn't exist.")
+				elseif var.isConst then
+					error("Cannot set variable '" .. varName .. "', is a constant.")
+				end
 
-			accBlock()(body)
+				accBlock()(body)
 
-			if var.isStatic then
-				registerOP(ops.STORE_STATIC, 0, var.offset)
-			elseif var.frameOffset > 0 then
-				registerOP(ops.STORE_LEXICAL, var.frameOffset, var.offset)
+				if var.isStatic then
+					registerOP(ops.STORE_STATIC, 0, var.offset)
+				elseif var.frameOffset > 0 then
+					registerOP(ops.STORE_LEXICAL, var.frameOffset, var.offset)
+				else
+					registerOP(ops.STORE_LOCAL, 0, var.offset)
+				end
 			else
-				registerOP(ops.STORE_LOCAL, 0, var.offset)
+				-- The last index should be detected by the parser, and not modified here.
+				-- This is a temporary workaround.
+				local last = eval.childs[#eval.childs]
+
+				if last.name ~= "INDEX" then
+					error("Cannot set the result of a call.")
+				end
+
+				eval.childs[#eval.childs] = nil
+
+				accBlock()(body) -- value
+				childsHandler(last) -- key
+				childsHandler(eval) -- table
+
+
 			end
 
 		end
@@ -360,11 +354,11 @@ return function(plume)
 				local child = node.childs[i]
 				if child.name == "CALL" then
 					_accTableInit()
-					_accTable(child)
+					childsHandler(child)
 				elseif child.name == "INDEX" then
 					childsHandler(child)
 				elseif child.name == "DIRECT_INDEX" then
-					local name = plume.ast.get(node, "IDENTIFIER")
+					local name = plume.ast.get(child, "IDENTIFIER").content
 					local offset = registerConstant(name)
 					registerOP(ops.LOAD_CONSTANT, 0, offset)
 				end
@@ -379,6 +373,8 @@ return function(plume)
 				if child.name == "CALL" then
 					registerOP(ops.ACC_CALL, 0, 0)
 				elseif child.name == "INDEX" then
+					registerOP(ops.TABLE_INDEX, 0, 0)
+				elseif child.name == "DIRECT_INDEX" then
 					registerOP(ops.TABLE_INDEX, 0, 0)
 				end
 			end
@@ -395,10 +391,9 @@ return function(plume)
 				_accTable(argList)
 			end
 
-			local bodyType = getBlockType(body)
-			if bodyType == "TABLE" then
-				_accTable(body)
-			elseif bodyType == "TEXT" then
+			if node.type == "TABLE" then
+				childsHandler(body)
+			else
 				accBlock()(body)
 			end
 
@@ -411,6 +406,18 @@ return function(plume)
 			opLoadVar(node, varName)
 
 			registerOP(ops.ACC_CALL, 0, 0)
+		end
+
+		nodeHandlerTable.TRUE = function(node)
+			registerOP(ops.LOAD_TRUE, 0, 0)
+		end
+
+		nodeHandlerTable.FALSE = function(node)
+			registerOP(ops.LOAD_FALSE, 0, 0)
+		end
+
+		nodeHandlerTable.EMPTY = function(node)
+			registerOP(ops.LOAD_EMPTY, 0, 0)
 		end
 
 		-----------
@@ -429,6 +436,37 @@ return function(plume)
 			registerLabel("while_end_"..uid)
 		end
 
+		nodeHandlerTable.FOR = function(node)
+			local identifier = plume.ast.get(node, "IDENTIFIER").content
+			local iterator   = plume.ast.get(node, "ITERATOR")
+			local body       = plume.ast.get(node, "BODY")
+			local uid = getUID()
+
+			local next = registerConstant("next")
+			local iter = registerConstant("iter")
+
+
+			childsHandler(iterator)
+			registerOP(ops.GET_ITER, 0, 0)
+			registerOP(ops.ENTER_SCOPE, 0, 1)
+				registerOP(ops.STORE_LOCAL, 0, 1)
+
+				registerLabel("for_begin_"..uid)
+				registerOP(ops.LOAD_LOCAL, 0, 1)
+				registerGoto("for_end_"..uid, "FOR_ITER", 1)
+
+				scope(function(body)
+					local var = registerVariable(identifier)
+					registerOP(ops.STORE_LOCAL, 0, var.offset)
+					
+					childsHandler(body)
+				end, 1)(body)
+
+				registerGoto ("for_begin_"..uid)
+				registerLabel("for_end_"..uid)
+			registerOP(ops.LEAVE_SCOPE, 0, 0)	
+		end
+
 		------------
 		-- BRANCH --
 		------------
@@ -438,6 +476,21 @@ return function(plume)
 			local _elseif   = plume.ast.getAll(node, "ELSEIF")
 			local _else     = plume.ast.get(node, "ELSE")
 			local uid = getUID()
+
+			
+			local specialValueMode = (
+				node.parent.type == "VALUE"
+				and node.type ~= "EMPTY"
+			)
+
+			local _else_body
+			if specialValueMode then
+				-- Special case: if inside a VALUE block,
+				-- create an ELSE branch to emit LOAD_EMPTY
+				if not _else then
+					_else_body = {type="EMPTY"}
+				end
+			end
 
 			local branchs = {body, condition}
 			for _, child in ipairs(_elseif) do
@@ -451,6 +504,8 @@ return function(plume)
 			if _else then
 				local body = plume.ast.get(_else, "BODY")
 				table.insert(branchs, body)
+			elseif _else_body then
+				table.insert(branchs, _else_body)
 			end
 
 			local finalBranch = #branchs+1
@@ -463,6 +518,10 @@ return function(plume)
 					registerGoto("branch_"..(i+2).."_"..uid, "JUMP_IF_NOT")
 				end
 				scope()(body)
+				if specialValueMode and body.type == "EMPTY" then
+					registerOP(ops.LOAD_EMPTY, 0, 0)
+				end
+
 				registerGoto("branch_"..finalBranch.."_"..uid)
 			end
 
@@ -502,7 +561,8 @@ return function(plume)
 				-- Each macro open a scope, but it is handled by ACC_CALL and RETURN.
 				table.insert(scopes, {})
 				for i, param in ipairs(paramList.childs) do
-					local paramName = plume.ast.get(param, "IDENTIFIER").content
+					local paramName = plume.ast.get(param, "IDENTIFIER", 1, 2).content
+					local variadic  = plume.ast.get(param, "VARIADIC")
 					local paramBody = plume.ast.get(param, "BODY")
 					local param = registerVariable(paramName)
 
@@ -515,6 +575,8 @@ return function(plume)
 
 						macroObj[4] = macroObj[4]+1
 						macroObj[5][paramName] = param.offset
+					elseif variadic then
+						macroObj[7] = param.offset
 					else
 						macroObj[3] = macroObj[3]+1
 					end
@@ -525,17 +587,6 @@ return function(plume)
 			end) ()
 			registerOP(ops.RETURN, 0, 0)
 			registerLabel("macro_end_" .. uid)
-		end
-
-		nodeHandlerTable.CALL = function(node)
-			-- registerOP(ops.BEGIN_ACC, 0, 0)
-			-- registerOP(ops.TABLE_NEW, 0, 0)
-
-			-- for _, child in ipairs(node.childs) do
-
-			-- end
-
-			-- registerOP(ops.ACC_CALL, 0, 0)
 		end
 
 		loadSTD()

@@ -15,6 +15,8 @@ If not, see <https://www.gnu.org/licenses/>.
 
 -- Writed in my custom dirty preprocessor langage
 
+-- More informations: /doc/vm.md
+
 return function (plume)
     function plume.run(runtime)
         local empty  = plume.obj.empty
@@ -23,7 +25,7 @@ return function (plume)
         local function _type(x)
             local t = type(x)
             if t=="table" then
-                if t==empty then
+                if x==empty then
                     return "empty"
                 else
                     return x[1]
@@ -142,11 +144,27 @@ return function (plume)
         @end
 
         @define LOAD_EMPTY arg1 arg2
-            --- Stack 1 constant nil
+            --- Stack 1 constant empty
             --- arg1: -
             --- arg2: -
             msp = msp+1
             ms[msp] = empty
+        @end
+
+        @define LOAD_TRUE arg1 arg2
+            --- Stack 1 constant true
+            --- arg1: -
+            --- arg2: -
+            msp = msp+1
+            ms[msp] = true
+        @end
+
+        @define LOAD_FALSE arg1 arg2
+            --- Stack 1 constant false
+            --- arg1: -
+            --- arg2: -
+            msp = msp+1
+            ms[msp] = false
         @end
 
         
@@ -208,28 +226,69 @@ return function (plume)
         @end
 
         ----------
+        -- For --
+        ----------
+        @define GET_ITER
+            --- Unstack 1 iterable object
+            --- Stack 1 iterator object
+            --- arg1: -
+            --- arg2: -
+            local obj = ms[msp]
+            local tobj = _type(obj)
+            if tobj ~= "table" then
+                @_ERROR{{"Try to iterate over a non-table '" .. tobj .. "' object."}}
+            end
+
+            ms[msp] = obj[4].iter[2]() -- 4: meta table 2: data
+        @end
+
+        @define FOR_ITER arg1 arg2
+            --- Unstack 1 iterator object
+            --- Stack 1 next call result OR jump to for end
+            --- arg1: -
+            --- arg2: jump to end for
+            local result = ms[msp][2].next[2]()
+            if result == empty then
+                msp = msp-1
+                @JUMP 0 $arg1
+            else
+                ms[msp] = result
+            end
+        @end
+
+        ----------
         -- Call --
         ----------
         @define _UNSTACK_POS
             local argcount = msp-msf[msfp]
-            if argcount ~= macro[3] then
+            if argcount ~= macro[3] and macro[7]==0 then
                 @_ERROR{{"Wrong number of positionnal arguments for macro '" .. macro[6] .. "', " ..   argcount .. " instead of " .. macro[3]}}
             end
 
-            for i=1, argcount do
+            for i=1, macro[3] do
                 vs[vsf[vsfp]+i-1] = ms[msp+i-argcount]
+            end
+
+            for i=macro[3]+1, argcount do
+                table.insert(capture[2], ms[msp+i-argcount])
             end
 
             msp = msf[msfp]
         @end
 
         @define _UNSTACK_NAMED
-            for k, v in pairs(ms[msf[msfp]]) do
-                local i = macro[5][k]
-                if not i then
+            for i=1, #ms[msf[msfp]], 2 do
+                local k=ms[msf[msfp]][i]
+                local v=ms[msf[msfp]][i+1]
+                local j = macro[5][k]
+                print("??", k, v, j)
+                if j then
+                    vs[vsf[vsfp]+j-1] = v
+                elseif macro[7]>0 then
+                    @_TABLE_SET capture k v
+                else
                     @_ERROR{{"Unknow named parameter '" .. k .."' for macro '" .. macro[6] .."'."}}
                 end
-                vs[vsf[vsfp]+i-1] = v
             end    
             msp = msp-1
         @end
@@ -250,8 +309,17 @@ return function (plume)
             if t == "macro" then
                 @ENTER_SCOPE 0 macro[3]+macro[4]
 
+                local capture
+                if macro[7]>0 then -- variadic
+                    capture = ptable(0, 0) -- can be optimized
+                end
+
                 @_UNSTACK_POS
                 @_UNSTACK_NAMED
+                if macro[7]>0 then -- variadic
+                    vs[macro[7]] = capture
+                end
+
                 @_END_ACC
 
                 jump = macro[2]
@@ -304,18 +372,18 @@ return function (plume)
             --- arg1: -
             --- arg2: -
             limit = msf[msfp]
-            if msp-limit>=1 then
+            --if msp-limit>=1 then
                 for i=limit, msp do
                     if ms[i] == empty then
                         ms[i] = ""
                     end
                 end
                 ms[limit] = table.concat(ms, "", limit, msp)
-            elseif msp-limit==0 then -- so exactly 1 var
-                ms[limit] = ms[msp]
-            else
-                ms[limit] = empty
-            end
+            --elseif msp-limit==0 then -- so exactly 1 var
+            --    ms[limit] = ms[msp]
+            --else
+            --    ms[limit] = empty
+            --end
             msp = limit
             @_END_ACC
         @end
@@ -330,16 +398,13 @@ return function (plume)
             --- arg1: -
             --- arg2: -
             limit = msf[msfp]+1 -- Count items
-            local keyCount = 0
-            for k, v in pairs(ms[limit-1]) do
-                keyCount = keyCount+1
-            end
+            local keyCount = #ms[limit-1] / 2
             local args = ptable(msp-limit+1, keyCount)
             for i=1, msp-limit+1 do -- dump items
                 args[2][i] = ms[limit+i-1]
             end
-            for k, v in pairs(ms[limit-1]) do --dump keys 
-                @_TABLE_SET args k v
+            for i=1, #ms[limit-1], 2 do --dump keys 
+                @_TABLE_SET args ms[limit-1][i] ms[limit-1][i+1]
             end
             ms[limit-1] = args
             msp = limit - 1
@@ -375,7 +440,16 @@ return function (plume)
             --- Stack 1, table[key]
             --- arg1: -
             --- arg2: -
-            ms[msp-1] = ms[msp][ms[msp-1]]
+            ms[msp-1] = ms[msp][2][ms[msp-1]]
+            msp = msp-1
+        @end
+
+        @define TABLE_INDEX_META arg1 arg2
+            --- Unstack 2, in order: table, key
+            --- Stack 1, table[key]
+            --- arg1: -
+            --- arg2: -
+            ms[msp-1] = ms[msp][4][ms[msp-1]]
             msp = msp-1
         @end
 
@@ -392,18 +466,46 @@ return function (plume)
             --- Set the table.key to value
             --- arg1: -
             --- arg2: -
-            ms[msp-2][ms[msp-1]] = ms[msp]
+            ms[msp-2][2][ms[msp-1]] = ms[msp]
+            msp = msp-3
+        @end
+
+        @define TABLE_SET_META arg1 arg2
+            --- Unstack 3, in order: table, key, value
+            --- Set the table.key to value
+            --- arg1: -
+            --- arg2: -
+            ms[msp-2][4][ms[msp-1]] = ms[msp]
             msp = msp-3
         @end
 
         @define TABLE_SET_ACC arg1 arg2
             --- Unstack 2: a key, then a value
             --- Assume the main stack frame first value is a table
-            --- Set the table.key to value
+            --- Register key, then value in
             --- arg1: -
             --- arg2: -
-            ms[msf[msfp]][ms[msp]] = ms[msp-1]
+            table.insert(ms[msf[msfp]], ms[msp])
+            table.insert(ms[msf[msfp]], ms[msp-1])
             msp = msp-2
+        @end
+
+        @define TABLE_EXPAND arg1 arg2
+            --- Unstack 1: a table
+            --- Stack all list item
+            --- Put all hash item on the acc table
+            --- arg1: -
+            --- arg2: -
+            local t = ms[msp]
+            msp = msp-1
+            for _, item in ipairs(t[2]) do
+                msp = msp+1
+                ms[msp] = item
+            end
+            for _, key in ipairs(t[3]) do
+                table.insert(ms[msf[msfp]], key)
+                table.insert(ms[msf[msfp]], t[2][key])
+            end
         @end
 
         ---------
@@ -418,7 +520,13 @@ return function (plume)
             end
         @end
 
-        @define _BIN_OPP opp
+        @define _CHECK_BOOL x
+            if $x == empty then
+                $x = false
+            end
+        @end
+
+        @define _BIN_OPP opp check
             --- Classic opperations
             --- Unstack 2
             --- Stack 1, the result
@@ -427,25 +535,14 @@ return function (plume)
             x = ms[msp-1]
             y = ms[msp]
 
-            @_CHECK_NUMBER x
-            @_CHECK_NUMBER y
+            @_CHECK_$check x
+            @_CHECK_$check y
 
             msp = msp-1
             ms[msp] = x $opp y
         @end
 
-        @define _BIN_OPP_nc opp
-            --- Classic opperations
-            --- Unstack 2
-            --- Stack 1, the result
-            --- arg1: -
-            --- arg2: -
-
-            msp = msp-1
-            ms[msp] = ms[msp] $opp ms[msp+1]
-        @end
-
-        @define _UN_OPP opp
+        @define _UN_OPP opp check
             --- Classic opperations
             --- Unstack 1
             --- Stack 1, the result
@@ -453,41 +550,32 @@ return function (plume)
             --- arg2: -
             x = ms[msp]
 
-            @_CHECK_NUMBER x
+            @_CHECK_$check x
 
-            ms[msp] = $opp y
+            ms[msp] = $opp x
         @end
 
-        @define _UN_OPP_nc opp
-            --- Classic opperations
-            --- Unstack 1
-            --- Stack 1, the result
-            --- arg1: -
-            --- arg2: -
 
-            ms[msp] = $opp ms[msp]
-        @end
-
-        @define OPP_ADD @_BIN_OPP + @end
-        @define OPP_SUB @_BIN_OPP - @end
-        @define OPP_MUL @_BIN_OPP * @end
-        @define OPP_DIV @_BIN_OPP / @end
-        @define OPP_MOD @_BIN_OPP % @end
-        @define OPP_POW @_BIN_OPP ^ @end
-        @define OPP_NEG @_UN_OPP  - @end
+        @define OPP_ADD @_BIN_OPP + NUMBER @end
+        @define OPP_SUB @_BIN_OPP - NUMBER @end
+        @define OPP_MUL @_BIN_OPP * NUMBER @end
+        @define OPP_DIV @_BIN_OPP / NUMBER @end
+        @define OPP_MOD @_BIN_OPP % NUMBER @end
+        @define OPP_POW @_BIN_OPP ^ NUMBER @end
+        @define OPP_NEG @_UN_OPP  - NUMBER @end
         
         -- comp
-        @define OPP_GTE  @_BIN_OPP >= @end
-        @define OPP_LTE  @_BIN_OPP <= @end
-        @define OPP_GT   @_BIN_OPP >  @end
-        @define OPP_LT   @_BIN_OPP <  @end
-        @define OPP_EQ   @_BIN_OPP == @end
-        @define OPP_NEQ  @_BIN_OPP ~= @end
+        @define OPP_GTE  @_BIN_OPP >= NUMBER @end
+        @define OPP_LTE  @_BIN_OPP <= NUMBER @end
+        @define OPP_GT   @_BIN_OPP >  NUMBER @end
+        @define OPP_LT   @_BIN_OPP <  NUMBER @end
+        @define OPP_EQ   @_BIN_OPP == NUMBER @end
+        @define OPP_NEQ  @_BIN_OPP ~= NUMBER @end
 
         -- bool
-        @define OPP_AND  @_BIN_OPP_nc and @end
-        @define OPP_OR   @_BIN_OPP_nc or  @end
-        @define OPP_NOT  @_UN_OPP_nc  not @end
+        @define OPP_AND  @_BIN_OPP and BOOL @end
+        @define OPP_OR   @_BIN_OPP or  BOOL @end
+        @define OPP_NOT  @_UN_OPP  not BOOL @end
 
         -----------
         -- Jumps --
@@ -503,7 +591,9 @@ return function (plume)
             --- Jump to offset if true
             --- arg1: -
             --- arg2: target offset
-            if ms[msp] then
+            local test = ms[msp]
+            @_CHECK_BOOL test
+            if test then
                 jump = arg2
             end
             msp = msp-1
@@ -513,7 +603,9 @@ return function (plume)
             --- Jump to offset if false
             --- arg1: -
             --- arg2: target offset
-            if not ms[msp] then
+            local test = ms[msp]
+            @_CHECK_BOOL test
+            if not test then
                 jump = $arg2
             end
             msp = msp-1

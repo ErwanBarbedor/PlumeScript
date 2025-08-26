@@ -1,28 +1,28 @@
 /// Test simple macro & call
-macro foo()
-  Bar
+macro quill()
+  mark
 end
-$foo()
+$quill()
 /// Output
-Bar
+mark
 /// End
 
 /// Test macro & call (1 param)
-macro double(x)
-  $x $x
+macro double(write)
+  $write $write
 end
-$double(Foo)
+$double(quill)
 /// Output
-Foo Foo
+quill quill
 /// End
 
 /// Test macro & call (2 params)
-macro f(x, y)
-  $x $y
+macro f(write, paint)
+  $write $paint
 end
-$f(Foo, Bar)
+$f(quill, mark)
 /// Output
-Foo Bar
+quill mark
 /// End
 
 /// Test macro & call (named params)
@@ -36,46 +36,62 @@ value
 another value
 /// End
 
-/// Test macro & call (mixed params)
-macro f(x, y, optn: value)
-  $x $y $optn
+/// Test macro & call (miwriteed params)
+macro f(write, paint, optn: value)
+  $write $paint $optn
 end
-$f(foo, bar)\n
-$f(foo, baz, optn: another value)
+$f(quill, mark)\n
+$f(quill, ink, optn: another value)
 /// Output
-foo bar value
-foo baz another value
+quill mark value
+quill ink another value
 /// End
 
 /// Test macro scope
-let x = 5
+let write = 5
 macro f()
-  let x = 3
-  $x
+  let write = 3
+  $write
 end
 $f()\n
-$x
+$write
 /// Output
 3
 5
 /// End
 
 /// Test macro nested
-macro double(x)
-  $x $x
+macro double(write)
+  $write $write
 end
 
-$double($double(foo))
+$double($double(quill))
 /// Output
-foo foo foo foo
+quill quill quill quill
 /// End
 
 /// Test long argument
-macro id(x)
-  $x
+macro id(write)
+  $write
 end
 
 $id(This is quite long\, i think.)
 /// Output
 This is quite long, i think.
+/// End
+
+/// Test Variadic 1
+macro write(...args)
+  Positionnals args: $join(...args, sep:\,\s)\n
+  Named args:\s
+  @join(sep:\,\s)
+    for item in items(args)
+      - $item.key\=$item.value
+    end
+  end
+end
+$write(write, paint, song, ink: quill, wing: mark)
+/// Output
+Positionnals args: write, paint, song
+Named args: ink=quill, wing=mark
 /// End
