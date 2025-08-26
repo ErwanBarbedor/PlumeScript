@@ -123,18 +123,24 @@ return function (plume)
 			child.parent = node
 			local childType = plume.ast.markType(child)
 
-			if node.type == "EMPTY" then
-				if childType == "TEXT"
-				and (child.name ~= "FOR" and child.name ~= "WHILE") then
-					node.type = "VALUE"
-				else
-					node.type = childType
+			-- workaround for the case where child is an information,
+			-- not a proper child
+			local avoid = node.name ~= "EVAL" and child.name == "IDENTIFIER"
+
+			if not avoid then
+				if node.type == "EMPTY" then
+					if childType == "TEXT"
+					and (child.name ~= "FOR" and child.name ~= "WHILE") then
+						node.type = "VALUE"
+					else
+						node.type = childType
+					end
+				elseif node.type == "VALUE"
+				and (childType == "TEXT" or childType == "VALUE") then
+					node.type = "TEXT"
+				elseif childType ~= "EMPTY" and node.type ~= childType then
+					error("MixedBlockError")
 				end
-			elseif node.type == "VALUE"
-			and (childType == "TEXT" or childType == "VALUE") then
-				node.type = "TEXT"
-			elseif childType ~= "EMPTY" and node.type ~= childType then
-				error("MixedBlockError")
 			end
 		end
 
@@ -150,7 +156,10 @@ return function (plume)
 			return "TABLE"
 		elseif node.name == "TEXT"
 			or node.name == "EVAL"
-			or node.name == "BLOCK" then
+			or node.name == "BLOCK"
+			or node.name == "NUMBER" 
+			or node.name == "IDENTIFIER"
+			then
 			return "TEXT"
 		elseif node.name == "FOR"
 			or node.name == "WHILE"
