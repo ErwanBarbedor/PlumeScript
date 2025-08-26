@@ -279,24 +279,44 @@ return function(plume)
 		end
 
 		nodeHandlerTable.SET = function(node)
-			local varName = plume.ast.get(node, "IDENTIFIER").content
-			local body    = plume.ast.get(node, "BODY")
+			local idn   = plume.ast.get(node, "IDENTIFIER")
+			local eval  = plume.ast.get(node, "EVAL")
+			local body  = plume.ast.get(node, "BODY")
 			
-			local var = getVariable(varName)
-			if not var then
-				error("Cannot set variable '" .. varName .. "', it doesn't exist.")
-			elseif var.isConst then
-				error("Cannot set variable '" .. varName .. "', is a constant.")
-			end
+			local varName
+			if idn then
+				local var = getVariable(idn.content)
+				if not var then
+					error("Cannot set variable '" .. varName .. "', it doesn't exist.")
+				elseif var.isConst then
+					error("Cannot set variable '" .. varName .. "', is a constant.")
+				end
 
-			accBlock()(body)
+				accBlock()(body)
 
-			if var.isStatic then
-				registerOP(ops.STORE_STATIC, 0, var.offset)
-			elseif var.frameOffset > 0 then
-				registerOP(ops.STORE_LEXICAL, var.frameOffset, var.offset)
+				if var.isStatic then
+					registerOP(ops.STORE_STATIC, 0, var.offset)
+				elseif var.frameOffset > 0 then
+					registerOP(ops.STORE_LEXICAL, var.frameOffset, var.offset)
+				else
+					registerOP(ops.STORE_LOCAL, 0, var.offset)
+				end
 			else
-				registerOP(ops.STORE_LOCAL, 0, var.offset)
+				-- The last index should be detected by the parser, and not modified here.
+				-- This is a temporary workaround.
+				local last = eval.childs[#eval.childs]
+
+				if last.name ~= "INDEX" then
+					error("Cannot set the result of a call.")
+				end
+
+				eval.childs[#eval.childs] = nil
+
+				accBlock()(body) -- value
+				childsHandler(last) -- key
+				childsHandler(eval) -- table
+
+
 			end
 
 		end

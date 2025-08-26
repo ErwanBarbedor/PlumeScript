@@ -1,0 +1,14 @@
+/// Test table get index
+let t = $table(mark, quill, ink)
+$t[1]
+/// Output
+mark
+/// End
+
+/// Test table set index
+let t = $table(mark, quill, ink)
+set t[1] = wing
+$t[1]
+/// Output
+wing
+/// End
