@@ -38,7 +38,11 @@ return function (plume)
         end,
 
         join = function(args)
-            return table.concat(args[2], args[2].sep or "")
+            local sep = args[2].sep
+            if sep == plume.obj.empty then
+                sep = ""
+            end
+            return table.concat(args[2], sep)
         end,
 
         void = function(args)

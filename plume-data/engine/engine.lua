@@ -334,24 +334,41 @@ end
 	                vsp=vsp+1
 	                vs[vsp]=empty
 	            end
+	                local capture
+	                if macro[7]>0 then
+	                    capture=ptable(0, 0)
+	                end
 	                            local argcount=msp-msf[msfp]
-	            if argcount ~=macro[3] then
+	            if argcount ~=macro[3] and macro[7]==0 then
 	                            return false, "Wrong number of positionnal arguments for macro '" .. macro[6] .. "', " ..   argcount .. " instead of " .. macro[3], ip
 	            end
-	            for i=1, argcount do
+	            for i=1, macro[3] do
 	                vs[vsf[vsfp]+i-1]=ms[msp+i-argcount]
+	            end
+	            for i=macro[3]+1, argcount do
+	                table.insert(capture[2], ms[msp+i-argcount])
 	            end
 	            msp=msf[msfp]
 	                            for i=1, #ms[msf[msfp]], 2 do
 	                local k=ms[msf[msfp]][i]
 	                local v=ms[msf[msfp]][i+1]
 	                local j=macro[5][k]
-	                if not j then
+	                print("??", k, v, j)
+	                if j then
+	                    vs[vsf[vsfp]+j-1]=v
+	                elseif macro[7]>0 then
+	                                if not capture[2][k] then
+	                table.insert(capture[3], k)
+	            end
+	            capture[2][k]=v
+	                else
 	                                return false, "Unknow named parameter '" .. k .."' for macro '" .. macro[6] .."'.", ip
 	                end
-	                vs[vsf[vsfp]+j-1]=v
 	            end
 	            msp=msp-1
+	                if macro[7]>0 then
+	                    vs[macro[7]]=capture
+	                end
 	                            msfp=msfp-1
 	                jump=macro[2]
 	                cp=cp + 1

@@ -26,7 +26,8 @@ return function(plume)
 			0,       -- number of positionnal parameters
 			0,       -- number of nameds parameters
 			{},      -- named parameters offsets
-			name
+			name,
+			0        -- variadic offset (0 for no variadic)
 		}
 	end
 
