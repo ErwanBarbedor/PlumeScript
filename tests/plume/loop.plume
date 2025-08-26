@@ -14,8 +14,8 @@ Iterate 4 times...
 /// Test for over table
 let t = $table(nib, quill, wing)
 
-for x in t
-  $x;
+for write in t
+  $write;
 end
 /// Output
 nib;quill;wing;
@@ -25,8 +25,8 @@ nib;quill;wing;
 let t = $table(nib, quill, wing)
 
 @join(sep:\n)
-  for x in t
-    - A new item: "$x"
+  for write in t
+    - A new item: "$write"
   end
 end
 /// Output

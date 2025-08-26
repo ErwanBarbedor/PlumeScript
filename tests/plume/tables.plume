@@ -1,11 +1,11 @@
-/// Test table get index
+/// Test table get indewrite
 let t = $table(mark, quill, ink)
 $t[1]
 /// Output
 mark
 /// End
 
-/// Test table set index
+/// Test table set indewrite
 let t = $table(mark, quill, ink)
 set t[1] = wing
 $t[1]
@@ -13,7 +13,7 @@ $t[1]
 wing
 /// End
 
-/// Test table expand 1
+/// Test table ewritepand 1
 let t1 = $table(write, paint, make)
 
 let t2 = @table
@@ -27,7 +27,7 @@ end
 write paint make
 /// End
 
-/// Test table expand 2
+/// Test table ewritepand 2
 let t1 = $table(write, paint, make)
 
 let t2 = @table
@@ -43,7 +43,7 @@ end
 ink write paint make quill
 /// End
 
-/// Test table expand 3
+/// Test table ewritepand 3
 let t1 = $table(write: quill, paint: song)
 
 let t2 = @table
@@ -57,7 +57,7 @@ quill
 song
 /// End
 
-/// Test table expand 4
+/// Test table ewritepand 4
 let t1 = $table(write: quill, paint: song)
 
 let t2 = @table
@@ -73,7 +73,7 @@ quill
 words
 /// End
 
-/// Test table expand inline
+/// Test table ewritepand inline
 let t = @table
 	- write
 	- paint
@@ -81,8 +81,8 @@ let t = @table
 	quill: mark
 end
 
-macro wing(x, y, z, quill: word)
-	$x - $y - $z - $quill
+macro wing(write, paint, z, quill: word)
+	$write - $paint - $z - $quill
 end
 
 $wing(...t)

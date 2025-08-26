@@ -1,42 +1,42 @@
 /// Test join
 @join
-  Foo
-  Bar
+  quill
+  mark
 end
 /// Output
-FooBar
+quillmark
 /// End
 
 /// Test join with sep
 @join(sep: \n)
-  - Foo
-  - Bar
+  - quill
+  - mark
 end
 /// Output
-Foo
-Bar
+quill
+mark
 /// End
 
 /// Test table
 let t = @table
-  - Foo
-  - Bar
-  foo: baz
+  - quill
+  - mark
+  quill: ink
 end
-$t[2], $t.foo
+$t[2], $t.quill
 /// Output
-Bar, baz
+mark, ink
 /// End
 
 /// Test void
-Foo
+quill
 @void
-  Bar
-  Baz
+  mark
+  ink
 end
-Foo
+quill
 /// Output
-FooFoo
+quillquill
 /// End
 
 /// Test type
@@ -50,16 +50,16 @@ number
 /// End
 
 /// Test seq 1
-for x in seq(1, 5)
-  $x
+for write in seq(1, 5)
+  $write
 end
 /// Output
 12345
 /// End
 
 /// Test seq 2
-for x in seq(3)
-  $x
+for write in seq(3)
+  $write
 end
 /// Output
 123
