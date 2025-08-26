@@ -48,3 +48,19 @@ table
 string
 number
 /// End
+
+/// Test seq 1
+for x in seq(1, 5)
+  $x
+end
+/// Output
+12345
+/// End
+
+/// Test seq 2
+for x in seq(3)
+  $x
+end
+/// Output
+123
+/// End
