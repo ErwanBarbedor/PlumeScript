@@ -1,0 +1,92 @@
+/// Test table get indewrite
+let t = $table(mark, quill, ink)
+$t[1]
+/// Output
+mark
+/// End
+
+/// Test table set indewrite
+let t = $table(mark, quill, ink)
+set t[1] = wing
+$t[1]
+/// Output
+wing
+/// End
+
+/// Test table ewritepand 1
+let t1 = $table(write, paint, make)
+
+let t2 = @table
+	...t1
+end
+
+@join(sep: \s)
+	...t2
+end
+/// Output
+write paint make
+/// End
+
+/// Test table ewritepand 2
+let t1 = $table(write, paint, make)
+
+let t2 = @table
+	- ink
+	...t1
+	- quill
+end
+
+@join(sep: \s)
+	...t2
+end
+/// Output
+ink write paint make quill
+/// End
+
+/// Test table ewritepand 3
+let t1 = $table(write: quill, paint: song)
+
+let t2 = @table
+	...t1
+end
+
+$t2.write\n
+$t2.paint
+/// Output
+quill
+song
+/// End
+
+/// Test table ewritepand 4
+let t1 = $table(write: quill, paint: song)
+
+let t2 = @table
+	write: nib
+	...t1
+	paint: words
+end
+
+$t2.write\n
+$t2.paint
+/// Output
+quill
+words
+/// End
+
+/// Test table ewritepand inline
+let t = @table
+	- write
+	- paint
+	- song
+	quill: mark
+end
+
+macro wing(write, paint, z, quill: word)
+	$write - $paint - $z - $quill
+end
+
+$wing(...t)
+
+/// Output
+write - paint - song - mark
+/// End

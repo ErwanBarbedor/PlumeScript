@@ -1,0 +1,27 @@
+/// Test true
+if true
+	Nib
+end
+/// Output
+Nib
+/// End
+
+/// Test false
+if false
+	Nib
+end
+/// Output
+/// End
+
+/// Test empty
+if empty
+	Nib
+end
+/// Output
+/// End
+
+/// Test empty concat
+Nib$(empty)Ink
+/// Output
+NibInk
+/// End

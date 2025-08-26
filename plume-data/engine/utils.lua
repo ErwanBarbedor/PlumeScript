@@ -16,10 +16,15 @@ If not, see <https://www.gnu.org/licenses/>.
 return function (plume)
 	-- OPP
 	plume.ops_names = [[
-		LOAD_CONSTANT LOAD_LOCAL LOAD_LEXICAL LOAD_STATIC LOAD_EMPTY
+		LOAD_CONSTANT LOAD_TRUE LOAD_FALSE LOAD_EMPTY
+		LOAD_LOCAL LOAD_LEXICAL LOAD_STATIC 
 		STORE_LOCAL STORE_LEXICAL STORE_STATIC
 
-		TABLE_NEW TABLE_ADD TABLE_SET TABLE_SET_ACC TABLE_INDEX
+		TABLE_NEW TABLE_ADD
+		TABLE_SET TABLE_INDEX
+		TABLE_SET_META TABLE_INDEX_META
+		TABLE_SET_ACC
+		TABLE_EXPAND
 		
 		ENTER_SCOPE LEAVE_SCOPE
 		ENTER_FILE  LEAVE_FILE
@@ -27,10 +32,14 @@ return function (plume)
 
 		JUMP_IF JUMP_IF_NOT JUMP_IF_NOT_EMPTY JUMP
 
+		GET_ITER FOR_ITER
+
 		OPP_ADD OPP_MUL OPP_SUB OPP_DIV OPP_NEG OPP_MOD OPP_POW
 		OPP_GTE OPP_LTE OPP_GT OPP_LT OPP_EQ OPP_NEQ
 		OPP_AND OPP_NOT OPP_OR
 		
+		DUPLICATE
+
 		END
 ]]
 	local function makeNames(names)
@@ -107,5 +116,68 @@ return function (plume)
 		end, mindeep, maxdeep)
 
 		return result
+	end
+
+	function plume.ast.markType(node)
+		node.type = "EMPTY"
+		for _, child in ipairs(node.childs or {}) do
+			child.parent = node
+			local childType = plume.ast.markType(child)
+
+			-- workaround for the case where child is an information,
+			-- not a proper child
+			local avoid = node.name ~= "EVAL" and child.name == "IDENTIFIER"
+
+			if not avoid then
+				if node.type == "EMPTY" then
+					if childType == "TEXT"
+					and (child.name ~= "FOR" and child.name ~= "WHILE") then
+						node.type = "VALUE"
+					else
+						node.type = childType
+					end
+				elseif node.type == "VALUE"
+				and (childType == "TEXT" or childType == "VALUE") then
+					node.type = "TEXT"
+				elseif childType ~= "EMPTY" and node.type ~= childType then
+					error("MixedBlockError")
+				end
+			end
+		end
+
+		-- For / While cannot produce VALUE
+		if node.name == "FOR" or node.name == "WHILE" then
+			if node.type == "VALUE" then
+				node.type = "TEXT"
+			end
+		end
+
+		-- primitive types
+		if node.name == "LIST_ITEM"
+		or node.name == "HASH_ITEM"
+		or node.name == "EXPAND" then
+			return "TABLE"
+		elseif node.name == "TEXT"
+			or node.name == "EVAL"
+			or node.name == "BLOCK"
+			or node.name == "NUMBER" 
+			or node.name == "IDENTIFIER"
+			then
+			return "TEXT"
+		elseif node.name == "FOR"
+			or node.name == "WHILE"
+			or node.name == "IF"
+			or node.name == "BODY" then
+			return node.type
+		elseif node.name == "MACRO" then
+			if plume.ast.get(node, "IDENTIFIER") then
+				return "EMPTY"
+			else
+				return "VALUE"
+			end
+		else
+			return "EMPTY"
+		end
+		
 	end
 end

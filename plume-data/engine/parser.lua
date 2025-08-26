@@ -68,7 +68,12 @@ return function (plume)
 	    local os = S" \t"^0
 	    local lt = (os * S";\n")^1 * os -- linestart
 	    local num = C("NUMBER", R"09"^1 + (R"09"^1 * P"." * R"09"^1))
-	    local idn = C("IDENTIFIER", (R"az"+R"AZ"+P"_") * (R"az"+R"AZ"+P"_"+R"09")^0)
+	    -- strict identifier
+	    local idns = C("IDENTIFIER", (R"az"+R"AZ"+P"_") * (R"az"+R"AZ"+P"_"+R"09")^0)
+	    local idn = C("TRUE", P"true")
+	    		  + C("FALSE", P"false")
+	    		  + C("EMPTY", P"empty")
+	    		  + idns
 	    local escaped = P"\\s" * Cc("TEXT", " ")
 	                  + P"\\t" * Cc("TEXT", "\t")
 	                  + P"\\n" * Cc("TEXT", "\n")
@@ -149,15 +154,28 @@ return function (plume)
 	            end
 	        end
 
-	        
-	        local terminal = num + idn + quote
+
+	        -- Eval & index
+	        local posarg  = Ct("LIST_ITEM", V"_layer1")
+	        local optnarg = Ct("HASH_ITEM", idn*os*P":"*os*Ct("BODY", V"_layer1"^-1))
+	        local arg = optnarg + posarg
+	        local arglist = Ct("CALL", P"(" * arg^-1 * (os * P"," * os * arg)^0 * P")")
+	        local index = Ct("INDEX", P"[" * V"_layer1" * P"]")
+	    	local directindex = Ct("DIRECT_INDEX", P"." * idn)
+
+	        local evalOpperator = arglist + index + directindex
+	    	local access = Ct("EVAL", idn * evalOpperator^1)
+	    	---
+
+	        local terminal = access + num + idn + quote
 	        rules["_layer" .. (#opplist+1)] = os * (terminal + P"(" * V("_layer1") * P")") * os
 
 	        return rules
 	    end
 
 	    local expr = Ct("EXPR", genALU())
-	    local eval = Ct("EVAL", (P"$(" * expr * P")" + P"$" * idn) * V"evalOpperator"^0)
+	    local evalBase = Ct("EVAL", (P"(" * expr * P")" + idn) * V"evalOpperator"^0)
+	    local eval = P"$" * evalBase
 	    local index = Ct("INDEX", P"[" * expr * P"]")
 	    local directindex = Ct("DIRECT_INDEX", P"." * idn)
 
@@ -165,7 +183,7 @@ return function (plume)
 	    -- commands --
 	    --------------
 	    -- common
-	    local iterator  = s * P"in" * s * Ct("ITERATOR", expr) + E("MISSING_ITERATOR")
+	    local iterator  = s * (P"in") * s * Ct("ITERATOR", expr) + E("MISSING_ITERATOR")
 	    local condition = s * Ct("CONDITION", expr) + E("MISSING_CONDITION")
 	    local body      = Ct("BODY", V"statement"^0)
 	    local _end      = lt * (P"end" + E("MISSING_END"))
@@ -176,19 +194,20 @@ return function (plume)
 	    local _if     = Ct("IF", P"if" * condition * body * _elseif^0 * _else^-1 * _end)
 
 	    -- loops
-	    local varlist = s * Ct("VARLIST", idn * (os * P"," * os *  idn)^0)
-
+	    local forInd = idn + E("MISSING_LOOP_IDENTIFIER")
 	    local _while = Ct("WHILE", P"while" * condition * body * _end)
-	    local _for   = Ct("FOR", P"for" * varlist * iterator * body * _end)
+	    local _for   = Ct("FOR", P"for" * s * forInd * iterator * body * _end)
 
 	    -- macro & calls
-	    local param      = Ct("PARAM", idn * os * P":" * os * Ct("BODY", V"textic"^-1) + idn)
+	    local param      = Ct("PARAM", idn * os * P":" * os * Ct("BODY", V"textic"^-1) + idn + Ct("VARIADIC", P"..." * idn))
 	    local paramlist  = Ct("PARAMLIST", P"(" * param^-1 * (os * P"," * os * param)^0 * P")")
 	    local paramlistM = paramlist + E("MISSING_PARAMLIST")
 	    local macro      = Ct("MACRO", P"macro" * (s * idn)^-1 * os * paramlistM * body * _end)
 
 	    local arg       = Ct("HASH_ITEM", idn * os * P":" * os * Ct("BODY", V"textic"^-1))
+	                    + Ct("EXPAND", P"..."*evalBase)
 	                    + Ct("LIST_ITEM", V"textic")
+
 	    local call      = Ct("CALL", P"(" * arg^-1 * (os * P"," * os * arg)^0 * P")")
 	    local block     = Ct("BLOCK", P"@" * idn * os * call^-1 * body * _end)
 
@@ -198,11 +217,14 @@ return function (plume)
 	    local let = Ct("LET", P"let" * statcont * s * idn * (os * P"=" * lbody)^-1)
 	    local compound = Ct("COMPOUND", C("ADD", P"+") + C("SUB", P"-")
 	                   + C("MUL", P"*") + C("DIV", P"/"))
-	    local set = Ct("SET", P"set" * s * idn * (os * compound^-1 * P"=" * lbody))
+
+	    local setvar = Ct("EVAL", (idn * V"evalOpperator"^1)) + idn
+	    local set = Ct("SET", P"set" * s * setvar * (os * compound^-1 * P"=" * lbody))
 
 	    -- table
 	    local listitem = Ct("LIST_ITEM", P"- " * os *V"text") 
 	    local hashitem = Ct("HASH_ITEM", idn * P":" *  os * Ct("BODY", V"text")) 
+	    local expand   = Ct("EXPAND", P"..." * evalBase) 
 
 	    ----------
 	    -- main --
@@ -216,7 +238,7 @@ return function (plume)
 	                            * (V"command" +  V"invalid"^-1 * V"text"),
 	        statement    = lt * V"firstStatement",
 
-	        command = _if + _while + _for + macro + block + let + set + listitem + hashitem,
+	        command = _if + _while + _for + macro + block + let + set + listitem + hashitem + expand,
 
 	        text =   (escaped + eval + V"comment" + V"rawtext")^1,
 	        textic = (escaped + eval + V"comment" + V"rawtextic")^1,
@@ -265,6 +287,7 @@ return function (plume)
 			error("Malformed code near position " .. (pos+1) .. ".")
 		end
 
+		plume.ast.markType(ast)
 		ast.pos = pos
 		return ast
 	end

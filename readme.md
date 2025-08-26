@@ -5,7 +5,7 @@
     A language where your code <b>is</b> your document
 </i></p>
 
-![Version](https://img.shields.io/badge/version-0.51-blue.svg) [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
+![Version](https://img.shields.io/badge/version-0.52-blue.svg) [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 
 ## Introduction
 
@@ -100,9 +100,8 @@ end
 end
 ```
 
-### Changelog
-#### 0.51 (Last version)
+### Documentation
 
+[Reference](doc/doc.md) (not necessarily very pedagogical) and, for the curious, [documentation of the VM](doc/vm.md).
 
-#### 0.50 (Initial Commit)
-Project restarted from scratch.
+[Lot of examples](https://html-preview.github.io/?url=https://github.com/ErwanBarbedor/PlumeScript/blob/v0.52/tests/report.html) in the tests suite.

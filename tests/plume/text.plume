@@ -1,52 +1,52 @@
-/// Test Simple text
-Foo
+/// Test Simple tewritet
+quill
 /// Output
-Foo
+quill
 /// End
 
 /// Test No space capture 1
-Foo
-Bar
+quill
+mark
 /// Output
-FooBar
+quillmark
 /// End
 
 /// Test No space capture 2
-    Foo
-         Bar
+    quill
+         mark
 /// Output
-FooBar
+quillmark
 /// End
 
 /// Test Space capture 1
-Foo Bar
+quill mark
 /// Output
-Foo Bar
+quill mark
 /// End
 
 /// Test Space capture 2
-Foo  Bar
+quill  mark
 /// Output
-Foo  Bar
+quill  mark
 /// End
 
 /// Test Raw space 1
-Foo\sBar
+quill\smark
 /// Output
-Foo Bar
+quill mark
 /// End
 
 /// Test Raw space 2
-Foo\nBar
+quill\nmark
 /// Output
-Foo
-Bar
+quill
+mark
 /// End
 
 /// Test Raw space 3
-\tFoo
+\tquill
 /// Output
-	Foo
+	quill
 /// End
 
 /// Test Escape 1
@@ -56,9 +56,9 @@ $(1+1)\$(1+1)
 /// End
 
 /// Test Escape 2
-Foo\$(1+1)
+quill\$(1+1)
 /// Output
-Foo$(1+1)
+quill$(1+1)
 /// End
 
 /// Test Escape 3

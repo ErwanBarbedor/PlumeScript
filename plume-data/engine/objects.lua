@@ -26,11 +26,12 @@ return function(plume)
 			0,       -- number of positionnal parameters
 			0,       -- number of nameds parameters
 			{},      -- named parameters offsets
-			name
+			name,
+			0        -- variadic offset (0 for no variadic)
 		}
 	end
 
-	--- lua fonction take 1 parameters: the plume table of all given arguments
+	--- lua fonction take 1 parameter: the plume table of all given arguments
 	function plume.obj.luaFunction (name, f)
 		return {
 			"luaFunction", -- type
@@ -40,11 +41,30 @@ return function(plume)
 	end
 
 	function plume.obj.table (listSlots, hashSlots)
-		return {
+		local t
+		t = {
 			"table", --type
 			table.new(listSlots, hashSlots), -- lua table
-			table.new(hashSlots, 0) -- key order
+			table.new(hashSlots, 0), -- key order
+			{-- meta table
+				iter = plume.obj.luaFunction("iter", function(args)
+					local iterator = plume.obj.table(1, 1)
+					iterator[2][1] = 0
+					iterator[2].next = plume.obj.luaFunction("next", function()
+						local self = iterator[2]
+						self[1] = self[1]+1
+						local value = t[2][self[1]]
+						if value then
+							return value
+						else
+							return plume.obj.empty
+						end
+					end)
+					return iterator
+				end)
+			} 
 		}
+		return t
 	end
 
 end
