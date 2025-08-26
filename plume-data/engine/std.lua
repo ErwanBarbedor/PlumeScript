@@ -57,7 +57,6 @@ return function (plume)
         end,
 
         seq = function(args)
-            plume.debug.print(args)
             local start = args[2][1]
             local stop  = args[2][2]
 
@@ -77,7 +76,61 @@ return function (plume)
                 end
             end)
 
-            iterator[4].iter = plume.obj.luaFunction("next", function()
+            iterator[4].iter = plume.obj.luaFunction("iter", function()
+                return iterator
+            end)
+
+            return iterator
+        end,
+
+        enumerate = function(args)
+            local t = args[2][1]
+
+            local iterator = plume.obj.table(1, 2)
+            iterator[2][1] = 0
+            iterator[2].next = plume.obj.luaFunction("next", function()
+                iterator[2][1]  = iterator[2][1] +1
+                local value = t[2][iterator[2][1]]
+                if not value then
+                    return plume.obj.empty
+                else
+                    local result = plume.obj.table(0, 2)
+                    result[2].index = iterator[2][1]
+                    result[2].value = value
+
+                    result[3] = {"index", "value"}
+                    return result
+                end
+            end)
+
+            iterator[4].iter = plume.obj.luaFunction("iter", function()
+                return iterator
+            end)
+
+            return iterator
+        end,
+
+        items = function(args)
+            local t = args[2][1]
+
+            local iterator = plume.obj.table(1, 2)
+            iterator[2][1] = 0
+            iterator[2].next = plume.obj.luaFunction("next", function()
+                iterator[2][1]  = iterator[2][1] +1
+                local key = t[3][iterator[2][1]]
+                if not key then
+                    return plume.obj.empty
+                else
+                    local result = plume.obj.table(0, 2)
+                    result[2].key = key
+                    result[2].value = t[2][key]
+
+                    result[3] = {"key", "value"}
+                    return result
+                end
+            end)
+
+            iterator[4].iter = plume.obj.luaFunction("iter", function()
                 return iterator
             end)
 
