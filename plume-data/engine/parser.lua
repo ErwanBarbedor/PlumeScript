@@ -170,7 +170,7 @@ return function (plume)
 	    -- commands --
 	    --------------
 	    -- common
-	    local iterator  = s * P"in" * s * Ct("ITERATOR", expr) + E("MISSING_ITERATOR")
+	    local iterator  = s * (P"in") * s * Ct("ITERATOR", expr) + E("MISSING_ITERATOR")
 	    local condition = s * Ct("CONDITION", expr) + E("MISSING_CONDITION")
 	    local body      = Ct("BODY", V"statement"^0)
 	    local _end      = lt * (P"end" + E("MISSING_END"))
@@ -181,10 +181,9 @@ return function (plume)
 	    local _if     = Ct("IF", P"if" * condition * body * _elseif^0 * _else^-1 * _end)
 
 	    -- loops
-	    local varlist = s * Ct("VARLIST", idn * (os * P"," * os *  idn)^0)
-
+	    local forInd = idn + E("MISSING_LOOP_IDENTIFIER")
 	    local _while = Ct("WHILE", P"while" * condition * body * _end)
-	    local _for   = Ct("FOR", P"for" * varlist * iterator * body * _end)
+	    local _for   = Ct("FOR", P"for" * s * forInd * iterator * body * _end)
 
 	    -- macro & calls
 	    local param      = Ct("PARAM", idn * os * P":" * os * Ct("BODY", V"textic"^-1) + idn)
