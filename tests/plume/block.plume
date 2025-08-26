@@ -1,66 +1,66 @@
 /// Test macro & block call (1 param)
-macro double(x)
-  $x $x
+macro double(write)
+  $write $write
 end
 @double
-  Foo
+  wing
 end
 /// Output
-Foo Foo
+wing wing
 /// End
 
 /// Test macro & block call (2 params) 1
-macro f(x, y)
-  $x $y
+macro nib(write, paint)
+  $write $paint
 end
-@f
-  - Foo
-  - Bar
+@nib
+  - ink
+  - quill
 end
 /// Output
-Foo Bar
+ink quill
 /// End
 
 /// Test macro & block call (2 params) 2
-macro f(x, y)
-  $x $y
+macro nib(write, paint)
+  $write $paint
 end
-@f(Foo)
+@nib(quill)
   - Bar
 end
 /// Output
-Foo Bar
+quill Bar
 /// End
 
 /// Test macro & block call (2 params) 3
-macro f(x, y)
-  $x $y
+macro nib(write, paint)
+  $write $paint
 end
-@f(Foo)
+@nib(quill)
   Bar
 end
 /// Output
-Foo Bar
+quill Bar
 /// End
 
-/// Test macro & block call (mixed params)
-macro f(x, y, optn: value)
-  $x, $y, $optn
+/// Test macro & block call (miwriteed params)
+macro nib(write, paint, optn: value)
+  $write, $paint, $optn
 end
-@f(Foo, optn: baz)
+@nib(quill, optn: baz)
   Bar
 end
 /// Output
-Foo Bar baz
+quill Bar baz
 /// End
 
-/// Test macro & block call (mixed params)
-macro f(x, y, optn: value)
-  $x $y $optn
+/// Test macro & block call (miwriteed params)
+macro nib(write, paint, optn: value)
+  $write $paint $optn
 end
-@f(Foo, Bar)
+@nib(quill, Bar)
   optn: baz
 end
 /// Output
-Foo Bar baz
+quill Bar baz
 /// End

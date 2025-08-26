@@ -1,16 +1,16 @@
 /// Test if true
 let a = 5
 if a > 2
-  Foo
+  quill
 end
 /// Output
-Foo
+quill
 /// End
 
 /// Test if false
 let a = -1
 if a > 2
-  Foo
+  quill
 end
 /// Output
 /// End
@@ -18,78 +18,78 @@ end
 /// Test if-else true
 let a = 5
 if a > 2
-  Foo
+  quill
 else
-  Bar
+  mark
 end
 /// Output
-Foo
+quill
 /// End
 
 /// Test if-else false
 let a = -1
 if a > 2
-  Foo
+  quill
 else
-  Bar
+  mark
 end
 /// Output
-Bar
+mark
 /// End
 
 /// Test if-elseif-elseif-else 1
 let a = 0
 if a == 0
-  Foo
+  quill
 elseif a == 1
-  Bar
+  mark
 elseif a == 2
-  Baz
+  ink
 else
   ???
 end
 /// Output
-Foo
+quill
 /// End
 
 /// Test if-elseif-elseif-else 2
 let a = 1
 if a == 0
-  Foo
+  quill
 elseif a == 1
-  Bar
+  mark
 elseif a == 2
-  Baz
+  ink
 else
   ???
 end
 /// Output
-Bar
+mark
 /// End
 
 /// Test if-elseif-elseif-else 3
 let a = 2
 if a == 0
-  Foo
+  quill
 elseif a == 1
-  Bar
+  mark
 elseif a == 2
-  Baz
+  ink
 else
   ???
 end
 /// Output
-Baz
+ink
 /// End
 
 /// Test if-elseif-elseif-else 4
 let a = 3
 if a == 0
-  Foo
+  quill
 elseif a == 1
-  Bar
+  mark
 elseif a == 2
-  Baz
+  ink
 else
   ???
 end

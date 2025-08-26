@@ -1,64 +1,64 @@
 /// Test simple affectation
-let x = Foo
+let write = quill
 /// Output
 /// End
 
 /// Test simple affectation and eval
-let x = Foo
-$x
+let write = quill
+$write
 /// Output
-Foo
+quill
 /// End
 
 /// Test shadowing
-let x = 1
+let write = 1
 if 1==1
-	let x = 2
+	let write = 2
 end
-$x
+$write
 /// Output
 1
 /// End
 
 /// Test not shadowing
-let x = 1
+let write = 1
 if 1==1
-	set x = 2
+	set write = 2
 end
-$x
+$write
 /// Output
 2
 /// End
 
 /// Test block capture: if 1
-let x = if 1==1
+let write = if 1==1
 	5
 else
 	3
 end
-$x
+$write
 /// Output
 5
 /// End
 
 /// Test block capture: if 2
-let x = if 1==2
+let write = if 1==2
 	5
 else
 	3
 end
-$x
+$write
 /// Output
 3
 /// End
 
 /// Test block capture: while
 let i = 0
-let x = while i<5
+let write = while i<5
 	$i
 	set i = $(i+1)
 end
-$x
+$write
 /// Output
 01234
 /// End

@@ -26,9 +26,9 @@ Anywhere else, these keywords are rendered as plain text.
 ```plume
 This is another valid Plume program:
 if 1 + 1 == 2
-	Your CPU is okay.
+    Your CPU is okay.
 else
-	Your CPU need more love!
+    Your CPU needs more love!
 end
 ```
 
@@ -49,8 +49,8 @@ let x = 5
 // y will be assigned the number 6, not the string "x+1"
 let y = $(x + 1)
 
-let myMacro = macro(a, b)
-    $(a * b)
+let myMacro = macro(wing, song)
+    $(wing * song)
 end
 
 // The expression is evaluated before being assigned to z
@@ -83,12 +83,12 @@ There are four types of accumulation blocks:
     ```
 *   **`VALUE` Block:** Contains **exactly one** expression. The block returns the value of this single expression *without any type conversion*. This is essential for preserving data types like tables or numbers.
     ```plume
-    let my_table = @get_data
-        - Foo
+    let myTable = @getData
+        - wing
     end
 
     // This block returns the table itself, not a string representation of it.
-    let same_table = $my_table 
+    let sameTable = $myTable 
     ```
 *   **`EMPTY` Block:** Contains no expressions. The block returns the `empty` constant.
 
@@ -111,13 +111,13 @@ Some statements that initiate a value assignment or a data structure (`let`, `se
 
 ```plume
 // Assigning the result of an @-call to a variable
-let config = @load_config
+let config = @loadConfig
     port: 8080
 end
 
 // Adding a conditional item to a table
-- if user.is_admin
-    "Admin Panel"
+- if quill.isAdmin
+    Admin Panel
   end
 ```
 
@@ -126,20 +126,20 @@ Executes a block of code conditionally. Note that `elseif` and `else` must also 
 
 ```plume
 if evaluation
-	...
+    ...
 elseif evaluation
-	...
+    ...
 else
-	...
+    ...
 end
 ```
 
 #### `for`
-Iterates over the elements of an expression. The `varlist` is a comma-separated list of identifiers.
+Iterates over the elements of an expression.
 
 ```plume
-for varlist in evaluation
-	...
+for varname in evaluation
+    ...
 end
 ```
 
@@ -148,7 +148,7 @@ Executes a block of code as long as a condition is true.
 
 ```plume
 while evaluation
-	...
+    ...
 end
 ```
 
@@ -157,8 +157,8 @@ Macros are the primary way to create reusable logic in Plume.
 
 **Definition:**
 ```plume
-macro name(positional1, named: default_value, ?flag)
-	...
+macro name(positional, named: defaultValue, ?flag)
+    ...
 end
 
 // The `?flag` syntax is sugar for:
@@ -170,19 +170,19 @@ Macros are nearly pure: they cannot access variables from their parent scope, bu
 **Calls:**
 Given the following macro:
 ```plume
-macro build_tag(name, id, class: default, ?active)
-	...
+macro buildTag(name, id, class: default, ?active)
+    ...
 end
 ```
 The following call formats are available:
 
 1.  **Standard Call:** Arguments are passed in a parenthesized list. This format supports positional arguments, named arguments, and table unpacking using the `...` operator (see *Syntax > Table Expansion and Unpacking*).
     ```plume
-    $build_tag(div, mainContent, ...default)
+    $buildTag(div, mainContent, ...default)
     ```
 2.  **Block Call (`@`)**: Arguments are passed as an accumulation block.
     ```plume
-    @build_tag
+    @buildTag
         - div
         - main-content
         class: container
@@ -191,7 +191,7 @@ The following call formats are available:
     ```
 3.  **Mixed Block Call**: Some arguments are passed positionally, and the rest are provided in the block.
     ```plume
-    @build_tag(div, class: container)
+    @buildTag(div, class: container)
         - main-content
         active: $true
     end
@@ -234,18 +234,18 @@ The items are inserted at the position of the `...` statement. If there are key 
 let defaults = @table
     host: localhost
     port: 8000
-    - initial_item
+    - write
 end
 
 let config = @table
     port: 9090 // This will be overwritten by the value from 'defaults'
     ...defaults
-    - second_item
+    - paint
     host: "production.server" // This overwrites the value from 'defaults'
 end
 
 // The final 'config' table will be:
-// { 9090, "initial_item", "second_item", host: "production.server", port: 8000 }
+// { 9090, "write", "paint", host: "production.server", port: 8000 }
 // Note: The integer-keyed items are ordered as they appear. The final port value is 8000
 // because the conflicting definition (9090) appeared before the expansion.
 // The final host value is "production.server" as it appeared after.
@@ -261,20 +261,20 @@ When used inside the argument list of a standard macro call, the `...` operator 
 The items are unpacked in the order they were declared in the source table.
 
 ```plume
-let my_macro = macro(arg1, arg2, named_arg: "default", ?flag)
+let myMacro = macro(write, paint, namedArg: "default", ?flag)
     // ...
 end
 
 let params = @table
-    - value_for_arg2
+    - quill
     flag: $true
 end
 
 // This call:
-$my_macro(value_for_arg1, ...params, named_arg: override)
+$myMacro(song, ...params, namedArg: override)
 
 // Is equivalent to:
-$my_macro(value_for_arg1, value_for_arg2, ?flag, named_arg: override)
+$myMacro(song, quill, ?flag, namedArg: override)
 ```
 
 ### Expressions and Value Access
@@ -282,9 +282,9 @@ $my_macro(value_for_arg1, value_for_arg2, ?flag, named_arg: override)
 *   **`$name`:** Evaluates the variable `name` and interpolates its value as text.
 *   **`$(...)`:** Evaluates the code within the parentheses and returns the resulting value.
 *   **Accessors:** A variable or code evaluation can be followed by accessors:
-    *   **Call:** `$my_macro(arg1, arg2)`
-    *   **Index:** `$my_table[0]`, `$my_table[key_name]`
-    *   **Member:** `$my_object.property` (Syntactic sugar for `$my_object["property"]`)
+    *   **Call:** `$songMacro(write, paint)`
+    *   **Index:** `$wingTable[0]`, `$wingTable[keyName]`
+    *   **Member:** `$quillObject.property` (Syntactic sugar for `$quillObject["property"]`)
 
 ### Escaping
 
