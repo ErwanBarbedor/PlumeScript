@@ -30,7 +30,7 @@ return function(plume)
 		}
 	end
 
-	--- lua fonction take 1 parameters: the plume table of all given arguments
+	--- lua fonction take 1 parameter: the plume table of all given arguments
 	function plume.obj.luaFunction (name, f)
 		return {
 			"luaFunction", -- type
@@ -43,7 +43,8 @@ return function(plume)
 		return {
 			"table", --type
 			table.new(listSlots, hashSlots), -- lua table
-			table.new(hashSlots, 0) -- key order
+			table.new(hashSlots, 0), -- key order
+			{} -- meta table
 		}
 	end
 

@@ -397,6 +397,15 @@ return function (plume)
             msp = msp-1
         @end
 
+        @define TABLE_INDEX_META arg1 arg2
+            --- Unstack 2, in order: table, key
+            --- Stack 1, table[key]
+            --- arg1: -
+            --- arg2: -
+            ms[msp-1] = ms[msp][4][ms[msp-1]]
+            msp = msp-1
+        @end
+
         @define _TABLE_SET t k v
             -- if dont exists, register key
             if not $t[2][$k] then
@@ -410,7 +419,16 @@ return function (plume)
             --- Set the table.key to value
             --- arg1: -
             --- arg2: -
-            ms[msp-2][ms[msp-1]] = ms[msp]
+            ms[msp-2][2][ms[msp-1]] = ms[msp]
+            msp = msp-3
+        @end
+
+        @define TABLE_SET_META arg1 arg2
+            --- Unstack 3, in order: table, key, value
+            --- Set the table.key to value
+            --- arg1: -
+            --- arg2: -
+            ms[msp-2][4][ms[msp-1]] = ms[msp]
             msp = msp-3
         @end
 
