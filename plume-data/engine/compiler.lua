@@ -179,12 +179,12 @@ return function(plume)
 			end		
 		end
 
-		local function scope(f)
+		local function scope(f, internVar)
 			f = f or childsHandler
 			return function (node)
-				local lets = plume.ast.getAll(node, "LET")
-				if #lets>0 then
-					registerOP(ops.ENTER_SCOPE, 0, #lets)
+				local lets = #plume.ast.getAll(node, "LET") + (internVar or 0)
+				if lets>0 then
+					registerOP(ops.ENTER_SCOPE, 0, lets)
 					table.insert(scopes, {})
 					f(node)
 					table.remove(scopes)
@@ -329,7 +329,7 @@ return function(plume)
 				local child = node.childs[i]
 				if child.name == "CALL" then
 					_accTableInit()
-					_accTable(child)
+					childsHandler(child)
 				elseif child.name == "INDEX" then
 					childsHandler(child)
 				elseif child.name == "DIRECT_INDEX" then
@@ -367,7 +367,7 @@ return function(plume)
 			end
 
 			if node.type == "TABLE" then
-				_accTable(body)
+				childsHandler(body)
 			else
 				accBlock()(body)
 			end
@@ -409,6 +409,37 @@ return function(plume)
 			scope()(body)
 			registerGoto("while_begin_"..uid)
 			registerLabel("while_end_"..uid)
+		end
+
+		nodeHandlerTable.FOR = function(node)
+			local identifier = plume.ast.get(node, "IDENTIFIER").content
+			local iterator   = plume.ast.get(node, "ITERATOR")
+			local body       = plume.ast.get(node, "BODY")
+			local uid = getUID()
+
+			local next = registerConstant("next")
+			local iter = registerConstant("iter")
+
+
+			childsHandler(iterator)
+			registerOP(ops.GET_ITER, 0, 0)
+			registerOP(ops.ENTER_SCOPE, 0, 1)
+				registerOP(ops.STORE_LOCAL, 0, 1)
+
+				registerLabel("for_begin_"..uid)
+				registerOP(ops.LOAD_LOCAL, 0, 1)
+				registerGoto("for_end_"..uid, "FOR_ITER", 1)
+
+				scope(function(body)
+					local var = registerVariable(identifier)
+					registerOP(ops.STORE_LOCAL, 0, var.offset)
+					
+					childsHandler(body)
+				end, 1)(body)
+
+				registerGoto ("for_begin_"..uid)
+				registerLabel("for_end_"..uid)
+			registerOP(ops.LEAVE_SCOPE, 0, 0)	
 		end
 
 		------------
