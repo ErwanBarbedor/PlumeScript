@@ -103,3 +103,5 @@ end
 ### Documentation
 
 [Reference](doc/doc.md) (not necessarily very pedagogical) and, for the curious, [documentation of the VM](doc/vm.md).
+
+[Lot of examples](tests/report.html) in the tests suite.
