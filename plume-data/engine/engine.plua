@@ -261,12 +261,16 @@ return function (plume)
         ----------
         @define _UNSTACK_POS
             local argcount = msp-msf[msfp]
-            if argcount ~= macro[3] then
+            if argcount ~= macro[3] and macro[7]==0 then
                 @_ERROR{{"Wrong number of positionnal arguments for macro '" .. macro[6] .. "', " ..   argcount .. " instead of " .. macro[3]}}
             end
 
-            for i=1, argcount do
+            for i=1, macro[3] do
                 vs[vsf[vsfp]+i-1] = ms[msp+i-argcount]
+            end
+
+            for i=macro[3]+1, argcount do
+                table.insert(capture[2], ms[msp+i-argcount])
             end
 
             msp = msf[msfp]
@@ -277,10 +281,14 @@ return function (plume)
                 local k=ms[msf[msfp]][i]
                 local v=ms[msf[msfp]][i+1]
                 local j = macro[5][k]
-                if not j then
+                print("??", k, v, j)
+                if j then
+                    vs[vsf[vsfp]+j-1] = v
+                elseif macro[7]>0 then
+                    @_TABLE_SET capture k v
+                else
                     @_ERROR{{"Unknow named parameter '" .. k .."' for macro '" .. macro[6] .."'."}}
                 end
-                vs[vsf[vsfp]+j-1] = v
             end    
             msp = msp-1
         @end
@@ -301,8 +309,17 @@ return function (plume)
             if t == "macro" then
                 @ENTER_SCOPE 0 macro[3]+macro[4]
 
+                local capture
+                if macro[7]>0 then -- variadic
+                    capture = ptable(0, 0) -- can be optimized
+                end
+
                 @_UNSTACK_POS
                 @_UNSTACK_NAMED
+                if macro[7]>0 then -- variadic
+                    vs[macro[7]] = capture
+                end
+
                 @_END_ACC
 
                 jump = macro[2]

@@ -157,15 +157,21 @@ Macros are the primary way to create reusable logic in Plume.
 
 **Definition:**
 ```plume
-macro name(positional, named: defaultValue, ?flag)
+macro name(positional, named: defaultValue, ?flag, ...variadicArgs)
     ...
 end
-
-// The `?flag` syntax is sugar for:
-// - `flag: $false` in a definition
-// - `flag: $true` in a call
 ```
-Macros are nearly pure: they cannot access variables from their parent scope, but they **can** access `static` variables defined at the file's root. The statement `macro name ...` is syntactic sugar for `let static name = macro ...`.
+A macro signature can include positional parameters, named parameters with default values, boolean flags, and a final variadic parameter.
+
+*   `positional`: An argument must be provided positionally.
+*   `named: defaultValue`: A named argument. If not provided in the call, it takes its default value.
+*   `?flag`: Syntactic sugar for a boolean flag. It is equivalent to defining `flag: $false` and allows the call to use the shorthand `?flag` instead of `flag: $true`.
+*   `...variadicArgs`: A variadic parameter, which must be the last parameter in the signature. It captures all arguments passed to the macro that were not assigned to another parameter. These leftover arguments are collected into a single `TABLE` variable.
+    *   Positional arguments are added as list items (e.g., `- "value"`).
+    *   Named arguments are added as named items (e.g., `key: "value"`).
+    *   The order of items in the table respects the order in which they were provided in the call.
+
+Macros are nearly pure: they cannot access variables from their parent scope, but they can access `static` variables defined at the file's root. The statement `macro name ...` is syntactic sugar for `let static name = macro ...`.
 
 **Calls:**
 Given the following macro:
@@ -217,11 +223,11 @@ set name = value
 
 ### Table Expansion and Unpacking (`...`)
 
-Plume provides a `...` operator to expand or unpack a table's contents into another structure. This is applicable in two contexts: table accumulation blocks and macro calls.
+The `...` operator serves three distinct purposes depending on its context: expanding a table's contents into another table, unpacking a table's contents into macro arguments, or defining a variadic parameter in a macro signature.
 
-The expression following `...` must evaluate to a table. Attempting to expand any other data type (number, string, etc.) will result in an error.
+The expression following `...` in an expansion or unpacking context must evaluate to a table. Attempting to use any other data type will result in an error.
 
-#### In Table Accumulation Blocks
+#### In Table Accumulation Blocks (Expansion)
 
 When used inside a `TABLE` accumulation block, the `...` operator inserts all items (list and named) from the specified table into the table being constructed.
 
@@ -238,27 +244,24 @@ let defaults = @table
 end
 
 let config = @table
-    port: 9090 // This will be overwritten by the value from 'defaults'
+    port: 9090
     ...defaults
     - paint
-    host: "production.server" // This overwrites the value from 'defaults'
+    host: production.server
 end
 
 // The final 'config' table will be:
-// { 9090, "write", "paint", host: "production.server", port: 8000 }
-// Note: The integer-keyed items are ordered as they appear. The final port value is 8000
-// because the conflicting definition (9090) appeared before the expansion.
-// The final host value is "production.server" as it appeared after.
+// { "write", "paint", host: "production.server", port: 8000 }
 ```
 
-#### In Macro Calls
+#### In Macro Calls (Unpacking)
 
-When used inside the argument list of a standard macro call, the `...` operator unpacks the items of a table into arguments.
+When used inside the argument list of a standard macro call, the `...` operator unpacks the items of a table into arguments for the call.
 
 *   **List items** (e.g., `- value`) are passed as positional arguments.
 *   **Named items** (e.g., `key: value`) are passed as named arguments.
 
-The items are unpacked in the order they were declared in the source table.
+The items are unpacked in the order they were declared in the source table. If an unpacked argument does not match any parameter in the target macro's signature, it will be captured by the macro's variadic parameter, if one is defined.
 
 ```plume
 let myMacro = macro(write, paint, namedArg: "default", ?flag)
@@ -276,6 +279,21 @@ $myMacro(song, ...params, namedArg: override)
 // Is equivalent to:
 $myMacro(song, quill, ?flag, namedArg: override)
 ```
+
+#### In Macro Definitions (Variadic Parameters)
+
+When used as the final parameter in a macro definition, the `...` operator creates a **variadic parameter**. This syntax does not unpack a value but instead instructs the macro to collect all unassigned arguments from a call into a single `TABLE`. A macro definition cannot contain more than one variadic parameter.
+
+```plume
+// Defines a variadic macro that accepts any number of trailing arguments
+macro wing (write, paint, song: bird, ...ink)
+    for quill in ink
+        // 'ink' is a table containing all unused arguments
+    end
+end
+```
+For a complete explanation, see `Syntax > macro and Calls`.
+
 
 ### Expressions and Value Access
 

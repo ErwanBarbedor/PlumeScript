@@ -561,7 +561,8 @@ return function(plume)
 				-- Each macro open a scope, but it is handled by ACC_CALL and RETURN.
 				table.insert(scopes, {})
 				for i, param in ipairs(paramList.childs) do
-					local paramName = plume.ast.get(param, "IDENTIFIER").content
+					local paramName = plume.ast.get(param, "IDENTIFIER", 1, 2).content
+					local variadic  = plume.ast.get(param, "VARIADIC")
 					local paramBody = plume.ast.get(param, "BODY")
 					local param = registerVariable(paramName)
 
@@ -574,6 +575,8 @@ return function(plume)
 
 						macroObj[4] = macroObj[4]+1
 						macroObj[5][paramName] = param.offset
+					elseif variadic then
+						macroObj[7] = param.offset
 					else
 						macroObj[3] = macroObj[3]+1
 					end

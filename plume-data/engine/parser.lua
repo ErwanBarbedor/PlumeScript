@@ -199,7 +199,7 @@ return function (plume)
 	    local _for   = Ct("FOR", P"for" * s * forInd * iterator * body * _end)
 
 	    -- macro & calls
-	    local param      = Ct("PARAM", idn * os * P":" * os * Ct("BODY", V"textic"^-1) + idn)
+	    local param      = Ct("PARAM", idn * os * P":" * os * Ct("BODY", V"textic"^-1) + idn + Ct("VARIADIC", P"..." * idn))
 	    local paramlist  = Ct("PARAMLIST", P"(" * param^-1 * (os * P"," * os * param)^0 * P")")
 	    local paramlistM = paramlist + E("MISSING_PARAMLIST")
 	    local macro      = Ct("MACRO", P"macro" * (s * idn)^-1 * os * paramlistM * body * _end)

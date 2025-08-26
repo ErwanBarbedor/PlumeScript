@@ -79,3 +79,19 @@ $id(This is quite long\, i think.)
 /// Output
 This is quite long, i think.
 /// End
+
+/// Test Variadic 1
+macro write(...args)
+  Positionnals args: $join(...args, sep:\,\s)\n
+  Named args:\s
+  @join(sep:\,\s)
+    for item in items(args)
+      - $item.key\=$item.value
+    end
+  end
+end
+$write(write, paint, song, ink: quill, wing: mark)
+/// Output
+Positionnals args: write, paint, song
+Named args: ink=quill, wing=mark
+/// End
