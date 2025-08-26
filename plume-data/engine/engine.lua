@@ -17,7 +17,7 @@ return function (plume)
         local function _type(x)
             local t=type(x)
             if t=="table" then
-                if t==empty then
+                if x==empty then
                     return "empty"
                 else
                     return x[1]
@@ -113,23 +113,26 @@ return function (plume)
 			elseif op==29 then goto JUMP_IF_NOT
 			elseif op==30 then goto JUMP_IF_NOT_EMPTY
 			elseif op==31 then goto JUMP
-			elseif op==32 then goto OPP_ADD
-			elseif op==33 then goto OPP_MUL
-			elseif op==34 then goto OPP_SUB
-			elseif op==35 then goto OPP_DIV
-			elseif op==36 then goto OPP_NEG
-			elseif op==37 then goto OPP_MOD
-			elseif op==38 then goto OPP_POW
-			elseif op==39 then goto OPP_GTE
-			elseif op==40 then goto OPP_LTE
-			elseif op==41 then goto OPP_GT
-			elseif op==42 then goto OPP_LT
-			elseif op==43 then goto OPP_EQ
-			elseif op==44 then goto OPP_NEQ
-			elseif op==45 then goto OPP_AND
-			elseif op==46 then goto OPP_NOT
-			elseif op==47 then goto OPP_OR
-			elseif op==48 then goto END
+			elseif op==32 then goto GET_ITER
+			elseif op==33 then goto FOR_ITER
+			elseif op==34 then goto OPP_ADD
+			elseif op==35 then goto OPP_MUL
+			elseif op==36 then goto OPP_SUB
+			elseif op==37 then goto OPP_DIV
+			elseif op==38 then goto OPP_NEG
+			elseif op==39 then goto OPP_MOD
+			elseif op==40 then goto OPP_POW
+			elseif op==41 then goto OPP_GTE
+			elseif op==42 then goto OPP_LTE
+			elseif op==43 then goto OPP_GT
+			elseif op==44 then goto OPP_LT
+			elseif op==45 then goto OPP_EQ
+			elseif op==46 then goto OPP_NEQ
+			elseif op==47 then goto OPP_AND
+			elseif op==48 then goto OPP_NOT
+			elseif op==49 then goto OPP_OR
+			elseif op==50 then goto DUPLICATE
+			elseif op==51 then goto END
 			end
             			::LOAD_CONSTANT::
 	do
@@ -412,6 +415,27 @@ end
 	            jump=arg2
 				goto DISPATCH
 end
+			::GET_ITER::
+	do
+	            local obj=ms[msp]
+	            local tobj=_type(obj)
+	            if tobj ~="table" then
+	                            return false, "Try to iterate over a non-table '" .. tobj .. "' object.", ip
+	            end
+	            ms[msp]=obj[4].iter[2]()
+				goto DISPATCH
+end
+			::FOR_ITER::
+	do
+	            local result=ms[msp][2].next[2]()
+	            if result==empty then
+	                msp=msp-1
+	                            jump=arg2
+	            else
+	                ms[msp]=result
+	            end
+				goto DISPATCH
+end
 			::OPP_ADD::
 	do
 	            x=ms[msp-1]
@@ -675,6 +699,10 @@ end
 	            msp=msp-1
 	            ms[msp]=x or y
 				goto DISPATCH
+end
+			::DUPLICATE::
+	do
+					goto DISPATCH
 end
 		::END::
         	return true, plume.std.tostring[2]({"", {ms[1]}}), ip

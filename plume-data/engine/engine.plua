@@ -25,7 +25,7 @@ return function (plume)
         local function _type(x)
             local t = type(x)
             if t=="table" then
-                if t==empty then
+                if x==empty then
                     return "empty"
                 else
                     return x[1]
@@ -223,6 +223,37 @@ return function (plume)
             --- arg2: frame offset
             filesMemory[memory[mp]][$arg2] = ms[msp]
             msp = msp-1
+        @end
+
+        ----------
+        -- For --
+        ----------
+        @define GET_ITER
+            --- Unstack 1 iterable object
+            --- Stack 1 iterator object
+            --- arg1: -
+            --- arg2: -
+            local obj = ms[msp]
+            local tobj = _type(obj)
+            if tobj ~= "table" then
+                @_ERROR{{"Try to iterate over a non-table '" .. tobj .. "' object."}}
+            end
+
+            ms[msp] = obj[4].iter[2]() -- 4: meta table 2: data
+        @end
+
+        @define FOR_ITER arg1 arg2
+            --- Unstack 1 iterator object
+            --- Stack 1 next call result OR jump to for end
+            --- arg1: -
+            --- arg2: jump to end for
+            local result = ms[msp][2].next[2]()
+            if result == empty then
+                msp = msp-1
+                @JUMP 0 $arg1
+            else
+                ms[msp] = result
+            end
         @end
 
         ----------
