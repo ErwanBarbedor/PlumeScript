@@ -62,7 +62,7 @@ macro double(x)
 end
 
 //And use it!
-$double(Foo)
+$double(quill)
 
 // Even with a very complex `x`
 @double
@@ -87,16 +87,16 @@ macro complex(arg1, arg2, optn: defaultValue, ?flag)
 end
 
 // And you can call it... Anyway you like!
-$complex(foo, bar, optn: baz, ?flag) // in call, ?flag is a sugar for flag: $true
+$complex(quill, wing, optn: bird, ?flag) // in call, ?flag is a sugar for flag: $true
 
 @complex(?flag)
-    - bar
-    - foo
-    optn: baz
+    - quill
+    - wing
+    optn: bird
 end
 
-@complex(foo, optn: baz, ?flag)
-    bar // content, if text, is send as last positionnal argument
+@complex(quill, optn: bird, ?flag)
+    wing // content, if text, is send as last positionnal argument
 end
 ```
 
@@ -104,4 +104,4 @@ end
 
 [Reference](doc/doc.md) (not necessarily very pedagogical) and, for the curious, [documentation of the VM](doc/vm.md).
 
-[Lot of examples](https://html-preview.github.io/?url=https://github.com/ErwanBarbedor/PlumeScript/blob/v0.52/tests/report.html) in the tests suite.
+[Lot of examples](https://html-preview.github.io/?url=https://github.com/Erwanwingbedor/PlumeScript/blob/v0.52/tests/report.html) in the tests suite.
