@@ -1,0 +1,1751 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rapport de Test Plume</title>
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #f4f4f9; color: #333; margin: 0; padding: 20px; }
+        .container { max-width: 1000px; margin: 0 auto; background-color: #fff;
+            padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        h1, h2 { padding-bottom: 0px; margin-bottom: 0px}
+        h1 { font-size: 28px; } h2 { font-size: 24px; margin-top: 40px; }
+        .fail-count { color: #c62828; font-weight: bold; }
+        .progress-bar { display: flex; height: 8px; border-radius: 4px; overflow: hidden; background: #e0e0e0; margin-top: 5px; margin-bottom: 20px;}
+        .progress-success { background-color: #2e7d32; }
+        .progress-fail { background-color: #c62828; }
+        details { border: 1px solid #ddd; border-radius: 4px; margin-bottom: 10px; overflow: hidden; }
+        summary { cursor: pointer; padding: 12px; font-weight: bold; list-style: none; background-color: #fafafa}
+        summary::-webkit-details-marker { display: none; }
+        .status-icon { display: inline-block; width: 20px; text-align: center; font-weight: bold; }
+        .status-pass { background-color: #e8f5e9; }
+        .status-fail { background-color: #ffebee; }
+        .status-pass .status-icon { color: #2e7d32; }
+        .status-fail .status-icon { color: #c62828; }
+        .test-content { padding: 0 15px 15px 15px; border-top: 1px solid #ddd; }
+        h4 { margin-top: 15px; margin-bottom: 5px; font-weight: bold; font-size: 1.1em; }
+        pre { background-color: #fdfdfd; color: #000; padding: 15px; border-radius: 4px;
+            white-space: pre-wrap; word-wrap: break-word; font-family: "Courier New", Courier, monospace; border: 1px solid #ddd}
+        .comparison-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 15px; }
+        .comparison-grid h4 { margin: 0 0 5px 0; }
+        .comparison-grid > div { border: 1px solid #ddd; padding: 8px; border-radius: 4px; background-color: #fdfdfd; }
+        .comparison-grid pre { margin: 0; padding: 8px; border: none; background-color: transparent; }
+        .diff-match { background-color: rgba(46, 125, 50, 0.1); }
+        .diff-expected { background-color: rgba(25, 118, 210, 0.1); }
+        .diff-obtained { background-color: rgba(198, 40, 40, 0.1);}
+        .result-type-header { font-size: 0.85em; color: #555; font-style: italic; margin-bottom: 4px; padding-left: 2px; position: absolute; top:0; left: 50%; transform: translate(-50%,-50%); background: white;}
+        .result-type-mismatch { color: #c62828; font-weight: bold; }
+        .comparison-grid > div {position: relative}
+    </style>
+</head>
+<body>
+<div class="container">
+    
+<h1>Global: <span style="font-weight: normal;">88 success on 88 tests</span></h1>
+<div class="progress-bar"><div class="progress-success" style="width: 100.00%"></div><div class="progress-fail" style="width: 0.00%"></div></div>
+<h2>arithmetic: <span style="font-weight: normal;">19 success on 19 tests</span></h2>
+<div class="progress-bar"><div class="progress-success" style="width: 100.00%"></div><div class="progress-fail" style="width: 0.00%"></div></div>
+<details>
+<summary>
+<span class="status-icon status-pass">✓</span> Add
+</summary>
+<div class="test-content">
+<h4>Code</h4>
+<pre><code class="language-plume">
+$(10+5)
+
+</code></pre>
+<h4>Output</h4>
+<pre><code>
+15
+</code></pre>
+</div>
+</details>
+<details>
+<summary>
+<span class="status-icon status-pass">✓</span> Div
+</summary>
+<div class="test-content">
+<h4>Code</h4>
+<pre><code class="language-plume">
+$(10/5)
+
+</code></pre>
+<h4>Output</h4>
+<pre><code>
+2
+</code></pre>
+</div>
+</details>
+<details>
+<summary>
+<span class="status-icon status-pass">✓</span> Eq
+</summary>
+<div class="test-content">
+<h4>Code</h4>
+<pre><code class="language-plume">
+$(7==5+2)
+
+</code></pre>
+<h4>Output</h4>
+<pre><code>
+true
+</code></pre>
+</div>
+</details>
+<details>
+<summary>
+<span class="status-icon status-pass">✓</span> Mod
+</summary>
+<div class="test-content">
+<h4>Code</h4>
+<pre><code class="language-plume">
+$(10%5)
+
+</code></pre>
+<h4>Output</h4>
+<pre><code>
+0
+</code></pre>
+</div>
+</details>
+<details>
+<summary>
+<span class="status-icon status-pass">✓</span> Mul
+</summary>
+<div class="test-content">
+<h4>Code</h4>
+<pre><code class="language-plume">
+$(10*5)
+
+</code></pre>
+<h4>Output</h4>
+<pre><code>
+50
+</code></pre>
+</div>
+</details>
+<details>
+<summary>
+<span class="status-icon status-pass">✓</span> Pow
+</summary>
+<div class="test-content">
+<h4>Code</h4>
+<pre><code class="language-plume">
+$(10^5)
+
+</code></pre>
+<h4>Output</h4>
+<pre><code>
+100000
+</code></pre>
+</div>
+</details>
+<details>
+<summary>
+<span class="status-icon status-pass">✓</span> Priorities 1
+</summary>
+<div class="test-content">
+<h4>Code</h4>
+<pre><code class="language-plume">
+$(15+2*5)
+
+</code></pre>
+<h4>Output</h4>
+<pre><code>
+25
+</code></pre>
+</div>
+</details>
+<details>
+<summary>
+<span class="status-icon status-pass">✓</span> Priorities 2
+</summary>
+<div class="test-content">
+<h4>Code</h4>
+<pre><code class="language-plume">
+$(15/(4-1))
+
+</code></pre>
+<h4>Output</h4>
+<pre><code>
+5
+</code></pre>
+</div>
+</details>
+<details>
+<summary>
+<span class="status-icon status-pass">✓</span> Sub
+</summary>
+<div class="test-content">
+<h4>Code</h4>
+<pre><code class="language-plume">
+$(10-5)
+
+</code></pre>
+<h4>Output</h4>
+<pre><code>
+5
+</code></pre>
+</div>
+</details>
+<details>
+<summary>
+<span class="status-icon status-pass">✓</span> and 1
+</summary>
+<div class="test-content">
+<h4>Code</h4>
+<pre><code class="language-plume">
+$(1+1==2 and 5&lt;9)
+
+</code></pre>
+<h4>Output</h4>
+<pre><code>
+true
+</code></pre>
+</div>
+</details>
+<details>
+<summary>
+<span class="status-icon status-pass">✓</span> and 2
+</summary>
+<div class="test-content">
+<h4>Code</h4>
+<pre><code class="language-plume">
+$(1+1==2 and 5&gt;9)
+
+</code></pre>
+<h4>Output</h4>
+<pre><code>
+false
+</code></pre>
+</div>
+</details>
+<details>
+<summary>
+<span class="status-icon status-pass">✓</span> gt
+</summary>
+<div class="test-content">
+<h4>Code</h4>
+<pre><code class="language-plume">
+$(7&lt;5+2)
+
+</code></pre>
+<h4>Output</h4>
+<pre><code>
+false
+</code></pre>
+</div>
+</details>
+<details>
+<summary>
+<span class="status-icon status-pass">✓</span> gte
+</summary>
+<div class="test-content">
+<h4>Code</h4>
+<pre><code class="language-plume">
+$(7&lt;=5+2)
+
+</code></pre>
+<h4>Output</h4>
+<pre><code>
+true
+</code></pre>
+</div>
+</details>
+<details>
+<summary>
+<span class="status-icon status-pass">✓</span> lt
+</summary>
+<div class="test-content">
+<h4>Code</h4>
+<pre><code class="language-plume">
+$(7&gt;5+2)
+
+</code></pre>
+<h4>Output</h4>
+<pre><code>
+false
+</code></pre>
+</div>
+</details>
+<details>
+<summary>
+<span class="status-icon status-pass">✓</span> lte
+</summary>
+<div class="test-content">
+<h4>Code</h4>
+<pre><code class="language-plume">
+$(7&gt;=5+2)
+
+</code></pre>
+<h4>Output</h4>
+<pre><code>
+true
+</code></pre>
+</div>
+</details>
+<details>
+<summary>
+<span class="status-icon status-pass">✓</span> neq
+</summary>
+<div class="test-content">
+<h4>Code</h4>
+<pre><code class="language-plume">
+$(7!=5+2)
+
+</code></pre>
+<h4>Output</h4>
+<pre><code>
+false
+</code></pre>
+</div>
+</details>
+<details>
+<summary>
+<span class="status-icon status-pass">✓</span> not
+</summary>
+<div class="test-content">
+<h4>Code</h4>
+<pre><code class="language-plume">
+$(not 1+1==3)
+
+</code></pre>
+<h4>Output</h4>
+<pre><code>
+true
+</code></pre>
+</div>
+</details>
+<details>
+<summary>
+<span class="status-icon status-pass">✓</span> or 1
+</summary>
+<div class="test-content">
+<h4>Code</h4>
+<pre><code class="language-plume">
+$(1+1==2 or 5&gt;9)
+
+</code></pre>
+<h4>Output</h4>
+<pre><code>
+true
+</code></pre>
+</div>
+</details>
+<details>
+<summary>
+<span class="status-icon status-pass">✓</span> or 2
+</summary>
+<div class="test-content">
+<h4>Code</h4>
+<pre><code class="language-plume">
+$(1+1==3 or 5&gt;9)
+
+</code></pre>
+<h4>Output</h4>
+<pre><code>
+false
+</code></pre>
+</div>
+</details>
+<h2>block: <span style="font-weight: normal;">5 success on 5 tests</span></h2>
+<div class="progress-bar"><div class="progress-success" style="width: 100.00%"></div><div class="progress-fail" style="width: 0.00%"></div></div>
+<details>
+<summary>
+<span class="status-icon status-pass">✓</span> macro &amp; block call (1 param)
+</summary>
+<div class="test-content">
+<h4>Code</h4>
+<pre><code class="language-plume">
+macro double(write)
+  $write $write
+end
+@double
+  wing
+end
+
+</code></pre>
+<h4>Output</h4>
+<pre><code>
+wing wing
+</code></pre>
+</div>
+</details>
+<details>
+<summary>
+<span class="status-icon status-pass">✓</span> macro &amp; block call (2 params) 1
+</summary>
+<div class="test-content">
+<h4>Code</h4>
+<pre><code class="language-plume">
+macro nib(write, paint)
+  $write $paint
+end
+@nib
+  - ink
+  - quill
+end
+
+</code></pre>
+<h4>Output</h4>
+<pre><code>
+ink quill
+</code></pre>
+</div>
+</details>
+<details>
+<summary>
+<span class="status-icon status-pass">✓</span> macro &amp; block call (2 params) 2
+</summary>
+<div class="test-content">
+<h4>Code</h4>
+<pre><code class="language-plume">
+macro nib(write, paint)
+  $write $paint
+end
+@nib(quill)
+  - Bar
+end
+
+</code></pre>
+<h4>Output</h4>
+<pre><code>
+quill Bar
+</code></pre>
+</div>
+</details>
+<details>
+<summary>
+<span class="status-icon status-pass">✓</span> macro &amp; block call (2 params) 3
+</summary>
+<div class="test-content">
+<h4>Code</h4>
+<pre><code class="language-plume">
+macro nib(write, paint)
+  $write $paint
+end
+@nib(quill)
+  Bar
+end
+
+</code></pre>
+<h4>Output</h4>
+<pre><code>
+quill Bar
+</code></pre>
+</div>
+</details>
+<details>
+<summary>
+<span class="status-icon status-pass">✓</span> macro &amp; block call (miwriteed params)
+</summary>
+<div class="test-content">
+<h4>Code</h4>
+<pre><code class="language-plume">
+macro nib(write, paint, optn: value)
+  $write $paint $optn
+end
+@nib(quill, Bar)
+  optn: baz
+end
+
+</code></pre>
+<h4>Output</h4>
+<pre><code>
+quill Bar baz
+</code></pre>
+</div>
+</details>
+<h2>branchs: <span style="font-weight: normal;">8 success on 8 tests</span></h2>
+<div class="progress-bar"><div class="progress-success" style="width: 100.00%"></div><div class="progress-fail" style="width: 0.00%"></div></div>
+<details>
+<summary>
+<span class="status-icon status-pass">✓</span> if false
+</summary>
+<div class="test-content">
+<h4>Code</h4>
+<pre><code class="language-plume">
+let a = -1
+if a &gt; 2
+  quill
+end
+
+</code></pre>
+<h4>Output</h4>
+<pre><code>
+
+</code></pre>
+</div>
+</details>
+<details>
+<summary>
+<span class="status-icon status-pass">✓</span> if true
+</summary>
+<div class="test-content">
+<h4>Code</h4>
+<pre><code class="language-plume">
+let a = 5
+if a &gt; 2
+  quill
+end
+
+</code></pre>
+<h4>Output</h4>
+<pre><code>
+quill
+</code></pre>
+</div>
+</details>
+<details>
+<summary>
+<span class="status-icon status-pass">✓</span> if-else false
+</summary>
+<div class="test-content">
+<h4>Code</h4>
+<pre><code class="language-plume">
+let a = -1
+if a &gt; 2
+  quill
+else
+  mark
+end
+
+</code></pre>
+<h4>Output</h4>
+<pre><code>
+mark
+</code></pre>
+</div>
+</details>
+<details>
+<summary>
+<span class="status-icon status-pass">✓</span> if-else true
+</summary>
+<div class="test-content">
+<h4>Code</h4>
+<pre><code class="language-plume">
+let a = 5
+if a &gt; 2
+  quill
+else
+  mark
+end
+
+</code></pre>
+<h4>Output</h4>
+<pre><code>
+quill
+</code></pre>
+</div>
+</details>
+<details>
+<summary>
+<span class="status-icon status-pass">✓</span> if-elseif-elseif-else 1
+</summary>
+<div class="test-content">
+<h4>Code</h4>
+<pre><code class="language-plume">
+let a = 0
+if a == 0
+  quill
+elseif a == 1
+  mark
+elseif a == 2
+  ink
+else
+  ???
+end
+
+</code></pre>
+<h4>Output</h4>
+<pre><code>
+quill
+</code></pre>
+</div>
+</details>
+<details>
+<summary>
+<span class="status-icon status-pass">✓</span> if-elseif-elseif-else 2
+</summary>
+<div class="test-content">
+<h4>Code</h4>
+<pre><code class="language-plume">
+let a = 1
+if a == 0
+  quill
+elseif a == 1
+  mark
+elseif a == 2
+  ink
+else
+  ???
+end
+
+</code></pre>
+<h4>Output</h4>
+<pre><code>
+mark
+</code></pre>
+</div>
+</details>
+<details>
+<summary>
+<span class="status-icon status-pass">✓</span> if-elseif-elseif-else 3
+</summary>
+<div class="test-content">
+<h4>Code</h4>
+<pre><code class="language-plume">
+let a = 2
+if a == 0
+  quill
+elseif a == 1
+  mark
+elseif a == 2
+  ink
+else
+  ???
+end
+
+</code></pre>
+<h4>Output</h4>
+<pre><code>
+ink
+</code></pre>
+</div>
+</details>
+<details>
+<summary>
+<span class="status-icon status-pass">✓</span> if-elseif-elseif-else 4
+</summary>
+<div class="test-content">
+<h4>Code</h4>
+<pre><code class="language-plume">
+let a = 3
+if a == 0
+  quill
+elseif a == 1
+  mark
+elseif a == 2
+  ink
+else
+  ???
+end
+
+</code></pre>
+<h4>Output</h4>
+<pre><code>
+???
+</code></pre>
+</div>
+</details>
+<h2>coercion: <span style="font-weight: normal;">4 success on 4 tests</span></h2>
+<div class="progress-bar"><div class="progress-success" style="width: 100.00%"></div><div class="progress-fail" style="width: 0.00%"></div></div>
+<details>
+<summary>
+<span class="status-icon status-pass">✓</span> string+number
+</summary>
+<div class="test-content">
+<h4>Code</h4>
+<pre><code class="language-plume">
+let write = 1 // string
+$(write+1) // 1 is a number
+
+</code></pre>
+<h4>Output</h4>
+<pre><code>
+2
+</code></pre>
+</div>
+</details>
+<details>
+<summary>
+<span class="status-icon status-pass">✓</span> string+string
+</summary>
+<div class="test-content">
+<h4>Code</h4>
+<pre><code class="language-plume">
+let write = 1 // string
+let paint = 1 // string
+$(write+paint)
+
+</code></pre>
+<h4>Output</h4>
+<pre><code>
+2
+</code></pre>
+</div>
+</details>
+<details>
+<summary>
+<span class="status-icon status-pass">✓</span> type convertion
+</summary>
+<div class="test-content">
+<h4>Code</h4>
+<pre><code class="language-plume">
+let write = $table()
+$type($write)
+
+</code></pre>
+<h4>Output</h4>
+<pre><code>
+table
+</code></pre>
+</div>
+</details>
+<details>
+<summary>
+<span class="status-icon status-pass">✓</span> type convertion (if)
+</summary>
+<div class="test-content">
+<h4>Code</h4>
+<pre><code class="language-plume">
+let write = if 2==1+1
+	$table()
+else
+	$table(write)
+end
+$type($write)
+
+</code></pre>
+<h4>Output</h4>
+<pre><code>
+table
+</code></pre>
+</div>
+</details>
+<h2>constants: <span style="font-weight: normal;">4 success on 4 tests</span></h2>
+<div class="progress-bar"><div class="progress-success" style="width: 100.00%"></div><div class="progress-fail" style="width: 0.00%"></div></div>
+<details>
+<summary>
+<span class="status-icon status-pass">✓</span> empty
+</summary>
+<div class="test-content">
+<h4>Code</h4>
+<pre><code class="language-plume">
+if empty
+	Nib
+end
+
+</code></pre>
+<h4>Output</h4>
+<pre><code>
+
+</code></pre>
+</div>
+</details>
+<details>
+<summary>
+<span class="status-icon status-pass">✓</span> empty concat
+</summary>
+<div class="test-content">
+<h4>Code</h4>
+<pre><code class="language-plume">
+Nib$(empty)Ink
+
+</code></pre>
+<h4>Output</h4>
+<pre><code>
+NibInk
+</code></pre>
+</div>
+</details>
+<details>
+<summary>
+<span class="status-icon status-pass">✓</span> false
+</summary>
+<div class="test-content">
+<h4>Code</h4>
+<pre><code class="language-plume">
+if false
+	Nib
+end
+
+</code></pre>
+<h4>Output</h4>
+<pre><code>
+
+</code></pre>
+</div>
+</details>
+<details>
+<summary>
+<span class="status-icon status-pass">✓</span> true
+</summary>
+<div class="test-content">
+<h4>Code</h4>
+<pre><code class="language-plume">
+if true
+	Nib
+end
+
+</code></pre>
+<h4>Output</h4>
+<pre><code>
+Nib
+</code></pre>
+</div>
+</details>
+<h2>loop: <span style="font-weight: normal;">3 success on 3 tests</span></h2>
+<div class="progress-bar"><div class="progress-success" style="width: 100.00%"></div><div class="progress-fail" style="width: 0.00%"></div></div>
+<details>
+<summary>
+<span class="status-icon status-pass">✓</span> for over table
+</summary>
+<div class="test-content">
+<h4>Code</h4>
+<pre><code class="language-plume">
+let t = $table(nib, quill, wing)
+
+for write in t
+  $write;
+end
+
+</code></pre>
+<h4>Output</h4>
+<pre><code>
+nib;quill;wing;
+</code></pre>
+</div>
+</details>
+<details>
+<summary>
+<span class="status-icon status-pass">✓</span> for over table (idiomatic)
+</summary>
+<div class="test-content">
+<h4>Code</h4>
+<pre><code class="language-plume">
+let t = $table(nib, quill, wing)
+
+@join(sep:\n)
+  for write in t
+    - A new item: &quot;$write&quot;
+  end
+end
+
+</code></pre>
+<h4>Output</h4>
+<pre><code>
+A new item: &quot;nib&quot;
+A new item: &quot;quill&quot;
+A new item: &quot;wing&quot;
+</code></pre>
+</div>
+</details>
+<details>
+<summary>
+<span class="status-icon status-pass">✓</span> simple While
+</summary>
+<div class="test-content">
+<h4>Code</h4>
+<pre><code class="language-plume">
+let i = 0
+while i&lt;4
+  set i = $(i+1)
+  Iterate $i times...\n
+end
+
+</code></pre>
+<h4>Output</h4>
+<pre><code>
+Iterate 1 times...
+Iterate 2 times...
+Iterate 3 times...
+Iterate 4 times...
+</code></pre>
+</div>
+</details>
+<h2>macro: <span style="font-weight: normal;">9 success on 9 tests</span></h2>
+<div class="progress-bar"><div class="progress-success" style="width: 100.00%"></div><div class="progress-fail" style="width: 0.00%"></div></div>
+<details>
+<summary>
+<span class="status-icon status-pass">✓</span> Variadic 1
+</summary>
+<div class="test-content">
+<h4>Code</h4>
+<pre><code class="language-plume">
+macro write(...args)
+  Positionnals args: $join(...args, sep:\,\s)\n
+  Named args:\s
+  @join(sep:\,\s)
+    for item in items(args)
+      - $item.key\=$item.value
+    end
+  end
+end
+$write(write, paint, song, ink: quill, wing: mark)
+
+</code></pre>
+<h4>Output</h4>
+<pre><code>
+Positionnals args: write, paint, song
+Named args: ink=quill, wing=mark
+</code></pre>
+</div>
+</details>
+<details>
+<summary>
+<span class="status-icon status-pass">✓</span> long argument
+</summary>
+<div class="test-content">
+<h4>Code</h4>
+<pre><code class="language-plume">
+macro id(write)
+  $write
+end
+
+$id(This is quite long\, i think.)
+
+</code></pre>
+<h4>Output</h4>
+<pre><code>
+This is quite long, i think.
+</code></pre>
+</div>
+</details>
+<details>
+<summary>
+<span class="status-icon status-pass">✓</span> macro &amp; call (1 param)
+</summary>
+<div class="test-content">
+<h4>Code</h4>
+<pre><code class="language-plume">
+macro double(write)
+  $write $write
+end
+$double(quill)
+
+</code></pre>
+<h4>Output</h4>
+<pre><code>
+quill quill
+</code></pre>
+</div>
+</details>
+<details>
+<summary>
+<span class="status-icon status-pass">✓</span> macro &amp; call (2 params)
+</summary>
+<div class="test-content">
+<h4>Code</h4>
+<pre><code class="language-plume">
+macro f(write, paint)
+  $write $paint
+end
+$f(quill, mark)
+
+</code></pre>
+<h4>Output</h4>
+<pre><code>
+quill mark
+</code></pre>
+</div>
+</details>
+<details>
+<summary>
+<span class="status-icon status-pass">✓</span> macro &amp; call (miwriteed params)
+</summary>
+<div class="test-content">
+<h4>Code</h4>
+<pre><code class="language-plume">
+macro f(write, paint, optn: value)
+  $write $paint $optn
+end
+$f(quill, mark)\n
+$f(quill, ink, optn: another value)
+
+</code></pre>
+<h4>Output</h4>
+<pre><code>
+quill mark value
+quill ink another value
+</code></pre>
+</div>
+</details>
+<details>
+<summary>
+<span class="status-icon status-pass">✓</span> macro &amp; call (named params)
+</summary>
+<div class="test-content">
+<h4>Code</h4>
+<pre><code class="language-plume">
+macro f(optn: value)
+  $optn
+end
+$f()\n
+$f(optn: another value)
+
+</code></pre>
+<h4>Output</h4>
+<pre><code>
+value
+another value
+</code></pre>
+</div>
+</details>
+<details>
+<summary>
+<span class="status-icon status-pass">✓</span> macro nested
+</summary>
+<div class="test-content">
+<h4>Code</h4>
+<pre><code class="language-plume">
+macro double(write)
+  $write $write
+end
+
+$double($double(quill))
+
+</code></pre>
+<h4>Output</h4>
+<pre><code>
+quill quill quill quill
+</code></pre>
+</div>
+</details>
+<details>
+<summary>
+<span class="status-icon status-pass">✓</span> macro scope
+</summary>
+<div class="test-content">
+<h4>Code</h4>
+<pre><code class="language-plume">
+let write = 5
+macro f()
+  let write = 3
+  $write
+end
+$f()\n
+$write
+
+</code></pre>
+<h4>Output</h4>
+<pre><code>
+3
+5
+</code></pre>
+</div>
+</details>
+<details>
+<summary>
+<span class="status-icon status-pass">✓</span> simple macro &amp; call
+</summary>
+<div class="test-content">
+<h4>Code</h4>
+<pre><code class="language-plume">
+macro quill()
+  mark
+end
+$quill()
+
+</code></pre>
+<h4>Output</h4>
+<pre><code>
+mark
+</code></pre>
+</div>
+</details>
+<h2>std: <span style="font-weight: normal;">9 success on 9 tests</span></h2>
+<div class="progress-bar"><div class="progress-success" style="width: 100.00%"></div><div class="progress-fail" style="width: 0.00%"></div></div>
+<details>
+<summary>
+<span class="status-icon status-pass">✓</span> enumerate
+</summary>
+<div class="test-content">
+<h4>Code</h4>
+<pre><code class="language-plume">
+let t = $table(quill, wing, bird)
+@join(sep:\n)
+  for item in enumerate(t)
+    - Item $item.index is $item.value.
+  end
+end
+
+</code></pre>
+<h4>Output</h4>
+<pre><code>
+Item 1 is quill.
+Item 2 is wing.
+Item 3 is bird.
+</code></pre>
+</div>
+</details>
+<details>
+<summary>
+<span class="status-icon status-pass">✓</span> items
+</summary>
+<div class="test-content">
+<h4>Code</h4>
+<pre><code class="language-plume">
+let t = $table(first: quill, second: wing, bonus: bird)
+@join(sep:\n)
+  for item in items(t)
+    - Item &quot;$item.key&quot; is _($item.value)_.
+  end
+end
+
+</code></pre>
+<h4>Output</h4>
+<pre><code>
+Item &quot;first&quot; is _(quill)_.
+Item &quot;second&quot; is _(wing)_.
+Item &quot;bonus&quot; is _(bird)_.
+</code></pre>
+</div>
+</details>
+<details>
+<summary>
+<span class="status-icon status-pass">✓</span> join
+</summary>
+<div class="test-content">
+<h4>Code</h4>
+<pre><code class="language-plume">
+@join
+  quill
+  mark
+end
+
+</code></pre>
+<h4>Output</h4>
+<pre><code>
+quillmark
+</code></pre>
+</div>
+</details>
+<details>
+<summary>
+<span class="status-icon status-pass">✓</span> join with sep
+</summary>
+<div class="test-content">
+<h4>Code</h4>
+<pre><code class="language-plume">
+@join(sep: \n)
+  - quill
+  - mark
+end
+
+</code></pre>
+<h4>Output</h4>
+<pre><code>
+quill
+mark
+</code></pre>
+</div>
+</details>
+<details>
+<summary>
+<span class="status-icon status-pass">✓</span> seq 1
+</summary>
+<div class="test-content">
+<h4>Code</h4>
+<pre><code class="language-plume">
+for write in seq(1, 5)
+  $write
+end
+
+</code></pre>
+<h4>Output</h4>
+<pre><code>
+12345
+</code></pre>
+</div>
+</details>
+<details>
+<summary>
+<span class="status-icon status-pass">✓</span> seq 2
+</summary>
+<div class="test-content">
+<h4>Code</h4>
+<pre><code class="language-plume">
+for write in seq(3)
+  $write
+end
+
+</code></pre>
+<h4>Output</h4>
+<pre><code>
+123
+</code></pre>
+</div>
+</details>
+<details>
+<summary>
+<span class="status-icon status-pass">✓</span> table
+</summary>
+<div class="test-content">
+<h4>Code</h4>
+<pre><code class="language-plume">
+let t = @table
+  - quill
+  - mark
+  quill: ink
+end
+$t[2], $t.quill
+
+</code></pre>
+<h4>Output</h4>
+<pre><code>
+mark, ink
+</code></pre>
+</div>
+</details>
+<details>
+<summary>
+<span class="status-icon status-pass">✓</span> type
+</summary>
+<div class="test-content">
+<h4>Code</h4>
+<pre><code class="language-plume">
+$type($table())\n
+$type(nib)\n
+$type($(1+1))
+
+</code></pre>
+<h4>Output</h4>
+<pre><code>
+table
+string
+number
+</code></pre>
+</div>
+</details>
+<details>
+<summary>
+<span class="status-icon status-pass">✓</span> void
+</summary>
+<div class="test-content">
+<h4>Code</h4>
+<pre><code class="language-plume">
+quill
+@void
+  mark
+  ink
+end
+quill
+
+</code></pre>
+<h4>Output</h4>
+<pre><code>
+quillquill
+</code></pre>
+</div>
+</details>
+<h2>syntaxErrors: <span style="font-weight: normal;">0 tests</span></h2>
+<h2>tables: <span style="font-weight: normal;">7 success on 7 tests</span></h2>
+<div class="progress-bar"><div class="progress-success" style="width: 100.00%"></div><div class="progress-fail" style="width: 0.00%"></div></div>
+<details>
+<summary>
+<span class="status-icon status-pass">✓</span> table ewritepand 1
+</summary>
+<div class="test-content">
+<h4>Code</h4>
+<pre><code class="language-plume">
+let t1 = $table(write, paint, make)
+
+let t2 = @table
+	...t1
+end
+
+@join(sep: \s)
+	...t2
+end
+
+</code></pre>
+<h4>Output</h4>
+<pre><code>
+write paint make
+</code></pre>
+</div>
+</details>
+<details>
+<summary>
+<span class="status-icon status-pass">✓</span> table ewritepand 2
+</summary>
+<div class="test-content">
+<h4>Code</h4>
+<pre><code class="language-plume">
+let t1 = $table(write, paint, make)
+
+let t2 = @table
+	- ink
+	...t1
+	- quill
+end
+
+@join(sep: \s)
+	...t2
+end
+
+</code></pre>
+<h4>Output</h4>
+<pre><code>
+ink write paint make quill
+</code></pre>
+</div>
+</details>
+<details>
+<summary>
+<span class="status-icon status-pass">✓</span> table ewritepand 3
+</summary>
+<div class="test-content">
+<h4>Code</h4>
+<pre><code class="language-plume">
+let t1 = $table(write: quill, paint: song)
+
+let t2 = @table
+	...t1
+end
+
+$t2.write\n
+$t2.paint
+
+</code></pre>
+<h4>Output</h4>
+<pre><code>
+quill
+song
+</code></pre>
+</div>
+</details>
+<details>
+<summary>
+<span class="status-icon status-pass">✓</span> table ewritepand 4
+</summary>
+<div class="test-content">
+<h4>Code</h4>
+<pre><code class="language-plume">
+let t1 = $table(write: quill, paint: song)
+
+let t2 = @table
+	write: nib
+	...t1
+	paint: words
+end
+
+$t2.write\n
+$t2.paint
+
+</code></pre>
+<h4>Output</h4>
+<pre><code>
+quill
+words
+</code></pre>
+</div>
+</details>
+<details>
+<summary>
+<span class="status-icon status-pass">✓</span> table ewritepand inline
+</summary>
+<div class="test-content">
+<h4>Code</h4>
+<pre><code class="language-plume">
+let t = @table
+	- write
+	- paint
+	- song
+	quill: mark
+end
+
+macro wing(write, paint, z, quill: word)
+	$write - $paint - $z - $quill
+end
+
+$wing(...t)
+
+
+</code></pre>
+<h4>Output</h4>
+<pre><code>
+write - paint - song - mark
+</code></pre>
+</div>
+</details>
+<details>
+<summary>
+<span class="status-icon status-pass">✓</span> table get indewrite
+</summary>
+<div class="test-content">
+<h4>Code</h4>
+<pre><code class="language-plume">
+let t = $table(mark, quill, ink)
+$t[1]
+
+</code></pre>
+<h4>Output</h4>
+<pre><code>
+mark
+</code></pre>
+</div>
+</details>
+<details>
+<summary>
+<span class="status-icon status-pass">✓</span> table set indewrite
+</summary>
+<div class="test-content">
+<h4>Code</h4>
+<pre><code class="language-plume">
+let t = $table(mark, quill, ink)
+set t[1] = wing
+$t[1]
+
+</code></pre>
+<h4>Output</h4>
+<pre><code>
+wing
+</code></pre>
+</div>
+</details>
+<h2>text: <span style="font-weight: normal;">13 success on 13 tests</span></h2>
+<div class="progress-bar"><div class="progress-success" style="width: 100.00%"></div><div class="progress-fail" style="width: 0.00%"></div></div>
+<details>
+<summary>
+<span class="status-icon status-pass">✓</span> Escape 1
+</summary>
+<div class="test-content">
+<h4>Code</h4>
+<pre><code class="language-plume">
+$(1+1)\$(1+1)
+
+</code></pre>
+<h4>Output</h4>
+<pre><code>
+2$(1+1)
+</code></pre>
+</div>
+</details>
+<details>
+<summary>
+<span class="status-icon status-pass">✓</span> Escape 2
+</summary>
+<div class="test-content">
+<h4>Code</h4>
+<pre><code class="language-plume">
+quill\$(1+1)
+
+</code></pre>
+<h4>Output</h4>
+<pre><code>
+quill$(1+1)
+</code></pre>
+</div>
+</details>
+<details>
+<summary>
+<span class="status-icon status-pass">✓</span> Escape 3
+</summary>
+<div class="test-content">
+<h4>Code</h4>
+<pre><code class="language-plume">
+\$(1+1)
+
+</code></pre>
+<h4>Output</h4>
+<pre><code>
+$(1+1)
+</code></pre>
+</div>
+</details>
+<details>
+<summary>
+<span class="status-icon status-pass">✓</span> Escape 4
+</summary>
+<div class="test-content">
+<h4>Code</h4>
+<pre><code class="language-plume">
+\F
+
+</code></pre>
+<h4>Output</h4>
+<pre><code>
+F
+</code></pre>
+</div>
+</details>
+<details>
+<summary>
+<span class="status-icon status-pass">✓</span> Escape 5
+</summary>
+<div class="test-content">
+<h4>Code</h4>
+<pre><code class="language-plume">
+a\F
+
+</code></pre>
+<h4>Output</h4>
+<pre><code>
+aF
+</code></pre>
+</div>
+</details>
+<details>
+<summary>
+<span class="status-icon status-pass">✓</span> No space capture 1
+</summary>
+<div class="test-content">
+<h4>Code</h4>
+<pre><code class="language-plume">
+quill
+mark
+
+</code></pre>
+<h4>Output</h4>
+<pre><code>
+quillmark
+</code></pre>
+</div>
+</details>
+<details>
+<summary>
+<span class="status-icon status-pass">✓</span> No space capture 2
+</summary>
+<div class="test-content">
+<h4>Code</h4>
+<pre><code class="language-plume">
+    quill
+         mark
+
+</code></pre>
+<h4>Output</h4>
+<pre><code>
+quillmark
+</code></pre>
+</div>
+</details>
+<details>
+<summary>
+<span class="status-icon status-pass">✓</span> Raw space 1
+</summary>
+<div class="test-content">
+<h4>Code</h4>
+<pre><code class="language-plume">
+quill\smark
+
+</code></pre>
+<h4>Output</h4>
+<pre><code>
+quill mark
+</code></pre>
+</div>
+</details>
+<details>
+<summary>
+<span class="status-icon status-pass">✓</span> Raw space 2
+</summary>
+<div class="test-content">
+<h4>Code</h4>
+<pre><code class="language-plume">
+quill\nmark
+
+</code></pre>
+<h4>Output</h4>
+<pre><code>
+quill
+mark
+</code></pre>
+</div>
+</details>
+<details>
+<summary>
+<span class="status-icon status-pass">✓</span> Raw space 3
+</summary>
+<div class="test-content">
+<h4>Code</h4>
+<pre><code class="language-plume">
+\tquill
+
+</code></pre>
+<h4>Output</h4>
+<pre><code>
+quill
+</code></pre>
+</div>
+</details>
+<details>
+<summary>
+<span class="status-icon status-pass">✓</span> Simple tewritet
+</summary>
+<div class="test-content">
+<h4>Code</h4>
+<pre><code class="language-plume">
+quill
+
+</code></pre>
+<h4>Output</h4>
+<pre><code>
+quill
+</code></pre>
+</div>
+</details>
+<details>
+<summary>
+<span class="status-icon status-pass">✓</span> Space capture 1
+</summary>
+<div class="test-content">
+<h4>Code</h4>
+<pre><code class="language-plume">
+quill mark
+
+</code></pre>
+<h4>Output</h4>
+<pre><code>
+quill mark
+</code></pre>
+</div>
+</details>
+<details>
+<summary>
+<span class="status-icon status-pass">✓</span> Space capture 2
+</summary>
+<div class="test-content">
+<h4>Code</h4>
+<pre><code class="language-plume">
+quill  mark
+
+</code></pre>
+<h4>Output</h4>
+<pre><code>
+quill  mark
+</code></pre>
+</div>
+</details>
+<h2>variables: <span style="font-weight: normal;">7 success on 7 tests</span></h2>
+<div class="progress-bar"><div class="progress-success" style="width: 100.00%"></div><div class="progress-fail" style="width: 0.00%"></div></div>
+<details>
+<summary>
+<span class="status-icon status-pass">✓</span> block capture: if 1
+</summary>
+<div class="test-content">
+<h4>Code</h4>
+<pre><code class="language-plume">
+let write = if 1==1
+	5
+else
+	3
+end
+$write
+
+</code></pre>
+<h4>Output</h4>
+<pre><code>
+5
+</code></pre>
+</div>
+</details>
+<details>
+<summary>
+<span class="status-icon status-pass">✓</span> block capture: if 2
+</summary>
+<div class="test-content">
+<h4>Code</h4>
+<pre><code class="language-plume">
+let write = if 1==2
+	5
+else
+	3
+end
+$write
+
+</code></pre>
+<h4>Output</h4>
+<pre><code>
+3
+</code></pre>
+</div>
+</details>
+<details>
+<summary>
+<span class="status-icon status-pass">✓</span> block capture: while
+</summary>
+<div class="test-content">
+<h4>Code</h4>
+<pre><code class="language-plume">
+let i = 0
+let write = while i&lt;5
+	$i
+	set i = $(i+1)
+end
+$write
+
+</code></pre>
+<h4>Output</h4>
+<pre><code>
+01234
+</code></pre>
+</div>
+</details>
+<details>
+<summary>
+<span class="status-icon status-pass">✓</span> not shadowing
+</summary>
+<div class="test-content">
+<h4>Code</h4>
+<pre><code class="language-plume">
+let write = 1
+if 1==1
+	set write = 2
+end
+$write
+
+</code></pre>
+<h4>Output</h4>
+<pre><code>
+2
+</code></pre>
+</div>
+</details>
+<details>
+<summary>
+<span class="status-icon status-pass">✓</span> shadowing
+</summary>
+<div class="test-content">
+<h4>Code</h4>
+<pre><code class="language-plume">
+let write = 1
+if 1==1
+	let write = 2
+end
+$write
+
+</code></pre>
+<h4>Output</h4>
+<pre><code>
+1
+</code></pre>
+</div>
+</details>
+<details>
+<summary>
+<span class="status-icon status-pass">✓</span> simple affectation
+</summary>
+<div class="test-content">
+<h4>Code</h4>
+<pre><code class="language-plume">
+let write = quill
+
+</code></pre>
+<h4>Output</h4>
+<pre><code>
+
+</code></pre>
+</div>
+</details>
+<details>
+<summary>
+<span class="status-icon status-pass">✓</span> simple affectation and eval
+</summary>
+<div class="test-content">
+<h4>Code</h4>
+<pre><code class="language-plume">
+let write = quill
+$write
+
+</code></pre>
+<h4>Output</h4>
+<pre><code>
+quill
+</code></pre>
+</div>
+</details>
+</div></body></html>
