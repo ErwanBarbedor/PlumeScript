@@ -1,19 +1,4 @@
---[[This file is part of Plume
-
-Plume🪶 is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, version 3 of the License.
-
-Plume🪶 is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-See the GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License along with Plume🪶.
-If not, see <https://www.gnu.org/licenses/>.
-]]
-
---- Test engine loader and parser for the Plume language.
+-- Test engine loader and parser for the Plume language.
 -- @module testLoader
 
 local lfs = require("lfs")
@@ -24,22 +9,16 @@ local lib = {}
 --- Normalizes a string by trimming whitespace and standardizing line endings to LF.
 -- All line endings (\r\n, \r) are converted to \n. Leading and trailing
 -- whitespace is removed.
--- @param str The input string or value to normalize. Can be any type, will be
--- converted to string.
+-- @param s The input string or value to normalize.
 -- @return The normalized string.
 local function normalizeOutput(s)
-    -- Ensure we are working with a string
     if s == false then
         s = "false"
     else
         s = tostring(s)
     end
     
-    -- 1. Replace Windows-style newlines (\r\n) with Unix-style (\n)
-    -- 2. Replace classic Mac-style newlines (\r) with Unix-style (\n)
     local withNl = s:gsub("\r\n", "\n"):gsub("\r", "\n")
-    
-    -- 3. Trim leading and trailing whitespace characters
     local trimmed = withNl:match("^%s*(.-)%s*$")
     
     return trimmed
@@ -69,10 +48,10 @@ local function parseTestFile(content)
     local errorMarker = p("/// Error") * nl
     local endMarker = p("/// End")
 
-    -- Capture the code block (anything until the next marker)
+    -- Capture the code block
     local codeContent = C((1 - (outputMarker + errorMarker))^0)
 
-    -- Capture the expected result block (anything until the end marker)
+    -- Capture the expected result block
     local expectedContent = C((1 - endMarker)^0)
 
     -- A section representing expected output
@@ -85,10 +64,9 @@ local function parseTestFile(content)
         return { output = normalizeOutput(err), error = true }
     end
 
-    -- A complete test block from header to end marker
+    -- A complete test block
     local testBlock = (testHeader * codeContent * (outputSection + errorSection)) /
         function(testName, input, expectedData)
-            -- Return key-value pair for easier table construction later
             return {
                 key = testName,
                 value = {
@@ -99,9 +77,8 @@ local function parseTestFile(content)
             }
         end
 
-    -- Grammar for an entire file: zero or more test blocks
+    -- Grammar for an entire file
     local fileGrammar = space * Ct((testBlock * space * endMarker * space)^0)
-
     local parsed = fileGrammar:match(content)
 
     if not parsed then
@@ -125,7 +102,6 @@ function lib.loadTests(directory)
     local path = directory:gsub("/*$", "") -- Remove trailing slash if present
 
     for filename in lfs.dir(path) do
-        -- Only process .plume files, ignore directories '.' and '..'
         if filename ~= "." and filename ~= ".." and filename:match("%.plume$") then
             local fullPath = path .. "/" .. filename
             local file, err = io.open(fullPath, "r")
@@ -136,10 +112,8 @@ function lib.loadTests(directory)
                 
                 local parsedTests = parseTestFile(content)
                 if parsedTests then
-                    -- Use filename without path as key
                     allTests[filename] = parsedTests
                 else
-                    -- Handle parsing failure for a specific file
                     allTests[filename] = { error = "Failed to parse file." }
                 end
             else
@@ -152,33 +126,30 @@ function lib.loadTests(directory)
 end
 
 --- Executes a collection of tests using the provided Plume engine.
--- This function iterates through all loaded tests, executes the code for each,
--- captures the output or error, normalizes it, and stores it in the
--- `obtained` field of each test object.
 -- @param allTests The table of tests loaded by `lib.loadTests`.
--- @param plumeEngine The Plume engine object. Must contain an `execute` method
--- that takes `(code, sourceName)` as arguments.
--- @return The `allTests` table, now populated with execution results.
+-- @param plumeEngine The Plume engine object. Must contain an `execute` method.
+-- @return The `allTests` table, populated with execution results.
 function lib.executeTests(allTests, plumeEngine)
     for filename, tests in pairs(allTests) do
-        -- Only process files that were loaded and parsed correctly
         if not tests.error then
             for testName, testData in pairs(tests) do
                 -- Use pcall to safely execute the Plume code and capture errors
-                local success, result = pcall(plumeEngine.execute, testData.input, testName)
-                
+                local success, result
+                local runtime = plumeEngine.initRuntime()
+                success, result = pcall(plumeEngine.compileFile, testData.input, testName, runtime)
                 if success then
-                    testData.obtained = {
-                        output = normalizeOutput(result),
-                        error = false,
-                    }
-                else
-                    -- 'result' contains the error message
-                    testData.obtained = {
-                        output = normalizeOutput(result),
-                        error = true,
-                    }
+                    success, result = pcall(plumeEngine.finalize, runtime)
                 end
+
+                if success then
+                    success, result = plumeEngine.run(runtime)
+                end
+
+                testData.obtained = {
+                    output = normalizeOutput(result),
+                    bytecode = plumeEngine.debug.bytecodeGrid(runtime),
+                    error = not success,
+                }
             end
         end
     end
@@ -186,49 +157,28 @@ function lib.executeTests(allTests, plumeEngine)
     return allTests
 end
 
--- File: lib.lua (addition)
-
---- Analyzes executed test results, calculates statistics, and annotates the
--- input table with the results.
+--- Analyzes executed test results and calculates statistics.
 -- This function modifies the input table in-place by adding a `status` field
--- to each test and `stat` tables at the global and file levels.
--- @param allTests The table of tests, populated with `obtained` results by
--- `lib.executeTests`.
+-- to each test and `stats` tables at the global and file levels.
+-- @param allTests The table of tests, populated by `lib.executeTests`.
 -- @return The modified `allTests` table.
 function lib.analyzeResults(allTests)
-    -- Initialize the global statistics object at the root of the table
     allTests.stats = { success = 0, fails = 0, total = 0 }
 
-    -- Iterate over each file in the test suite
     for filename, fileData in pairs(allTests) do
-        -- We only process file tables, not the global stat table itself
         if filename ~= "stats" then
-
-            -- Skip files that had loading or parsing errors
             if fileData.error then
-                -- For now, we do not count file-level errors in stats,
-                -- but this could be changed later if needed.
+                -- Skip files that had loading or parsing errors
             else
-                -- Initialize the statistics object for the current file
                 fileData.stats = { success = 0, fails = 0, total = 0 }
 
-                -- Iterate over each test within the file
                 for testName, testData in pairs(fileData) do
-                    -- We only process test data, not the file's stat table
                     if testName ~= "stats" then
-                        local isSuccess = false
-
-                        -- Perform the comparison
                         -- Both the result type (error/output) and content must match
                         local sameType = (testData.expected.error == testData.obtained.error)
                         local sameOutput = (testData.expected.output == testData.obtained.output)
 
                         if sameType and sameOutput then
-                            isSuccess = true
-                        end
-
-                        -- Update status and counters based on the result
-                        if isSuccess then
                             testData.status = "pass"
                             fileData.stats.success = fileData.stats.success + 1
                         else
@@ -240,7 +190,7 @@ function lib.analyzeResults(allTests)
                     end
                 end
 
-                -- Aggregate the file's statistics into the global statistics
+                -- Aggregate file statistics into global statistics
                 allTests.stats.success = allTests.stats.success + fileData.stats.success
                 allTests.stats.fails = allTests.stats.fails + fileData.stats.fails
                 allTests.stats.total = allTests.stats.total + fileData.stats.total
@@ -251,39 +201,30 @@ function lib.analyzeResults(allTests)
     return allTests
 end
 
---- Escapes special HTML characters in a string to prevent misinterpretation by browsers.
--- This is a security and rendering prerequisite before inserting arbitrary
--- text into an HTML document.
+--- Escapes special HTML characters in a string.
 -- @local
 -- @param str The string to escape.
 -- @return The escaped string.
 local function escapeHtml(str)
+    if str == nil then return "" end
     local replacements = {
         ['&'] = '&amp;',
         ['<'] = '&lt;',
         ['>'] = '&gt;',
         ['"'] = '&quot;',
-        ['\''] = '&#39;', -- &apos; is not supported in all HTML versions
+        ['\''] = '&#39;',
     }
-    return (tostring(str)):gsub('[&<>"]', replacements)..""
+    return (tostring(str)):gsub('[&<>"\']', replacements)
 end
 
 --- Compares two strings and generates HTML to visually highlight their differences.
---
--- Matched parts are wrapped in a `<span class="diff-match">`.
--- The first differing part of the expected string is wrapped in `<span class="diff-expected">`.
--- The first differing part of the obtained string is wrapped in `<span class="diff-obtained">`.
---
 -- @param expectedStr The expected string result.
 -- @param obtainedStr The obtained string result.
--- @return A table `{ expectedHtml = "...", obtainedHtml = "..." }` containing the
--- generated HTML for each string.
+-- @return A table `{ expectedHtml = "...", obtainedHtml = "..." }`.
 function lib.generateDiffHtml(expectedStr, obtainedStr)
-    -- Gracefully handle nil or non-string inputs.
     expectedStr = tostring(expectedStr or "")
     obtainedStr = tostring(obtainedStr or "")
     
-    -- If strings are identical, the whole string is a match.
     if expectedStr == obtainedStr then
         local escapedContent = escapeHtml(expectedStr)
         local html = ""
@@ -293,7 +234,6 @@ function lib.generateDiffHtml(expectedStr, obtainedStr)
         return { expectedHtml = html, obtainedHtml = html }
     end
     
-    -- Find the first index where the strings diverge.
     local minLen = math.min(#expectedStr, #obtainedStr)
     local diffIndex = minLen + 1
     for i = 1, minLen do
@@ -303,17 +243,14 @@ function lib.generateDiffHtml(expectedStr, obtainedStr)
         end
     end
     
-    -- Split strings into matching and differing parts.
     local matchPartStr = expectedStr:sub(1, diffIndex - 1)
     local expectedDiffPartStr = expectedStr:sub(diffIndex)
     local obtainedDiffPartStr = obtainedStr:sub(diffIndex)
     
-    -- Escape all parts for safe HTML rendering.
     local matchHtmlPart = escapeHtml(matchPartStr)
     local expectedDiffHtmlPart = escapeHtml(expectedDiffPartStr)
     local obtainedDiffHtmlPart = escapeHtml(obtainedDiffPartStr)
     
-    -- Build the final HTML strings.
     local commonHtml = ""
     if #matchHtmlPart > 0 then
         commonHtml = "<span class=\"diff-match\">" .. matchHtmlPart .. "</span>"
@@ -335,13 +272,48 @@ function lib.generateDiffHtml(expectedStr, obtainedStr)
     }
 end
 
+--- Generates HTML for displaying the bytecode with syntax highlighting.
+-- @param bytecodeGrid The bytecode table.
+-- @return A string containing the formatted HTML.
+local function generateBytecodeHtml(bytecodeGrid)
+    if not bytecodeGrid or #bytecodeGrid == 0 then
+        return '<span class="no-bytecode">Bytecode not generated or unavailable.</span>'
+    end
+
+    local htmlLines = {}
+    for i, op in ipairs(bytecodeGrid) do
+        local lineParts = {}
+        
+        -- Line number
+        table.insert(lineParts, string.format('<span class="bc-line-num">%03d</span>', i))
+        
+         -- table.insert(lineParts, string.format('<span class="raw-opcode">%-8s</span>', op[1]))
+
+        -- Opcode name (fixed column for alignment)
+        table.insert(lineParts, string.format('<span class="bc-opcode">%-16s</span>', escapeHtml(op[2])))
+        
+        -- Arguments
+        local args = {}
+        if op[3] ~= nil then table.insert(args, escapeHtml(op[3])or"") end
+        if op[4] ~= nil then table.insert(args, escapeHtml(op[4])or"") end
+        if #args > 0 then
+            table.insert(lineParts, string.format('<span class="bc-arg">%s</span>', table.concat(args, " ")))
+        end
+        
+        -- Optional info (like a comment)
+        if op[5] and #op[5]>0 then
+            table.insert(lineParts, string.format('<span class="bc-info">; %s</span>', escapeHtml(op[5])))
+        end
+        
+        table.insert(htmlLines, table.concat(lineParts, " "))
+    end
+    
+    return table.concat(htmlLines, "\n")
+end
+
 --- Generates the complete HTML block for a single test result.
--- The output is a `<details>` block that is either collapsed (on pass) or
--- expanded (on fail). It includes the test name, status, source code, and a
--- detailed comparison view for failed tests.
--- @param testName A string representing the name of the test.
--- @param testData A table containing the test's `input`, `expected` result,
--- `obtained` result, and calculated `status` ("pass" or "fail").
+-- @param testName The name of the test.
+-- @param testData A table containing the test's data and results.
 -- @return A string containing the complete HTML for the test block.
 function lib.generateTestBlockHtml(testName, testData)
     local htmlParts = {}
@@ -353,7 +325,6 @@ function lib.generateTestBlockHtml(testName, testData)
     
     table.insert(htmlParts, detailsTag)
     
-    -- 1. Create the summary (the clickable title bar)
     table.insert(htmlParts, "<summary>")
     table.insert(htmlParts, string.format(
         "<span class=\"status-icon %s\">%s</span> %s",
@@ -361,34 +332,41 @@ function lib.generateTestBlockHtml(testName, testData)
     ))
     table.insert(htmlParts, "</summary>")
     
-    -- 2. Create the content block inside <details>
     table.insert(htmlParts, "<div class=\"test-content\">")
+    table.insert(htmlParts, "<div class=\"code-grid\">")
     
-    -- 2.1 Always show the Plume source code
+    -- Column 1: Plume source code
+    table.insert(htmlParts, "<div>")
     table.insert(htmlParts, "<h4>Code</h4>")
     table.insert(htmlParts, "<pre><code class=\"language-plume\">")
-    table.insert(htmlParts, escapeHtml(testData.input))
+    table.insert(htmlParts, escapeHtml(testData.input) or "")
     table.insert(htmlParts, "</code></pre>")
-    
+    table.insert(htmlParts, "</div>")
+
+    -- Column 2: Bytecode
+    table.insert(htmlParts, "<div>")
+    table.insert(htmlParts, "<h4>Bytecode</h4>")
+    table.insert(htmlParts, "<pre><code class=\"language-bytecode\">")
+    table.insert(htmlParts, generateBytecodeHtml(testData.obtained.bytecode))
+    table.insert(htmlParts, "</code></pre>")
+    table.insert(htmlParts, "</div>")
+
+    table.insert(htmlParts, "</div>") -- close code-grid
+
     if isFail then
-        -- 2.2 For failed tests, show a detailed comparison grid
         local expectedType = testData.expected.error and "Error" or "Output"
         local obtainedType = testData.obtained.error and "Error" or "Output"
-
         local typeMismatchClass_Expected = ""
         local typeMismatchClass_Obtained = ""
         if testData.expected.error ~= testData.obtained.error then
             typeMismatchClass_Expected = " result-type-mismatch"
             typeMismatchClass_Obtained = " result-type-mismatch"
         end
-
         local diff = lib.generateDiffHtml(testData.expected.output, testData.obtained.output)
         
         table.insert(htmlParts, "<div class=\"comparison-grid\">")
-        -- Headers
-        table.insert(htmlParts, "<h4>Attendu</h4>")
-        table.insert(htmlParts, "<h4>Obtenu</h4>")
-        -- Content
+        table.insert(htmlParts, "<h4>Expected</h4>")
+        table.insert(htmlParts, "<h4>Obtained</h4>")
         table.insert(htmlParts, string.format(
             "<div><div class=\"result-type-header%s\">%s</div><pre><code>%s</code></pre></div>",
             typeMismatchClass_Expected,
@@ -403,38 +381,34 @@ function lib.generateTestBlockHtml(testName, testData)
         ))
         table.insert(htmlParts, "</div>") 
     else
-        -- 2.3 For passed tests, show the simple (correct) result
         local resultType = testData.expected.error and "Error" or "Output"
         table.insert(htmlParts, string.format("<h4>%s</h4>", resultType))
         table.insert(htmlParts, "<pre><code>")
-        table.insert(htmlParts, escapeHtml(testData.expected.output))
+        table.insert(htmlParts, escapeHtml(testData.expected.output)or"")
         table.insert(htmlParts, "</code></pre>")
     end
     
-    table.insert(htmlParts, "</div>") -- close test-content
+    table.insert(htmlParts, "</div>") 
     table.insert(htmlParts, "</details>")
     
     return table.concat(htmlParts, "\n")
 end
 
---- A helper function to get tests from a file, sorted by status (fails first).
+--- Helper function to get tests from a file, sorted by status (fails first).
 -- @local
 -- @param fileData The table containing tests for a single file.
 -- @return A new table containing the sorted test entries.
 local function getSortedTests(fileData)
     local tests = {}
     for testName, testData in pairs(fileData) do
-        -- We only want the test data, not the 'stats' key
         if testName ~= "stats" then
             table.insert(tests, { name = testName, data = testData })
         end
     end
     
     table.sort(tests, function(a, b)
-        -- Fails first
         if a.data.status == "fail" and b.data.status ~= "fail" then return true end
         if a.data.status ~= "fail" and b.data.status == "fail" then return false end
-        -- If status is the same, sort alphabetically by name for consistency
         return a.name < b.name
     end)
     
@@ -444,10 +418,10 @@ end
 local function generateStatsString(stats)
     local parts = {}
     if stats.success > 0 then
-        table.insert(parts, string.format('%d success', stats.success))
+        table.insert(parts, string.format('%d passed', stats.success))
     end
     if stats.fails > 0 then
-        table.insert(parts, string.format('<span class="fail-count">%d</span> fails', stats.fails))
+        table.insert(parts, string.format('<span class="fail-count">%d</span> failed', stats.fails))
     end
     
     local text = table.concat(parts, " and ")
@@ -455,36 +429,31 @@ local function generateStatsString(stats)
     local final_text
     if text == "" then
         if stats.total > 0 then
-            final_text = string.format('on %d tests', stats.total)
+            final_text = string.format('out of %d tests', stats.total)
         else
             final_text = "0 tests"
         end
     else
-        final_text = string.format('%s on %d tests', text, stats.total)
+        final_text = string.format('%s out of %d tests', text, stats.total)
     end
     
     return string.format('<span style="font-weight: normal;">%s</span>', final_text)
 end
 
 --- Generates a static HTML report file from the executed test results.
--- The function creates a self-contained HTML file with embedded CSS.
--- Tests within files are sorted with fails first.
--- Files are sorted by number of fails, descending.
--- @param allTests The main test table, populated with execution results and statistics.
--- It must contain a `stats` table at the root, and a `stats` table for each file entry.
--- @param outputPath The file path where the HTML report will be saved (e.g., "testReport.html").
+-- @param allTests The main test table, populated with results and statistics.
+-- @param outputPath The file path where the HTML report will be saved.
 -- @return boolean, string `true` on success, or `false` and an error message on failure.
 function lib.generateReport(allTests, outputPath)
     local htmlParts = {}
     
-    -- 1. HTML HEAD with embedded CSS
     table.insert(htmlParts, [[
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Rapport de Test Plume</title>
+    <title>Plume Test Report</title>
     <style>
         body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
             background-color: #f4f4f9; color: #333; margin: 0; padding: 20px; }
@@ -504,27 +473,60 @@ function lib.generateReport(allTests, outputPath)
         .status-fail { background-color: #ffebee; }
         .status-pass .status-icon { color: #2e7d32; }
         .status-fail .status-icon { color: #c62828; }
-        .test-content { padding: 0 15px 15px 15px; border-top: 1px solid #ddd; }
-        h4 { margin-top: 15px; margin-bottom: 5px; font-weight: bold; font-size: 1.1em; }
+        .test-content { padding: 15px; border-top: 1px solid #ddd; }
+        h4 { margin-top: 5px; margin-bottom: 5px; font-weight: bold; font-size: 1.1em; }
         pre { background-color: #fdfdfd; color: #000; padding: 15px; border-radius: 4px;
-            white-space: pre-wrap; word-wrap: break-word; font-family: "Courier New", Courier, monospace; border: 1px solid #ddd}
+            white-space: pre-wrap; word-wrap: break-word; font-family: "Courier New", Courier, monospace; border: 1px solid #ddd; }
+        
+        .code-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .code-grid > div {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .code-grid h4 { 
+            margin: 0 0 8px 0; 
+            flex-shrink: 0;
+        }
+        
+        .code-grid pre {
+            flex-grow: 1;
+            min-height: 0;
+            margin: 0;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .language-bytecode { white-space: pre; }
+        .no-bytecode { color: #888; font-style: italic; }
+        .bc-line-num { color: #999; }
+        .raw-opcode { color: #999; }
+        .bc-opcode { color: #0d47a1; font-weight: bold; }
+        .bc-arg { color: #d81b60; }
+        .bc-info { color: #4caf50; font-style: italic; }
+
         .comparison-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 15px; }
         .comparison-grid h4 { margin: 0 0 5px 0; }
         .comparison-grid > div { border: 1px solid #ddd; padding: 8px; border-radius: 4px; background-color: #fdfdfd; }
-        .comparison-grid pre { margin: 0; padding: 8px; border: none; background-color: transparent; }
+        .comparison-grid > div {position: relative}
+        .comparison-grid pre { padding: 8px; border: none; background-color: transparent; overflow-y: auto; max-height: 400px; }
         .diff-match { background-color: rgba(46, 125, 50, 0.1); }
         .diff-expected { background-color: rgba(25, 118, 210, 0.1); }
         .diff-obtained { background-color: rgba(198, 40, 40, 0.1);}
         .result-type-header { font-size: 0.85em; color: #555; font-style: italic; margin-bottom: 4px; padding-left: 2px; position: absolute; top:0; left: 50%; transform: translate(-50%,-50%); background: white;}
         .result-type-mismatch { color: #c62828; font-weight: bold; }
-        .comparison-grid > div {position: relative}
     </style>
 </head>
 <body>
 <div class="container">
     ]])
     
-    -- 2. Global Header and Progress Bar
     local globalStats = allTests.stats or { success = 0, fails = 0, total = 0 }
     table.insert(htmlParts, string.format("<h1>Global: %s</h1>", generateStatsString(globalStats)))
     if globalStats.total > 0 then
@@ -536,7 +538,6 @@ function lib.generateReport(allTests, outputPath)
         ))
     end
     
-    -- 3. Collect and sort files by number of fails (descending)
     local fileEntries = {}
     for fileName, fileData in pairs(allTests) do
         if fileName ~= "stats" and type(fileData) == 'table' then
@@ -553,7 +554,6 @@ function lib.generateReport(allTests, outputPath)
         return a.name < b.name
     end)
     
-    -- 4. Iterate through sorted files and their tests
     for _, entry in ipairs(fileEntries) do
         local fileName = entry.name
         local fileData = entry.data
@@ -577,10 +577,8 @@ function lib.generateReport(allTests, outputPath)
         end
     end
     
-    -- 5. Close HTML tags
     table.insert(htmlParts, "</div></body></html>")
     
-    -- 6. Write to file
     local finalHtml = table.concat(htmlParts, "\n")
     local file, err = io.open(outputPath, "w")
     

@@ -200,9 +200,9 @@ return function (plume)
 		if ("LOAD_CONSTANT"):match(name) then
 			value = constInfos.value
 		elseif ("CALL OPP_CONCAT LOAD_STATIC STORE_STATIC ESCAPE EVAL_SHORT STORE_LOCAL LOAD_LOCAL JUMP_IF ACC_CALL JUMP_IF_NOT_EMPTY JUMP ENTER_FILE"):match(name) then
-			value = arg2
+			-- value = arg2
 		elseif ("LOAD_LEXICAL STORE_LEXICAL ENTER_SCOPE"):match(name) then
-			value = arg1 .. " " .. arg2
+			-- value = arg1 .. " " .. arg2
 		end
 
 		return {
@@ -242,6 +242,18 @@ return function (plume)
 				printCols({ip..".", raw, infos.op.."+"..infos.arg1.."+"..infos.arg2, infos.name, value}, maxlength)
 			end
 		end
+	end
+
+	function plume.debug.bytecodeGrid(runtime)
+		local result = {}
+		for ip, instr in ipairs(runtime.bytecode) do
+			local infos = getInstrInfos(instr, runtime)
+			local raw = string.format("%08X", instr)
+			local value = escapeString(infos.value or "")
+			
+			table.insert(result, {raw, infos.name, infos.arg1, infos.arg2, value})
+		end
+		return result
 	end
 
 	local function getStack(t, s, sp, sf, sfp)
