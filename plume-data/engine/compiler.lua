@@ -179,11 +179,12 @@ return function(plume)
 			end		
 		end
 
+
 		local function scope(f, internVar)
 			f = f or childsHandler
 			return function (node)
 				local lets = #plume.ast.getAll(node, "LET") + (internVar or 0)
-				if lets>0 then
+				if lets>0 or forced then
 					registerOP(ops.ENTER_SCOPE, 0, lets)
 					table.insert(scopes, {})
 					f(node)
@@ -202,7 +203,7 @@ return function(plume)
 				table.insert(roots, #scopes+1)
 				f(node)
 				table.remove(roots)
-				registerOP(ops.LEAVE_FILE, 0, 0)
+				registerOP(ops.RETURN, 0, 0)
 			end		
 		end
 
@@ -223,7 +224,14 @@ return function(plume)
 		-----------
 		-- ENTER --
 		-----------
-		nodeHandlerTable.FILE = file(scope(accBlock()))
+		nodeHandlerTable.FILE = file(function(node)
+			local lets = #plume.ast.getAll(node, "LET")
+			registerOP(ops.ENTER_SCOPE, 0, lets)
+			table.insert(scopes, {})
+			accBlock()(node)
+			table.remove(scopes)
+			-- LEAVE_SCOPE handled by RETURN
+		end)
 
 		------------------
 		-- TEXT & table --
@@ -585,7 +593,7 @@ return function(plume)
 				accBlock()(body)
 				table.remove(scopes)
 			end) ()
-			registerOP(ops.RETURN, 0, 0)
+			
 			registerLabel("macro_end_" .. uid)
 		end
 

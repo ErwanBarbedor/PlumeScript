@@ -401,9 +401,13 @@ end
 			::RETURN::
 	do
 	            jump=calls[cp]
+	            if not jump then
+	                jump=#bytecode
+	            end
 	            cp=cp - 1
 	                        vsp=vsf[vsfp]-1
 	            vsfp=vsfp-1
+	                        mp=mp-1
 				goto DISPATCH
 end
 			::JUMP_IF::
