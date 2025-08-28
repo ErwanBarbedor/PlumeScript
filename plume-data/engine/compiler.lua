@@ -68,6 +68,9 @@ return function(plume)
 		local function registerMacroLink(offset)
 			instructions[#instructions+1] = {link=offset}
 		end
+		local function registerFileLink(offset)
+			instructions[#instructions+1] = {fileLink=filename}
+		end
 
 		local function registerConstant(value)
 			local key = tostring(value) -- for numeric keys
@@ -608,6 +611,7 @@ return function(plume)
 		loadSTD()
 
 		local ast = plume.parse(code)
+		registerFileLink()
 		nodeHandler(ast)
 	end
 end
