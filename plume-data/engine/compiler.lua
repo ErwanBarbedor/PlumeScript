@@ -549,7 +549,7 @@ return function(plume)
 					macroName,
 					true -- static
 				)
-				macroObj[6] = macroName
+				macroObj.name = macroName
 				registerOP(ops.STORE_STATIC, 0, variable.offset)
 			end
 
@@ -573,12 +573,12 @@ return function(plume)
 						registerOP(ops.STORE_LOCAL, 0, i)
 						registerLabel("macro_var_" .. i .. "_" .. uid)
 
-						macroObj[4] = macroObj[4]+1
-						macroObj[5][paramName] = param.offset
+						macroObj.namedParamCount = macroObj.namedParamCount+1
+						macroObj.namedParamOffset[paramName] = param.offset
 					elseif variadic then
-						macroObj[7] = param.offset
+						macroObj.variadicOffset = param.offset
 					else
-						macroObj[3] = macroObj[3]+1
+						macroObj.positionalParamCount = macroObj.positionalParamCount+1
 					end
 				end
 

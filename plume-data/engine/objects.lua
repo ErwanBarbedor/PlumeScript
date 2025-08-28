@@ -17,43 +17,42 @@ return function(plume)
 	require "table.new"
 	
 	plume.obj = {}
-	plume.obj.empty = {}
+	plume.obj.empty = {type = "empty"}
 
 	function plume.obj.macro (offset, name)
 		return {
-			"macro", -- type
-			offset,  -- location
-			0,       -- number of positionnal parameters
-			0,       -- number of nameds parameters
-			{},      -- named parameters offsets
-			name,
-			0        -- variadic offset (0 for no variadic)
+			type = "macro",
+			offset = offset,
+			positionalParamCount = 0,
+			namedParamCount = 0,
+			namedParamOffset = {},
+			name=name,
+			variadicOffset=0 -- 0 for non variadic
 		}
 	end
 
 	--- lua fonction take 1 parameter: the plume table of all given arguments
 	function plume.obj.luaFunction (name, f)
 		return {
-			"luaFunction", -- type
-			f,  -- function
-			name -- optionnal
+			type = "luaFunction",
+			callable = f,
+			name = name -- optionnal
 		}
 	end
 
 	function plume.obj.table (listSlots, hashSlots)
 		local t
 		t = {
-			"table", --type
-			table.new(listSlots, hashSlots), -- lua table
-			table.new(hashSlots, 0), -- key order
-			{-- meta table
+			type = "table", --type
+			table = table.new(listSlots, hashSlots),
+			keys = table.new(hashSlots, 0),
+			meta = {-- meta table
 				iter = plume.obj.luaFunction("iter", function(args)
 					local iterator = plume.obj.table(1, 1)
-					iterator[2][1] = 0
-					iterator[2].next = plume.obj.luaFunction("next", function()
-						local self = iterator[2]
-						self[1] = self[1]+1
-						local value = t[2][self[1]]
+					iterator.table[1] = 0
+					iterator.table.next = plume.obj.luaFunction("next", function()
+						iterator.table[1] = iterator.table[1]+1
+						local value = t.table[iterator.table[1]]
 						if value then
 							return value
 						else
