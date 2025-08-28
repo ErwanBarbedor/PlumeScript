@@ -20,7 +20,7 @@ return function (plume)
                 if x==empty then
                     return "empty"
                 else
-                    return x[1]
+                    return x.type or x[1]
                 end
             else
                 return t
@@ -207,25 +207,25 @@ end
 end
 			::TABLE_SET::
 	do
-	            ms[msp-2][2][ms[msp-1]]=ms[msp]
+	            ms[msp-2].table[ms[msp-1]]=ms[msp]
 	            msp=msp-3
 				goto DISPATCH
 end
 			::TABLE_INDEX::
 	do
-	            ms[msp-1]=ms[msp][2][ms[msp-1]]
+	            ms[msp-1]=ms[msp].table[ms[msp-1]]
 	            msp=msp-1
 				goto DISPATCH
 end
 			::TABLE_SET_META::
 	do
-	            ms[msp-2][4][ms[msp-1]]=ms[msp]
+	            ms[msp-2].meta[ms[msp-1]]=ms[msp]
 	            msp=msp-3
 				goto DISPATCH
 end
 			::TABLE_INDEX_META::
 	do
-	            ms[msp-1]=ms[msp][4][ms[msp-1]]
+	            ms[msp-1]=ms[msp].meta[ms[msp-1]]
 	            msp=msp-1
 				goto DISPATCH
 end
@@ -240,13 +240,13 @@ end
 	do
 	            local t=ms[msp]
 	            msp=msp-1
-	            for _, item in ipairs(t[2]) do
+	            for _, item in ipairs(t.table) do
 	                msp=msp+1
 	                ms[msp]=item
 	            end
-	            for _, key in ipairs(t[3]) do
+	            for _, key in ipairs(t.keys) do
 	                table.insert(ms[msf[msfp]], key)
-	                table.insert(ms[msf[msfp]], t[2][key])
+	                table.insert(ms[msf[msfp]], t.table[key])
 	            end
 				goto DISPATCH
 end
@@ -289,13 +289,13 @@ end
 	            local keyCount=#ms[limit-1] / 2
 	            local args=ptable(msp-limit+1, keyCount)
 	            for i=1, msp-limit+1 do
-	                args[2][i]=ms[limit+i-1]
+	                args.table[i]=ms[limit+i-1]
 	            end
 	            for i=1, #ms[limit-1], 2 do
-	                            if not args[2][ms[limit-1][i]] then
-	                table.insert(args[3], ms[limit-1][i])
+	                            if not args.table[ms[limit-1][i]] then
+	                table.insert(args.keys, ms[limit-1][i])
 	            end
-	            args[2][ms[limit-1][i]]=ms[limit-1][i+1]
+	            args.table[ms[limit-1][i]]=ms[limit-1][i+1]
 	            end
 	            ms[limit-1]=args
 	            msp=limit - 1
@@ -330,47 +330,46 @@ end
 	            if t=="macro" then
 	                            vsfp=vsfp+1
 	            vsf[vsfp]=vsp+1-0
-	            for i=1, macro[3]+macro[4]-0 do
+	            for i=1, macro.positionalParamCount+macro.namedParamCount-0 do
 	                vsp=vsp+1
 	                vs[vsp]=empty
 	            end
 	                local capture
-	                if macro[7]>0 then
+	                if macro.variadicOffset>0 then
 	                    capture=ptable(0, 0)
 	                end
 	                            local argcount=msp-msf[msfp]
-	            if argcount ~=macro[3] and macro[7]==0 then
-	                            return false, "Wrong number of positionnal arguments for macro '" .. macro[6] .. "', " ..   argcount .. " instead of " .. macro[3], ip
+	            if argcount ~=macro.positionalParamCount and macro.variadicOffset==0 then
+	                            return false, "Wrong number of positionnal arguments for macro '" .. macro.name.. "', " ..   argcount .. " instead of " .. macro.positionalParamCount, ip
 	            end
-	            for i=1, macro[3] do
+	            for i=1, macro.positionalParamCount do
 	                vs[vsf[vsfp]+i-1]=ms[msp+i-argcount]
 	            end
-	            for i=macro[3]+1, argcount do
-	                table.insert(capture[2], ms[msp+i-argcount])
+	            for i=macro.positionalParamCount+1, argcount do
+	                table.insert(capture.table, ms[msp+i-argcount])
 	            end
 	            msp=msf[msfp]
 	                            for i=1, #ms[msf[msfp]], 2 do
 	                local k=ms[msf[msfp]][i]
 	                local v=ms[msf[msfp]][i+1]
-	                local j=macro[5][k]
-	                print("??", k, v, j)
+	                local j=macro.namedParamOffset[k]
 	                if j then
 	                    vs[vsf[vsfp]+j-1]=v
-	                elseif macro[7]>0 then
-	                                if not capture[2][k] then
-	                table.insert(capture[3], k)
+	                elseif macro.variadicOffset>0 then
+	                                if not capture.table[k] then
+	                table.insert(capture.keys, k)
 	            end
-	            capture[2][k]=v
+	            capture.table[k]=v
 	                else
-	                                return false, "Unknow named parameter '" .. k .."' for macro '" .. macro[6] .."'.", ip
+	                                return false, "Unknow named parameter '" .. k .."' for macro '" .. macro.name .."'.", ip
 	                end
 	            end
 	            msp=msp-1
-	                if macro[7]>0 then
-	                    vs[macro[7]]=capture
+	                if macro.variadicOffset>0 then
+	                    vs[macro.variadicOffset]=capture
 	                end
 	                            msfp=msfp-1
-	                jump=macro[2]
+	                jump=macro.offset
 	                cp=cp + 1
 	                calls[cp]=ip+1
 	            elseif t=="luaFunction" then
@@ -378,18 +377,18 @@ end
 	            local keyCount=#ms[limit-1] / 2
 	            local args=ptable(msp-limit+1, keyCount)
 	            for i=1, msp-limit+1 do
-	                args[2][i]=ms[limit+i-1]
+	                args.table[i]=ms[limit+i-1]
 	            end
 	            for i=1, #ms[limit-1], 2 do
-	                            if not args[2][ms[limit-1][i]] then
-	                table.insert(args[3], ms[limit-1][i])
+	                            if not args.table[ms[limit-1][i]] then
+	                table.insert(args.keys, ms[limit-1][i])
 	            end
-	            args[2][ms[limit-1][i]]=ms[limit-1][i+1]
+	            args.table[ms[limit-1][i]]=ms[limit-1][i+1]
 	            end
 	            ms[limit-1]=args
 	            msp=limit - 1
 	                        msfp=msfp-1
-	                local result=macro[2](ms[msp])
+	                local result=macro.callable(ms[msp])
 	                if result==nil then
 	                    result=empty
 	                end
@@ -451,12 +450,12 @@ end
 	            if tobj ~="table" then
 	                            return false, "Try to iterate over a non-table '" .. tobj .. "' object.", ip
 	            end
-	            ms[msp]=obj[4].iter[2]()
+	            ms[msp]=obj.meta.iter.callable()
 				goto DISPATCH
 end
 			::FOR_ITER::
 	do
-	            local result=ms[msp][2].next[2]()
+	            local result=ms[msp].table.next.callable()
 	            if result==empty then
 	                msp=msp-1
 	                            jump=arg2
@@ -734,6 +733,6 @@ end
 					goto DISPATCH
 end
 		::END::
-        	return true, plume.std.tostring[2]({"", {ms[1]}}), ip
+        	return true, plume.std.tostring.callable({table={ms[1]}}), ip
     end
 end

@@ -28,7 +28,7 @@ return function (plume)
                 if x==empty then
                     return "empty"
                 else
-                    return x[1]
+                    return x.type or x[1]
                 end
             else
                 return t
@@ -239,7 +239,7 @@ return function (plume)
                 @_ERROR{{"Try to iterate over a non-table '" .. tobj .. "' object."}}
             end
 
-            ms[msp] = obj[4].iter[2]() -- 4: meta table 2: data
+            ms[msp] = obj.meta.iter.callable() -- 4: meta table 2: data
         @end
 
         @define FOR_ITER arg1 arg2
@@ -247,7 +247,7 @@ return function (plume)
             --- Stack 1 next call result OR jump to for end
             --- arg1: -
             --- arg2: jump to end for
-            local result = ms[msp][2].next[2]()
+            local result = ms[msp].table.next.callable()
             if result == empty then
                 msp = msp-1
                 @JUMP 0 $arg1
@@ -261,16 +261,16 @@ return function (plume)
         ----------
         @define _UNSTACK_POS
             local argcount = msp-msf[msfp]
-            if argcount ~= macro[3] and macro[7]==0 then
-                @_ERROR{{"Wrong number of positionnal arguments for macro '" .. macro[6] .. "', " ..   argcount .. " instead of " .. macro[3]}}
+            if argcount ~= macro.positionalParamCount and macro.variadicOffset==0 then
+                @_ERROR{{"Wrong number of positionnal arguments for macro '" .. macro.name.. "', " ..   argcount .. " instead of " .. macro.positionalParamCount}}
             end
 
-            for i=1, macro[3] do
+            for i=1, macro.positionalParamCount do
                 vs[vsf[vsfp]+i-1] = ms[msp+i-argcount]
             end
 
-            for i=macro[3]+1, argcount do
-                table.insert(capture[2], ms[msp+i-argcount])
+            for i=macro.positionalParamCount+1, argcount do
+                table.insert(capture.table, ms[msp+i-argcount])
             end
 
             msp = msf[msfp]
@@ -280,14 +280,14 @@ return function (plume)
             for i=1, #ms[msf[msfp]], 2 do
                 local k=ms[msf[msfp]][i]
                 local v=ms[msf[msfp]][i+1]
-                local j = macro[5][k]
-                print("??", k, v, j)
+                local j = macro.namedParamOffset[k]
+
                 if j then
                     vs[vsf[vsfp]+j-1] = v
-                elseif macro[7]>0 then
+                elseif macro.variadicOffset>0 then
                     @_TABLE_SET capture k v
                 else
-                    @_ERROR{{"Unknow named parameter '" .. k .."' for macro '" .. macro[6] .."'."}}
+                    @_ERROR{{"Unknow named parameter '" .. k .."' for macro '" .. macro.name .."'."}}
                 end
             end    
             msp = msp-1
@@ -307,29 +307,23 @@ return function (plume)
             msp = msp - 1
             local t = _type(macro)
             if t == "macro" then
-                @ENTER_SCOPE 0 macro[3]+macro[4]
-
+                @ENTER_SCOPE 0 macro.positionalParamCount+macro.namedParamCount
                 local capture
-                if macro[7]>0 then -- variadic
+                if macro.variadicOffset>0 then -- variadic
                     capture = ptable(0, 0) -- can be optimized
                 end
-
                 @_UNSTACK_POS
                 @_UNSTACK_NAMED
-                if macro[7]>0 then -- variadic
-                    vs[macro[7]] = capture
+                if macro.variadicOffset>0 then -- variadic
+                    vs[macro.variadicOffset] = capture
                 end
-
                 @_END_ACC
-
-                jump = macro[2]
-
+                jump = macro.offset
                 cp = cp + 1
                 calls[cp] = ip+1
-
             elseif t == "luaFunction" then
                 @ACC_TABLE
-                local result = macro[2](ms[msp])
+                local result = macro.callable(ms[msp])
                 if result == nil then
                     result = empty
                 end
@@ -401,7 +395,7 @@ return function (plume)
             local keyCount = #ms[limit-1] / 2
             local args = ptable(msp-limit+1, keyCount)
             for i=1, msp-limit+1 do -- dump items
-                args[2][i] = ms[limit+i-1]
+                args.table[i] = ms[limit+i-1]
             end
             for i=1, #ms[limit-1], 2 do --dump keys 
                 @_TABLE_SET args ms[limit-1][i] ms[limit-1][i+1]
@@ -440,7 +434,7 @@ return function (plume)
             --- Stack 1, table[key]
             --- arg1: -
             --- arg2: -
-            ms[msp-1] = ms[msp][2][ms[msp-1]]
+            ms[msp-1] = ms[msp].table[ms[msp-1]]
             msp = msp-1
         @end
 
@@ -449,16 +443,16 @@ return function (plume)
             --- Stack 1, table[key]
             --- arg1: -
             --- arg2: -
-            ms[msp-1] = ms[msp][4][ms[msp-1]]
+            ms[msp-1] = ms[msp].meta[ms[msp-1]]
             msp = msp-1
         @end
 
         @define _TABLE_SET t k v
             -- if dont exists, register key
-            if not $t[2][$k] then
-                table.insert($t[3], $k)
+            if not $t.table[$k] then
+                table.insert($t.keys, $k)
             end
-            $t[2][$k] = $v --set
+            $t.table[$k] = $v --set
         @end
 
         @define TABLE_SET arg1 arg2
@@ -466,7 +460,7 @@ return function (plume)
             --- Set the table.key to value
             --- arg1: -
             --- arg2: -
-            ms[msp-2][2][ms[msp-1]] = ms[msp]
+            ms[msp-2].table[ms[msp-1]] = ms[msp]
             msp = msp-3
         @end
 
@@ -475,7 +469,7 @@ return function (plume)
             --- Set the table.key to value
             --- arg1: -
             --- arg2: -
-            ms[msp-2][4][ms[msp-1]] = ms[msp]
+            ms[msp-2].meta[ms[msp-1]] = ms[msp]
             msp = msp-3
         @end
 
@@ -498,13 +492,13 @@ return function (plume)
             --- arg2: -
             local t = ms[msp]
             msp = msp-1
-            for _, item in ipairs(t[2]) do
+            for _, item in ipairs(t.table) do
                 msp = msp+1
                 ms[msp] = item
             end
-            for _, key in ipairs(t[3]) do
+            for _, key in ipairs(t.keys) do
                 table.insert(ms[msf[msfp]], key)
-                table.insert(ms[msf[msfp]], t[2][key])
+                table.insert(ms[msf[msfp]], t.table[key])
             end
         @end
 
@@ -685,6 +679,6 @@ return function (plume)
             @_DISPATCH
             @_INSTRUCTIONS
 
-        return true, plume.std.tostring[2]({"", {ms[1]}}), ip
+        return true, plume.std.tostring.callable({table={ms[1]}}), ip
     end
 end

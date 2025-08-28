@@ -36,7 +36,7 @@ return function (plume)
 				removedOffset = removedOffset + 1
 			elseif instr.link then
 				removedOffset = removedOffset + 1
-				runtime.constants[instr.link][2] = offset --set macro offset
+				runtime.constants[instr.link].offset = offset --set macro offset
 			elseif instr._goto then
 				if not labels[instr._goto] then
 					error("Internal Error: no label " .. instr._goto)
