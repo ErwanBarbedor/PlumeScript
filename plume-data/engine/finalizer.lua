@@ -19,7 +19,8 @@ return function (plume)
 		local labels = {}
 
 		local removedCount = 0
-		for offset, instr in ipairs(runtime.instructions) do
+		for offset=runtime.instructionsPointer+1, #runtime.instructions do
+			instr = runtime.instructions[offset]
 			if instr.label then
 				labels[instr.label] = offset - removedCount
 				removedCount = removedCount + 1
@@ -28,9 +29,9 @@ return function (plume)
 			end
 		end
 
-		local computedInstructions = {}
 		local removedOffset = 0
-		for offset, instr in ipairs(runtime.instructions) do
+		for offset=runtime.instructionsPointer+1, #runtime.instructions do
+			instr = runtime.instructions[offset]
 			offset = offset-removedOffset
 			if instr.label then
 				removedOffset = removedOffset + 1
@@ -42,14 +43,14 @@ return function (plume)
 					error("Internal Error: no label " .. instr._goto)
 				end
 
-				computedInstructions[offset] = {plume.ops[instr.jump], 0, labels[instr._goto]}
+				runtime.computedInstructions[offset] = {plume.ops[instr.jump], 0, labels[instr._goto]}
 			else
-				computedInstructions[offset] = instr
+				runtime.computedInstructions[offset] = instr
 			end
 		end
+		runtime.instructionsPointer = runtime.instructions
 
-		table.insert(computedInstructions, {plume.ops.END, 0, 0})
-		runtime.instructions = computedInstructions
+		table.insert(runtime.computedInstructions, {plume.ops.END, 0, 0})
 	end
 	
 	------------------------
@@ -67,14 +68,17 @@ return function (plume)
     local MASK_ARG2 = bit.lshift(1, ARG2_BITS) - 1
     ------------------------
 	local function encode(runtime)
-		runtime.bytecode = table.new(#runtime.instructions, 0)
-		for offset, instr in ipairs(runtime.instructions) do
+		runtime.bytecode = table.new(#runtime.computedInstructions, 0)
+		for offset=runtime.computedInstructionsPointer+1, #runtime.computedInstructions do
+			instr = runtime.computedInstructions[offset]
+
 			local op_part = bit.lshift(bit.band(instr[1], MASK_OP), OP_SHIFT)
 			local arg1_part = bit.lshift(bit.band(instr[2], MASK_ARG1), ARG1_SHIFT)
 			local arg2_part = bit.band(instr[3], MASK_ARG2)
 			local byte = bit.bor(op_part, arg1_part, arg2_part)
 			runtime.bytecode[offset] = byte
 		end
+		runtime.computedInstructionsPointer = #runtime.computedInstructions
 	end
 
 	function plume.finalize(runtime)

@@ -19,7 +19,15 @@ return function(plume)
 			filesOffset = {},
 			filesMemory  = {},
 			filesVarMap  = {},
+			
 			instructions = {},
+			computedInstructions = {},
+			bytecode = {},
+
+			
+			instructionsPointer = 0,-- track already traited bytecode
+			computedInstructionsPointer = 0, 
+
 			constants    = {},
 			fileCount    = 0
 		}
