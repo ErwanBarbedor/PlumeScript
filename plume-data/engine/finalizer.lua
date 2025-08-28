@@ -26,6 +26,8 @@ return function (plume)
 				removedCount = removedCount + 1
 			elseif instr.link then
 				removedCount = removedCount + 1
+			elseif instr.fileLink then
+				removedCount = removedCount + 1
 			end
 		end
 
@@ -44,6 +46,9 @@ return function (plume)
 				end
 
 				runtime.computedInstructions[offset] = {plume.ops[instr.jump], 0, labels[instr._goto]}
+			elseif instr.fileLink then
+				removedOffset = removedOffset + 1
+				runtime.filesOffset[instr.fileLink] = offset
 			else
 				runtime.computedInstructions[offset] = instr
 			end
