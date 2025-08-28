@@ -153,7 +153,7 @@ function lib.executeTests(allTests, plumeEngine)
 
                 testData.obtained = {
                     output = normalizeOutput(result),
-                    bytecode = plumeEngine.debug.bytecodeGrid(runtime),
+                    bytecode = runtime.bytecode and plumeEngine.debug.bytecodeGrid(runtime),
                     error = not success,
                 }
             end
