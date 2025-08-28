@@ -340,8 +340,12 @@ return function (plume)
             --- arg1: -
             --- arg2: -
             jump = calls[cp]
+            if not jump then -- exit the main programm
+                jump = #bytecode -- goto to END
+            end
             cp = cp - 1
             @LEAVE_SCOPE 0 0
+            @LEAVE_FILE
         @end
 
         ---------
