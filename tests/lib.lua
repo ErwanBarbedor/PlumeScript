@@ -142,7 +142,13 @@ function lib.executeTests(allTests, plumeEngine)
                 end
 
                 if success then
-                    success, result = plumeEngine.run(runtime)
+                    success, x, y = pcall(plumeEngine.run, runtime)
+                    if success and x then
+                        result = y
+                    else
+                        success = false
+                        result = x
+                    end
                 end
 
                 testData.obtained = {
