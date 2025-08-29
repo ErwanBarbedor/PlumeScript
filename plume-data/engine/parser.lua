@@ -265,8 +265,8 @@ return function (plume)
 	    local set = Ct("SET", P"set" * s * setvar * (os * compound^-1 * P"=" * lbody))
 
 	    -- table
-	    local listitem = Ct("LIST_ITEM", P"- " * os *V"text") 
-	    local hashitem = Ct("HASH_ITEM", idn * P":" *  os * Ct("BODY", V"text")) 
+	    local listitem = Ct("LIST_ITEM", P"- " * os * V"firstStatement") 
+	    local hashitem = Ct("HASH_ITEM", idn * P":" *  os *lbody) 
 	    local expand   = Ct("EXPAND", P"..." * evalBase) 
 
 	    ----------

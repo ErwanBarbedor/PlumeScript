@@ -1,0 +1,21 @@
+/// Test macro key
+let t = @table
+  quill: macro()
+    mark
+  end
+end
+$t.quill()
+/// Output
+mark
+/// End
+
+/// Test macro item
+let t = @table
+  - macro()
+    mark
+  end
+end
+$t[1]()
+/// Output
+mark
+/// End
