@@ -53,7 +53,7 @@ return function (plume)
 				runtime.computedInstructions[offset] = instr
 			end
 		end
-		runtime.instructionsPointer = runtime.instructions
+		runtime.instructionsPointer = #runtime.instructions
 
 		table.insert(runtime.computedInstructions, {plume.ops.END, 0, 0})
 	end
@@ -73,7 +73,9 @@ return function (plume)
     local MASK_ARG2 = bit.lshift(1, ARG2_BITS) - 1
     ------------------------
 	local function encode(runtime)
-		runtime.bytecode = table.new(#runtime.computedInstructions, 0)
+		if not runtime.bytecode then
+			runtime.bytecode = table.new(#runtime.computedInstructions, 0)
+		end
 		for offset=runtime.computedInstructionsPointer+1, #runtime.computedInstructions do
 			instr = runtime.computedInstructions[offset]
 
