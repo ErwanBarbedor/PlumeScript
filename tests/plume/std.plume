@@ -90,3 +90,26 @@ Item "first" is _(quill)_.
 Item "second" is _(wing)_.
 Item "bonus" is _(bird)_.
 /// End
+
+/// Test import text 1
+$import(tests/plume/toimport/text)
+/// Output
+wings
+/// End
+
+/// Test import text 2
+quill\n
+$import(tests/plume/toimport/text)\n
+nib
+/// Output
+quill
+wings
+nib
+/// End
+
+/// Test import lib
+let lib = $import(tests/plume/toimport/lib)
+$lib.nib
+/// Output
+quill
+/// End
