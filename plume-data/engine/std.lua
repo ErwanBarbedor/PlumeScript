@@ -139,6 +139,28 @@ return function (plume)
             end)
 
             return iterator
+        end,
+
+        import = function(args, runtime)
+            local filename = args.table[1]
+
+            if not filename:match('%.plume$') then
+                filename = filename .. ".plume"
+            end
+
+            if not runtime.filesOffset[filename] then
+                local file = io.open(filename)
+                    if not file then
+                        error("Cannot read file '" .. filename .. "'.")
+                    end
+                    local code = file:read("*a")
+                file:close()
+
+                plume.compileFile(code, filename, runtime)
+                plume.finalize(runtime)
+            end
+
+            return runtime.filesOffset[filename], true
         end
 	}
 

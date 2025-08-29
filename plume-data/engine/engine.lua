@@ -388,11 +388,18 @@ end
 	            ms[limit-1]=args
 	            msp=limit - 1
 	                        msfp=msfp-1
-	                local result=macro.callable(ms[msp])
-	                if result==nil then
-	                    result=empty
+	                local result, isJump=macro.callable(ms[msp], runtime)
+	                if isJump then
+	                    jump=result
+	                    cp=cp + 1
+	                    calls[cp]=ip+1
+	                    msp=msp - 1
+	                else
+	                    if result==nil then
+	                        result=empty
+	                    end
+	                    ms[msp]=result
 	                end
-	                ms[msp]=result
 	            else
 	                            return false, "Try to call a '" .. t .. "' value", ip
 	            end
