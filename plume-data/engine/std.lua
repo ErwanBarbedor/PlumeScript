@@ -191,4 +191,35 @@ return function (plume)
         plume.std[name] = plume.obj.luaFunction(name, f)
     end
 
+    local function importLuaFunction(name, f)
+        return plume.obj.luaFunction(name, function(args)
+            return (f(unpack(args.table)))
+        end)
+    end
+
+    local function importLuaTable(name, t)
+        local result = plume.obj.table(0, 0)
+
+        for k, v in pairs(t) do
+            table.insert(result.keys, k)
+            if type(v) == "table" then
+                v = importLuaTable(k, v)
+            elseif type(v) == "function" then
+                v = importLuaFunction(k, v)
+            end
+            result.table[k] = v
+        end
+
+        return result
+    end
+    
+    plume.std.lua = plume.obj.table(0, 0)
+
+    for name in ("assert error"):gmatch("%S+") do
+        plume.std.lua.table[name] = importLuaFunction(name, _G[name])
+    end
+
+    for name in ("string math"):gmatch("%S+") do
+        plume.std.lua.table[name] = importLuaTable(name, _G[name])
+    end
 end

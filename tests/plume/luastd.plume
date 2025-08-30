@@ -1,0 +1,23 @@
+/// Test math 1
+$lua.math.pi
+/// Output
+3.1415926535898
+/// End
+
+/// Test math 2
+$lua.math.sin(0)
+/// Output
+0
+/// End
+
+/// Test math 3
+$lua.math.max(1, 2)
+/// Output
+2
+/// End
+
+/// Test string
+$lua.string.gsub(azerty, [ae], .)
+/// Output
+.z.rty
+/// End
