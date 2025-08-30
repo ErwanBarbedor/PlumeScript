@@ -1,0 +1,17 @@
+/// Test #106
+macro css(selector, ...style)
+	for item in items(style)
+	end
+end
+
+macro Document(body)
+	@css(a)
+		margin: 0
+	end
+end
+
+@Document
+	aaaaaaaaaaaaa
+end
+/// Output
+/// End

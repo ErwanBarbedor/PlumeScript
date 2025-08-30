@@ -379,24 +379,22 @@ end
 	                local v=ms[msf[msfp]][i+1]
 	                local m=ms[msf[msfp]][i+2]
 	                local j=macro.namedParamOffset[k]
-	                if j then
+	                if m then
+	                                capture.meta[k]=v
+	                elseif j then
 	                    vs[vsf[vsfp]+j-1]=v
 	                elseif macro.variadicOffset>0 then
-	                    if m then
-	                                    capture.meta[k]=v
-	                    else
-	                                    if not capture.table[k] then
+	                                if not capture.table[k] then
 	                table.insert(capture.keys, k)
 	            end
 	            capture.table[k]=v
-	                    end
 	                else
 	                                return false, "Unknow named parameter '" .. k .."' for macro '" .. macro.name .."'.", ip
 	                end
 	            end
 	            msp=msp-1
 	                if macro.variadicOffset>0 then
-	                    vs[macro.variadicOffset]=capture
+	                    vs[vsf[vsfp]+macro.variadicOffset-1]=capture
 	                end
 	                            msfp=msfp-1
 	                jump=macro.offset

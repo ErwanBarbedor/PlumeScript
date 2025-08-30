@@ -290,14 +290,12 @@ return function (plume)
                 local v=ms[msf[msfp]][i+1]
                 local m=ms[msf[msfp]][i+2]
                 local j = macro.namedParamOffset[k]
-                if j then
+                if m then
+                    @_TABLE_META_SET capture k v
+                elseif j then
                     vs[vsf[vsfp]+j-1] = v
                 elseif macro.variadicOffset>0 then
-                    if m then
-                        @_TABLE_META_SET capture k v
-                    else
-                        @_TABLE_SET capture k v
-                    end
+                    @_TABLE_SET capture k v
                 else
                     @_ERROR{{"Unknow named parameter '" .. k .."' for macro '" .. macro.name .."'."}}
                 end
@@ -327,7 +325,7 @@ return function (plume)
                 @_UNSTACK_POS
                 @_UNSTACK_NAMED
                 if macro.variadicOffset>0 then -- variadic
-                    vs[macro.variadicOffset] = capture
+                    vs[vsf[vsfp]+macro.variadicOffset-1] = capture
                 end
                 @_END_ACC
                 jump = macro.offset
