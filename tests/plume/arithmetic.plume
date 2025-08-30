@@ -111,3 +111,32 @@ $(not 1+1==3)
 /// Output
 true
 /// End
+
+/// Test compound 1
+let x = 5
+set x += 1
+$x
+/// Output
+6
+/// End
+
+/// Test compound 2
+let t = @table
+  - 5
+end
+set t[1] *= 7
+$t[1]
+/// Output
+35
+/// End
+
+
+/// Test compound 3
+let t = @table
+  value: 6
+end
+set t.value /= 2
+$t.value
+/// Output
+3
+/// End

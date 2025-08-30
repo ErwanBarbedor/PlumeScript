@@ -1,0 +1,65 @@
+/// Test macro key
+let t = @table
+  quill: macro()
+    mark
+  end
+end
+$t.quill()
+/// Output
+mark
+/// End
+
+/// Test macro item
+let t = @table
+  - macro()
+    mark
+  end
+end
+$t[1]()
+/// Output
+mark
+/// End
+
+/// Test self by key
+let t = @table
+  mark: song
+  quill: macro()
+     $self.mark
+  end
+end
+
+$t.quill()
+/// Output
+song
+/// End
+
+/// Test self by index
+let t = @table
+  mark: song
+  - macro()
+     $self.mark
+  end
+end
+
+$t[1]()
+/// Output
+song
+/// End
+
+/// Test self chained
+let obj = @table
+  wings: quill
+  method1: macro()
+    $self.wings
+  end
+
+  method2: macro()
+    $self.method1()
+  end
+end
+
+$obj.wings
+
+/// Output
+quill
+/// End
