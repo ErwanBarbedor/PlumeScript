@@ -96,44 +96,45 @@ return function (plume)
 			elseif op==12 then goto TABLE_ADD
 			elseif op==13 then goto TABLE_SET
 			elseif op==14 then goto TABLE_INDEX
-			elseif op==15 then goto TABLE_SET_META
-			elseif op==16 then goto TABLE_INDEX_META
-			elseif op==17 then goto TABLE_SET_ACC
-			elseif op==18 then goto TABLE_EXPAND
-			elseif op==19 then goto ENTER_SCOPE
-			elseif op==20 then goto LEAVE_SCOPE
-			elseif op==21 then goto ENTER_FILE
-			elseif op==22 then goto LEAVE_FILE
-			elseif op==23 then goto BEGIN_ACC
-			elseif op==24 then goto ACC_TABLE
-			elseif op==25 then goto ACC_TEXT
-			elseif op==26 then goto ACC_EMPTY
-			elseif op==27 then goto ACC_CALL
-			elseif op==28 then goto RETURN
-			elseif op==29 then goto JUMP_IF
-			elseif op==30 then goto JUMP_IF_NOT
-			elseif op==31 then goto JUMP_IF_NOT_EMPTY
-			elseif op==32 then goto JUMP
-			elseif op==33 then goto GET_ITER
-			elseif op==34 then goto FOR_ITER
-			elseif op==35 then goto OPP_ADD
-			elseif op==36 then goto OPP_MUL
-			elseif op==37 then goto OPP_SUB
-			elseif op==38 then goto OPP_DIV
-			elseif op==39 then goto OPP_NEG
-			elseif op==40 then goto OPP_MOD
-			elseif op==41 then goto OPP_POW
-			elseif op==42 then goto OPP_GTE
-			elseif op==43 then goto OPP_LTE
-			elseif op==44 then goto OPP_GT
-			elseif op==45 then goto OPP_LT
-			elseif op==46 then goto OPP_EQ
-			elseif op==47 then goto OPP_NEQ
-			elseif op==48 then goto OPP_AND
-			elseif op==49 then goto OPP_NOT
-			elseif op==50 then goto OPP_OR
-			elseif op==51 then goto DUPLICATE
-			elseif op==52 then goto END
+			elseif op==15 then goto TABLE_INDEX_ACC_SELF
+			elseif op==16 then goto TABLE_SET_META
+			elseif op==17 then goto TABLE_INDEX_META
+			elseif op==18 then goto TABLE_SET_ACC
+			elseif op==19 then goto TABLE_EXPAND
+			elseif op==20 then goto ENTER_SCOPE
+			elseif op==21 then goto LEAVE_SCOPE
+			elseif op==22 then goto ENTER_FILE
+			elseif op==23 then goto LEAVE_FILE
+			elseif op==24 then goto BEGIN_ACC
+			elseif op==25 then goto ACC_TABLE
+			elseif op==26 then goto ACC_TEXT
+			elseif op==27 then goto ACC_EMPTY
+			elseif op==28 then goto ACC_CALL
+			elseif op==29 then goto RETURN
+			elseif op==30 then goto JUMP_IF
+			elseif op==31 then goto JUMP_IF_NOT
+			elseif op==32 then goto JUMP_IF_NOT_EMPTY
+			elseif op==33 then goto JUMP
+			elseif op==34 then goto GET_ITER
+			elseif op==35 then goto FOR_ITER
+			elseif op==36 then goto OPP_ADD
+			elseif op==37 then goto OPP_MUL
+			elseif op==38 then goto OPP_SUB
+			elseif op==39 then goto OPP_DIV
+			elseif op==40 then goto OPP_NEG
+			elseif op==41 then goto OPP_MOD
+			elseif op==42 then goto OPP_POW
+			elseif op==43 then goto OPP_GTE
+			elseif op==44 then goto OPP_LTE
+			elseif op==45 then goto OPP_GT
+			elseif op==46 then goto OPP_LT
+			elseif op==47 then goto OPP_EQ
+			elseif op==48 then goto OPP_NEQ
+			elseif op==49 then goto OPP_AND
+			elseif op==50 then goto OPP_NOT
+			elseif op==51 then goto OPP_OR
+			elseif op==52 then goto DUPLICATE
+			elseif op==53 then goto END
 			end
             			::LOAD_CONSTANT::
 	do
@@ -214,6 +215,14 @@ end
 			::TABLE_INDEX::
 	do
 	            ms[msp-1]=ms[msp].table[ms[msp-1]]
+	            msp=msp-1
+				goto DISPATCH
+end
+			::TABLE_INDEX_ACC_SELF::
+	do
+	            table.insert(ms[msf[msfp]], "self")
+	            table.insert(ms[msf[msfp]], ms[msp])
+	                        ms[msp-1]=ms[msp].table[ms[msp-1]]
 	            msp=msp-1
 				goto DISPATCH
 end
@@ -353,6 +362,7 @@ end
 	                local k=ms[msf[msfp]][i]
 	                local v=ms[msf[msfp]][i+1]
 	                local j=macro.namedParamOffset[k]
+	                print(k, v, j)
 	                if j then
 	                    vs[vsf[vsfp]+j-1]=v
 	                elseif macro.variadicOffset>0 then

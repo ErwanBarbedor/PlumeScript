@@ -372,6 +372,7 @@ return function(plume)
 			-- Push all index/call info in reverse order
 			for i=#node.childs, 2, -1 do
 				local child = node.childs[i]
+
 				if child.name == "CALL" then
 					_accTableInit()
 					childsHandler(child)
@@ -390,14 +391,19 @@ return function(plume)
 			-- Push all index/call op in order
 			for i=2, #node.childs do
 				local child = node.childs[i]
+				print(antelast, last, child.name)
 				if child.name == "CALL" then
 					registerOP(ops.ACC_CALL, 0, 0)
-				elseif child.name == "INDEX" then
-					registerOP(ops.TABLE_INDEX, 0, 0)
-				elseif child.name == "DIRECT_INDEX" then
-					registerOP(ops.TABLE_INDEX, 0, 0)
+				elseif child.name == "INDEX" or child.name == "DIRECT_INDEX" then
+					if node.childs[i+1] and node.childs[i+1].name == "CALL" then
+						registerOP(ops.TABLE_INDEX_ACC_SELF, 0, 0)
+					else
+						registerOP(ops.TABLE_INDEX, 0, 0)
+					end
 				end
 			end
+
+
 		end
 
 		nodeHandlerTable.BLOCK = function(node)
@@ -600,6 +606,13 @@ return function(plume)
 					else
 						macroObj.positionalParamCount = macroObj.positionalParamCount+1
 					end
+				end
+
+				-- always register self parameter
+				if not getVariable("self") then
+					local param = registerVariable("self")
+					macroObj.namedParamCount = macroObj.namedParamCount+1
+					macroObj.namedParamOffset.self = param.offset
 				end
 
 				accBlock()(body)

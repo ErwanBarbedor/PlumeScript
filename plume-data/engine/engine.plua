@@ -281,7 +281,6 @@ return function (plume)
                 local k=ms[msf[msfp]][i]
                 local v=ms[msf[msfp]][i+1]
                 local j = macro.namedParamOffset[k]
-
                 if j then
                     vs[vsf[vsfp]+j-1] = v
                 elseif macro.variadicOffset>0 then
@@ -447,6 +446,18 @@ return function (plume)
             --- arg2: -
             ms[msp-1] = ms[msp].table[ms[msp-1]]
             msp = msp-1
+        @end
+
+        @define TABLE_INDEX_ACC_SELF arg1 arg2
+            --- Unstack 2, in order: table, key
+            --- Add current table as self key for current
+            --- call table.
+            --- Stack 1, table[key]
+            --- arg1: -
+            --- arg2: -
+            table.insert(ms[msf[msfp]], "self")
+            table.insert(ms[msf[msfp]], ms[msp])
+            @TABLE_INDEX
         @end
 
         @define TABLE_INDEX_META arg1 arg2
