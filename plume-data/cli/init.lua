@@ -15,7 +15,7 @@ If not, see <https://www.gnu.org/licenses/>.
 
 local function main()
 	local filename = arg[2]
-
+	
 	if not filename then
 		print("Missing input file")
 		return
@@ -29,7 +29,7 @@ local function main()
 	file:close()
 
 	package.path = arg[1].."/?.lua;" .. package.path
-	local plume = require "engine/init"
+	local plume = require "plume-data/engine/init"
 
 	local runtime = plume.initRuntime()
 	plume.compileFile(code, filename, runtime)
