@@ -1,3 +1,12 @@
+/// Test #105
+let x = 1
+for y in seq(1, 10)
+    $(x+y)
+end
+/// Output
+234567891011
+/// End
+
 /// Test #106
 macro css(selector, ...style)
 	for item in items(style)
