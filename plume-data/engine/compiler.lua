@@ -263,12 +263,18 @@ return function(plume)
 		nodeHandlerTable.HASH_ITEM = function(node)
 			local identifier = plume.ast.get(node, "IDENTIFIER").content
 			local body = plume.ast.get(node, "BODY")
+			local meta = plume.ast.get(node, "META")
 
 			local offset = registerConstant(identifier)
 
 			accBlock()(body)
 			registerOP(ops.LOAD_CONSTANT, 0, offset)
-			registerOP(ops.TABLE_SET_ACC, 0, 0)
+
+			if meta then
+				registerOP(ops.TABLE_SET_ACC, 0, 0)
+			else
+				registerOP(ops.TABLE_SET_ACC, 0, 0)
+			end
 		end
 
 		nodeHandlerTable.EXPAND = function(node)

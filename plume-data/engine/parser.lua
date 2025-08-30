@@ -266,7 +266,7 @@ return function (plume)
 
 	    -- table
 	    local listitem = Ct("LIST_ITEM", P"- " * os * V"firstStatement") 
-	    local hashitem = Ct("HASH_ITEM", idn * P":" *  os *lbody) 
+	    local hashitem = Ct("HASH_ITEM", Ct("META", P"meta"*s)^-1 * idn * P":" *  os *lbody)
 	    local expand   = Ct("EXPAND", P"..." * evalBase) 
 
 	    ----------
