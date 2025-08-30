@@ -222,6 +222,7 @@ end
 	do
 	            table.insert(ms[msf[msfp]], "self")
 	            table.insert(ms[msf[msfp]], ms[msp])
+	            table.insert(ms[msf[msfp]], false)
 	                        ms[msp-1]=ms[msp].table[ms[msp-1]]
 	            msp=msp-1
 				goto DISPATCH
@@ -242,6 +243,7 @@ end
 	do
 	            table.insert(ms[msf[msfp]], ms[msp])
 	            table.insert(ms[msf[msfp]], ms[msp-1])
+	            table.insert(ms[msf[msfp]], false)
 	            msp=msp-2
 				goto DISPATCH
 end
@@ -256,6 +258,7 @@ end
 	            for _, key in ipairs(t.keys) do
 	                table.insert(ms[msf[msfp]], key)
 	                table.insert(ms[msf[msfp]], t.table[key])
+	                table.insert(ms[msf[msfp]], false)
 	            end
 				goto DISPATCH
 end
@@ -300,7 +303,7 @@ end
 	            for i=1, msp-limit+1 do
 	                args.table[i]=ms[limit+i-1]
 	            end
-	            for i=1, #ms[limit-1], 2 do
+	            for i=1, #ms[limit-1], 3 do
 	                            if not args.table[ms[limit-1][i]] then
 	                table.insert(args.keys, ms[limit-1][i])
 	            end
@@ -358,11 +361,11 @@ end
 	                table.insert(capture.table, ms[msp+i-argcount])
 	            end
 	            msp=msf[msfp]
-	                            for i=1, #ms[msf[msfp]], 2 do
+	                            for i=1, #ms[msf[msfp]], 3 do
 	                local k=ms[msf[msfp]][i]
 	                local v=ms[msf[msfp]][i+1]
+	                local m=ms[msf[msfp]][i+2]
 	                local j=macro.namedParamOffset[k]
-	                print(k, v, j)
 	                if j then
 	                    vs[vsf[vsfp]+j-1]=v
 	                elseif macro.variadicOffset>0 then
@@ -389,7 +392,7 @@ end
 	            for i=1, msp-limit+1 do
 	                args.table[i]=ms[limit+i-1]
 	            end
-	            for i=1, #ms[limit-1], 2 do
+	            for i=1, #ms[limit-1], 3 do
 	                            if not args.table[ms[limit-1][i]] then
 	                table.insert(args.keys, ms[limit-1][i])
 	            end
