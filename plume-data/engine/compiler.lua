@@ -303,9 +303,10 @@ return function(plume)
 		end
 
 		nodeHandlerTable.SET = function(node)
-			local idn   = plume.ast.get(node, "IDENTIFIER")
-			local eval  = plume.ast.get(node, "EVAL")
-			local body  = plume.ast.get(node, "BODY")
+			local idn      = plume.ast.get(node, "IDENTIFIER")
+			local eval     = plume.ast.get(node, "EVAL")
+			local body     = plume.ast.get(node, "BODY")
+			local compound = plume.ast.get(node, "COMPOUND")
 			
 			local varName
 			if idn then
@@ -316,7 +317,13 @@ return function(plume)
 					error("Cannot set variable '" .. varName .. "', is a constant.")
 				end
 
+				if compound then
+					nodeHandler(idn)
+				end
 				accBlock()(body)
+				if compound then
+					registerOP(ops["OPP_" .. compound.childs[1].name], 0, 0)
+				end
 
 				if var.isStatic then
 					registerOP(ops.STORE_STATIC, 0, var.offset)
@@ -336,7 +343,16 @@ return function(plume)
 
 				eval.childs[#eval.childs] = nil
 
+				if compound then
+					childsHandler(last) -- key
+					childsHandler(eval) -- table
+					registerOP(ops.TABLE_INDEX, 0, 0)
+				end
 				accBlock()(body) -- value
+				if compound then
+					registerOP(ops["OPP_" .. compound.childs[1].name], 0, 0)
+				end
+
 				childsHandler(last) -- key
 				childsHandler(eval) -- table
 				registerOP(ops.TABLE_SET, 0, 0)
