@@ -1,6 +1,6 @@
 #!/bin/sh
 
 SCRIPT_DIR_REL="$(dirname "$0")"
-SCRIPT_DIR="$(cd "$SCRIPT_DIR_REL" > /dev/null 2>&1 && pwd)/plume-data"
+SCRIPT_DIR="$(cd "$SCRIPT_DIR_REL" > /dev/null 2>&1 && pwd)"
 
 luajit "$SCRIPT_DIR/cli/init.lua" "$SCRIPT_DIR" "$@"
