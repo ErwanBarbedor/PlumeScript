@@ -607,6 +607,9 @@ return function(plume)
 					macroName,
 					true -- static
 				)
+				if not variable then
+					error("static '" .. macroName .. "' already exists.")
+				end
 				macroObj.name = macroName
 				registerOP(ops.STORE_STATIC, 0, variable.offset)
 			end
