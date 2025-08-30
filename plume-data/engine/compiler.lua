@@ -339,6 +339,7 @@ return function(plume)
 				accBlock()(body) -- value
 				childsHandler(last) -- key
 				childsHandler(eval) -- table
+				registerOP(ops.TABLE_SET, 0, 0)
 
 
 			end

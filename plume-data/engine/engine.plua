@@ -471,7 +471,7 @@ return function (plume)
             --- Set the table.key to value
             --- arg1: -
             --- arg2: -
-            ms[msp-2].table[ms[msp-1]] = ms[msp]
+            ms[msp].table[ms[msp-1]] = ms[msp-2]
             msp = msp-3
         @end
 

@@ -90,3 +90,17 @@ $wing(...t)
 /// Output
 write - paint - song - mark
 /// End
+
+/// Test table set
+let t = @table
+	- write
+	- paint
+	- song
+end
+$t[1]\n
+set t[1] = mark
+$t[1]
+/// Output
+write
+mark
+/// End
