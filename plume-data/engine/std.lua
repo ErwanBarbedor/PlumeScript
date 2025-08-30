@@ -161,6 +161,28 @@ return function (plume)
             end
 
             return runtime.filesOffset[filename], true
+        end,
+
+        write = function(args)
+            local filename = args.table[1]
+            local content = table.concat(args.table, 2,  #args.table)
+            local file = io.open(filename, "w")
+                if not file then
+                    error("Cannot write file '" .. filename .. "'.")
+                end
+                file:write(content)
+            file:close()
+        end,
+
+        read = function(args)
+            local filename = args.table[1]
+            local file = io.open(filename)
+                if not file then
+                    error("Cannot read file '" .. filename .. "'.")
+                end
+                local content = file:read("*a")
+            file:close()
+            return content
         end
 	}
 
