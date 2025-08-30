@@ -95,3 +95,18 @@ $write(write, paint, song, ink: quill, wing: mark)
 Positionnals args: write, paint, song
 Named args: ink=quill, wing=mark
 /// End
+
+/// Test Flag
+macro write(?flag)
+  if flag
+    paint
+  else
+    sing
+  end
+end
+$write()\n
+$write(?flag)
+/// Output
+sing
+paint
+/// End

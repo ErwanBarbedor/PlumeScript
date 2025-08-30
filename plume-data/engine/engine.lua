@@ -20,7 +20,7 @@ return function (plume)
                 if x==empty then
                     return "empty"
                 else
-                    return x[1]
+                    return x.type or x[1]
                 end
             else
                 return t
@@ -96,44 +96,46 @@ return function (plume)
 			elseif op==12 then goto TABLE_ADD
 			elseif op==13 then goto TABLE_SET
 			elseif op==14 then goto TABLE_INDEX
-			elseif op==15 then goto TABLE_SET_META
-			elseif op==16 then goto TABLE_INDEX_META
-			elseif op==17 then goto TABLE_SET_ACC
-			elseif op==18 then goto TABLE_EXPAND
-			elseif op==19 then goto ENTER_SCOPE
-			elseif op==20 then goto LEAVE_SCOPE
-			elseif op==21 then goto ENTER_FILE
-			elseif op==22 then goto LEAVE_FILE
-			elseif op==23 then goto BEGIN_ACC
-			elseif op==24 then goto ACC_TABLE
-			elseif op==25 then goto ACC_TEXT
-			elseif op==26 then goto ACC_EMPTY
-			elseif op==27 then goto ACC_CALL
-			elseif op==28 then goto RETURN
-			elseif op==29 then goto JUMP_IF
-			elseif op==30 then goto JUMP_IF_NOT
-			elseif op==31 then goto JUMP_IF_NOT_EMPTY
-			elseif op==32 then goto JUMP
-			elseif op==33 then goto GET_ITER
-			elseif op==34 then goto FOR_ITER
-			elseif op==35 then goto OPP_ADD
-			elseif op==36 then goto OPP_MUL
-			elseif op==37 then goto OPP_SUB
-			elseif op==38 then goto OPP_DIV
-			elseif op==39 then goto OPP_NEG
-			elseif op==40 then goto OPP_MOD
-			elseif op==41 then goto OPP_POW
-			elseif op==42 then goto OPP_GTE
-			elseif op==43 then goto OPP_LTE
-			elseif op==44 then goto OPP_GT
-			elseif op==45 then goto OPP_LT
-			elseif op==46 then goto OPP_EQ
-			elseif op==47 then goto OPP_NEQ
-			elseif op==48 then goto OPP_AND
-			elseif op==49 then goto OPP_NOT
-			elseif op==50 then goto OPP_OR
-			elseif op==51 then goto DUPLICATE
-			elseif op==52 then goto END
+			elseif op==15 then goto TABLE_INDEX_ACC_SELF
+			elseif op==16 then goto TABLE_SET_META
+			elseif op==17 then goto TABLE_INDEX_META
+			elseif op==18 then goto TABLE_SET_ACC
+			elseif op==19 then goto TABLE_SET_ACC_META
+			elseif op==20 then goto TABLE_EXPAND
+			elseif op==21 then goto ENTER_SCOPE
+			elseif op==22 then goto LEAVE_SCOPE
+			elseif op==23 then goto ENTER_FILE
+			elseif op==24 then goto LEAVE_FILE
+			elseif op==25 then goto BEGIN_ACC
+			elseif op==26 then goto ACC_TABLE
+			elseif op==27 then goto ACC_TEXT
+			elseif op==28 then goto ACC_EMPTY
+			elseif op==29 then goto ACC_CALL
+			elseif op==30 then goto RETURN
+			elseif op==31 then goto JUMP_IF
+			elseif op==32 then goto JUMP_IF_NOT
+			elseif op==33 then goto JUMP_IF_NOT_EMPTY
+			elseif op==34 then goto JUMP
+			elseif op==35 then goto GET_ITER
+			elseif op==36 then goto FOR_ITER
+			elseif op==37 then goto OPP_ADD
+			elseif op==38 then goto OPP_MUL
+			elseif op==39 then goto OPP_SUB
+			elseif op==40 then goto OPP_DIV
+			elseif op==41 then goto OPP_NEG
+			elseif op==42 then goto OPP_MOD
+			elseif op==43 then goto OPP_POW
+			elseif op==44 then goto OPP_GTE
+			elseif op==45 then goto OPP_LTE
+			elseif op==46 then goto OPP_GT
+			elseif op==47 then goto OPP_LT
+			elseif op==48 then goto OPP_EQ
+			elseif op==49 then goto OPP_NEQ
+			elseif op==50 then goto OPP_AND
+			elseif op==51 then goto OPP_NOT
+			elseif op==52 then goto OPP_OR
+			elseif op==53 then goto DUPLICATE
+			elseif op==54 then goto END
 			end
             			::LOAD_CONSTANT::
 	do
@@ -207,25 +209,34 @@ end
 end
 			::TABLE_SET::
 	do
-	            ms[msp-2][2][ms[msp-1]]=ms[msp]
+	            ms[msp].table[ms[msp-1]]=ms[msp-2]
 	            msp=msp-3
 				goto DISPATCH
 end
 			::TABLE_INDEX::
 	do
-	            ms[msp-1]=ms[msp][2][ms[msp-1]]
+	            ms[msp-1]=ms[msp].table[ms[msp-1]]
+	            msp=msp-1
+				goto DISPATCH
+end
+			::TABLE_INDEX_ACC_SELF::
+	do
+	            table.insert(ms[msf[msfp]], "self")
+	            table.insert(ms[msf[msfp]], ms[msp])
+	            table.insert(ms[msf[msfp]], false)
+	                        ms[msp-1]=ms[msp].table[ms[msp-1]]
 	            msp=msp-1
 				goto DISPATCH
 end
 			::TABLE_SET_META::
 	do
-	            ms[msp-2][4][ms[msp-1]]=ms[msp]
+	            ms[msp-2].meta[ms[msp-1]]=ms[msp]
 	            msp=msp-3
 				goto DISPATCH
 end
 			::TABLE_INDEX_META::
 	do
-	            ms[msp-1]=ms[msp][4][ms[msp-1]]
+	            ms[msp-1]=ms[msp].meta[ms[msp-1]]
 	            msp=msp-1
 				goto DISPATCH
 end
@@ -233,6 +244,15 @@ end
 	do
 	            table.insert(ms[msf[msfp]], ms[msp])
 	            table.insert(ms[msf[msfp]], ms[msp-1])
+	            table.insert(ms[msf[msfp]], false)
+	            msp=msp-2
+				goto DISPATCH
+end
+			::TABLE_SET_ACC_META::
+	do
+	            table.insert(ms[msf[msfp]], ms[msp])
+	            table.insert(ms[msf[msfp]], ms[msp-1])
+	            table.insert(ms[msf[msfp]], true)
 	            msp=msp-2
 				goto DISPATCH
 end
@@ -240,13 +260,14 @@ end
 	do
 	            local t=ms[msp]
 	            msp=msp-1
-	            for _, item in ipairs(t[2]) do
+	            for _, item in ipairs(t.table) do
 	                msp=msp+1
 	                ms[msp]=item
 	            end
-	            for _, key in ipairs(t[3]) do
+	            for _, key in ipairs(t.keys) do
 	                table.insert(ms[msf[msfp]], key)
-	                table.insert(ms[msf[msfp]], t[2][key])
+	                table.insert(ms[msf[msfp]], t.table[key])
+	                table.insert(ms[msf[msfp]], false)
 	            end
 				goto DISPATCH
 end
@@ -289,13 +310,17 @@ end
 	            local keyCount=#ms[limit-1] / 2
 	            local args=ptable(msp-limit+1, keyCount)
 	            for i=1, msp-limit+1 do
-	                args[2][i]=ms[limit+i-1]
+	                args.table[i]=ms[limit+i-1]
 	            end
-	            for i=1, #ms[limit-1], 2 do
-	                            if not args[2][ms[limit-1][i]] then
-	                table.insert(args[3], ms[limit-1][i])
+	            for i=1, #ms[limit-1], 3 do
+	                if ms[limit-1][i+2] then
+	                                args.meta[ms[limit-1][i]]=ms[limit-1][i+1]
+	                else
+	                                if not args.table[ms[limit-1][i]] then
+	                table.insert(args.keys, ms[limit-1][i])
 	            end
-	            args[2][ms[limit-1][i]]=ms[limit-1][i+1]
+	            args.table[ms[limit-1][i]]=ms[limit-1][i+1]
+	                end
 	            end
 	            ms[limit-1]=args
 	            msp=limit - 1
@@ -330,47 +355,51 @@ end
 	            if t=="macro" then
 	                            vsfp=vsfp+1
 	            vsf[vsfp]=vsp+1-0
-	            for i=1, macro[3]+macro[4]-0 do
+	            for i=1, macro.positionalParamCount+macro.namedParamCount-0 do
 	                vsp=vsp+1
 	                vs[vsp]=empty
 	            end
 	                local capture
-	                if macro[7]>0 then
+	                if macro.variadicOffset>0 then
 	                    capture=ptable(0, 0)
 	                end
 	                            local argcount=msp-msf[msfp]
-	            if argcount ~=macro[3] and macro[7]==0 then
-	                            return false, "Wrong number of positionnal arguments for macro '" .. macro[6] .. "', " ..   argcount .. " instead of " .. macro[3], ip
+	            if argcount ~=macro.positionalParamCount and macro.variadicOffset==0 then
+	                            return false, "Wrong number of positionnal arguments for macro '" .. macro.name.. "', " ..   argcount .. " instead of " .. macro.positionalParamCount, ip
 	            end
-	            for i=1, macro[3] do
+	            for i=1, macro.positionalParamCount do
 	                vs[vsf[vsfp]+i-1]=ms[msp+i-argcount]
 	            end
-	            for i=macro[3]+1, argcount do
-	                table.insert(capture[2], ms[msp+i-argcount])
+	            for i=macro.positionalParamCount+1, argcount do
+	                table.insert(capture.table, ms[msp+i-argcount])
 	            end
 	            msp=msf[msfp]
-	                            for i=1, #ms[msf[msfp]], 2 do
+	                            for i=1, #ms[msf[msfp]], 3 do
 	                local k=ms[msf[msfp]][i]
 	                local v=ms[msf[msfp]][i+1]
-	                local j=macro[5][k]
-	                print("??", k, v, j)
+	                local m=ms[msf[msfp]][i+2]
+	                local j=macro.namedParamOffset[k]
 	                if j then
 	                    vs[vsf[vsfp]+j-1]=v
-	                elseif macro[7]>0 then
-	                                if not capture[2][k] then
-	                table.insert(capture[3], k)
+	                elseif macro.variadicOffset>0 then
+	                    if m then
+	                                    capture.meta[k]=v
+	                    else
+	                                    if not capture.table[k] then
+	                table.insert(capture.keys, k)
 	            end
-	            capture[2][k]=v
+	            capture.table[k]=v
+	                    end
 	                else
-	                                return false, "Unknow named parameter '" .. k .."' for macro '" .. macro[6] .."'.", ip
+	                                return false, "Unknow named parameter '" .. k .."' for macro '" .. macro.name .."'.", ip
 	                end
 	            end
 	            msp=msp-1
-	                if macro[7]>0 then
-	                    vs[macro[7]]=capture
+	                if macro.variadicOffset>0 then
+	                    vs[macro.variadicOffset]=capture
 	                end
 	                            msfp=msfp-1
-	                jump=macro[2]
+	                jump=macro.offset
 	                cp=cp + 1
 	                calls[cp]=ip+1
 	            elseif t=="luaFunction" then
@@ -378,22 +407,33 @@ end
 	            local keyCount=#ms[limit-1] / 2
 	            local args=ptable(msp-limit+1, keyCount)
 	            for i=1, msp-limit+1 do
-	                args[2][i]=ms[limit+i-1]
+	                args.table[i]=ms[limit+i-1]
 	            end
-	            for i=1, #ms[limit-1], 2 do
-	                            if not args[2][ms[limit-1][i]] then
-	                table.insert(args[3], ms[limit-1][i])
+	            for i=1, #ms[limit-1], 3 do
+	                if ms[limit-1][i+2] then
+	                                args.meta[ms[limit-1][i]]=ms[limit-1][i+1]
+	                else
+	                                if not args.table[ms[limit-1][i]] then
+	                table.insert(args.keys, ms[limit-1][i])
 	            end
-	            args[2][ms[limit-1][i]]=ms[limit-1][i+1]
+	            args.table[ms[limit-1][i]]=ms[limit-1][i+1]
+	                end
 	            end
 	            ms[limit-1]=args
 	            msp=limit - 1
 	                        msfp=msfp-1
-	                local result=macro[2](ms[msp])
-	                if result==nil then
-	                    result=empty
+	                local result, isJump=macro.callable(ms[msp], runtime)
+	                if isJump then
+	                    jump=result
+	                    cp=cp + 1
+	                    calls[cp]=ip+1
+	                    msp=msp - 1
+	                else
+	                    if result==nil then
+	                        result=empty
+	                    end
+	                    ms[msp]=result
 	                end
-	                ms[msp]=result
 	            else
 	                            return false, "Try to call a '" .. t .. "' value", ip
 	            end
@@ -402,9 +442,13 @@ end
 			::RETURN::
 	do
 	            jump=calls[cp]
+	            if not jump then
+	                jump=#bytecode
+	            end
 	            cp=cp - 1
 	                        vsp=vsf[vsfp]-1
 	            vsfp=vsfp-1
+	                        mp=mp-1
 				goto DISPATCH
 end
 			::JUMP_IF::
@@ -451,12 +495,19 @@ end
 	            if tobj ~="table" then
 	                            return false, "Try to iterate over a non-table '" .. tobj .. "' object.", ip
 	            end
-	            ms[msp]=obj[4].iter[2]()
+	            local iter=obj.meta.iter
+	            if iter.type=="luaFunction" then
+	                ms[msp]=iter.callable()
+	            elseif iter.type=="macro" then
+	                jump=iter.offset
+	                cp=cp + 1
+	                calls[cp]=ip+1
+	            end
 				goto DISPATCH
 end
 			::FOR_ITER::
 	do
-	            local result=ms[msp][2].next[2]()
+	            local result=ms[msp].table.next.callable()
 	            if result==empty then
 	                msp=msp-1
 	                            jump=arg2
@@ -734,6 +785,6 @@ end
 					goto DISPATCH
 end
 		::END::
-        	return true, plume.std.tostring[2]({"", {ms[1]}}), ip
+        	return true, plume.std.tostring.callable({table={ms[1]}}), ip
     end
 end

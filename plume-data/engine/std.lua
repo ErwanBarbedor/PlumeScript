@@ -16,17 +16,17 @@ If not, see <https://www.gnu.org/licenses/>.
 return function (plume)
 	local std = {
 		print = function(arg)
-			print(table.unpack(arg))
+			print(table.unpack(arg.table))
 		end,
 
 		type = function(args)
-            local value = args[2][1]
+            local value = args.table[1]
 			local t = type(value)
             if t=="table" then
                 if value==plume.obj.empty then
                     return "empty"
                 else
-                    return value[1]
+                    return value.type
                 end
             else
                 return t
@@ -38,11 +38,11 @@ return function (plume)
         end,
 
         join = function(args)
-            local sep = args[2].sep
+            local sep = args.table.sep
             if sep == plume.obj.empty then
                 sep = ""
             end
-            return table.concat(args[2], sep)
+            return table.concat(args.table, sep)
         end,
 
         void = function(args)
@@ -51,7 +51,7 @@ return function (plume)
         -- temporary name
         tostring = function(args)
             local result = {}
-            for _, x in ipairs(args[2]) do
+            for _, x in ipairs(args.table) do
                 if x == plume.obj.empty then
                 else
                     table.insert(result, tostring(x))
@@ -61,8 +61,8 @@ return function (plume)
         end,
 
         seq = function(args)
-            local start = args[2][1]
-            local stop  = args[2][2]
+            local start = args.table[1]
+            local stop  = args.table[2]
 
             if not stop then
                 stop = start
@@ -70,17 +70,17 @@ return function (plume)
             end
 
             local iterator = plume.obj.table(1, 2)
-            iterator[2][1] = start-1
-            iterator[2].next = plume.obj.luaFunction("next", function()
-                iterator[2][1]  = iterator[2][1] +1
-                if iterator[2][1] == stop+1 then
+            iterator.table[1] = start-1
+            iterator.table.next = plume.obj.luaFunction("next", function()
+                iterator.table[1]  = iterator.table[1] +1
+                if iterator.table[1] == stop+1 then
                     return plume.obj.empty
                 else
-                    return iterator[2][1]
+                    return iterator.table[1]
                 end
             end)
 
-            iterator[4].iter = plume.obj.luaFunction("iter", function()
+            iterator.meta.iter = plume.obj.luaFunction("iter", function()
                 return iterator
             end)
 
@@ -88,26 +88,26 @@ return function (plume)
         end,
 
         enumerate = function(args)
-            local t = args[2][1]
+            local t = args.table[1]
 
             local iterator = plume.obj.table(1, 2)
-            iterator[2][1] = 0
-            iterator[2].next = plume.obj.luaFunction("next", function()
-                iterator[2][1]  = iterator[2][1] +1
-                local value = t[2][iterator[2][1]]
+            iterator.table[1] = 0
+            iterator.table.next = plume.obj.luaFunction("next", function()
+                iterator.table[1]  = iterator.table[1] +1
+                local value = t.table[iterator.table[1]]
                 if not value then
                     return plume.obj.empty
                 else
                     local result = plume.obj.table(0, 2)
-                    result[2].index = iterator[2][1]
-                    result[2].value = value
+                    result.table.index = iterator.table[1]
+                    result.table.value = value
 
-                    result[3] = {"index", "value"}
+                    result.keys = {"index", "value"}
                     return result
                 end
             end)
 
-            iterator[4].iter = plume.obj.luaFunction("iter", function()
+            iterator.meta.iter = plume.obj.luaFunction("iter", function()
                 return iterator
             end)
 
@@ -115,30 +115,52 @@ return function (plume)
         end,
 
         items = function(args)
-            local t = args[2][1]
+            local t = args.table[1]
 
             local iterator = plume.obj.table(1, 2)
-            iterator[2][1] = 0
-            iterator[2].next = plume.obj.luaFunction("next", function()
-                iterator[2][1]  = iterator[2][1] +1
-                local key = t[3][iterator[2][1]]
+            iterator.table[1] = 0
+            iterator.table.next = plume.obj.luaFunction("next", function()
+                iterator.table[1]  = iterator.table[1] +1
+                local key = t.keys[iterator.table[1]]
                 if not key then
                     return plume.obj.empty
                 else
                     local result = plume.obj.table(0, 2)
-                    result[2].key = key
-                    result[2].value = t[2][key]
+                    result.table.key = key
+                    result.table.value = t.table[key]
 
-                    result[3] = {"key", "value"}
+                    result.keys = {"key", "value"}
                     return result
                 end
             end)
 
-            iterator[4].iter = plume.obj.luaFunction("iter", function()
+            iterator.meta.iter = plume.obj.luaFunction("iter", function()
                 return iterator
             end)
 
             return iterator
+        end,
+
+        import = function(args, runtime)
+            local filename = args.table[1]
+
+            if not filename:match('%.plume$') then
+                filename = filename .. ".plume"
+            end
+
+            if not runtime.filesOffset[filename] then
+                local file = io.open(filename)
+                    if not file then
+                        error("Cannot read file '" .. filename .. "'.")
+                    end
+                    local code = file:read("*a")
+                file:close()
+
+                plume.compileFile(code, filename, runtime)
+                plume.finalize(runtime)
+            end
+
+            return runtime.filesOffset[filename], true
         end
 	}
 

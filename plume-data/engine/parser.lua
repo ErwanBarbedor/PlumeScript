@@ -199,12 +199,55 @@ return function (plume)
 	    local _for   = Ct("FOR", P"for" * s * forInd * iterator * body * _end)
 
 	    -- macro & calls
-	    local param      = Ct("PARAM", idn * os * P":" * os * Ct("BODY", V"textic"^-1) + idn + Ct("VARIADIC", P"..." * idn))
+	    local function sugarFlagParam(p)
+	    	return p / function(capture)
+	    		capture.name = "PARAM"
+	    		table.insert(capture.childs, {
+	    			name="BODY",
+	    			childs={{
+		    			name="EVAL",
+		    			pos=capture.pos,
+		    			childs={{
+		    				name = "FALSE",
+		    				pos=capture.pos
+	    				}}
+	    			}},
+	    			pos=capture.pos
+	    		})
+	    		return capture
+	    	end
+	    end
+	    local function sugarFlagCall(p)
+	    	return p / function(capture)
+	    		capture.name = "HASH_ITEM"
+	    		table.insert(capture.childs, {
+	    			name="BODY",
+	    			childs={{
+		    			name="EVAL",
+		    			pos=capture.pos,
+		    			childs={{
+		    				name = "TRUE",
+		    				pos=capture.pos
+	    				}}
+	    			}},
+	    			pos=capture.pos
+	    		})
+	    		return capture
+	    	end
+	    end
+
+	    local param      = Ct("PARAM",
+			    			      idn * os * P":" * os * Ct("BODY", V"textic"^-1)
+				    			+ idn
+				    			+ Ct("VARIADIC", P"..." * idn)
+				    		) + sugarFlagParam(Ct("FLAG", "?"*idn))
+				    		
 	    local paramlist  = Ct("PARAMLIST", P"(" * param^-1 * (os * P"," * os * param)^0 * P")")
 	    local paramlistM = paramlist + E("MISSING_PARAMLIST")
 	    local macro      = Ct("MACRO", P"macro" * (s * idn)^-1 * os * paramlistM * body * _end)
 
-	    local arg       = Ct("HASH_ITEM", idn * os * P":" * os * Ct("BODY", V"textic"^-1))
+	    local arg       = Ct("HASH_ITEM", idn * os * P":" * os * Ct("BODY", V"textic"^-1))	
+	    				+ sugarFlagCall(Ct("FLAG", "?"*idn))
 	                    + Ct("EXPAND", P"..."*evalBase)
 	                    + Ct("LIST_ITEM", V"textic")
 
@@ -222,8 +265,8 @@ return function (plume)
 	    local set = Ct("SET", P"set" * s * setvar * (os * compound^-1 * P"=" * lbody))
 
 	    -- table
-	    local listitem = Ct("LIST_ITEM", P"- " * os *V"text") 
-	    local hashitem = Ct("HASH_ITEM", idn * P":" *  os * Ct("BODY", V"text")) 
+	    local listitem = Ct("LIST_ITEM", P"- " * os * V"firstStatement") 
+	    local hashitem = Ct("HASH_ITEM", Ct("META", P"meta"*s)^-1 * idn * P":" *  os *lbody)
 	    local expand   = Ct("EXPAND", P"..." * evalBase) 
 
 	    ----------
