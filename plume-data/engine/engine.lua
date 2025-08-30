@@ -207,7 +207,7 @@ end
 end
 			::TABLE_SET::
 	do
-	            ms[msp-2].table[ms[msp-1]]=ms[msp]
+	            ms[msp].table[ms[msp-1]]=ms[msp-2]
 	            msp=msp-3
 				goto DISPATCH
 end
