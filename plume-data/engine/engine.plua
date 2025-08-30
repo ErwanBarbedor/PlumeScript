@@ -239,7 +239,15 @@ return function (plume)
                 @_ERROR{{"Try to iterate over a non-table '" .. tobj .. "' object."}}
             end
 
-            ms[msp] = obj.meta.iter.callable() -- 4: meta table 2: data
+            local iter = obj.meta.iter
+
+            if iter.type == "luaFunction" then
+                ms[msp] = iter.callable()
+            elseif iter.type == "macro" then
+                jump = iter.offset
+                cp = cp + 1
+                calls[cp] = ip+1
+            end
         @end
 
         @define FOR_ITER arg1 arg2
@@ -285,7 +293,11 @@ return function (plume)
                 if j then
                     vs[vsf[vsfp]+j-1] = v
                 elseif macro.variadicOffset>0 then
-                    @_TABLE_SET capture k v
+                    if m then
+                        @_TABLE_META_SET capture k v
+                    else
+                        @_TABLE_SET capture k v
+                    end
                 else
                     @_ERROR{{"Unknow named parameter '" .. k .."' for macro '" .. macro.name .."'."}}
                 end
@@ -409,7 +421,11 @@ return function (plume)
                 args.table[i] = ms[limit+i-1]
             end
             for i=1, #ms[limit-1], 3 do --dump keys 
-                @_TABLE_SET args ms[limit-1][i] ms[limit-1][i+1]
+                if ms[limit-1][i+2] then -- meta
+                    @_TABLE_META_SET args ms[limit-1][i] ms[limit-1][i+1]
+                else
+                    @_TABLE_SET args ms[limit-1][i] ms[limit-1][i+1]
+                end
             end
             ms[limit-1] = args
             msp = limit - 1
@@ -479,6 +495,10 @@ return function (plume)
             $t.table[$k] = $v --set
         @end
 
+        @define _TABLE_META_SET t k v
+            $t.meta[$k] = $v --set
+        @end
+
         @define TABLE_SET arg1 arg2
             --- Unstack 3, in order: table, key, value
             --- Set the table.key to value
@@ -506,6 +526,18 @@ return function (plume)
             table.insert(ms[msf[msfp]], ms[msp])
             table.insert(ms[msf[msfp]], ms[msp-1])
             table.insert(ms[msf[msfp]], false)
+            msp = msp-2
+        @end
+
+        @define TABLE_SET_ACC_META arg1 arg2
+            --- Unstack 2: a key, then a value
+            --- Assume the main stack frame first value is a table
+            --- Register key, then value in
+            --- arg1: -
+            --- arg2: -
+            table.insert(ms[msf[msfp]], ms[msp])
+            table.insert(ms[msf[msfp]], ms[msp-1])
+            table.insert(ms[msf[msfp]], true)
             msp = msp-2
         @end
 

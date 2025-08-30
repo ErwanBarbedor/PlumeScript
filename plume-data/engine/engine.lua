@@ -100,41 +100,42 @@ return function (plume)
 			elseif op==16 then goto TABLE_SET_META
 			elseif op==17 then goto TABLE_INDEX_META
 			elseif op==18 then goto TABLE_SET_ACC
-			elseif op==19 then goto TABLE_EXPAND
-			elseif op==20 then goto ENTER_SCOPE
-			elseif op==21 then goto LEAVE_SCOPE
-			elseif op==22 then goto ENTER_FILE
-			elseif op==23 then goto LEAVE_FILE
-			elseif op==24 then goto BEGIN_ACC
-			elseif op==25 then goto ACC_TABLE
-			elseif op==26 then goto ACC_TEXT
-			elseif op==27 then goto ACC_EMPTY
-			elseif op==28 then goto ACC_CALL
-			elseif op==29 then goto RETURN
-			elseif op==30 then goto JUMP_IF
-			elseif op==31 then goto JUMP_IF_NOT
-			elseif op==32 then goto JUMP_IF_NOT_EMPTY
-			elseif op==33 then goto JUMP
-			elseif op==34 then goto GET_ITER
-			elseif op==35 then goto FOR_ITER
-			elseif op==36 then goto OPP_ADD
-			elseif op==37 then goto OPP_MUL
-			elseif op==38 then goto OPP_SUB
-			elseif op==39 then goto OPP_DIV
-			elseif op==40 then goto OPP_NEG
-			elseif op==41 then goto OPP_MOD
-			elseif op==42 then goto OPP_POW
-			elseif op==43 then goto OPP_GTE
-			elseif op==44 then goto OPP_LTE
-			elseif op==45 then goto OPP_GT
-			elseif op==46 then goto OPP_LT
-			elseif op==47 then goto OPP_EQ
-			elseif op==48 then goto OPP_NEQ
-			elseif op==49 then goto OPP_AND
-			elseif op==50 then goto OPP_NOT
-			elseif op==51 then goto OPP_OR
-			elseif op==52 then goto DUPLICATE
-			elseif op==53 then goto END
+			elseif op==19 then goto TABLE_SET_ACC_META
+			elseif op==20 then goto TABLE_EXPAND
+			elseif op==21 then goto ENTER_SCOPE
+			elseif op==22 then goto LEAVE_SCOPE
+			elseif op==23 then goto ENTER_FILE
+			elseif op==24 then goto LEAVE_FILE
+			elseif op==25 then goto BEGIN_ACC
+			elseif op==26 then goto ACC_TABLE
+			elseif op==27 then goto ACC_TEXT
+			elseif op==28 then goto ACC_EMPTY
+			elseif op==29 then goto ACC_CALL
+			elseif op==30 then goto RETURN
+			elseif op==31 then goto JUMP_IF
+			elseif op==32 then goto JUMP_IF_NOT
+			elseif op==33 then goto JUMP_IF_NOT_EMPTY
+			elseif op==34 then goto JUMP
+			elseif op==35 then goto GET_ITER
+			elseif op==36 then goto FOR_ITER
+			elseif op==37 then goto OPP_ADD
+			elseif op==38 then goto OPP_MUL
+			elseif op==39 then goto OPP_SUB
+			elseif op==40 then goto OPP_DIV
+			elseif op==41 then goto OPP_NEG
+			elseif op==42 then goto OPP_MOD
+			elseif op==43 then goto OPP_POW
+			elseif op==44 then goto OPP_GTE
+			elseif op==45 then goto OPP_LTE
+			elseif op==46 then goto OPP_GT
+			elseif op==47 then goto OPP_LT
+			elseif op==48 then goto OPP_EQ
+			elseif op==49 then goto OPP_NEQ
+			elseif op==50 then goto OPP_AND
+			elseif op==51 then goto OPP_NOT
+			elseif op==52 then goto OPP_OR
+			elseif op==53 then goto DUPLICATE
+			elseif op==54 then goto END
 			end
             			::LOAD_CONSTANT::
 	do
@@ -247,6 +248,14 @@ end
 	            msp=msp-2
 				goto DISPATCH
 end
+			::TABLE_SET_ACC_META::
+	do
+	            table.insert(ms[msf[msfp]], ms[msp])
+	            table.insert(ms[msf[msfp]], ms[msp-1])
+	            table.insert(ms[msf[msfp]], true)
+	            msp=msp-2
+				goto DISPATCH
+end
 			::TABLE_EXPAND::
 	do
 	            local t=ms[msp]
@@ -304,10 +313,14 @@ end
 	                args.table[i]=ms[limit+i-1]
 	            end
 	            for i=1, #ms[limit-1], 3 do
-	                            if not args.table[ms[limit-1][i]] then
+	                if ms[limit-1][i+2] then
+	                                args.meta[ms[limit-1][i]]=ms[limit-1][i+1]
+	                else
+	                                if not args.table[ms[limit-1][i]] then
 	                table.insert(args.keys, ms[limit-1][i])
 	            end
 	            args.table[ms[limit-1][i]]=ms[limit-1][i+1]
+	                end
 	            end
 	            ms[limit-1]=args
 	            msp=limit - 1
@@ -369,10 +382,14 @@ end
 	                if j then
 	                    vs[vsf[vsfp]+j-1]=v
 	                elseif macro.variadicOffset>0 then
-	                                if not capture.table[k] then
+	                    if m then
+	                                    capture.meta[k]=v
+	                    else
+	                                    if not capture.table[k] then
 	                table.insert(capture.keys, k)
 	            end
 	            capture.table[k]=v
+	                    end
 	                else
 	                                return false, "Unknow named parameter '" .. k .."' for macro '" .. macro.name .."'.", ip
 	                end
@@ -393,10 +410,14 @@ end
 	                args.table[i]=ms[limit+i-1]
 	            end
 	            for i=1, #ms[limit-1], 3 do
-	                            if not args.table[ms[limit-1][i]] then
+	                if ms[limit-1][i+2] then
+	                                args.meta[ms[limit-1][i]]=ms[limit-1][i+1]
+	                else
+	                                if not args.table[ms[limit-1][i]] then
 	                table.insert(args.keys, ms[limit-1][i])
 	            end
 	            args.table[ms[limit-1][i]]=ms[limit-1][i+1]
+	                end
 	            end
 	            ms[limit-1]=args
 	            msp=limit - 1
@@ -474,7 +495,14 @@ end
 	            if tobj ~="table" then
 	                            return false, "Try to iterate over a non-table '" .. tobj .. "' object.", ip
 	            end
-	            ms[msp]=obj.meta.iter.callable()
+	            local iter=obj.meta.iter
+	            if iter.type=="luaFunction" then
+	                ms[msp]=iter.callable()
+	            elseif iter.type=="macro" then
+	                jump=iter.offset
+	                cp=cp + 1
+	                calls[cp]=ip+1
+	            end
 				goto DISPATCH
 end
 			::FOR_ITER::

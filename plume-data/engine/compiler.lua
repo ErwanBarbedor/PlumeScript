@@ -271,7 +271,7 @@ return function(plume)
 			registerOP(ops.LOAD_CONSTANT, 0, offset)
 
 			if meta then
-				registerOP(ops.TABLE_SET_ACC, 0, 0)
+				registerOP(ops.TABLE_SET_ACC_META, 0, 0)
 			else
 				registerOP(ops.TABLE_SET_ACC, 0, 0)
 			end
@@ -424,7 +424,6 @@ return function(plume)
 			-- Push all index/call op in order
 			for i=2, #node.childs do
 				local child = node.childs[i]
-				print(antelast, last, child.name)
 				if child.name == "CALL" then
 					registerOP(ops.ACC_CALL, 0, 0)
 				elseif child.name == "INDEX" or child.name == "DIRECT_INDEX" then
