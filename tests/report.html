@@ -76,42 +76,10 @@
 <body>
 <div class="container">
     
-<h1>Global: <span style="font-weight: normal;">100 passed and <span class="fail-count">1</span> failed out of 101 tests</span></h1>
-<div class="progress-bar"><div class="progress-success" style="width: 99.01%"></div><div class="progress-fail" style="width: 0.99%"></div></div>
-<h2>arithmetic: <span style="font-weight: normal;">21 passed and <span class="fail-count">1</span> failed out of 22 tests</span></h2>
-<div class="progress-bar"><div class="progress-success" style="width: 95.45%"></div><div class="progress-fail" style="width: 4.55%"></div></div>
-<details open>
-<summary>
-<span class="status-icon status-fail">✗</span> compound 3
-</summary>
-<div class="test-content">
-<div class="code-grid">
-<div>
-<h4>Code</h4>
-<pre><code class="language-plume">
-let t = @table
-  value: 6
-end
-set t.value /= 2
-$t.value
-
-</code></pre>
-</div>
-<div>
-<h4>Bytecode</h4>
-<pre><code class="language-bytecode">
-<span class="no-bytecode">Bytecode not generated or unavailable.</span>
-</code></pre>
-</div>
-</div>
-<div class="comparison-grid">
-<h4>Expected</h4>
-<h4>Obtained</h4>
-<div><div class="result-type-header result-type-mismatch">Output</div><pre><code><span class="diff-expected">3</span></code></pre></div>
-<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/compiler.lua:341: Cannot set the result of a call.</span></code></pre></div>
-</div>
-</div>
-</details>
+<h1>Global: <span style="font-weight: normal;">101 passed out of 101 tests</span></h1>
+<div class="progress-bar"><div class="progress-success" style="width: 100.00%"></div><div class="progress-fail" style="width: 0.00%"></div></div>
+<h2>arithmetic: <span style="font-weight: normal;">22 passed out of 22 tests</span></h2>
+<div class="progress-bar"><div class="progress-success" style="width: 100.00%"></div><div class="progress-fail" style="width: 0.00%"></div></div>
 <details>
 <summary>
 <span class="status-icon status-pass">✓</span> Add
@@ -545,7 +513,7 @@ $t[1]
 <span class="bc-line-num">003</span> <span class="bc-opcode">BEGIN_ACC       </span> <span class="bc-arg">0 0</span>
 <span class="bc-line-num">004</span> <span class="bc-opcode">TABLE_NEW       </span> <span class="bc-arg">0 0</span>
 <span class="bc-line-num">005</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 1</span> <span class="bc-info">; 5</span>
-<span class="bc-line-num">006</span> <span class="bc-opcode">LOAD_STATIC     </span> <span class="bc-arg">0 4</span>
+<span class="bc-line-num">006</span> <span class="bc-opcode">LOAD_STATIC     </span> <span class="bc-arg">0 7</span>
 <span class="bc-line-num">007</span> <span class="bc-opcode">ACC_CALL        </span> <span class="bc-arg">0 0</span>
 <span class="bc-line-num">008</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">0 1</span>
 <span class="bc-line-num">009</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 2</span> <span class="bc-info">; 1</span>
@@ -567,6 +535,58 @@ $t[1]
 <h4>Output</h4>
 <pre><code>
 35
+</code></pre>
+</div>
+</details>
+<details>
+<summary>
+<span class="status-icon status-pass">✓</span> compound 3
+</summary>
+<div class="test-content">
+<div class="code-grid">
+<div>
+<h4>Code</h4>
+<pre><code class="language-plume">
+let t = @table
+  value: 6
+end
+set t.value /= 2
+$t.value
+
+</code></pre>
+</div>
+<div>
+<h4>Bytecode</h4>
+<pre><code class="language-bytecode">
+<span class="bc-line-num">001</span> <span class="bc-opcode">ENTER_FILE      </span> <span class="bc-arg">0 1</span>
+<span class="bc-line-num">002</span> <span class="bc-opcode">ENTER_SCOPE     </span> <span class="bc-arg">0 1</span>
+<span class="bc-line-num">003</span> <span class="bc-opcode">BEGIN_ACC       </span> <span class="bc-arg">0 0</span>
+<span class="bc-line-num">004</span> <span class="bc-opcode">TABLE_NEW       </span> <span class="bc-arg">0 0</span>
+<span class="bc-line-num">005</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 2</span> <span class="bc-info">; 6</span>
+<span class="bc-line-num">006</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 1</span> <span class="bc-info">; value</span>
+<span class="bc-line-num">007</span> <span class="bc-opcode">TABLE_SET_ACC   </span> <span class="bc-arg">0 0</span>
+<span class="bc-line-num">008</span> <span class="bc-opcode">LOAD_STATIC     </span> <span class="bc-arg">0 7</span>
+<span class="bc-line-num">009</span> <span class="bc-opcode">ACC_CALL        </span> <span class="bc-arg">0 0</span>
+<span class="bc-line-num">010</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">0 1</span>
+<span class="bc-line-num">011</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 1</span> <span class="bc-info">; value</span>
+<span class="bc-line-num">012</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 1</span>
+<span class="bc-line-num">013</span> <span class="bc-opcode">TABLE_INDEX     </span> <span class="bc-arg">0 0</span>
+<span class="bc-line-num">014</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 3</span> <span class="bc-info">; 2</span>
+<span class="bc-line-num">015</span> <span class="bc-opcode">OPP_DIV         </span> <span class="bc-arg">0 0</span>
+<span class="bc-line-num">016</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 1</span> <span class="bc-info">; value</span>
+<span class="bc-line-num">017</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 1</span>
+<span class="bc-line-num">018</span> <span class="bc-opcode">TABLE_SET       </span> <span class="bc-arg">0 0</span>
+<span class="bc-line-num">019</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 1</span> <span class="bc-info">; value</span>
+<span class="bc-line-num">020</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 1</span>
+<span class="bc-line-num">021</span> <span class="bc-opcode">TABLE_INDEX     </span> <span class="bc-arg">0 0</span>
+<span class="bc-line-num">022</span> <span class="bc-opcode">RETURN          </span> <span class="bc-arg">0 0</span>
+<span class="bc-line-num">023</span> <span class="bc-opcode">END             </span> <span class="bc-arg">0 0</span>
+</code></pre>
+</div>
+</div>
+<h4>Output</h4>
+<pre><code>
+3
 </code></pre>
 </div>
 </details>
@@ -876,7 +896,7 @@ end
 <pre><code class="language-bytecode">
 <span class="bc-line-num">001</span> <span class="bc-opcode">ENTER_FILE      </span> <span class="bc-arg">0 1</span>
 <span class="bc-line-num">002</span> <span class="bc-opcode">ENTER_SCOPE     </span> <span class="bc-arg">0 0</span>
-<span class="bc-line-num">003</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 1</span> <span class="bc-info">; table: 0x01a5d750dea8</span>
+<span class="bc-line-num">003</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 1</span> <span class="bc-info">; table: 0x0135bfba1848</span>
 <span class="bc-line-num">004</span> <span class="bc-opcode">STORE_STATIC    </span> <span class="bc-arg">0 11</span>
 <span class="bc-line-num">005</span> <span class="bc-opcode">JUMP            </span> <span class="bc-arg">0 13</span>
 <span class="bc-line-num">006</span> <span class="bc-opcode">ENTER_FILE      </span> <span class="bc-arg">0 1</span>
@@ -926,7 +946,7 @@ end
 <pre><code class="language-bytecode">
 <span class="bc-line-num">001</span> <span class="bc-opcode">ENTER_FILE      </span> <span class="bc-arg">0 1</span>
 <span class="bc-line-num">002</span> <span class="bc-opcode">ENTER_SCOPE     </span> <span class="bc-arg">0 0</span>
-<span class="bc-line-num">003</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 1</span> <span class="bc-info">; table: 0x01a5d761f230</span>
+<span class="bc-line-num">003</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 1</span> <span class="bc-info">; table: 0x0135bfbdb588</span>
 <span class="bc-line-num">004</span> <span class="bc-opcode">STORE_STATIC    </span> <span class="bc-arg">0 11</span>
 <span class="bc-line-num">005</span> <span class="bc-opcode">JUMP            </span> <span class="bc-arg">0 13</span>
 <span class="bc-line-num">006</span> <span class="bc-opcode">ENTER_FILE      </span> <span class="bc-arg">0 1</span>
@@ -976,7 +996,7 @@ end
 <pre><code class="language-bytecode">
 <span class="bc-line-num">001</span> <span class="bc-opcode">ENTER_FILE      </span> <span class="bc-arg">0 1</span>
 <span class="bc-line-num">002</span> <span class="bc-opcode">ENTER_SCOPE     </span> <span class="bc-arg">0 0</span>
-<span class="bc-line-num">003</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 1</span> <span class="bc-info">; table: 0x01a5d762fd38</span>
+<span class="bc-line-num">003</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 1</span> <span class="bc-info">; table: 0x0135bfbd97b0</span>
 <span class="bc-line-num">004</span> <span class="bc-opcode">STORE_STATIC    </span> <span class="bc-arg">0 11</span>
 <span class="bc-line-num">005</span> <span class="bc-opcode">JUMP            </span> <span class="bc-arg">0 13</span>
 <span class="bc-line-num">006</span> <span class="bc-opcode">ENTER_FILE      </span> <span class="bc-arg">0 1</span>
@@ -1026,7 +1046,7 @@ end
 <pre><code class="language-bytecode">
 <span class="bc-line-num">001</span> <span class="bc-opcode">ENTER_FILE      </span> <span class="bc-arg">0 1</span>
 <span class="bc-line-num">002</span> <span class="bc-opcode">ENTER_SCOPE     </span> <span class="bc-arg">0 0</span>
-<span class="bc-line-num">003</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 1</span> <span class="bc-info">; table: 0x01a5d74f03e0</span>
+<span class="bc-line-num">003</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 1</span> <span class="bc-info">; table: 0x0135bf74c150</span>
 <span class="bc-line-num">004</span> <span class="bc-opcode">STORE_STATIC    </span> <span class="bc-arg">0 11</span>
 <span class="bc-line-num">005</span> <span class="bc-opcode">JUMP            </span> <span class="bc-arg">0 13</span>
 <span class="bc-line-num">006</span> <span class="bc-opcode">ENTER_FILE      </span> <span class="bc-arg">0 1</span>
@@ -1076,7 +1096,7 @@ end
 <pre><code class="language-bytecode">
 <span class="bc-line-num">001</span> <span class="bc-opcode">ENTER_FILE      </span> <span class="bc-arg">0 1</span>
 <span class="bc-line-num">002</span> <span class="bc-opcode">ENTER_SCOPE     </span> <span class="bc-arg">0 0</span>
-<span class="bc-line-num">003</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 1</span> <span class="bc-info">; table: 0x01a5d75ee468</span>
+<span class="bc-line-num">003</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 1</span> <span class="bc-info">; table: 0x0135bf71b110</span>
 <span class="bc-line-num">004</span> <span class="bc-opcode">STORE_STATIC    </span> <span class="bc-arg">0 11</span>
 <span class="bc-line-num">005</span> <span class="bc-opcode">JUMP            </span> <span class="bc-arg">0 19</span>
 <span class="bc-line-num">006</span> <span class="bc-opcode">ENTER_FILE      </span> <span class="bc-arg">0 1</span>
@@ -1625,13 +1645,13 @@ $type($write)
 <span class="bc-line-num">002</span> <span class="bc-opcode">ENTER_SCOPE     </span> <span class="bc-arg">0 1</span>
 <span class="bc-line-num">003</span> <span class="bc-opcode">BEGIN_ACC       </span> <span class="bc-arg">0 0</span>
 <span class="bc-line-num">004</span> <span class="bc-opcode">TABLE_NEW       </span> <span class="bc-arg">0 0</span>
-<span class="bc-line-num">005</span> <span class="bc-opcode">LOAD_STATIC     </span> <span class="bc-arg">0 4</span>
+<span class="bc-line-num">005</span> <span class="bc-opcode">LOAD_STATIC     </span> <span class="bc-arg">0 7</span>
 <span class="bc-line-num">006</span> <span class="bc-opcode">ACC_CALL        </span> <span class="bc-arg">0 0</span>
 <span class="bc-line-num">007</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">0 1</span>
 <span class="bc-line-num">008</span> <span class="bc-opcode">BEGIN_ACC       </span> <span class="bc-arg">0 0</span>
 <span class="bc-line-num">009</span> <span class="bc-opcode">TABLE_NEW       </span> <span class="bc-arg">0 0</span>
 <span class="bc-line-num">010</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 1</span>
-<span class="bc-line-num">011</span> <span class="bc-opcode">LOAD_STATIC     </span> <span class="bc-arg">0 6</span>
+<span class="bc-line-num">011</span> <span class="bc-opcode">LOAD_STATIC     </span> <span class="bc-arg">0 9</span>
 <span class="bc-line-num">012</span> <span class="bc-opcode">ACC_CALL        </span> <span class="bc-arg">0 0</span>
 <span class="bc-line-num">013</span> <span class="bc-opcode">RETURN          </span> <span class="bc-arg">0 0</span>
 <span class="bc-line-num">014</span> <span class="bc-opcode">END             </span> <span class="bc-arg">0 0</span>
@@ -1675,20 +1695,20 @@ $type($write)
 <span class="bc-line-num">008</span> <span class="bc-opcode">JUMP_IF_NOT     </span> <span class="bc-arg">0 14</span>
 <span class="bc-line-num">009</span> <span class="bc-opcode">BEGIN_ACC       </span> <span class="bc-arg">0 0</span>
 <span class="bc-line-num">010</span> <span class="bc-opcode">TABLE_NEW       </span> <span class="bc-arg">0 0</span>
-<span class="bc-line-num">011</span> <span class="bc-opcode">LOAD_STATIC     </span> <span class="bc-arg">0 4</span>
+<span class="bc-line-num">011</span> <span class="bc-opcode">LOAD_STATIC     </span> <span class="bc-arg">0 7</span>
 <span class="bc-line-num">012</span> <span class="bc-opcode">ACC_CALL        </span> <span class="bc-arg">0 0</span>
 <span class="bc-line-num">013</span> <span class="bc-opcode">JUMP            </span> <span class="bc-arg">0 20</span>
 <span class="bc-line-num">014</span> <span class="bc-opcode">BEGIN_ACC       </span> <span class="bc-arg">0 0</span>
 <span class="bc-line-num">015</span> <span class="bc-opcode">TABLE_NEW       </span> <span class="bc-arg">0 0</span>
 <span class="bc-line-num">016</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 3</span> <span class="bc-info">; write</span>
-<span class="bc-line-num">017</span> <span class="bc-opcode">LOAD_STATIC     </span> <span class="bc-arg">0 4</span>
+<span class="bc-line-num">017</span> <span class="bc-opcode">LOAD_STATIC     </span> <span class="bc-arg">0 7</span>
 <span class="bc-line-num">018</span> <span class="bc-opcode">ACC_CALL        </span> <span class="bc-arg">0 0</span>
 <span class="bc-line-num">019</span> <span class="bc-opcode">JUMP            </span> <span class="bc-arg">0 20</span>
 <span class="bc-line-num">020</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">0 1</span>
 <span class="bc-line-num">021</span> <span class="bc-opcode">BEGIN_ACC       </span> <span class="bc-arg">0 0</span>
 <span class="bc-line-num">022</span> <span class="bc-opcode">TABLE_NEW       </span> <span class="bc-arg">0 0</span>
 <span class="bc-line-num">023</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 1</span>
-<span class="bc-line-num">024</span> <span class="bc-opcode">LOAD_STATIC     </span> <span class="bc-arg">0 6</span>
+<span class="bc-line-num">024</span> <span class="bc-opcode">LOAD_STATIC     </span> <span class="bc-arg">0 9</span>
 <span class="bc-line-num">025</span> <span class="bc-opcode">ACC_CALL        </span> <span class="bc-arg">0 0</span>
 <span class="bc-line-num">026</span> <span class="bc-opcode">RETURN          </span> <span class="bc-arg">0 0</span>
 <span class="bc-line-num">027</span> <span class="bc-opcode">END             </span> <span class="bc-arg">0 0</span>
@@ -1878,7 +1898,7 @@ end
 <span class="bc-line-num">006</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 1</span> <span class="bc-info">; nib</span>
 <span class="bc-line-num">007</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 2</span> <span class="bc-info">; quill</span>
 <span class="bc-line-num">008</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 3</span> <span class="bc-info">; wing</span>
-<span class="bc-line-num">009</span> <span class="bc-opcode">LOAD_STATIC     </span> <span class="bc-arg">0 4</span>
+<span class="bc-line-num">009</span> <span class="bc-opcode">LOAD_STATIC     </span> <span class="bc-arg">0 7</span>
 <span class="bc-line-num">010</span> <span class="bc-opcode">ACC_CALL        </span> <span class="bc-arg">0 0</span>
 <span class="bc-line-num">011</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">0 1</span>
 <span class="bc-line-num">012</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 1</span>
@@ -1935,7 +1955,7 @@ end
 <span class="bc-line-num">005</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 1</span> <span class="bc-info">; nib</span>
 <span class="bc-line-num">006</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 2</span> <span class="bc-info">; quill</span>
 <span class="bc-line-num">007</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 3</span> <span class="bc-info">; wing</span>
-<span class="bc-line-num">008</span> <span class="bc-opcode">LOAD_STATIC     </span> <span class="bc-arg">0 4</span>
+<span class="bc-line-num">008</span> <span class="bc-opcode">LOAD_STATIC     </span> <span class="bc-arg">0 7</span>
 <span class="bc-line-num">009</span> <span class="bc-opcode">ACC_CALL        </span> <span class="bc-arg">0 0</span>
 <span class="bc-line-num">010</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">0 1</span>
 <span class="bc-line-num">011</span> <span class="bc-opcode">BEGIN_ACC       </span> <span class="bc-arg">0 0</span>
@@ -1959,7 +1979,7 @@ end
 <span class="bc-line-num">029</span> <span class="bc-opcode">LEAVE_SCOPE     </span> <span class="bc-arg">0 0</span>
 <span class="bc-line-num">030</span> <span class="bc-opcode">JUMP            </span> <span class="bc-arg">0 20</span>
 <span class="bc-line-num">031</span> <span class="bc-opcode">LEAVE_SCOPE     </span> <span class="bc-arg">0 0</span>
-<span class="bc-line-num">032</span> <span class="bc-opcode">LOAD_STATIC     </span> <span class="bc-arg">0 2</span>
+<span class="bc-line-num">032</span> <span class="bc-opcode">LOAD_STATIC     </span> <span class="bc-arg">0 10</span>
 <span class="bc-line-num">033</span> <span class="bc-opcode">ACC_CALL        </span> <span class="bc-arg">0 0</span>
 <span class="bc-line-num">034</span> <span class="bc-opcode">RETURN          </span> <span class="bc-arg">0 0</span>
 <span class="bc-line-num">035</span> <span class="bc-opcode">END             </span> <span class="bc-arg">0 0</span>
@@ -2056,7 +2076,7 @@ $write(?flag)
 <span class="bc-line-num">001</span> <span class="bc-opcode">ENTER_FILE      </span> <span class="bc-arg">0 1</span>
 <span class="bc-line-num">002</span> <span class="bc-opcode">ENTER_SCOPE     </span> <span class="bc-arg">0 0</span>
 <span class="bc-line-num">003</span> <span class="bc-opcode">BEGIN_ACC       </span> <span class="bc-arg">0 0</span>
-<span class="bc-line-num">004</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 1</span> <span class="bc-info">; table: 0x01a5d7527f98</span>
+<span class="bc-line-num">004</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 1</span> <span class="bc-info">; table: 0x0135bfad78a0</span>
 <span class="bc-line-num">005</span> <span class="bc-opcode">STORE_STATIC    </span> <span class="bc-arg">0 11</span>
 <span class="bc-line-num">006</span> <span class="bc-opcode">JUMP            </span> <span class="bc-arg">0 19</span>
 <span class="bc-line-num">007</span> <span class="bc-opcode">ENTER_FILE      </span> <span class="bc-arg">0 1</span>
@@ -2123,7 +2143,7 @@ $write(write, paint, song, ink: quill, wing: mark)
 <pre><code class="language-bytecode">
 <span class="bc-line-num">001</span> <span class="bc-opcode">ENTER_FILE      </span> <span class="bc-arg">0 1</span>
 <span class="bc-line-num">002</span> <span class="bc-opcode">ENTER_SCOPE     </span> <span class="bc-arg">0 0</span>
-<span class="bc-line-num">003</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 1</span> <span class="bc-info">; table: 0x01a5d75bf0c8</span>
+<span class="bc-line-num">003</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 1</span> <span class="bc-info">; table: 0x0135bfb22498</span>
 <span class="bc-line-num">004</span> <span class="bc-opcode">STORE_STATIC    </span> <span class="bc-arg">0 11</span>
 <span class="bc-line-num">005</span> <span class="bc-opcode">JUMP            </span> <span class="bc-arg">0 61</span>
 <span class="bc-line-num">006</span> <span class="bc-opcode">ENTER_FILE      </span> <span class="bc-arg">0 1</span>
@@ -2139,7 +2159,7 @@ $write(write, paint, song, ink: quill, wing: mark)
 <span class="bc-line-num">016</span> <span class="bc-opcode">ACC_TEXT        </span> <span class="bc-arg">0 0</span>
 <span class="bc-line-num">017</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 3</span> <span class="bc-info">; sep</span>
 <span class="bc-line-num">018</span> <span class="bc-opcode">TABLE_SET_ACC   </span> <span class="bc-arg">0 0</span>
-<span class="bc-line-num">019</span> <span class="bc-opcode">LOAD_STATIC     </span> <span class="bc-arg">0 2</span>
+<span class="bc-line-num">019</span> <span class="bc-opcode">LOAD_STATIC     </span> <span class="bc-arg">0 10</span>
 <span class="bc-line-num">020</span> <span class="bc-opcode">ACC_CALL        </span> <span class="bc-arg">0 0</span>
 <span class="bc-line-num">021</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 6</span> <span class="bc-info">; \n</span>
 <span class="bc-line-num">022</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 7</span> <span class="bc-info">; Named args:</span>
@@ -2156,7 +2176,7 @@ $write(write, paint, song, ink: quill, wing: mark)
 <span class="bc-line-num">033</span> <span class="bc-opcode">TABLE_NEW       </span> <span class="bc-arg">0 0</span>
 <span class="bc-line-num">034</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 1</span>
 <span class="bc-line-num">035</span> <span class="bc-opcode">LOAD_EMPTY      </span> <span class="bc-arg">0 0</span>
-<span class="bc-line-num">036</span> <span class="bc-opcode">LOAD_STATIC     </span> <span class="bc-arg">0 7</span>
+<span class="bc-line-num">036</span> <span class="bc-opcode">LOAD_STATIC     </span> <span class="bc-arg">0 5</span>
 <span class="bc-line-num">037</span> <span class="bc-opcode">ACC_CALL        </span> <span class="bc-arg">0 0</span>
 <span class="bc-line-num">038</span> <span class="bc-opcode">GET_ITER        </span> <span class="bc-arg">0 0</span>
 <span class="bc-line-num">039</span> <span class="bc-opcode">ENTER_SCOPE     </span> <span class="bc-arg">0 1</span>
@@ -2177,7 +2197,7 @@ $write(write, paint, song, ink: quill, wing: mark)
 <span class="bc-line-num">054</span> <span class="bc-opcode">LEAVE_SCOPE     </span> <span class="bc-arg">0 0</span>
 <span class="bc-line-num">055</span> <span class="bc-opcode">JUMP            </span> <span class="bc-arg">0 41</span>
 <span class="bc-line-num">056</span> <span class="bc-opcode">LEAVE_SCOPE     </span> <span class="bc-arg">0 0</span>
-<span class="bc-line-num">057</span> <span class="bc-opcode">LOAD_STATIC     </span> <span class="bc-arg">0 2</span>
+<span class="bc-line-num">057</span> <span class="bc-opcode">LOAD_STATIC     </span> <span class="bc-arg">0 10</span>
 <span class="bc-line-num">058</span> <span class="bc-opcode">ACC_CALL        </span> <span class="bc-arg">0 0</span>
 <span class="bc-line-num">059</span> <span class="bc-opcode">ACC_TEXT        </span> <span class="bc-arg">0 0</span>
 <span class="bc-line-num">060</span> <span class="bc-opcode">RETURN          </span> <span class="bc-arg">0 0</span>
@@ -2228,7 +2248,7 @@ $id(This is quite long\, i think.)
 <pre><code class="language-bytecode">
 <span class="bc-line-num">001</span> <span class="bc-opcode">ENTER_FILE      </span> <span class="bc-arg">0 1</span>
 <span class="bc-line-num">002</span> <span class="bc-opcode">ENTER_SCOPE     </span> <span class="bc-arg">0 0</span>
-<span class="bc-line-num">003</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 1</span> <span class="bc-info">; table: 0x01a5d74e3768</span>
+<span class="bc-line-num">003</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 1</span> <span class="bc-info">; table: 0x0135bfae9c00</span>
 <span class="bc-line-num">004</span> <span class="bc-opcode">STORE_STATIC    </span> <span class="bc-arg">0 11</span>
 <span class="bc-line-num">005</span> <span class="bc-opcode">JUMP            </span> <span class="bc-arg">0 9</span>
 <span class="bc-line-num">006</span> <span class="bc-opcode">ENTER_FILE      </span> <span class="bc-arg">0 1</span>
@@ -2275,7 +2295,7 @@ $double(quill)
 <pre><code class="language-bytecode">
 <span class="bc-line-num">001</span> <span class="bc-opcode">ENTER_FILE      </span> <span class="bc-arg">0 1</span>
 <span class="bc-line-num">002</span> <span class="bc-opcode">ENTER_SCOPE     </span> <span class="bc-arg">0 0</span>
-<span class="bc-line-num">003</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 1</span> <span class="bc-info">; table: 0x01a5d74f12e0</span>
+<span class="bc-line-num">003</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 1</span> <span class="bc-info">; table: 0x0135bfb15980</span>
 <span class="bc-line-num">004</span> <span class="bc-opcode">STORE_STATIC    </span> <span class="bc-arg">0 11</span>
 <span class="bc-line-num">005</span> <span class="bc-opcode">JUMP            </span> <span class="bc-arg">0 13</span>
 <span class="bc-line-num">006</span> <span class="bc-opcode">ENTER_FILE      </span> <span class="bc-arg">0 1</span>
@@ -2322,7 +2342,7 @@ $f(quill, mark)
 <pre><code class="language-bytecode">
 <span class="bc-line-num">001</span> <span class="bc-opcode">ENTER_FILE      </span> <span class="bc-arg">0 1</span>
 <span class="bc-line-num">002</span> <span class="bc-opcode">ENTER_SCOPE     </span> <span class="bc-arg">0 0</span>
-<span class="bc-line-num">003</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 1</span> <span class="bc-info">; table: 0x01a5d75caec0</span>
+<span class="bc-line-num">003</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 1</span> <span class="bc-info">; table: 0x0135bfaf5e30</span>
 <span class="bc-line-num">004</span> <span class="bc-opcode">STORE_STATIC    </span> <span class="bc-arg">0 11</span>
 <span class="bc-line-num">005</span> <span class="bc-opcode">JUMP            </span> <span class="bc-arg">0 13</span>
 <span class="bc-line-num">006</span> <span class="bc-opcode">ENTER_FILE      </span> <span class="bc-arg">0 1</span>
@@ -2372,7 +2392,7 @@ $f(quill, ink, optn: another value)
 <span class="bc-line-num">001</span> <span class="bc-opcode">ENTER_FILE      </span> <span class="bc-arg">0 1</span>
 <span class="bc-line-num">002</span> <span class="bc-opcode">ENTER_SCOPE     </span> <span class="bc-arg">0 0</span>
 <span class="bc-line-num">003</span> <span class="bc-opcode">BEGIN_ACC       </span> <span class="bc-arg">0 0</span>
-<span class="bc-line-num">004</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 1</span> <span class="bc-info">; table: 0x01a5d7537740</span>
+<span class="bc-line-num">004</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 1</span> <span class="bc-info">; table: 0x0135bfb45170</span>
 <span class="bc-line-num">005</span> <span class="bc-opcode">STORE_STATIC    </span> <span class="bc-arg">0 11</span>
 <span class="bc-line-num">006</span> <span class="bc-opcode">JUMP            </span> <span class="bc-arg">0 20</span>
 <span class="bc-line-num">007</span> <span class="bc-opcode">ENTER_FILE      </span> <span class="bc-arg">0 1</span>
@@ -2440,7 +2460,7 @@ $f(optn: another value)
 <span class="bc-line-num">001</span> <span class="bc-opcode">ENTER_FILE      </span> <span class="bc-arg">0 1</span>
 <span class="bc-line-num">002</span> <span class="bc-opcode">ENTER_SCOPE     </span> <span class="bc-arg">0 0</span>
 <span class="bc-line-num">003</span> <span class="bc-opcode">BEGIN_ACC       </span> <span class="bc-arg">0 0</span>
-<span class="bc-line-num">004</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 1</span> <span class="bc-info">; table: 0x01a5d751c1f0</span>
+<span class="bc-line-num">004</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 1</span> <span class="bc-info">; table: 0x0135bfb43a38</span>
 <span class="bc-line-num">005</span> <span class="bc-opcode">STORE_STATIC    </span> <span class="bc-arg">0 11</span>
 <span class="bc-line-num">006</span> <span class="bc-opcode">JUMP            </span> <span class="bc-arg">0 14</span>
 <span class="bc-line-num">007</span> <span class="bc-opcode">ENTER_FILE      </span> <span class="bc-arg">0 1</span>
@@ -2497,7 +2517,7 @@ $double($double(quill))
 <pre><code class="language-bytecode">
 <span class="bc-line-num">001</span> <span class="bc-opcode">ENTER_FILE      </span> <span class="bc-arg">0 1</span>
 <span class="bc-line-num">002</span> <span class="bc-opcode">ENTER_SCOPE     </span> <span class="bc-arg">0 0</span>
-<span class="bc-line-num">003</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 1</span> <span class="bc-info">; table: 0x01a5d75d7a50</span>
+<span class="bc-line-num">003</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 1</span> <span class="bc-info">; table: 0x0135bfad5240</span>
 <span class="bc-line-num">004</span> <span class="bc-opcode">STORE_STATIC    </span> <span class="bc-arg">0 11</span>
 <span class="bc-line-num">005</span> <span class="bc-opcode">JUMP            </span> <span class="bc-arg">0 13</span>
 <span class="bc-line-num">006</span> <span class="bc-opcode">ENTER_FILE      </span> <span class="bc-arg">0 1</span>
@@ -2554,7 +2574,7 @@ $write
 <span class="bc-line-num">003</span> <span class="bc-opcode">BEGIN_ACC       </span> <span class="bc-arg">0 0</span>
 <span class="bc-line-num">004</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 1</span> <span class="bc-info">; 5</span>
 <span class="bc-line-num">005</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">0 1</span>
-<span class="bc-line-num">006</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 2</span> <span class="bc-info">; table: 0x01a5d74f12e0</span>
+<span class="bc-line-num">006</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 2</span> <span class="bc-info">; table: 0x0135bfadb4b0</span>
 <span class="bc-line-num">007</span> <span class="bc-opcode">STORE_STATIC    </span> <span class="bc-arg">0 11</span>
 <span class="bc-line-num">008</span> <span class="bc-opcode">JUMP            </span> <span class="bc-arg">0 14</span>
 <span class="bc-line-num">009</span> <span class="bc-opcode">ENTER_FILE      </span> <span class="bc-arg">0 1</span>
@@ -2602,7 +2622,7 @@ $quill()
 <pre><code class="language-bytecode">
 <span class="bc-line-num">001</span> <span class="bc-opcode">ENTER_FILE      </span> <span class="bc-arg">0 1</span>
 <span class="bc-line-num">002</span> <span class="bc-opcode">ENTER_SCOPE     </span> <span class="bc-arg">0 0</span>
-<span class="bc-line-num">003</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 1</span> <span class="bc-info">; table: 0x01a5d7594c80</span>
+<span class="bc-line-num">003</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 1</span> <span class="bc-info">; table: 0x0135bfae5b80</span>
 <span class="bc-line-num">004</span> <span class="bc-opcode">STORE_STATIC    </span> <span class="bc-arg">0 11</span>
 <span class="bc-line-num">005</span> <span class="bc-opcode">JUMP            </span> <span class="bc-arg">0 9</span>
 <span class="bc-line-num">006</span> <span class="bc-opcode">ENTER_FILE      </span> <span class="bc-arg">0 1</span>
@@ -2653,7 +2673,7 @@ end
 <span class="bc-line-num">005</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 1</span> <span class="bc-info">; quill</span>
 <span class="bc-line-num">006</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 2</span> <span class="bc-info">; wing</span>
 <span class="bc-line-num">007</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 3</span> <span class="bc-info">; bird</span>
-<span class="bc-line-num">008</span> <span class="bc-opcode">LOAD_STATIC     </span> <span class="bc-arg">0 4</span>
+<span class="bc-line-num">008</span> <span class="bc-opcode">LOAD_STATIC     </span> <span class="bc-arg">0 7</span>
 <span class="bc-line-num">009</span> <span class="bc-opcode">ACC_CALL        </span> <span class="bc-arg">0 0</span>
 <span class="bc-line-num">010</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">0 1</span>
 <span class="bc-line-num">011</span> <span class="bc-opcode">BEGIN_ACC       </span> <span class="bc-arg">0 0</span>
@@ -2665,7 +2685,7 @@ end
 <span class="bc-line-num">017</span> <span class="bc-opcode">TABLE_NEW       </span> <span class="bc-arg">0 0</span>
 <span class="bc-line-num">018</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 1</span>
 <span class="bc-line-num">019</span> <span class="bc-opcode">LOAD_EMPTY      </span> <span class="bc-arg">0 0</span>
-<span class="bc-line-num">020</span> <span class="bc-opcode">LOAD_STATIC     </span> <span class="bc-arg">0 9</span>
+<span class="bc-line-num">020</span> <span class="bc-opcode">LOAD_STATIC     </span> <span class="bc-arg">0 3</span>
 <span class="bc-line-num">021</span> <span class="bc-opcode">ACC_CALL        </span> <span class="bc-arg">0 0</span>
 <span class="bc-line-num">022</span> <span class="bc-opcode">GET_ITER        </span> <span class="bc-arg">0 0</span>
 <span class="bc-line-num">023</span> <span class="bc-opcode">ENTER_SCOPE     </span> <span class="bc-arg">0 1</span>
@@ -2688,7 +2708,7 @@ end
 <span class="bc-line-num">040</span> <span class="bc-opcode">LEAVE_SCOPE     </span> <span class="bc-arg">0 0</span>
 <span class="bc-line-num">041</span> <span class="bc-opcode">JUMP            </span> <span class="bc-arg">0 25</span>
 <span class="bc-line-num">042</span> <span class="bc-opcode">LEAVE_SCOPE     </span> <span class="bc-arg">0 0</span>
-<span class="bc-line-num">043</span> <span class="bc-opcode">LOAD_STATIC     </span> <span class="bc-arg">0 2</span>
+<span class="bc-line-num">043</span> <span class="bc-opcode">LOAD_STATIC     </span> <span class="bc-arg">0 10</span>
 <span class="bc-line-num">044</span> <span class="bc-opcode">ACC_CALL        </span> <span class="bc-arg">0 0</span>
 <span class="bc-line-num">045</span> <span class="bc-opcode">RETURN          </span> <span class="bc-arg">0 0</span>
 <span class="bc-line-num">046</span> <span class="bc-opcode">END             </span> <span class="bc-arg">0 0</span>
@@ -2725,7 +2745,7 @@ $lib.nib
 <span class="bc-line-num">003</span> <span class="bc-opcode">BEGIN_ACC       </span> <span class="bc-arg">0 0</span>
 <span class="bc-line-num">004</span> <span class="bc-opcode">TABLE_NEW       </span> <span class="bc-arg">0 0</span>
 <span class="bc-line-num">005</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 1</span> <span class="bc-info">; tests/plume/toimport/lib</span>
-<span class="bc-line-num">006</span> <span class="bc-opcode">LOAD_STATIC     </span> <span class="bc-arg">0 8</span>
+<span class="bc-line-num">006</span> <span class="bc-opcode">LOAD_STATIC     </span> <span class="bc-arg">0 6</span>
 <span class="bc-line-num">007</span> <span class="bc-opcode">ACC_CALL        </span> <span class="bc-arg">0 0</span>
 <span class="bc-line-num">008</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">0 1</span>
 <span class="bc-line-num">009</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 2</span> <span class="bc-info">; nib</span>
@@ -2773,7 +2793,7 @@ $import(tests/plume/toimport/text)
 <span class="bc-line-num">003</span> <span class="bc-opcode">BEGIN_ACC       </span> <span class="bc-arg">0 0</span>
 <span class="bc-line-num">004</span> <span class="bc-opcode">TABLE_NEW       </span> <span class="bc-arg">0 0</span>
 <span class="bc-line-num">005</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 1</span> <span class="bc-info">; tests/plume/toimport[...]</span>
-<span class="bc-line-num">006</span> <span class="bc-opcode">LOAD_STATIC     </span> <span class="bc-arg">0 8</span>
+<span class="bc-line-num">006</span> <span class="bc-opcode">LOAD_STATIC     </span> <span class="bc-arg">0 6</span>
 <span class="bc-line-num">007</span> <span class="bc-opcode">ACC_CALL        </span> <span class="bc-arg">0 0</span>
 <span class="bc-line-num">008</span> <span class="bc-opcode">RETURN          </span> <span class="bc-arg">0 0</span>
 <span class="bc-line-num">009</span> <span class="bc-opcode">END             </span> <span class="bc-arg">0 0</span>
@@ -2817,7 +2837,7 @@ nib
 <span class="bc-line-num">006</span> <span class="bc-opcode">BEGIN_ACC       </span> <span class="bc-arg">0 0</span>
 <span class="bc-line-num">007</span> <span class="bc-opcode">TABLE_NEW       </span> <span class="bc-arg">0 0</span>
 <span class="bc-line-num">008</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 3</span> <span class="bc-info">; tests/plume/toimport[...]</span>
-<span class="bc-line-num">009</span> <span class="bc-opcode">LOAD_STATIC     </span> <span class="bc-arg">0 8</span>
+<span class="bc-line-num">009</span> <span class="bc-opcode">LOAD_STATIC     </span> <span class="bc-arg">0 6</span>
 <span class="bc-line-num">010</span> <span class="bc-opcode">ACC_CALL        </span> <span class="bc-arg">0 0</span>
 <span class="bc-line-num">011</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 2</span> <span class="bc-info">; \n</span>
 <span class="bc-line-num">012</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 4</span> <span class="bc-info">; nib</span>
@@ -2874,7 +2894,7 @@ end
 <span class="bc-line-num">011</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 6</span> <span class="bc-info">; bird</span>
 <span class="bc-line-num">012</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 5</span> <span class="bc-info">; bonus</span>
 <span class="bc-line-num">013</span> <span class="bc-opcode">TABLE_SET_ACC   </span> <span class="bc-arg">0 0</span>
-<span class="bc-line-num">014</span> <span class="bc-opcode">LOAD_STATIC     </span> <span class="bc-arg">0 4</span>
+<span class="bc-line-num">014</span> <span class="bc-opcode">LOAD_STATIC     </span> <span class="bc-arg">0 7</span>
 <span class="bc-line-num">015</span> <span class="bc-opcode">ACC_CALL        </span> <span class="bc-arg">0 0</span>
 <span class="bc-line-num">016</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">0 1</span>
 <span class="bc-line-num">017</span> <span class="bc-opcode">BEGIN_ACC       </span> <span class="bc-arg">0 0</span>
@@ -2886,7 +2906,7 @@ end
 <span class="bc-line-num">023</span> <span class="bc-opcode">TABLE_NEW       </span> <span class="bc-arg">0 0</span>
 <span class="bc-line-num">024</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 1</span>
 <span class="bc-line-num">025</span> <span class="bc-opcode">LOAD_EMPTY      </span> <span class="bc-arg">0 0</span>
-<span class="bc-line-num">026</span> <span class="bc-opcode">LOAD_STATIC     </span> <span class="bc-arg">0 7</span>
+<span class="bc-line-num">026</span> <span class="bc-opcode">LOAD_STATIC     </span> <span class="bc-arg">0 5</span>
 <span class="bc-line-num">027</span> <span class="bc-opcode">ACC_CALL        </span> <span class="bc-arg">0 0</span>
 <span class="bc-line-num">028</span> <span class="bc-opcode">GET_ITER        </span> <span class="bc-arg">0 0</span>
 <span class="bc-line-num">029</span> <span class="bc-opcode">ENTER_SCOPE     </span> <span class="bc-arg">0 1</span>
@@ -2909,7 +2929,7 @@ end
 <span class="bc-line-num">046</span> <span class="bc-opcode">LEAVE_SCOPE     </span> <span class="bc-arg">0 0</span>
 <span class="bc-line-num">047</span> <span class="bc-opcode">JUMP            </span> <span class="bc-arg">0 31</span>
 <span class="bc-line-num">048</span> <span class="bc-opcode">LEAVE_SCOPE     </span> <span class="bc-arg">0 0</span>
-<span class="bc-line-num">049</span> <span class="bc-opcode">LOAD_STATIC     </span> <span class="bc-arg">0 2</span>
+<span class="bc-line-num">049</span> <span class="bc-opcode">LOAD_STATIC     </span> <span class="bc-arg">0 10</span>
 <span class="bc-line-num">050</span> <span class="bc-opcode">ACC_CALL        </span> <span class="bc-arg">0 0</span>
 <span class="bc-line-num">051</span> <span class="bc-opcode">RETURN          </span> <span class="bc-arg">0 0</span>
 <span class="bc-line-num">052</span> <span class="bc-opcode">END             </span> <span class="bc-arg">0 0</span>
@@ -2951,7 +2971,7 @@ end
 <span class="bc-line-num">006</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 1</span> <span class="bc-info">; quill</span>
 <span class="bc-line-num">007</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 2</span> <span class="bc-info">; mark</span>
 <span class="bc-line-num">008</span> <span class="bc-opcode">ACC_TEXT        </span> <span class="bc-arg">0 0</span>
-<span class="bc-line-num">009</span> <span class="bc-opcode">LOAD_STATIC     </span> <span class="bc-arg">0 2</span>
+<span class="bc-line-num">009</span> <span class="bc-opcode">LOAD_STATIC     </span> <span class="bc-arg">0 10</span>
 <span class="bc-line-num">010</span> <span class="bc-opcode">ACC_CALL        </span> <span class="bc-arg">0 0</span>
 <span class="bc-line-num">011</span> <span class="bc-opcode">RETURN          </span> <span class="bc-arg">0 0</span>
 <span class="bc-line-num">012</span> <span class="bc-opcode">END             </span> <span class="bc-arg">0 0</span>
@@ -2992,7 +3012,7 @@ end
 <span class="bc-line-num">007</span> <span class="bc-opcode">TABLE_SET_ACC   </span> <span class="bc-arg">0 0</span>
 <span class="bc-line-num">008</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 3</span> <span class="bc-info">; quill</span>
 <span class="bc-line-num">009</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 4</span> <span class="bc-info">; mark</span>
-<span class="bc-line-num">010</span> <span class="bc-opcode">LOAD_STATIC     </span> <span class="bc-arg">0 2</span>
+<span class="bc-line-num">010</span> <span class="bc-opcode">LOAD_STATIC     </span> <span class="bc-arg">0 10</span>
 <span class="bc-line-num">011</span> <span class="bc-opcode">ACC_CALL        </span> <span class="bc-arg">0 0</span>
 <span class="bc-line-num">012</span> <span class="bc-opcode">RETURN          </span> <span class="bc-arg">0 0</span>
 <span class="bc-line-num">013</span> <span class="bc-opcode">END             </span> <span class="bc-arg">0 0</span>
@@ -3031,7 +3051,7 @@ end
 <span class="bc-line-num">005</span> <span class="bc-opcode">TABLE_NEW       </span> <span class="bc-arg">0 0</span>
 <span class="bc-line-num">006</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 3</span> <span class="bc-info">; 1</span>
 <span class="bc-line-num">007</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 4</span> <span class="bc-info">; 5</span>
-<span class="bc-line-num">008</span> <span class="bc-opcode">LOAD_STATIC     </span> <span class="bc-arg">0 10</span>
+<span class="bc-line-num">008</span> <span class="bc-opcode">LOAD_STATIC     </span> <span class="bc-arg">0 2</span>
 <span class="bc-line-num">009</span> <span class="bc-opcode">ACC_CALL        </span> <span class="bc-arg">0 0</span>
 <span class="bc-line-num">010</span> <span class="bc-opcode">GET_ITER        </span> <span class="bc-arg">0 0</span>
 <span class="bc-line-num">011</span> <span class="bc-opcode">ENTER_SCOPE     </span> <span class="bc-arg">0 1</span>
@@ -3080,7 +3100,7 @@ end
 <span class="bc-line-num">004</span> <span class="bc-opcode">BEGIN_ACC       </span> <span class="bc-arg">0 0</span>
 <span class="bc-line-num">005</span> <span class="bc-opcode">TABLE_NEW       </span> <span class="bc-arg">0 0</span>
 <span class="bc-line-num">006</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 3</span> <span class="bc-info">; 3</span>
-<span class="bc-line-num">007</span> <span class="bc-opcode">LOAD_STATIC     </span> <span class="bc-arg">0 10</span>
+<span class="bc-line-num">007</span> <span class="bc-opcode">LOAD_STATIC     </span> <span class="bc-arg">0 2</span>
 <span class="bc-line-num">008</span> <span class="bc-opcode">ACC_CALL        </span> <span class="bc-arg">0 0</span>
 <span class="bc-line-num">009</span> <span class="bc-opcode">GET_ITER        </span> <span class="bc-arg">0 0</span>
 <span class="bc-line-num">010</span> <span class="bc-opcode">ENTER_SCOPE     </span> <span class="bc-arg">0 1</span>
@@ -3136,7 +3156,7 @@ $t[2], $t.quill
 <span class="bc-line-num">008</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 3</span> <span class="bc-info">; ink</span>
 <span class="bc-line-num">009</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 1</span> <span class="bc-info">; quill</span>
 <span class="bc-line-num">010</span> <span class="bc-opcode">TABLE_SET_ACC   </span> <span class="bc-arg">0 0</span>
-<span class="bc-line-num">011</span> <span class="bc-opcode">LOAD_STATIC     </span> <span class="bc-arg">0 4</span>
+<span class="bc-line-num">011</span> <span class="bc-opcode">LOAD_STATIC     </span> <span class="bc-arg">0 7</span>
 <span class="bc-line-num">012</span> <span class="bc-opcode">ACC_CALL        </span> <span class="bc-arg">0 0</span>
 <span class="bc-line-num">013</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">0 1</span>
 <span class="bc-line-num">014</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 4</span> <span class="bc-info">; 2</span>
@@ -3183,15 +3203,15 @@ $type($(1+1))
 <span class="bc-line-num">005</span> <span class="bc-opcode">TABLE_NEW       </span> <span class="bc-arg">0 0</span>
 <span class="bc-line-num">006</span> <span class="bc-opcode">BEGIN_ACC       </span> <span class="bc-arg">0 0</span>
 <span class="bc-line-num">007</span> <span class="bc-opcode">TABLE_NEW       </span> <span class="bc-arg">0 0</span>
-<span class="bc-line-num">008</span> <span class="bc-opcode">LOAD_STATIC     </span> <span class="bc-arg">0 4</span>
+<span class="bc-line-num">008</span> <span class="bc-opcode">LOAD_STATIC     </span> <span class="bc-arg">0 7</span>
 <span class="bc-line-num">009</span> <span class="bc-opcode">ACC_CALL        </span> <span class="bc-arg">0 0</span>
-<span class="bc-line-num">010</span> <span class="bc-opcode">LOAD_STATIC     </span> <span class="bc-arg">0 6</span>
+<span class="bc-line-num">010</span> <span class="bc-opcode">LOAD_STATIC     </span> <span class="bc-arg">0 9</span>
 <span class="bc-line-num">011</span> <span class="bc-opcode">ACC_CALL        </span> <span class="bc-arg">0 0</span>
 <span class="bc-line-num">012</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 1</span> <span class="bc-info">; \n</span>
 <span class="bc-line-num">013</span> <span class="bc-opcode">BEGIN_ACC       </span> <span class="bc-arg">0 0</span>
 <span class="bc-line-num">014</span> <span class="bc-opcode">TABLE_NEW       </span> <span class="bc-arg">0 0</span>
 <span class="bc-line-num">015</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 2</span> <span class="bc-info">; nib</span>
-<span class="bc-line-num">016</span> <span class="bc-opcode">LOAD_STATIC     </span> <span class="bc-arg">0 6</span>
+<span class="bc-line-num">016</span> <span class="bc-opcode">LOAD_STATIC     </span> <span class="bc-arg">0 9</span>
 <span class="bc-line-num">017</span> <span class="bc-opcode">ACC_CALL        </span> <span class="bc-arg">0 0</span>
 <span class="bc-line-num">018</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 1</span> <span class="bc-info">; \n</span>
 <span class="bc-line-num">019</span> <span class="bc-opcode">BEGIN_ACC       </span> <span class="bc-arg">0 0</span>
@@ -3199,7 +3219,7 @@ $type($(1+1))
 <span class="bc-line-num">021</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 3</span> <span class="bc-info">; 1</span>
 <span class="bc-line-num">022</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 3</span> <span class="bc-info">; 1</span>
 <span class="bc-line-num">023</span> <span class="bc-opcode">OPP_ADD         </span> <span class="bc-arg">0 0</span>
-<span class="bc-line-num">024</span> <span class="bc-opcode">LOAD_STATIC     </span> <span class="bc-arg">0 6</span>
+<span class="bc-line-num">024</span> <span class="bc-opcode">LOAD_STATIC     </span> <span class="bc-arg">0 9</span>
 <span class="bc-line-num">025</span> <span class="bc-opcode">ACC_CALL        </span> <span class="bc-arg">0 0</span>
 <span class="bc-line-num">026</span> <span class="bc-opcode">ACC_TEXT        </span> <span class="bc-arg">0 0</span>
 <span class="bc-line-num">027</span> <span class="bc-opcode">RETURN          </span> <span class="bc-arg">0 0</span>
@@ -3246,7 +3266,7 @@ quill
 <span class="bc-line-num">008</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 2</span> <span class="bc-info">; mark</span>
 <span class="bc-line-num">009</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 3</span> <span class="bc-info">; ink</span>
 <span class="bc-line-num">010</span> <span class="bc-opcode">ACC_TEXT        </span> <span class="bc-arg">0 0</span>
-<span class="bc-line-num">011</span> <span class="bc-opcode">LOAD_STATIC     </span> <span class="bc-arg">0 3</span>
+<span class="bc-line-num">011</span> <span class="bc-opcode">LOAD_STATIC     </span> <span class="bc-arg">0 1</span>
 <span class="bc-line-num">012</span> <span class="bc-opcode">ACC_CALL        </span> <span class="bc-arg">0 0</span>
 <span class="bc-line-num">013</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 1</span> <span class="bc-info">; quill</span>
 <span class="bc-line-num">014</span> <span class="bc-opcode">ACC_TEXT        </span> <span class="bc-arg">0 0</span>
@@ -3289,12 +3309,12 @@ $t[1]()
 <span class="bc-line-num">002</span> <span class="bc-opcode">ENTER_SCOPE     </span> <span class="bc-arg">0 1</span>
 <span class="bc-line-num">003</span> <span class="bc-opcode">BEGIN_ACC       </span> <span class="bc-arg">0 0</span>
 <span class="bc-line-num">004</span> <span class="bc-opcode">TABLE_NEW       </span> <span class="bc-arg">0 0</span>
-<span class="bc-line-num">005</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 1</span> <span class="bc-info">; table: 0x01a5d76168e8</span>
+<span class="bc-line-num">005</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 1</span> <span class="bc-info">; table: 0x0135bfb1a440</span>
 <span class="bc-line-num">006</span> <span class="bc-opcode">JUMP            </span> <span class="bc-arg">0 10</span>
 <span class="bc-line-num">007</span> <span class="bc-opcode">ENTER_FILE      </span> <span class="bc-arg">0 1</span>
 <span class="bc-line-num">008</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 2</span> <span class="bc-info">; mark</span>
 <span class="bc-line-num">009</span> <span class="bc-opcode">RETURN          </span> <span class="bc-arg">0 0</span>
-<span class="bc-line-num">010</span> <span class="bc-opcode">LOAD_STATIC     </span> <span class="bc-arg">0 4</span>
+<span class="bc-line-num">010</span> <span class="bc-opcode">LOAD_STATIC     </span> <span class="bc-arg">0 7</span>
 <span class="bc-line-num">011</span> <span class="bc-opcode">ACC_CALL        </span> <span class="bc-arg">0 0</span>
 <span class="bc-line-num">012</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">0 1</span>
 <span class="bc-line-num">013</span> <span class="bc-opcode">BEGIN_ACC       </span> <span class="bc-arg">0 0</span>
@@ -3339,14 +3359,14 @@ $t.quill()
 <span class="bc-line-num">002</span> <span class="bc-opcode">ENTER_SCOPE     </span> <span class="bc-arg">0 1</span>
 <span class="bc-line-num">003</span> <span class="bc-opcode">BEGIN_ACC       </span> <span class="bc-arg">0 0</span>
 <span class="bc-line-num">004</span> <span class="bc-opcode">TABLE_NEW       </span> <span class="bc-arg">0 0</span>
-<span class="bc-line-num">005</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 2</span> <span class="bc-info">; table: 0x01a5d75110e0</span>
+<span class="bc-line-num">005</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 2</span> <span class="bc-info">; table: 0x0135bfb483e8</span>
 <span class="bc-line-num">006</span> <span class="bc-opcode">JUMP            </span> <span class="bc-arg">0 10</span>
 <span class="bc-line-num">007</span> <span class="bc-opcode">ENTER_FILE      </span> <span class="bc-arg">0 1</span>
 <span class="bc-line-num">008</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 3</span> <span class="bc-info">; mark</span>
 <span class="bc-line-num">009</span> <span class="bc-opcode">RETURN          </span> <span class="bc-arg">0 0</span>
 <span class="bc-line-num">010</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 1</span> <span class="bc-info">; quill</span>
 <span class="bc-line-num">011</span> <span class="bc-opcode">TABLE_SET_ACC   </span> <span class="bc-arg">0 0</span>
-<span class="bc-line-num">012</span> <span class="bc-opcode">LOAD_STATIC     </span> <span class="bc-arg">0 4</span>
+<span class="bc-line-num">012</span> <span class="bc-opcode">LOAD_STATIC     </span> <span class="bc-arg">0 7</span>
 <span class="bc-line-num">013</span> <span class="bc-opcode">ACC_CALL        </span> <span class="bc-arg">0 0</span>
 <span class="bc-line-num">014</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">0 1</span>
 <span class="bc-line-num">015</span> <span class="bc-opcode">BEGIN_ACC       </span> <span class="bc-arg">0 0</span>
@@ -3396,14 +3416,14 @@ $t[1]()
 <span class="bc-line-num">005</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 2</span> <span class="bc-info">; song</span>
 <span class="bc-line-num">006</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 1</span> <span class="bc-info">; mark</span>
 <span class="bc-line-num">007</span> <span class="bc-opcode">TABLE_SET_ACC   </span> <span class="bc-arg">0 0</span>
-<span class="bc-line-num">008</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 3</span> <span class="bc-info">; table: 0x01a5d75f4a38</span>
+<span class="bc-line-num">008</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 3</span> <span class="bc-info">; table: 0x0135bfb275a8</span>
 <span class="bc-line-num">009</span> <span class="bc-opcode">JUMP            </span> <span class="bc-arg">0 15</span>
 <span class="bc-line-num">010</span> <span class="bc-opcode">ENTER_FILE      </span> <span class="bc-arg">0 1</span>
 <span class="bc-line-num">011</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 1</span> <span class="bc-info">; mark</span>
 <span class="bc-line-num">012</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 1</span>
 <span class="bc-line-num">013</span> <span class="bc-opcode">TABLE_INDEX     </span> <span class="bc-arg">0 0</span>
 <span class="bc-line-num">014</span> <span class="bc-opcode">RETURN          </span> <span class="bc-arg">0 0</span>
-<span class="bc-line-num">015</span> <span class="bc-opcode">LOAD_STATIC     </span> <span class="bc-arg">0 4</span>
+<span class="bc-line-num">015</span> <span class="bc-opcode">LOAD_STATIC     </span> <span class="bc-arg">0 7</span>
 <span class="bc-line-num">016</span> <span class="bc-opcode">ACC_CALL        </span> <span class="bc-arg">0 0</span>
 <span class="bc-line-num">017</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">0 1</span>
 <span class="bc-line-num">018</span> <span class="bc-opcode">BEGIN_ACC       </span> <span class="bc-arg">0 0</span>
@@ -3453,7 +3473,7 @@ $t.quill()
 <span class="bc-line-num">005</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 2</span> <span class="bc-info">; song</span>
 <span class="bc-line-num">006</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 1</span> <span class="bc-info">; mark</span>
 <span class="bc-line-num">007</span> <span class="bc-opcode">TABLE_SET_ACC   </span> <span class="bc-arg">0 0</span>
-<span class="bc-line-num">008</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 4</span> <span class="bc-info">; table: 0x01a5d760ea50</span>
+<span class="bc-line-num">008</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 4</span> <span class="bc-info">; table: 0x0135bfbad2f8</span>
 <span class="bc-line-num">009</span> <span class="bc-opcode">JUMP            </span> <span class="bc-arg">0 15</span>
 <span class="bc-line-num">010</span> <span class="bc-opcode">ENTER_FILE      </span> <span class="bc-arg">0 1</span>
 <span class="bc-line-num">011</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 1</span> <span class="bc-info">; mark</span>
@@ -3462,7 +3482,7 @@ $t.quill()
 <span class="bc-line-num">014</span> <span class="bc-opcode">RETURN          </span> <span class="bc-arg">0 0</span>
 <span class="bc-line-num">015</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 3</span> <span class="bc-info">; quill</span>
 <span class="bc-line-num">016</span> <span class="bc-opcode">TABLE_SET_ACC   </span> <span class="bc-arg">0 0</span>
-<span class="bc-line-num">017</span> <span class="bc-opcode">LOAD_STATIC     </span> <span class="bc-arg">0 4</span>
+<span class="bc-line-num">017</span> <span class="bc-opcode">LOAD_STATIC     </span> <span class="bc-arg">0 7</span>
 <span class="bc-line-num">018</span> <span class="bc-opcode">ACC_CALL        </span> <span class="bc-arg">0 0</span>
 <span class="bc-line-num">019</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">0 1</span>
 <span class="bc-line-num">020</span> <span class="bc-opcode">BEGIN_ACC       </span> <span class="bc-arg">0 0</span>
@@ -3517,7 +3537,7 @@ $obj.wings
 <span class="bc-line-num">005</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 2</span> <span class="bc-info">; quill</span>
 <span class="bc-line-num">006</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 1</span> <span class="bc-info">; wings</span>
 <span class="bc-line-num">007</span> <span class="bc-opcode">TABLE_SET_ACC   </span> <span class="bc-arg">0 0</span>
-<span class="bc-line-num">008</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 4</span> <span class="bc-info">; table: 0x01a5d74ffb50</span>
+<span class="bc-line-num">008</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 4</span> <span class="bc-info">; table: 0x0135bfaf6bf8</span>
 <span class="bc-line-num">009</span> <span class="bc-opcode">JUMP            </span> <span class="bc-arg">0 15</span>
 <span class="bc-line-num">010</span> <span class="bc-opcode">ENTER_FILE      </span> <span class="bc-arg">0 1</span>
 <span class="bc-line-num">011</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 1</span> <span class="bc-info">; wings</span>
@@ -3526,7 +3546,7 @@ $obj.wings
 <span class="bc-line-num">014</span> <span class="bc-opcode">RETURN          </span> <span class="bc-arg">0 0</span>
 <span class="bc-line-num">015</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 3</span> <span class="bc-info">; method1</span>
 <span class="bc-line-num">016</span> <span class="bc-opcode">TABLE_SET_ACC   </span> <span class="bc-arg">0 0</span>
-<span class="bc-line-num">017</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 6</span> <span class="bc-info">; table: 0x01a5d75c7528</span>
+<span class="bc-line-num">017</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 6</span> <span class="bc-info">; table: 0x0135bfb9e718</span>
 <span class="bc-line-num">018</span> <span class="bc-opcode">JUMP            </span> <span class="bc-arg">0 27</span>
 <span class="bc-line-num">019</span> <span class="bc-opcode">ENTER_FILE      </span> <span class="bc-arg">0 1</span>
 <span class="bc-line-num">020</span> <span class="bc-opcode">BEGIN_ACC       </span> <span class="bc-arg">0 0</span>
@@ -3538,7 +3558,7 @@ $obj.wings
 <span class="bc-line-num">026</span> <span class="bc-opcode">RETURN          </span> <span class="bc-arg">0 0</span>
 <span class="bc-line-num">027</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 5</span> <span class="bc-info">; method2</span>
 <span class="bc-line-num">028</span> <span class="bc-opcode">TABLE_SET_ACC   </span> <span class="bc-arg">0 0</span>
-<span class="bc-line-num">029</span> <span class="bc-opcode">LOAD_STATIC     </span> <span class="bc-arg">0 4</span>
+<span class="bc-line-num">029</span> <span class="bc-opcode">LOAD_STATIC     </span> <span class="bc-arg">0 7</span>
 <span class="bc-line-num">030</span> <span class="bc-opcode">ACC_CALL        </span> <span class="bc-arg">0 0</span>
 <span class="bc-line-num">031</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">0 1</span>
 <span class="bc-line-num">032</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 1</span> <span class="bc-info">; wings</span>
@@ -3588,14 +3608,14 @@ end
 <span class="bc-line-num">005</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 1</span> <span class="bc-info">; write</span>
 <span class="bc-line-num">006</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 2</span> <span class="bc-info">; paint</span>
 <span class="bc-line-num">007</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 3</span> <span class="bc-info">; make</span>
-<span class="bc-line-num">008</span> <span class="bc-opcode">LOAD_STATIC     </span> <span class="bc-arg">0 4</span>
+<span class="bc-line-num">008</span> <span class="bc-opcode">LOAD_STATIC     </span> <span class="bc-arg">0 7</span>
 <span class="bc-line-num">009</span> <span class="bc-opcode">ACC_CALL        </span> <span class="bc-arg">0 0</span>
 <span class="bc-line-num">010</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">0 1</span>
 <span class="bc-line-num">011</span> <span class="bc-opcode">BEGIN_ACC       </span> <span class="bc-arg">0 0</span>
 <span class="bc-line-num">012</span> <span class="bc-opcode">TABLE_NEW       </span> <span class="bc-arg">0 0</span>
 <span class="bc-line-num">013</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 1</span>
 <span class="bc-line-num">014</span> <span class="bc-opcode">TABLE_EXPAND    </span> <span class="bc-arg">0 0</span>
-<span class="bc-line-num">015</span> <span class="bc-opcode">LOAD_STATIC     </span> <span class="bc-arg">0 4</span>
+<span class="bc-line-num">015</span> <span class="bc-opcode">LOAD_STATIC     </span> <span class="bc-arg">0 7</span>
 <span class="bc-line-num">016</span> <span class="bc-opcode">ACC_CALL        </span> <span class="bc-arg">0 0</span>
 <span class="bc-line-num">017</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">0 2</span>
 <span class="bc-line-num">018</span> <span class="bc-opcode">BEGIN_ACC       </span> <span class="bc-arg">0 0</span>
@@ -3605,7 +3625,7 @@ end
 <span class="bc-line-num">022</span> <span class="bc-opcode">TABLE_SET_ACC   </span> <span class="bc-arg">0 0</span>
 <span class="bc-line-num">023</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 2</span>
 <span class="bc-line-num">024</span> <span class="bc-opcode">TABLE_EXPAND    </span> <span class="bc-arg">0 0</span>
-<span class="bc-line-num">025</span> <span class="bc-opcode">LOAD_STATIC     </span> <span class="bc-arg">0 2</span>
+<span class="bc-line-num">025</span> <span class="bc-opcode">LOAD_STATIC     </span> <span class="bc-arg">0 10</span>
 <span class="bc-line-num">026</span> <span class="bc-opcode">ACC_CALL        </span> <span class="bc-arg">0 0</span>
 <span class="bc-line-num">027</span> <span class="bc-opcode">RETURN          </span> <span class="bc-arg">0 0</span>
 <span class="bc-line-num">028</span> <span class="bc-opcode">END             </span> <span class="bc-arg">0 0</span>
@@ -3651,7 +3671,7 @@ end
 <span class="bc-line-num">005</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 1</span> <span class="bc-info">; write</span>
 <span class="bc-line-num">006</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 2</span> <span class="bc-info">; paint</span>
 <span class="bc-line-num">007</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 3</span> <span class="bc-info">; make</span>
-<span class="bc-line-num">008</span> <span class="bc-opcode">LOAD_STATIC     </span> <span class="bc-arg">0 4</span>
+<span class="bc-line-num">008</span> <span class="bc-opcode">LOAD_STATIC     </span> <span class="bc-arg">0 7</span>
 <span class="bc-line-num">009</span> <span class="bc-opcode">ACC_CALL        </span> <span class="bc-arg">0 0</span>
 <span class="bc-line-num">010</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">0 1</span>
 <span class="bc-line-num">011</span> <span class="bc-opcode">BEGIN_ACC       </span> <span class="bc-arg">0 0</span>
@@ -3660,7 +3680,7 @@ end
 <span class="bc-line-num">014</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 1</span>
 <span class="bc-line-num">015</span> <span class="bc-opcode">TABLE_EXPAND    </span> <span class="bc-arg">0 0</span>
 <span class="bc-line-num">016</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 5</span> <span class="bc-info">; quill</span>
-<span class="bc-line-num">017</span> <span class="bc-opcode">LOAD_STATIC     </span> <span class="bc-arg">0 4</span>
+<span class="bc-line-num">017</span> <span class="bc-opcode">LOAD_STATIC     </span> <span class="bc-arg">0 7</span>
 <span class="bc-line-num">018</span> <span class="bc-opcode">ACC_CALL        </span> <span class="bc-arg">0 0</span>
 <span class="bc-line-num">019</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">0 2</span>
 <span class="bc-line-num">020</span> <span class="bc-opcode">BEGIN_ACC       </span> <span class="bc-arg">0 0</span>
@@ -3670,7 +3690,7 @@ end
 <span class="bc-line-num">024</span> <span class="bc-opcode">TABLE_SET_ACC   </span> <span class="bc-arg">0 0</span>
 <span class="bc-line-num">025</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 2</span>
 <span class="bc-line-num">026</span> <span class="bc-opcode">TABLE_EXPAND    </span> <span class="bc-arg">0 0</span>
-<span class="bc-line-num">027</span> <span class="bc-opcode">LOAD_STATIC     </span> <span class="bc-arg">0 2</span>
+<span class="bc-line-num">027</span> <span class="bc-opcode">LOAD_STATIC     </span> <span class="bc-arg">0 10</span>
 <span class="bc-line-num">028</span> <span class="bc-opcode">ACC_CALL        </span> <span class="bc-arg">0 0</span>
 <span class="bc-line-num">029</span> <span class="bc-opcode">RETURN          </span> <span class="bc-arg">0 0</span>
 <span class="bc-line-num">030</span> <span class="bc-opcode">END             </span> <span class="bc-arg">0 0</span>
@@ -3717,14 +3737,14 @@ $t2.paint
 <span class="bc-line-num">009</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 4</span> <span class="bc-info">; song</span>
 <span class="bc-line-num">010</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 3</span> <span class="bc-info">; paint</span>
 <span class="bc-line-num">011</span> <span class="bc-opcode">TABLE_SET_ACC   </span> <span class="bc-arg">0 0</span>
-<span class="bc-line-num">012</span> <span class="bc-opcode">LOAD_STATIC     </span> <span class="bc-arg">0 4</span>
+<span class="bc-line-num">012</span> <span class="bc-opcode">LOAD_STATIC     </span> <span class="bc-arg">0 7</span>
 <span class="bc-line-num">013</span> <span class="bc-opcode">ACC_CALL        </span> <span class="bc-arg">0 0</span>
 <span class="bc-line-num">014</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">0 1</span>
 <span class="bc-line-num">015</span> <span class="bc-opcode">BEGIN_ACC       </span> <span class="bc-arg">0 0</span>
 <span class="bc-line-num">016</span> <span class="bc-opcode">TABLE_NEW       </span> <span class="bc-arg">0 0</span>
 <span class="bc-line-num">017</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 1</span>
 <span class="bc-line-num">018</span> <span class="bc-opcode">TABLE_EXPAND    </span> <span class="bc-arg">0 0</span>
-<span class="bc-line-num">019</span> <span class="bc-opcode">LOAD_STATIC     </span> <span class="bc-arg">0 4</span>
+<span class="bc-line-num">019</span> <span class="bc-opcode">LOAD_STATIC     </span> <span class="bc-arg">0 7</span>
 <span class="bc-line-num">020</span> <span class="bc-opcode">ACC_CALL        </span> <span class="bc-arg">0 0</span>
 <span class="bc-line-num">021</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">0 2</span>
 <span class="bc-line-num">022</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 1</span> <span class="bc-info">; write</span>
@@ -3783,7 +3803,7 @@ $t2.paint
 <span class="bc-line-num">009</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 4</span> <span class="bc-info">; song</span>
 <span class="bc-line-num">010</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 3</span> <span class="bc-info">; paint</span>
 <span class="bc-line-num">011</span> <span class="bc-opcode">TABLE_SET_ACC   </span> <span class="bc-arg">0 0</span>
-<span class="bc-line-num">012</span> <span class="bc-opcode">LOAD_STATIC     </span> <span class="bc-arg">0 4</span>
+<span class="bc-line-num">012</span> <span class="bc-opcode">LOAD_STATIC     </span> <span class="bc-arg">0 7</span>
 <span class="bc-line-num">013</span> <span class="bc-opcode">ACC_CALL        </span> <span class="bc-arg">0 0</span>
 <span class="bc-line-num">014</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">0 1</span>
 <span class="bc-line-num">015</span> <span class="bc-opcode">BEGIN_ACC       </span> <span class="bc-arg">0 0</span>
@@ -3796,7 +3816,7 @@ $t2.paint
 <span class="bc-line-num">022</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 6</span> <span class="bc-info">; words</span>
 <span class="bc-line-num">023</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 3</span> <span class="bc-info">; paint</span>
 <span class="bc-line-num">024</span> <span class="bc-opcode">TABLE_SET_ACC   </span> <span class="bc-arg">0 0</span>
-<span class="bc-line-num">025</span> <span class="bc-opcode">LOAD_STATIC     </span> <span class="bc-arg">0 4</span>
+<span class="bc-line-num">025</span> <span class="bc-opcode">LOAD_STATIC     </span> <span class="bc-arg">0 7</span>
 <span class="bc-line-num">026</span> <span class="bc-opcode">ACC_CALL        </span> <span class="bc-arg">0 0</span>
 <span class="bc-line-num">027</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">0 2</span>
 <span class="bc-line-num">028</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 1</span> <span class="bc-info">; write</span>
@@ -3857,10 +3877,10 @@ $wing(...t)
 <span class="bc-line-num">008</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 5</span> <span class="bc-info">; mark</span>
 <span class="bc-line-num">009</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 4</span> <span class="bc-info">; quill</span>
 <span class="bc-line-num">010</span> <span class="bc-opcode">TABLE_SET_ACC   </span> <span class="bc-arg">0 0</span>
-<span class="bc-line-num">011</span> <span class="bc-opcode">LOAD_STATIC     </span> <span class="bc-arg">0 4</span>
+<span class="bc-line-num">011</span> <span class="bc-opcode">LOAD_STATIC     </span> <span class="bc-arg">0 7</span>
 <span class="bc-line-num">012</span> <span class="bc-opcode">ACC_CALL        </span> <span class="bc-arg">0 0</span>
 <span class="bc-line-num">013</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">0 1</span>
-<span class="bc-line-num">014</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 6</span> <span class="bc-info">; table: 0x01a5d7536130</span>
+<span class="bc-line-num">014</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 6</span> <span class="bc-info">; table: 0x0135bfb22608</span>
 <span class="bc-line-num">015</span> <span class="bc-opcode">STORE_STATIC    </span> <span class="bc-arg">0 11</span>
 <span class="bc-line-num">016</span> <span class="bc-opcode">JUMP            </span> <span class="bc-arg">0 32</span>
 <span class="bc-line-num">017</span> <span class="bc-opcode">ENTER_FILE      </span> <span class="bc-arg">0 1</span>
@@ -3919,7 +3939,7 @@ $t[1]
 <span class="bc-line-num">005</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 1</span> <span class="bc-info">; mark</span>
 <span class="bc-line-num">006</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 2</span> <span class="bc-info">; quill</span>
 <span class="bc-line-num">007</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 3</span> <span class="bc-info">; ink</span>
-<span class="bc-line-num">008</span> <span class="bc-opcode">LOAD_STATIC     </span> <span class="bc-arg">0 4</span>
+<span class="bc-line-num">008</span> <span class="bc-opcode">LOAD_STATIC     </span> <span class="bc-arg">0 7</span>
 <span class="bc-line-num">009</span> <span class="bc-opcode">ACC_CALL        </span> <span class="bc-arg">0 0</span>
 <span class="bc-line-num">010</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">0 1</span>
 <span class="bc-line-num">011</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 4</span> <span class="bc-info">; 1</span>
@@ -3967,7 +3987,7 @@ $t[1]
 <span class="bc-line-num">006</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 1</span> <span class="bc-info">; write</span>
 <span class="bc-line-num">007</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 2</span> <span class="bc-info">; paint</span>
 <span class="bc-line-num">008</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 3</span> <span class="bc-info">; song</span>
-<span class="bc-line-num">009</span> <span class="bc-opcode">LOAD_STATIC     </span> <span class="bc-arg">0 4</span>
+<span class="bc-line-num">009</span> <span class="bc-opcode">LOAD_STATIC     </span> <span class="bc-arg">0 7</span>
 <span class="bc-line-num">010</span> <span class="bc-opcode">ACC_CALL        </span> <span class="bc-arg">0 0</span>
 <span class="bc-line-num">011</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">0 1</span>
 <span class="bc-line-num">012</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 4</span> <span class="bc-info">; 1</span>
@@ -4019,7 +4039,7 @@ $t[1]
 <span class="bc-line-num">005</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 1</span> <span class="bc-info">; mark</span>
 <span class="bc-line-num">006</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 2</span> <span class="bc-info">; quill</span>
 <span class="bc-line-num">007</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 3</span> <span class="bc-info">; ink</span>
-<span class="bc-line-num">008</span> <span class="bc-opcode">LOAD_STATIC     </span> <span class="bc-arg">0 4</span>
+<span class="bc-line-num">008</span> <span class="bc-opcode">LOAD_STATIC     </span> <span class="bc-arg">0 7</span>
 <span class="bc-line-num">009</span> <span class="bc-opcode">ACC_CALL        </span> <span class="bc-arg">0 0</span>
 <span class="bc-line-num">010</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">0 1</span>
 <span class="bc-line-num">011</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 4</span> <span class="bc-info">; wing</span>

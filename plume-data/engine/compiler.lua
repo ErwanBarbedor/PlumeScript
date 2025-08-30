@@ -337,25 +337,36 @@ return function(plume)
 				-- This is a temporary workaround.
 				local last = eval.childs[#eval.childs]
 
-				if last.name ~= "INDEX" then
+				if last.name == "INDEX" or last.name == "DIRECT_INDEX" then
+					eval.childs[#eval.childs] = nil
+
+					local function getKey()
+						if last.name == "DIRECT_INDEX" then
+							local key = registerConstant(last.childs[1].content)
+							registerOP(ops.LOAD_CONSTANT, 0, key)
+						else
+							childsHandler(last) -- key
+						end
+						childsHandler(eval) -- table
+					end
+
+					if compound then
+						getKey()
+						registerOP(ops.TABLE_INDEX, 0, 0)
+					end
+
+					accBlock()(body) -- value
+					if compound then
+						registerOP(ops["OPP_" .. compound.childs[1].name], 0, 0)
+					end
+
+					getKey()
+					registerOP(ops.TABLE_SET, 0, 0)
+				else
 					error("Cannot set the result of a call.")
 				end
 
-				eval.childs[#eval.childs] = nil
-
-				if compound then
-					childsHandler(last) -- key
-					childsHandler(eval) -- table
-					registerOP(ops.TABLE_INDEX, 0, 0)
-				end
-				accBlock()(body) -- value
-				if compound then
-					registerOP(ops["OPP_" .. compound.childs[1].name], 0, 0)
-				end
-
-				childsHandler(last) -- key
-				childsHandler(eval) -- table
-				registerOP(ops.TABLE_SET, 0, 0)
+				
 
 
 			end
