@@ -258,7 +258,7 @@ return function(plume)
 			registerOP(ops.LOAD_CONSTANT, 0, offset)
 		end
 		nodeHandlerTable.QUOTE = function(node)
-			local offset = registerConstant(node.content)
+			local offset = registerConstant(node.childs[1].content)
 			registerOP(ops.LOAD_CONSTANT, 0, offset)
 		end
 

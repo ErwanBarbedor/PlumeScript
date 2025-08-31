@@ -142,6 +142,7 @@ return function (plume)
         end,
 
         import = function(args, runtime)
+            plume.debug.print(args)
             local filename = args.table[1]
 
             if not filename:match('%.plume$') then

@@ -164,6 +164,7 @@ return function (plume)
 			or node.name == "BLOCK"
 			or node.name == "NUMBER" 
 			or node.name == "IDENTIFIER"
+			or node.name == "QUOTE"
 			then
 			return "TEXT"
 		elseif node.name == "FOR"

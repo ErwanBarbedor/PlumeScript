@@ -51,3 +51,13 @@ macro Document()
 end
 /// Output
 /// End
+
+/// Test #123
+macro wing(body)
+    $body
+end
+
+$(wing("a"))
+/// Output
+a
+/// End
