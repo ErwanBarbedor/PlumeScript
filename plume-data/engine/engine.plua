@@ -576,7 +576,10 @@ return function (plume)
             end
         @end
 
-        @define _CHECK_NONE x
+        @define _CHECK_OPTN_NUMBER x
+            if _type($x) == "string" then
+                $x = tonumber($x) or $x
+            end
         @end
 
         @define _BIN_OPP opp check
@@ -622,8 +625,8 @@ return function (plume)
         @define OPP_LTE  @_BIN_OPP <= NUMBER @end
         @define OPP_GT   @_BIN_OPP >  NUMBER @end
         @define OPP_LT   @_BIN_OPP <  NUMBER @end
-        @define OPP_EQ   @_BIN_OPP == NONE @end
-        @define OPP_NEQ  @_BIN_OPP ~= NONE @end
+        @define OPP_EQ   @_BIN_OPP == OPTN_NUMBER @end
+        @define OPP_NEQ  @_BIN_OPP ~= OPTN_NUMBER @end
 
         -- bool
         @define OPP_AND  @_BIN_OPP and BOOL @end
