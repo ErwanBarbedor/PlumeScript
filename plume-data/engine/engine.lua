@@ -355,7 +355,7 @@ end
 	            if t=="macro" then
 	                            vsfp=vsfp+1
 	            vsf[vsfp]=vsp+1-0
-	            for i=1, macro.positionalParamCount+macro.namedParamCount-0 do
+	            for i=1, macro.localsCount-0 do
 	                vsp=vsp+1
 	                vs[vsp]=empty
 	            end

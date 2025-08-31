@@ -317,7 +317,7 @@ return function (plume)
             msp = msp - 1
             local t = _type(macro)
             if t == "macro" then
-                @ENTER_SCOPE 0 macro.positionalParamCount+macro.namedParamCount
+                @ENTER_SCOPE 0 macro.localsCount
                 local capture
                 if macro.variadicOffset>0 then -- variadic
                     capture = ptable(0, 0) -- can be optimized

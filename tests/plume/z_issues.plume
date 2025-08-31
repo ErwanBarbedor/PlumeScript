@@ -24,3 +24,23 @@ end
 end
 /// Output
 /// End
+
+/// Test #110
+macro List(...items)
+    let count = 0
+    for item in items
+        set count += 1
+        $count)$item\n
+    end
+end
+
+@List
+    - mark
+    - paint
+    - sing
+end
+/// Output
+1)mark
+2)paint
+3)sing
+/// End
