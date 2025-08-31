@@ -257,6 +257,10 @@ return function(plume)
 			local offset = registerConstant(tonumber(node.content))
 			registerOP(ops.LOAD_CONSTANT, 0, offset)
 		end
+		nodeHandlerTable.QUOTE = function(node)
+			local offset = registerConstant(node.content)
+			registerOP(ops.LOAD_CONSTANT, 0, offset)
+		end
 
 		nodeHandlerTable.LIST_ITEM = accBlock()
 

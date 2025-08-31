@@ -58,6 +58,13 @@ $(7==empty)
 false
 /// End
 
+/// Test Eq 3
+let x = Wings
+$(x=="Wings")
+/// Output
+true
+/// End
+
 /// Test neq
 $(7!=5+2)
 /// Output
