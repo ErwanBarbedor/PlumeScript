@@ -65,7 +65,9 @@ return function (plume)
 		print(table.concat(tspaced, ""))
 	end
 
-	local function invTable(t)
+	plume.debug = {}
+
+	function plume.debug.invTable(t)
 		local result = {}
 		for k, v in pairs(t) do
 			result[v] = k
@@ -73,7 +75,7 @@ return function (plume)
 		return result
 	end
 
-	plume.debug = {}
+	
 	function plume.debug.format(x, indent, cache, maxStringLength)
 		local sep = ", "
 		if indent then
@@ -190,9 +192,9 @@ return function (plume)
 		local arg1 = bit.band(bit.rshift(instr, ARG1_SHIFT), MASK_ARG1)
 		local arg2 = bit.band(instr, MASK_ARG2)
 
-		local t = invTable(plume.ops)
+		local t = plume.debug.invTable(plume.ops)
 
-		local name = invTable(plume.ops)[op] or "NULL"
+		local name = plume.debug.invTable(plume.ops)[op] or "NULL"
 		local constInfos
 		local value
 		constInfos = getConstantInfos(arg2, runtime)
@@ -298,7 +300,7 @@ return function (plume)
 
 		local sinstr = ""
 		if ip>0 then
-			sinstr = string.format("%s %i %i", invTable(plume.ops)[op], arg1, arg2)
+			sinstr = string.format("%s %i %i", plume.debug.invTable(plume.ops)[op], arg1, arg2)
 		end
 		local header = string.format("Step %i, instr %i->%i: %s", tic, ip, jump, sinstr)
 

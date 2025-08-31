@@ -107,9 +107,17 @@ wings
 nib
 /// End
 
-/// Test import lib
+/// Test import lib 1
 let lib = $import(tests/plume/toimport/lib)
 $lib.nib
 /// Output
 quill
+/// End
+
+/// Test import lib 2
+let static infos = bird
+let lib = $import(tests/plume/toimport/lib2)
+$lib.wing() $infos
+/// Output
+blue quill bird
 /// End

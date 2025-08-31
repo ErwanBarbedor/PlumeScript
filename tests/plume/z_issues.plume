@@ -44,3 +44,10 @@ end
 2)paint
 3)sing
 /// End
+
+/// Test #112
+let lib = $import(tests/plume/toimport/text)
+macro Document()
+end
+/// Output
+/// End

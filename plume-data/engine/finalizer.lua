@@ -18,27 +18,27 @@ return function (plume)
 	local function link(runtime)
 		local labels = {}
 
-		local removedCount = 0
+		runtime.removedCount = runtime.removedCount or 0
 		for offset=runtime.instructionsPointer+1, #runtime.instructions do
 			instr = runtime.instructions[offset]
 			if instr.label then
-				labels[instr.label] = offset - removedCount
-				removedCount = removedCount + 1
+				labels[instr.label] = offset - runtime.removedCount
+				runtime.removedCount = runtime.removedCount + 1
 			elseif instr.link then
-				removedCount = removedCount + 1
+				runtime.removedCount = runtime.removedCount + 1
 			elseif instr.fileLink then
-				removedCount = removedCount + 1
+				runtime.removedCount = runtime.removedCount + 1
 			end
 		end
 
-		local removedOffset = 0
+		runtime.removedOffset = runtime.removedOffset or 0
 		for offset=runtime.instructionsPointer+1, #runtime.instructions do
 			instr = runtime.instructions[offset]
-			offset = offset-removedOffset
+			offset = offset-runtime.removedOffset
 			if instr.label then
-				removedOffset = removedOffset + 1
+				runtime.removedOffset = runtime.removedOffset + 1
 			elseif instr.link then
-				removedOffset = removedOffset + 1
+				runtime.removedOffset = runtime.removedOffset + 1
 				runtime.constants[instr.link].offset = offset --set macro offset
 			elseif instr._goto then
 				if not labels[instr._goto] then
@@ -47,7 +47,7 @@ return function (plume)
 
 				runtime.computedInstructions[offset] = {plume.ops[instr.jump], 0, labels[instr._goto]}
 			elseif instr.fileLink then
-				removedOffset = removedOffset + 1
+				runtime.removedOffset = runtime.removedOffset + 1
 				runtime.filesOffset[instr.fileLink] = offset
 			else
 				runtime.computedInstructions[offset] = instr
@@ -56,6 +56,8 @@ return function (plume)
 		runtime.instructionsPointer = #runtime.instructions
 
 		table.insert(runtime.computedInstructions, {plume.ops.END, 0, 0})
+		runtime.removedOffset = runtime.removedOffset-1 -- offset for END
+		runtime.removedCount  = runtime.removedCount-1
 	end
 	
 	------------------------
