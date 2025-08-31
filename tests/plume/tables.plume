@@ -125,3 +125,15 @@ $wing, $paint
 /// Output
 mark, song
 /// End
+
+/// Test destructuration 3
+let t = @table
+	wing: mark
+	paint: song
+	quill: nib
+end
+let wing, paint, quill from t
+$wing, $paint, $quill
+/// Output
+mark, song, nib
+/// End
