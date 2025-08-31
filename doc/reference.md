@@ -204,15 +204,36 @@ The following call formats are available:
     ```
 
 #### `let`
+#### `let`
 Declares a new variable in the **current scope**.
+
 ```
 let [static] [const] name [= value]
+let [static] [const] name1, name2, ... from expression
 ```
-*   `let name`: Declares `name` with a default value of `empty`.
-*   `let const name = value`: Declares an immutable constant. An error is raised if no value is provided.
-*   `let static name`: Declares a variable visible to all scopes in the file, including macros.
+
+*   **`let name`**: Declares `name` with a default value of `empty`.
+*   **`let const name = value`**: Declares an immutable constant. An error is raised if no value is provided.
+*   **`let static name`**: Declares a variable visible to all scopes in the file, including macros.
 *   An error is raised if a variable with the same name already exists in the current scope.
 
+The `let` statement also supports a destructuring form to declare multiple variables from the keys of a table.
+*   The `from` keyword must be followed by an expression that evaluates to a table. Attempting to destructure any other data type will result in an error.
+*   For each name in the comma-separated list, Plume declares a new variable in the current scope and assigns it the value of the corresponding key from the source table.
+*   The `static` and `const` modifiers, when used, apply to all variables declared in the statement.
+*   An error is raised if any of the specified keys do not exist in the source table or if any of the new variable names already exist in the current scope.
+
+```plume
+// Assume 'configTable' is a table: { host: "localhost", port: 8080 }
+let host, port from configTable
+
+// The line above is equivalent to:
+// let host = $configTable.host
+// let port = $configTable.port
+
+// Using with 'const' to declare multiple immutable variables
+let const adminUser, adminId from getAdminData()
+```
 #### `set`
 Assigns a new value to an **existing** variable.
 ```

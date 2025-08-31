@@ -290,22 +290,46 @@ return function(plume)
 		-- VARIABLE --
 		--------------
 		nodeHandlerTable.LET = function(node)
-			local varName = plume.ast.get(node, "IDENTIFIER").content
-			local body    = plume.ast.get(node, "BODY")
+			local idns    = plume.ast.getAll(node, "IDENTIFIER")
+			local body    = plume.ast.get(node, "BODY") or plume.ast.get(node, "EVAL")
 			local const   = plume.ast.get(node, "CONST")
 			local static  = plume.ast.get(node, "STATIC")
+			local from    = plume.ast.get(node, "FROM")
+			local eq      = plume.ast.get(node, "EQ")
 
-			local var = registerVariable(varName, static, const)
-			if not var then
-				error("Cannot declare variable '" .. varName .. "', it already exist in this scope.")
+
+			
+			local varlist = {}
+			for _, idn in ipairs(idns) do
+				local var = registerVariable(idn.content, static, const)
+				if not var then
+					error("Cannot declare variable '" .. idn.content .. "', it already exist in this scope.")
+				end
+				table.insert(varlist, var)
+				var.name = idn.content
 			end
 
 			if body then
-				scope(accBlock())(body)
-				if static then
-					registerOP(ops.STORE_STATIC, 0, var.offset)
+				if from then
+					nodeHandler(body)
 				else
-					registerOP(ops.STORE_LOCAL, 0, var.offset)
+					scope(accBlock())(body)
+				end
+				
+				for i, var in ipairs(varlist) do
+					if from then
+						if i < #varlist then
+							registerOP(ops.DUPLICATE, 0, 0)
+						end
+						registerOP(ops.LOAD_CONSTANT, 0, registerConstant(var.name))
+						registerOP(ops.SWITCH, 0, 0)
+						registerOP(ops.TABLE_INDEX, 0, 0)
+					end
+					if static then
+						registerOP(ops.STORE_STATIC, 0, var.offset)
+					else
+						registerOP(ops.STORE_LOCAL, 0, var.offset)
+					end
 				end
 			elseif const then
 				error("Cannot define a const empty variable.")

@@ -38,7 +38,7 @@ return function (plume)
 		OPP_GTE OPP_LTE OPP_GT OPP_LT OPP_EQ OPP_NEQ
 		OPP_AND OPP_NOT OPP_OR
 		
-		DUPLICATE
+		DUPLICATE SWITCH
 
 		END
 ]]

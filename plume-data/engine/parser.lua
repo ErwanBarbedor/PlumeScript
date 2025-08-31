@@ -260,7 +260,11 @@ return function (plume)
 	    -- affectations
 	    local lbody    = Ct("BODY", V"firstStatement")
 	    local statcont = (s * C("STATIC", P"static"))^-1 * (s * C("CONST", P"const"))^-1
-	    local let = Ct("LET", P"let" * statcont * s * idn * (os * P"=" * lbody)^-1)
+	    local idnList = idn * (os * P"," * os * idn)^-1
+	    local let = Ct("LET", P"let" * statcont * s *  (
+	    						  idn * os * C("EQ", P"=")   * lbody
+	    						+ idnList * s  * C("FROM", P"from") * s * Ct("EVAL", expr)
+	    					)^-1)
 	    local compound = Ct("COMPOUND", C("ADD", P"+") + C("SUB", P"-")
 	                   + C("MUL", P"*") + C("DIV", P"/"))
 
