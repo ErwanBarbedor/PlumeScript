@@ -576,6 +576,9 @@ return function (plume)
             end
         @end
 
+        @define _CHECK_NONE x
+        @end
+
         @define _BIN_OPP opp check
             --- Classic opperations
             --- Unstack 2
@@ -619,8 +622,8 @@ return function (plume)
         @define OPP_LTE  @_BIN_OPP <= NUMBER @end
         @define OPP_GT   @_BIN_OPP >  NUMBER @end
         @define OPP_LT   @_BIN_OPP <  NUMBER @end
-        @define OPP_EQ   @_BIN_OPP == NUMBER @end
-        @define OPP_NEQ  @_BIN_OPP ~= NUMBER @end
+        @define OPP_EQ   @_BIN_OPP == NONE @end
+        @define OPP_NEQ  @_BIN_OPP ~= NONE @end
 
         -- bool
         @define OPP_AND  @_BIN_OPP and BOOL @end
