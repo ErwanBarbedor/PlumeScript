@@ -408,6 +408,8 @@ return function(plume)
 				if child.name == "CALL" then
 					_accTableInit()
 					childsHandler(child)
+				elseif child.name == "BLOCK_CALL" then
+					nodeHandler(child)
 				elseif child.name == "INDEX" then
 					childsHandler(child)
 				elseif child.name == "DIRECT_INDEX" then
@@ -423,7 +425,7 @@ return function(plume)
 			-- Push all index/call op in order
 			for i=2, #node.childs do
 				local child = node.childs[i]
-				if child.name == "CALL" then
+				if child.name == "CALL" or child.name == "BLOCK_CALL" then
 					registerOP(ops.ACC_CALL, 0, 0)
 				elseif child.name == "INDEX" or child.name == "DIRECT_INDEX" then
 					if node.childs[i+1] and node.childs[i+1].name == "CALL" then
@@ -437,8 +439,7 @@ return function(plume)
 
 		end
 
-		nodeHandlerTable.BLOCK = function(node)
-			local varName = plume.ast.get(node, "IDENTIFIER").content
+		nodeHandlerTable.BLOCK_CALL = function(node)
 			local argList = plume.ast.get(node, "CALL")
 			local body    = plume.ast.get(node, "BODY")
 
@@ -453,16 +454,6 @@ return function(plume)
 			else
 				accBlock()(body)
 			end
-
-			
-			local var = getVariable(varName)
-			if not var then
-				error("Cannot call '" .. varName .. "': it doesn't exist.")
-			end
-
-			opLoadVar(node, varName)
-
-			registerOP(ops.ACC_CALL, 0, 0)
 		end
 
 		nodeHandlerTable.TRUE = function(node)
