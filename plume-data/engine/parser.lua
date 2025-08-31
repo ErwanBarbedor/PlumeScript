@@ -329,7 +329,7 @@ return function (plume)
 			print("->", code:sub(pos, -1):gsub("\n", "\\n").."")
 			error("Malformed code near position " .. (pos+1) .. ".")
 		end
-
+		
 		plume.ast.markType(ast)
 		ast.pos = pos
 		return ast

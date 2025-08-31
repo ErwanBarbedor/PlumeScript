@@ -148,13 +148,13 @@ return function (plume)
 
 	function plume.debug.printSimpleAST(ast, deep)
 		deep = deep or 0
-		if deep==0 then
+		if deep==0 and ast.type then
 			print("("..ast.type..")")
 		end
 		for _, node in ipairs(ast.childs) do
 			local line = ("\t"):rep(deep)..node.name
 			if not (" TEXT MACRO EVAL IDENTIFIER NUMBER EXPR EQ NEQ ADD SUB MUL DIV LT LTE GT GTE AND OR NOT CONDITION LET SET "):match(" "..node.name.." ") then
-				line = line.." ("..node.type..")"
+				line = line.." ("..(node.type or "")..")"
 			end
 			if (" SET ESCAPE TABLE_INDEX QUOTE ESCAPED EVAL_SHORT NAMED_PARAMETER MACRO LET FOR TEXT NUMBER IDENTIFIER PARAMETER "):match(" "..node.name.." ") then
 				line = line .. "\t" .. escapeString(node.content or "", 20)
