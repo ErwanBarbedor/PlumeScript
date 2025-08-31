@@ -139,7 +139,10 @@ return function (plume)
 				elseif node.type == "VALUE"
 				and (childType == "TEXT" or childType == "VALUE") then
 					node.type = "TEXT"
+				elseif node.type == "TEXT" and childType == "VALUE" then
+					node.type = "TEXT"
 				elseif childType ~= "EMPTY" and node.type ~= childType then
+					print("!!!", node.type)
 					error("MixedBlockError")
 				end
 			end
