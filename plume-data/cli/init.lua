@@ -30,10 +30,7 @@ local function main()
 
 	package.path = arg[1].."/?.lua;" .. package.path
 	local plume = require "plume-data/engine/init"
-
-	local runtime = plume.initRuntime()
-	plume.compileFile(code, filename, runtime)
-	plume.finalize(runtime)
+	
 	local ret = plume.executeFile(filename)
 	plume.debug.pprint(ret)
 end
