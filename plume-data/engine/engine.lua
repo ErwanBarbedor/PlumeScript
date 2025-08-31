@@ -709,16 +709,6 @@ end
 	do
 	            x=ms[msp-1]
 	            y=ms[msp]
-	                        if _type(x)=="string" then
-	                x=tonumber(x)
-	            elseif _type(x) ~="number" then
-	                            return false, "Cannot do comparison or arithmetic with " .. _type(x).. " value.", ip
-	            end
-	                        if _type(y)=="string" then
-	                y=tonumber(y)
-	            elseif _type(y) ~="number" then
-	                            return false, "Cannot do comparison or arithmetic with " .. _type(y).. " value.", ip
-	            end
 	            msp=msp-1
 	            ms[msp]=x==y
 				goto DISPATCH
@@ -727,16 +717,6 @@ end
 	do
 	            x=ms[msp-1]
 	            y=ms[msp]
-	                        if _type(x)=="string" then
-	                x=tonumber(x)
-	            elseif _type(x) ~="number" then
-	                            return false, "Cannot do comparison or arithmetic with " .. _type(x).. " value.", ip
-	            end
-	                        if _type(y)=="string" then
-	                y=tonumber(y)
-	            elseif _type(y) ~="number" then
-	                            return false, "Cannot do comparison or arithmetic with " .. _type(y).. " value.", ip
-	            end
 	            msp=msp-1
 	            ms[msp]=x ~=y
 				goto DISPATCH
