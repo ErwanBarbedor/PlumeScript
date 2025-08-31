@@ -160,6 +160,8 @@ return function (plume)
                 plume.finalize(runtime)
             end
 
+            plume.debug.print(runtime.filesOffset)
+
             return runtime.filesOffset[filename], true
         end,
 
