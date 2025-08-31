@@ -338,7 +338,7 @@ return function(plume)
 				if var.isStatic then
 					registerOP(ops.STORE_STATIC, 0, var.offset)
 				elseif var.frameOffset > 0 then
-					registerOP(ops.STORE_LEXICAL, var.frameOffset, var.offset)
+					registerOP(ops.STORE_LEXICAL, var.frameOffset+1, var.offset)
 				else
 					registerOP(ops.STORE_LOCAL, 0, var.offset)
 				end
@@ -650,6 +650,7 @@ return function(plume)
 				end
 
 				accBlock()(body)
+				macroObj.localsCount = #scopes[#scopes]
 				table.remove(scopes)
 			end) ()
 			
