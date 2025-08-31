@@ -135,7 +135,8 @@ return function (plume)
 			elseif op==51 then goto OPP_NOT
 			elseif op==52 then goto OPP_OR
 			elseif op==53 then goto DUPLICATE
-			elseif op==54 then goto END
+			elseif op==54 then goto SWITCH
+			elseif op==55 then goto END
 			end
             			::LOAD_CONSTANT::
 	do
@@ -772,7 +773,16 @@ end
 end
 			::DUPLICATE::
 	do
-					goto DISPATCH
+	            msp=msp+1
+	            ms[msp]=ms[msp-1]
+				goto DISPATCH
+end
+			::SWITCH::
+	do
+	            local temp=ms[msp]
+	            ms[msp]=ms[msp-1]
+	            ms[msp-1]=temp
+				goto DISPATCH
 end
 		::END::
         	return true, plume.std.tostring.callable({table={ms[1]}}), ip
