@@ -467,17 +467,19 @@ return function(plume)
 			local argList = plume.ast.get(node, "CALL")
 			local body    = plume.ast.get(node, "BODY")
 
-			_accTableInit()
+			scope(function()
+				_accTableInit()
 
-			if argList then
-				_accTable(argList)
-			end
+				if argList then
+					_accTable(argList)
+				end
 
-			if node.type == "TABLE" then
-				childsHandler(body)
-			else
-				accBlock()(body)
-			end
+				if node.type == "TABLE" then
+					childsHandler(body)
+				else
+					accBlock()(body)
+				end
+			end)(body)
 		end
 
 		nodeHandlerTable.TRUE = function(node)
