@@ -61,3 +61,15 @@ $(wing("a"))
 /// Output
 a
 /// End
+
+/// Test #124
+for i in seq(1, 2)
+    for j in seq(1, 2)
+        for k in seq(1, 2)
+            $i
+        end
+    end
+end
+/// Output
+11112222
+/// End

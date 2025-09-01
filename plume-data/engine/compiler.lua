@@ -226,7 +226,7 @@ return function(plume)
 			if var.isStatic then
 				registerOP(ops.LOAD_STATIC, 0, var.offset)
 			elseif var.frameOffset > 0 then
-				registerOP(ops.LOAD_LEXICAL, var.frameOffset+1, var.offset)
+				registerOP(ops.LOAD_LEXICAL, var.frameOffset, var.offset)
 			else
 				registerOP(ops.LOAD_LOCAL, 0, var.offset)
 			end
@@ -521,6 +521,8 @@ return function(plume)
 			childsHandler(iterator)
 			registerOP(ops.GET_ITER, 0, 0)
 			registerOP(ops.ENTER_SCOPE, 0, 1)
+			table.insert(scopes, {})
+
 				registerOP(ops.STORE_LOCAL, 0, 1)
 
 				registerLabel("for_begin_"..uid)
@@ -536,6 +538,8 @@ return function(plume)
 
 				registerGoto ("for_begin_"..uid)
 				registerLabel("for_end_"..uid)
+
+			table.remove(scopes)
 			registerOP(ops.LEAVE_SCOPE, 0, 0)	
 		end
 
