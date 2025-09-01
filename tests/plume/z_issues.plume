@@ -73,3 +73,13 @@ end
 /// Output
 11112222
 /// End
+
+/// Test #125
+let nex = 0
+for j in seq(1, 2)
+    set nex += 1
+end
+$nex
+/// Output
+2
+/// End
