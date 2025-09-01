@@ -121,3 +121,14 @@ $lib.wing() $infos
 /// Output
 blue quill bird
 /// End
+
+/// Test len
+let t = @table
+  - Wing
+  - Nib
+  quill: blue
+end
+$len($t)
+/// Output
+2
+/// End
