@@ -83,3 +83,19 @@ $nex
 /// Output
 2
 /// End
+
+/// Test #126
+macro Wing(body)
+    $body
+end
+
+@Wing()
+    let nex = 0
+    for k in seq(1, 1)
+        $nex
+    end
+end
+
+/// Output
+0
+/// End
