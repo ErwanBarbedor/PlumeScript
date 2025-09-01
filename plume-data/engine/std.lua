@@ -183,6 +183,11 @@ return function (plume)
                 local content = file:read("*a")
             file:close()
             return content
+        end,
+
+        len = function(args)
+            local t = args.table[1]
+            return #t.table
         end
 	}
 
