@@ -62,3 +62,26 @@ $write
 /// Output
 01234
 /// End
+
+/// Test lexical offset 1
+let x = 0
+@join
+	let y=0
+	$(x+y)
+end
+/// Output
+0
+/// End
+
+/// Test lexical offset 2
+let x = 0
+@join
+	let y=0
+	@join
+		let z=0
+		$(x+y+z)
+	end
+end
+/// Output
+0
+/// End

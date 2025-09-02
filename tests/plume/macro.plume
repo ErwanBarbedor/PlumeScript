@@ -81,7 +81,7 @@ This is quite long, i think.
 /// End
 
 /// Test Variadic 1
-macro write(...args)
+set write = macro (...args)
   Positionnals args: $join(...args, sep:\,\s)\n
   Named args:\s
   @join(sep:\,\s)
@@ -97,7 +97,7 @@ Named args: ink=quill, wing=mark
 /// End
 
 /// Test Flag
-macro write(?flag)
+set write = macro (?flag)
   if flag
     paint
   else

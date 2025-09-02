@@ -65,7 +65,9 @@ return function (plume)
 		print(table.concat(tspaced, ""))
 	end
 
-	local function invTable(t)
+	plume.debug = {}
+
+	function plume.debug.invTable(t)
 		local result = {}
 		for k, v in pairs(t) do
 			result[v] = k
@@ -73,7 +75,7 @@ return function (plume)
 		return result
 	end
 
-	plume.debug = {}
+	
 	function plume.debug.format(x, indent, cache, maxStringLength)
 		local sep = ", "
 		if indent then
@@ -148,13 +150,13 @@ return function (plume)
 
 	function plume.debug.printSimpleAST(ast, deep)
 		deep = deep or 0
-		if deep==0 then
+		if deep==0 and ast.type then
 			print("("..ast.type..")")
 		end
 		for _, node in ipairs(ast.childs) do
 			local line = ("\t"):rep(deep)..node.name
 			if not (" TEXT MACRO EVAL IDENTIFIER NUMBER EXPR EQ NEQ ADD SUB MUL DIV LT LTE GT GTE AND OR NOT CONDITION LET SET "):match(" "..node.name.." ") then
-				line = line.." ("..node.type..")"
+				line = line.." ("..(node.type or "")..")"
 			end
 			if (" SET ESCAPE TABLE_INDEX QUOTE ESCAPED EVAL_SHORT NAMED_PARAMETER MACRO LET FOR TEXT NUMBER IDENTIFIER PARAMETER "):match(" "..node.name.." ") then
 				line = line .. "\t" .. escapeString(node.content or "", 20)
@@ -190,9 +192,9 @@ return function (plume)
 		local arg1 = bit.band(bit.rshift(instr, ARG1_SHIFT), MASK_ARG1)
 		local arg2 = bit.band(instr, MASK_ARG2)
 
-		local t = invTable(plume.ops)
+		local t = plume.debug.invTable(plume.ops)
 
-		local name = invTable(plume.ops)[op] or "NULL"
+		local name = plume.debug.invTable(plume.ops)[op] or "NULL"
 		local constInfos
 		local value
 		constInfos = getConstantInfos(arg2, runtime)
@@ -298,7 +300,7 @@ return function (plume)
 
 		local sinstr = ""
 		if ip>0 then
-			sinstr = string.format("%s %i %i", invTable(plume.ops)[op], arg1, arg2)
+			sinstr = string.format("%s %i %i", plume.debug.invTable(plume.ops)[op], arg1, arg2)
 		end
 		local header = string.format("Step %i, instr %i->%i: %s", tic, ip, jump, sinstr)
 

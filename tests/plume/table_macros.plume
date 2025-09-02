@@ -63,3 +63,18 @@ $obj.wings
 /// Output
 quill
 /// End
+
+/// Test block form table
+let t = @table
+    wing: macro(body)
+        Write "$body"
+    end
+end
+
+@t.wing
+  paint the quill
+end
+
+/// Output
+Write "paint the quill"
+/// End

@@ -257,6 +257,10 @@ return function(plume)
 			local offset = registerConstant(tonumber(node.content))
 			registerOP(ops.LOAD_CONSTANT, 0, offset)
 		end
+		nodeHandlerTable.QUOTE = function(node)
+			local offset = registerConstant(node.childs[1].content)
+			registerOP(ops.LOAD_CONSTANT, 0, offset)
+		end
 
 		nodeHandlerTable.LIST_ITEM = accBlock()
 
@@ -286,22 +290,46 @@ return function(plume)
 		-- VARIABLE --
 		--------------
 		nodeHandlerTable.LET = function(node)
-			local varName = plume.ast.get(node, "IDENTIFIER").content
-			local body    = plume.ast.get(node, "BODY")
+			local idns    = plume.ast.getAll(node, "IDENTIFIER")
+			local body    = plume.ast.get(node, "BODY") or plume.ast.get(node, "EVAL")
 			local const   = plume.ast.get(node, "CONST")
 			local static  = plume.ast.get(node, "STATIC")
+			local from    = plume.ast.get(node, "FROM")
+			local eq      = plume.ast.get(node, "EQ")
 
-			local var = registerVariable(varName, static, const)
-			if not var then
-				error("Cannot declare variable '" .. varName .. "', it already exist in this scope.")
+
+			
+			local varlist = {}
+			for _, idn in ipairs(idns) do
+				local var = registerVariable(idn.content, static, const)
+				if not var then
+					error("Cannot declare variable '" .. idn.content .. "', it already exist in this scope.")
+				end
+				table.insert(varlist, var)
+				var.name = idn.content
 			end
 
 			if body then
-				scope(accBlock())(body)
-				if static then
-					registerOP(ops.STORE_STATIC, 0, var.offset)
+				if from then
+					nodeHandler(body)
 				else
-					registerOP(ops.STORE_LOCAL, 0, var.offset)
+					scope(accBlock())(body)
+				end
+				
+				for i, var in ipairs(varlist) do
+					if from then
+						if i < #varlist then
+							registerOP(ops.DUPLICATE, 0, 0)
+						end
+						registerOP(ops.LOAD_CONSTANT, 0, registerConstant(var.name))
+						registerOP(ops.SWITCH, 0, 0)
+						registerOP(ops.TABLE_INDEX, 0, 0)
+					end
+					if static then
+						registerOP(ops.STORE_STATIC, 0, var.offset)
+					else
+						registerOP(ops.STORE_LOCAL, 0, var.offset)
+					end
 				end
 			elseif const then
 				error("Cannot define a const empty variable.")
@@ -371,12 +399,7 @@ return function(plume)
 				else
 					error("Cannot set the result of a call.")
 				end
-
-				
-
-
 			end
-
 		end
 
 		----------
@@ -409,6 +432,8 @@ return function(plume)
 				if child.name == "CALL" then
 					_accTableInit()
 					childsHandler(child)
+				elseif child.name == "BLOCK_CALL" then
+					nodeHandler(child)
 				elseif child.name == "INDEX" then
 					childsHandler(child)
 				elseif child.name == "DIRECT_INDEX" then
@@ -424,7 +449,7 @@ return function(plume)
 			-- Push all index/call op in order
 			for i=2, #node.childs do
 				local child = node.childs[i]
-				if child.name == "CALL" then
+				if child.name == "CALL" or child.name == "BLOCK_CALL" then
 					registerOP(ops.ACC_CALL, 0, 0)
 				elseif child.name == "INDEX" or child.name == "DIRECT_INDEX" then
 					if node.childs[i+1] and node.childs[i+1].name == "CALL" then
@@ -438,32 +463,23 @@ return function(plume)
 
 		end
 
-		nodeHandlerTable.BLOCK = function(node)
-			local varName = plume.ast.get(node, "IDENTIFIER").content
+		nodeHandlerTable.BLOCK_CALL = function(node)
 			local argList = plume.ast.get(node, "CALL")
 			local body    = plume.ast.get(node, "BODY")
 
-			_accTableInit()
+			scope(function()
+				_accTableInit()
 
-			if argList then
-				_accTable(argList)
-			end
+				if argList then
+					_accTable(argList)
+				end
 
-			if node.type == "TABLE" then
-				childsHandler(body)
-			else
-				accBlock()(body)
-			end
-
-			
-			local var = getVariable(varName)
-			if not var then
-				error("Cannot call '" .. varName .. "': it doesn't exist.")
-			end
-
-			opLoadVar(node, varName)
-
-			registerOP(ops.ACC_CALL, 0, 0)
+				if node.type == "TABLE" then
+					childsHandler(body)
+				else
+					accBlock()(body)
+				end
+			end)(body)
 		end
 
 		nodeHandlerTable.TRUE = function(node)
@@ -507,6 +523,8 @@ return function(plume)
 			childsHandler(iterator)
 			registerOP(ops.GET_ITER, 0, 0)
 			registerOP(ops.ENTER_SCOPE, 0, 1)
+			table.insert(scopes, {})
+
 				registerOP(ops.STORE_LOCAL, 0, 1)
 
 				registerLabel("for_begin_"..uid)
@@ -522,6 +540,8 @@ return function(plume)
 
 				registerGoto ("for_begin_"..uid)
 				registerLabel("for_end_"..uid)
+
+			table.remove(scopes)
 			registerOP(ops.LEAVE_SCOPE, 0, 0)	
 		end
 
@@ -607,6 +627,9 @@ return function(plume)
 					macroName,
 					true -- static
 				)
+				if not variable then
+					error("static '" .. macroName .. "' already exists.")
+				end
 				macroObj.name = macroName
 				registerOP(ops.STORE_STATIC, 0, variable.offset)
 			end
@@ -648,6 +671,7 @@ return function(plume)
 				end
 
 				accBlock()(body)
+				macroObj.localsCount = #scopes[#scopes]
 				table.remove(scopes)
 			end) ()
 			

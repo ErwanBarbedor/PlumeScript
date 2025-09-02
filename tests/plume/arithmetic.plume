@@ -46,8 +46,21 @@ $(15/(4-1))
 5
 /// End
 
-/// Test Eq
+/// Test Eq 1
 $(7==5+2)
+/// Output
+true
+/// End
+
+/// Test Eq 2
+$(7==empty)
+/// Output
+false
+/// End
+
+/// Test Eq 3
+let x = Wings
+$(x=="Wings")
 /// Output
 true
 /// End

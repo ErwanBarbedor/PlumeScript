@@ -38,7 +38,7 @@ return function (plume)
 		OPP_GTE OPP_LTE OPP_GT OPP_LT OPP_EQ OPP_NEQ
 		OPP_AND OPP_NOT OPP_OR
 		
-		DUPLICATE
+		DUPLICATE SWITCH
 
 		END
 ]]
@@ -139,6 +139,8 @@ return function (plume)
 				elseif node.type == "VALUE"
 				and (childType == "TEXT" or childType == "VALUE") then
 					node.type = "TEXT"
+				elseif node.type == "TEXT" and childType == "VALUE" then
+					node.type = "TEXT"
 				elseif childType ~= "EMPTY" and node.type ~= childType then
 					error("MixedBlockError")
 				end
@@ -162,6 +164,7 @@ return function (plume)
 			or node.name == "BLOCK"
 			or node.name == "NUMBER" 
 			or node.name == "IDENTIFIER"
+			or node.name == "QUOTE"
 			then
 			return "TEXT"
 		elseif node.name == "FOR"
