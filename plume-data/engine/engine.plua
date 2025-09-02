@@ -131,6 +131,26 @@ return function (plume)
         -- All OpCodes --
         --=============--
 
+        -----------
+        -- UTILS --
+        -----------
+        @define SWITCH arg1 arg2
+            --- Unstack 2, stack 2 in reverse order
+            --- arg1: -
+            --- arg2: -
+            local temp = ms[msp]
+            ms[msp] = ms[msp-1]
+            ms[msp-1] = temp
+        @end
+
+        @define DUPLICATE arg1 arg2
+            --- Stack 1, current top
+            --- arg1: -
+            --- arg2: -
+            msp = msp+1
+            ms[msp] = ms[msp-1]
+        @end
+        
         ------------------
         -- LOAD / STORE --
         ------------------
@@ -290,14 +310,12 @@ return function (plume)
                 local v=ms[msf[msfp]][i+1]
                 local m=ms[msf[msfp]][i+2]
                 local j = macro.namedParamOffset[k]
-                if j then
+                if m then
+                    @_TABLE_META_SET capture k v
+                elseif j then
                     vs[vsf[vsfp]+j-1] = v
                 elseif macro.variadicOffset>0 then
-                    if m then
-                        @_TABLE_META_SET capture k v
-                    else
-                        @_TABLE_SET capture k v
-                    end
+                    @_TABLE_SET capture k v
                 else
                     @_ERROR{{"Unknow named parameter '" .. k .."' for macro '" .. macro.name .."'."}}
                 end
@@ -319,7 +337,7 @@ return function (plume)
             msp = msp - 1
             local t = _type(macro)
             if t == "macro" then
-                @ENTER_SCOPE 0 macro.positionalParamCount+macro.namedParamCount
+                @ENTER_SCOPE 0 macro.localsCount
                 local capture
                 if macro.variadicOffset>0 then -- variadic
                     capture = ptable(0, 0) -- can be optimized
@@ -327,7 +345,7 @@ return function (plume)
                 @_UNSTACK_POS
                 @_UNSTACK_NAMED
                 if macro.variadicOffset>0 then -- variadic
-                    vs[macro.variadicOffset] = capture
+                    vs[vsf[vsfp]+macro.variadicOffset-1] = capture
                 end
                 @_END_ACC
                 jump = macro.offset
@@ -578,6 +596,12 @@ return function (plume)
             end
         @end
 
+        @define _CHECK_OPTN_NUMBER x
+            if _type($x) == "string" then
+                $x = tonumber($x) or $x
+            end
+        @end
+
         @define _BIN_OPP opp check
             --- Classic opperations
             --- Unstack 2
@@ -621,8 +645,8 @@ return function (plume)
         @define OPP_LTE  @_BIN_OPP <= NUMBER @end
         @define OPP_GT   @_BIN_OPP >  NUMBER @end
         @define OPP_LT   @_BIN_OPP <  NUMBER @end
-        @define OPP_EQ   @_BIN_OPP == NUMBER @end
-        @define OPP_NEQ  @_BIN_OPP ~= NUMBER @end
+        @define OPP_EQ   @_BIN_OPP == OPTN_NUMBER @end
+        @define OPP_NEQ  @_BIN_OPP ~= OPTN_NUMBER @end
 
         -- bool
         @define OPP_AND  @_BIN_OPP and BOOL @end

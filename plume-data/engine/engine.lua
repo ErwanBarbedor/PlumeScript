@@ -135,7 +135,8 @@ return function (plume)
 			elseif op==51 then goto OPP_NOT
 			elseif op==52 then goto OPP_OR
 			elseif op==53 then goto DUPLICATE
-			elseif op==54 then goto END
+			elseif op==54 then goto SWITCH
+			elseif op==55 then goto END
 			end
             			::LOAD_CONSTANT::
 	do
@@ -355,7 +356,7 @@ end
 	            if t=="macro" then
 	                            vsfp=vsfp+1
 	            vsf[vsfp]=vsp+1-0
-	            for i=1, macro.positionalParamCount+macro.namedParamCount-0 do
+	            for i=1, macro.localsCount-0 do
 	                vsp=vsp+1
 	                vs[vsp]=empty
 	            end
@@ -379,24 +380,22 @@ end
 	                local v=ms[msf[msfp]][i+1]
 	                local m=ms[msf[msfp]][i+2]
 	                local j=macro.namedParamOffset[k]
-	                if j then
+	                if m then
+	                                capture.meta[k]=v
+	                elseif j then
 	                    vs[vsf[vsfp]+j-1]=v
 	                elseif macro.variadicOffset>0 then
-	                    if m then
-	                                    capture.meta[k]=v
-	                    else
-	                                    if not capture.table[k] then
+	                                if not capture.table[k] then
 	                table.insert(capture.keys, k)
 	            end
 	            capture.table[k]=v
-	                    end
 	                else
 	                                return false, "Unknow named parameter '" .. k .."' for macro '" .. macro.name .."'.", ip
 	                end
 	            end
 	            msp=msp-1
 	                if macro.variadicOffset>0 then
-	                    vs[macro.variadicOffset]=capture
+	                    vs[vsf[vsfp]+macro.variadicOffset-1]=capture
 	                end
 	                            msfp=msfp-1
 	                jump=macro.offset
@@ -712,14 +711,10 @@ end
 	            x=ms[msp-1]
 	            y=ms[msp]
 	                        if _type(x)=="string" then
-	                x=tonumber(x)
-	            elseif _type(x) ~="number" then
-	                            return false, "Cannot do comparison or arithmetic with " .. _type(x).. " value.", ip
+	                x=tonumber(x) or x
 	            end
 	                        if _type(y)=="string" then
-	                y=tonumber(y)
-	            elseif _type(y) ~="number" then
-	                            return false, "Cannot do comparison or arithmetic with " .. _type(y).. " value.", ip
+	                y=tonumber(y) or y
 	            end
 	            msp=msp-1
 	            ms[msp]=x==y
@@ -730,14 +725,10 @@ end
 	            x=ms[msp-1]
 	            y=ms[msp]
 	                        if _type(x)=="string" then
-	                x=tonumber(x)
-	            elseif _type(x) ~="number" then
-	                            return false, "Cannot do comparison or arithmetic with " .. _type(x).. " value.", ip
+	                x=tonumber(x) or x
 	            end
 	                        if _type(y)=="string" then
-	                y=tonumber(y)
-	            elseif _type(y) ~="number" then
-	                            return false, "Cannot do comparison or arithmetic with " .. _type(y).. " value.", ip
+	                y=tonumber(y) or y
 	            end
 	            msp=msp-1
 	            ms[msp]=x ~=y
@@ -782,7 +773,16 @@ end
 end
 			::DUPLICATE::
 	do
-					goto DISPATCH
+	            msp=msp+1
+	            ms[msp]=ms[msp-1]
+				goto DISPATCH
+end
+			::SWITCH::
+	do
+	            local temp=ms[msp]
+	            ms[msp]=ms[msp-1]
+	            ms[msp-1]=temp
+				goto DISPATCH
 end
 		::END::
         	return true, plume.std.tostring.callable({table={ms[1]}}), ip

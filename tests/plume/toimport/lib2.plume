@@ -1,0 +1,4 @@
+let static infos = blue
+wing: macro()
+	$infos quill
+end

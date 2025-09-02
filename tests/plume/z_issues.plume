@@ -1,0 +1,101 @@
+/// Test #105
+let x = 1
+for y in seq(1, 10)
+    $(x+y)
+end
+/// Output
+234567891011
+/// End
+
+/// Test #106
+macro css(selector, ...style)
+	for item in items(style)
+	end
+end
+
+macro Document(body)
+	@css(a)
+		margin: 0
+	end
+end
+
+@Document
+	aaaaaaaaaaaaa
+end
+/// Output
+/// End
+
+/// Test #110
+macro List(...items)
+    let count = 0
+    for item in items
+        set count += 1
+        $count)$item\n
+    end
+end
+
+@List
+    - mark
+    - paint
+    - sing
+end
+/// Output
+1)mark
+2)paint
+3)sing
+/// End
+
+/// Test #112
+let lib = $import(tests/plume/toimport/text)
+macro Document()
+end
+/// Output
+/// End
+
+/// Test #123
+macro wing(body)
+    $body
+end
+
+$(wing("a"))
+/// Output
+a
+/// End
+
+/// Test #124
+for i in seq(1, 2)
+    for j in seq(1, 2)
+        for k in seq(1, 2)
+            $i
+        end
+    end
+end
+/// Output
+11112222
+/// End
+
+/// Test #125
+let nex = 0
+for j in seq(1, 2)
+    set nex += 1
+end
+$nex
+/// Output
+2
+/// End
+
+/// Test #126
+macro Wing(body)
+    $body
+end
+
+@Wing()
+    let nex = 0
+    for k in seq(1, 1)
+        $nex
+    end
+end
+
+/// Output
+0
+/// End

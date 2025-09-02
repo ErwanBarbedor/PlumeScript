@@ -252,12 +252,19 @@ return function (plume)
 	                    + Ct("LIST_ITEM", V"textic")
 
 	    local call      = Ct("CALL", P"(" * arg^-1 * (os * P"," * os * arg)^0 * P")")
-	    local block     = Ct("BLOCK", P"@" * idn * os * call^-1 * body * _end)
+	    -- local block     = Ct("BLOCK", P"@" * idn * os * call^-1 * body * _end)
+	    local block = Ct("EVAL", P"@" * idn * (index + directindex)^0 * os
+	    					* Ct("BLOCK_CALL", call^-1 * body)
+	    				* _end)
 
 	    -- affectations
 	    local lbody    = Ct("BODY", V"firstStatement")
 	    local statcont = (s * C("STATIC", P"static"))^-1 * (s * C("CONST", P"const"))^-1
-	    local let = Ct("LET", P"let" * statcont * s * idn * (os * P"=" * lbody)^-1)
+	    local idnList = idn * (os * P"," * os * idn)^0
+	    local let = Ct("LET", P"let" * statcont * s *  (
+	    						  idn * os * C("EQ", P"=")   * lbody
+	    						+ idnList * s  * C("FROM", P"from") * s * Ct("EVAL", expr)
+	    					)^-1)
 	    local compound = Ct("COMPOUND", C("ADD", P"+") + C("SUB", P"-")
 	                   + C("MUL", P"*") + C("DIV", P"/"))
 
@@ -329,7 +336,7 @@ return function (plume)
 			print("->", code:sub(pos, -1):gsub("\n", "\\n").."")
 			error("Malformed code near position " .. (pos+1) .. ".")
 		end
-
+		
 		plume.ast.markType(ast)
 		ast.pos = pos
 		return ast
