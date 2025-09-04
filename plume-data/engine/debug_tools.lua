@@ -153,7 +153,7 @@ return function (plume)
 		if deep==0 and ast.type then
 			print("("..ast.type..")")
 		end
-		for _, node in ipairs(ast.childs) do
+		for _, node in ipairs(ast.children) do
 			local line = ("\t"):rep(deep)..node.name
 			if not (" TEXT MACRO EVAL IDENTIFIER NUMBER EXPR EQ NEQ ADD SUB MUL DIV LT LTE GT GTE AND OR NOT CONDITION LET SET "):match(" "..node.name.." ") then
 				line = line.." ("..(node.type or "")..")"
@@ -163,7 +163,7 @@ return function (plume)
 			end
 
 			print(line)
-			if node.childs then
+			if node.children then
 				plume.debug.printSimpleAST(node, deep+1)
 			end
 		end

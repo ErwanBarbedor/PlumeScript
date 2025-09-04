@@ -56,8 +56,8 @@ return function (plume)
 	    end
 
 	    local function Ct(name, pattern)
-	        return lpeg.Ct(pattern) * Cp() / function(childs, epos)
-	            return {name=name, epos=epos-1, childs=childs}
+	        return lpeg.Ct(pattern) * Cp() / function(children, epos)
+	            return {name=name, epos=epos-1, children=children}
 	        end
 	    end
 
@@ -90,7 +90,7 @@ return function (plume)
 	            ast = {
 	            	name = operator.name,
 	            	epos = operator.epos,
-	            	childs = {
+	            	children = {
 	            		ast, 
 	            		right
 	            	}
@@ -107,7 +107,7 @@ return function (plume)
 	            ast = {
 	            	name = operator.name,
 	            	epos = operator.epos,
-	            	childs = {
+	            	children = {
 	            		ast
 	            	}
 	            }
@@ -202,13 +202,13 @@ return function (plume)
 	    local function sugarFlagParam(p)
 	    	return p / function(capture)
 	    		capture.name = "PARAM"
-	    		table.insert(capture.childs, {
+	    		table.insert(capture.children, {
 	    			name="BODY",
-	    			childs={{
+	    			children={{
 		    			name="EVAL",
 		    			bpos=capture.bpos,
 		    			epos=capture.epos,
-		    			childs={{
+		    			children={{
 		    				name = "FALSE",
 		    				epos=capture.epos,
 	    				}}
@@ -221,12 +221,12 @@ return function (plume)
 	    local function sugarFlagCall(p)
 	    	return p / function(capture)
 	    		capture.name = "HASH_ITEM"
-	    		table.insert(capture.childs, {
+	    		table.insert(capture.children, {
 	    			name="BODY",
-	    			childs={{
+	    			children={{
 		    			name="EVAL",
 		    			epos=capture.epos,
-		    			childs={{
+		    			children={{
 		    				name = "TRUE",
 		    				epos=capture.epos,
 	    				}}
@@ -314,7 +314,7 @@ return function (plume)
 
 		local ast = {
 			name="FILE",
-			childs=lpeg.match(grammar, code),
+			children=lpeg.match(grammar, code),
 			bpos=0,
 			epos=#code
 		}
@@ -323,10 +323,10 @@ return function (plume)
 		
 		-- Add bpos
 		plume.ast.browse(ast, function (node)
-			if node.childs then
-				for i=1, #node.childs-1 do
-					local child = node.childs[i]
-					local next  = node.childs[i+1]
+			if node.children then
+				for i=1, #node.children-1 do
+					local child = node.children[i]
+					local next  = node.children[i+1]
 					next.bpos = child.epos+1
 				end
 			end
