@@ -29,6 +29,7 @@ require 'plume-data/engine/parser'    (plume)
 require 'plume-data/engine/compiler'  (plume)
 require 'plume-data/engine/engine'    (plume)
 require 'plume-data/engine/finalizer' (plume)
+require 'plume-data/engine/error'     (plume)
 
 function plume.execute(code, filename, runtime)
 	if not runtime then
