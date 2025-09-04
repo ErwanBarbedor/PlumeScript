@@ -20,20 +20,20 @@ return function (plume)
 	    local S, R, P, V, Cp = lpeg.S, lpeg.R, lpeg.P, lpeg.V, lpeg.Cp
 
 	    local function C(name, pattern)
-	        return lpeg.C(pattern) * Cp() / function(content, pos)
+	        return lpeg.C(pattern) * Cp() / function(content, epos)
 	            return {
 	                name = name,
-	                pos  = pos,
+	                epos  = epos-1,
 	                content = content
 	            }
 	        end
 	    end
 
 	    local function Cc(name, pattern)
-	        return lpeg.Cc(pattern) * Cp() / function(content, pos)
+	        return lpeg.Cc(pattern) * Cp() / function(content, epos)
 	            return {
 	                name = name,
-	                pos  = pos,
+	                epos  = epos-1,
 	                content = content
 	            }
 	        end
@@ -45,10 +45,10 @@ return function (plume)
 
 	    local function E(name, pattern)
 	    	pattern = pattern or NOT(S"\n")^0
-	        return lpeg.C(pattern) * Cp() / function(content, pos)
+	        return lpeg.C(pattern) * Cp() / function(content, epos)
 	            return {
 	                name = name,
-	                pos  = pos,
+	                epos  = pos-1,
 	                content = content,
 	                error = true
 	            }
@@ -56,8 +56,8 @@ return function (plume)
 	    end
 
 	    local function Ct(name, pattern)
-	        return lpeg.Ct(pattern) * Cp() / function(childs, pos)
-	            return {name=name, pos=pos, childs=childs}
+	        return lpeg.Ct(pattern) * Cp() / function(childs, epos)
+	            return {name=name, epos=epos-1, childs=childs}
 	        end
 	    end
 
@@ -89,7 +89,7 @@ return function (plume)
 	            local right = t[i+1]
 	            ast = {
 	            	name = operator.name,
-	            	pos = operator.pos,
+	            	epos = operator.epos,
 	            	childs = {
 	            		ast, 
 	            		right
@@ -106,7 +106,7 @@ return function (plume)
 	            local operator = t[i]
 	            ast = {
 	            	name = operator.name,
-	            	pos = operator.pos,
+	            	epos = operator.epos,
 	            	childs = {
 	            		ast
 	            	}
@@ -206,13 +206,14 @@ return function (plume)
 	    			name="BODY",
 	    			childs={{
 		    			name="EVAL",
-		    			pos=capture.pos,
+		    			bpos=capture.bpos,
+		    			epos=capture.epos,
 		    			childs={{
 		    				name = "FALSE",
-		    				pos=capture.pos
+		    				epos=capture.epos,
 	    				}}
 	    			}},
-	    			pos=capture.pos
+		    		epos=capture.epos,
 	    		})
 	    		return capture
 	    	end
@@ -224,13 +225,13 @@ return function (plume)
 	    			name="BODY",
 	    			childs={{
 		    			name="EVAL",
-		    			pos=capture.pos,
+		    			epos=capture.epos,
 		    			childs={{
 		    				name = "TRUE",
-		    				pos=capture.pos
+		    				epos=capture.epos,
 	    				}}
 	    			}},
-	    			pos=capture.pos
+		    		epos=capture.epos,
 	    		})
 	    		return capture
 	    	end
@@ -314,21 +315,34 @@ return function (plume)
 		local ast = {
 			name="FILE",
 			childs=lpeg.match(grammar, code),
-			pos=0
+			bpos=0,
+			epos=#code
 		}
 		plume.ast.set(ast, "filename", filename)
+		plume.ast.set(ast, "code", code)
 		
+		-- Add bpos
+		plume.ast.browse(ast, function (node)
+			if node.childs then
+				for i=1, #node.childs-1 do
+					local child = node.childs[i]
+					local next  = node.childs[i+1]
+					next.bpos = child.epos+1
+				end
+			end
+		end)
+
 		-- Retrieve error if captured, else
 		-- check if all the file has been parsed
 		local pos = 0
 		plume.ast.browse(ast, function (node)
 			if node.error then
 				-- Todo: better error message
-				error("Error " .. node.name .. " at position " .. (node.pos+1) .. ".")
+				error("Error " .. node.name .. " at position " .. (node.bpos+1) .. ".")
 			end
 
-			if node.pos > pos then
-				pos = node.pos
+			if node.epos > pos then
+				pos = node.epos
 			end
 		end)
 
