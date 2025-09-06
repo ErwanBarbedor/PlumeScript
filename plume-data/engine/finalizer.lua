@@ -98,5 +98,7 @@ return function (plume)
 		link(runtime)
 		-- Encode instruction in one 32bits int
 		encode(runtime)
+
+		return true
 	end
 end
