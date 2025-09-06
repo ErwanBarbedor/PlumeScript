@@ -17,6 +17,11 @@ return function(plume)
 		error(message, -1)
 	end
 
+	local function throwSyntaxError(node, message)
+		message = plume.error.makeSyntaxError(node, message)
+		error(message, -1)
+	end
+
 	function plume.error.useUnknowVariableError(node, varName)
 		local message = string.format("Cannot use variable '%s', it isn't defined in the current scope.", varName)
 		throwCompilationError(node, message)
@@ -50,5 +55,41 @@ return function(plume)
 	function plume.error.cannotSetCallError(node)
 		local message = "Cannot set the result of a call."
 		throwCompilationError(node, message)
+	end
+
+	function plume.error.missingIteratorError(node)
+		local message = "Missing iterator."
+		throwSyntaxError(node, message)
+	end
+
+	function plume.error.missingConditionError(node)
+		local message = "Missing condition."
+		throwSyntaxError(node, message)
+	end
+
+	function plume.error.missingEndError(node)
+		local message = "Missing end."
+		throwSyntaxError(node, message)
+	end
+
+	function plume.error.missingLoopIdentifierError(node)
+		local message = "Missing loop identifier."
+		throwSyntaxError(node, message)
+	end
+
+	function plume.error.missingParamListError(node)
+		local message = "Missing parameters list."
+		throwSyntaxError(node, message)
+	end
+
+	function plume.error.emptySetError(node)
+		local message = "Using set without giving it a value."
+		throwSyntaxError(node, message)
+	end
+
+
+	function plume.error.malformedCodeError(node)
+		local message = "Malformed code."
+		throwSyntaxError(node, message)
 	end
 end
