@@ -43,7 +43,7 @@ function plume.execute(code, filename, runtime)
 	if success then
 		return result
 	else
-		error("Error at instruction " .. ip .. ": " .. result)
+		plume.error.makeError(runtime, ip, result)
 	end
 end
 
