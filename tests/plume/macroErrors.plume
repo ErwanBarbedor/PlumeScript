@@ -1,0 +1,47 @@
+/// Test not enought macro args
+macro Wings(nib, quill, ink)
+end
+$Wings(paint, write)
+/// Error
+Runtime error: Wrong number of positionnal arguments for macro 'Wings', 2 instead of 3
+File 'not enought macro args', line 3: $Wings(paint, write)
+                                        ^^^^^^^^^^^^^^^^^^^
+/// End
+
+/// Test to many macro args
+macro Wings(nib, quill, ink)
+end
+$Wings(paint, write, sing, dance)
+/// Error
+Runtime error: Wrong number of positionnal arguments for macro 'Wings', 4 instead of 3
+File 'to many macro args', line 3: $Wings(paint, write, sing, dance)
+                                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/// End
+
+/// Test unknow named parameter 1
+macro Wings(nib: quill)
+end
+$Wings(wing: red)
+/// Error
+Runtime error: Unknow named parameter 'wing' for macro 'Wings'.
+File 'unknow named parameter 1', line 3: $Wings(wing: red)
+                                          ^^^^^^^^^^^^^^^^
+/// End
+
+/// Test unknow named parameter 2
+macro Wings(nib: quill)
+end
+$Wings(nib: blue, wing: red)
+/// Error
+Runtime error: Unknow named parameter 'wing' for macro 'Wings'.
+File 'unknow named parameter 2', line 3: $Wings(nib: blue, wing: red)
+                                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/// End
+
+/// Test call a non-macro
+$(1)()
+/// Error
+Runtime error: Try to call a 'number' value
+File 'call a non-macro', line 1: $(1)()
+                                  ^^^^^
+/// End
