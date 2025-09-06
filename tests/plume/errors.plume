@@ -40,13 +40,40 @@ File 'define twice', line 2: let x = Nib
                              ^^^^^^^^^^^
 /// End
 
-/// Test defice macro twice
+/// Test define macro twice
 macro wings()
 end
 macro wings()
 end
 /// Error
 Compilation error: Cannot define static variable 'wings', it already exists in the current file scope.
-File 'defice macro twice', line 3: macro wings()
+File 'define macro twice', line 3: macro wings()
                                    ^^^^^^^^^^^^^^
+/// End
+
+/// Test Add string
+let x = Wings
+$(x+1)
+/// Error
+Runtime error: Cannot convert the string value to a number.
+File 'Add string', line 2: $(x+1)
+                             ^^^
+/// End
+
+/// Test Add table
+let x = $table()
+$(x+1)
+/// Error
+Runtime error: Cannot do comparison or arithmetic with table value.
+File 'Add table', line 2: $(x+1)
+                            ^^^
+/// End
+
+/// Test Iterate over non table
+for x in 1
+end
+/// Error
+Runtime error: Try to iterate over a non-table 'number' value.
+File 'Iterate over non table', line 1: for x in 1
+                                       ^^^^^^^^^^^
 /// End

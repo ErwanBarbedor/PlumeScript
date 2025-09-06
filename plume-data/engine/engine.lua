@@ -492,7 +492,7 @@ end
 	            local obj=ms[msp]
 	            local tobj=_type(obj)
 	            if tobj ~="table" then
-	                            return false, "Try to iterate over a non-table '" .. tobj .. "' object.", ip
+	                            return false, "Try to iterate over a non-table '" .. tobj .. "' value.", ip
 	            end
 	            local iter=obj.meta.iter
 	            if iter.type=="luaFunction" then
@@ -521,11 +521,17 @@ end
 	            y=ms[msp]
 	                        if _type(x)=="string" then
 	                x=tonumber(x)
+	                if not x then
+	                                return false, "Cannot convert the string value to a number.", ip
+	                end
 	            elseif _type(x) ~="number" then
 	                            return false, "Cannot do comparison or arithmetic with " .. _type(x).. " value.", ip
 	            end
 	                        if _type(y)=="string" then
 	                y=tonumber(y)
+	                if not y then
+	                                return false, "Cannot convert the string value to a number.", ip
+	                end
 	            elseif _type(y) ~="number" then
 	                            return false, "Cannot do comparison or arithmetic with " .. _type(y).. " value.", ip
 	            end
@@ -539,11 +545,17 @@ end
 	            y=ms[msp]
 	                        if _type(x)=="string" then
 	                x=tonumber(x)
+	                if not x then
+	                                return false, "Cannot convert the string value to a number.", ip
+	                end
 	            elseif _type(x) ~="number" then
 	                            return false, "Cannot do comparison or arithmetic with " .. _type(x).. " value.", ip
 	            end
 	                        if _type(y)=="string" then
 	                y=tonumber(y)
+	                if not y then
+	                                return false, "Cannot convert the string value to a number.", ip
+	                end
 	            elseif _type(y) ~="number" then
 	                            return false, "Cannot do comparison or arithmetic with " .. _type(y).. " value.", ip
 	            end
@@ -557,11 +569,17 @@ end
 	            y=ms[msp]
 	                        if _type(x)=="string" then
 	                x=tonumber(x)
+	                if not x then
+	                                return false, "Cannot convert the string value to a number.", ip
+	                end
 	            elseif _type(x) ~="number" then
 	                            return false, "Cannot do comparison or arithmetic with " .. _type(x).. " value.", ip
 	            end
 	                        if _type(y)=="string" then
 	                y=tonumber(y)
+	                if not y then
+	                                return false, "Cannot convert the string value to a number.", ip
+	                end
 	            elseif _type(y) ~="number" then
 	                            return false, "Cannot do comparison or arithmetic with " .. _type(y).. " value.", ip
 	            end
@@ -575,11 +593,17 @@ end
 	            y=ms[msp]
 	                        if _type(x)=="string" then
 	                x=tonumber(x)
+	                if not x then
+	                                return false, "Cannot convert the string value to a number.", ip
+	                end
 	            elseif _type(x) ~="number" then
 	                            return false, "Cannot do comparison or arithmetic with " .. _type(x).. " value.", ip
 	            end
 	                        if _type(y)=="string" then
 	                y=tonumber(y)
+	                if not y then
+	                                return false, "Cannot convert the string value to a number.", ip
+	                end
 	            elseif _type(y) ~="number" then
 	                            return false, "Cannot do comparison or arithmetic with " .. _type(y).. " value.", ip
 	            end
@@ -592,6 +616,9 @@ end
 	            x=ms[msp]
 	                        if _type(x)=="string" then
 	                x=tonumber(x)
+	                if not x then
+	                                return false, "Cannot convert the string value to a number.", ip
+	                end
 	            elseif _type(x) ~="number" then
 	                            return false, "Cannot do comparison or arithmetic with " .. _type(x).. " value.", ip
 	            end
@@ -604,11 +631,17 @@ end
 	            y=ms[msp]
 	                        if _type(x)=="string" then
 	                x=tonumber(x)
+	                if not x then
+	                                return false, "Cannot convert the string value to a number.", ip
+	                end
 	            elseif _type(x) ~="number" then
 	                            return false, "Cannot do comparison or arithmetic with " .. _type(x).. " value.", ip
 	            end
 	                        if _type(y)=="string" then
 	                y=tonumber(y)
+	                if not y then
+	                                return false, "Cannot convert the string value to a number.", ip
+	                end
 	            elseif _type(y) ~="number" then
 	                            return false, "Cannot do comparison or arithmetic with " .. _type(y).. " value.", ip
 	            end
@@ -622,11 +655,17 @@ end
 	            y=ms[msp]
 	                        if _type(x)=="string" then
 	                x=tonumber(x)
+	                if not x then
+	                                return false, "Cannot convert the string value to a number.", ip
+	                end
 	            elseif _type(x) ~="number" then
 	                            return false, "Cannot do comparison or arithmetic with " .. _type(x).. " value.", ip
 	            end
 	                        if _type(y)=="string" then
 	                y=tonumber(y)
+	                if not y then
+	                                return false, "Cannot convert the string value to a number.", ip
+	                end
 	            elseif _type(y) ~="number" then
 	                            return false, "Cannot do comparison or arithmetic with " .. _type(y).. " value.", ip
 	            end
@@ -640,11 +679,17 @@ end
 	            y=ms[msp]
 	                        if _type(x)=="string" then
 	                x=tonumber(x)
+	                if not x then
+	                                return false, "Cannot convert the string value to a number.", ip
+	                end
 	            elseif _type(x) ~="number" then
 	                            return false, "Cannot do comparison or arithmetic with " .. _type(x).. " value.", ip
 	            end
 	                        if _type(y)=="string" then
 	                y=tonumber(y)
+	                if not y then
+	                                return false, "Cannot convert the string value to a number.", ip
+	                end
 	            elseif _type(y) ~="number" then
 	                            return false, "Cannot do comparison or arithmetic with " .. _type(y).. " value.", ip
 	            end
@@ -658,11 +703,17 @@ end
 	            y=ms[msp]
 	                        if _type(x)=="string" then
 	                x=tonumber(x)
+	                if not x then
+	                                return false, "Cannot convert the string value to a number.", ip
+	                end
 	            elseif _type(x) ~="number" then
 	                            return false, "Cannot do comparison or arithmetic with " .. _type(x).. " value.", ip
 	            end
 	                        if _type(y)=="string" then
 	                y=tonumber(y)
+	                if not y then
+	                                return false, "Cannot convert the string value to a number.", ip
+	                end
 	            elseif _type(y) ~="number" then
 	                            return false, "Cannot do comparison or arithmetic with " .. _type(y).. " value.", ip
 	            end
@@ -676,11 +727,17 @@ end
 	            y=ms[msp]
 	                        if _type(x)=="string" then
 	                x=tonumber(x)
+	                if not x then
+	                                return false, "Cannot convert the string value to a number.", ip
+	                end
 	            elseif _type(x) ~="number" then
 	                            return false, "Cannot do comparison or arithmetic with " .. _type(x).. " value.", ip
 	            end
 	                        if _type(y)=="string" then
 	                y=tonumber(y)
+	                if not y then
+	                                return false, "Cannot convert the string value to a number.", ip
+	                end
 	            elseif _type(y) ~="number" then
 	                            return false, "Cannot do comparison or arithmetic with " .. _type(y).. " value.", ip
 	            end
@@ -694,11 +751,17 @@ end
 	            y=ms[msp]
 	                        if _type(x)=="string" then
 	                x=tonumber(x)
+	                if not x then
+	                                return false, "Cannot convert the string value to a number.", ip
+	                end
 	            elseif _type(x) ~="number" then
 	                            return false, "Cannot do comparison or arithmetic with " .. _type(x).. " value.", ip
 	            end
 	                        if _type(y)=="string" then
 	                y=tonumber(y)
+	                if not y then
+	                                return false, "Cannot convert the string value to a number.", ip
+	                end
 	            elseif _type(y) ~="number" then
 	                            return false, "Cannot do comparison or arithmetic with " .. _type(y).. " value.", ip
 	            end
