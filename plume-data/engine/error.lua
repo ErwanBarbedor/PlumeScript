@@ -33,7 +33,7 @@ return function(plume)
 
 		for line in (code.."\n"):gmatch('[^\n]+\n') do
 			capturedNoline = capturedNoline + 1
-
+			
 			if currentPos + #line >= bpos then
 				capturedLine = line
 				currentPos = currentPos+1
@@ -47,6 +47,7 @@ return function(plume)
 
 		local indent = capturedLine:match('^%s*')
 		capturedLine = capturedLine:sub(#indent, -1)
+		capturedLine = capturedLine:gsub('\n$', '')
 		bpos = bpos - #indent + 1
 
 		return {
@@ -71,9 +72,22 @@ return function(plume)
 		return msg
 	end
 
-	function plume.error.print(message, node)
-		local lineInfos = plume.error.getLineInfos(node)
-		print(message)
-		print(plume.error.formatLine(lineInfos))
+	function plume.error.makeMessage(message, node)
+		if node  and node.bpos then
+			local lineInfos = plume.error.getLineInfos(node)
+			message = message .. "\n"..plume.error.formatLine(lineInfos)
+		end
+		return message
+	end
+
+	function plume.error.makeError(runtime, ip, message)
+		local node
+		for i=ip+1, 1, -1 do
+			node = runtime.mapping[i]
+			if node and node.bpos then
+				break
+			end
+		end
+		error(plume.error.makeMessage(message, node))
 	end
 end
