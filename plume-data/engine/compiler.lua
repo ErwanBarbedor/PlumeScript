@@ -222,7 +222,7 @@ return function(plume)
 		local function opLoadVar(node, varName)
 			local var = getVariable(varName)
 			if not var then
-				error("Cannot eval variable '" .. varName .. "', it doesn't exist.")
+				plume.error.useUnknowVariableError(node, varName)
 			end
 			if var.isStatic then
 				registerOP(node, ops.LOAD_STATIC, 0, var.offset)
@@ -298,13 +298,11 @@ return function(plume)
 			local from    = plume.ast.get(node, "FROM")
 			local eq      = plume.ast.get(node, "EQ")
 
-
-			
 			local varlist = {}
 			for _, idn in ipairs(idns) do
 				local var = registerVariable(idn.content, static, const)
 				if not var then
-					error("Cannot declare variable '" .. idn.content .. "', it already exist in this scope.")
+					plume.error.letExistingVariableError(node, idn.content)
 				end
 				table.insert(varlist, var)
 				var.name = idn.content
@@ -333,7 +331,7 @@ return function(plume)
 					end
 				end
 			elseif const then
-				error("Cannot define a const empty variable.")
+				plume.error.letEmptyConstantError(node)
 			end
 		end
 
@@ -347,9 +345,9 @@ return function(plume)
 			if idn then
 				local var = getVariable(idn.content)
 				if not var then
-					error("Cannot set variable '" .. varName .. "', it doesn't exist.")
+					plume.error.setUnknowVariableError(node, idn.content)
 				elseif var.isConst then
-					error("Cannot set variable '" .. varName .. "', is a constant.")
+					plume.error.setConstantVariableError(node, idn.content)
 				end
 
 				if compound then
@@ -398,7 +396,7 @@ return function(plume)
 					getKey()
 					registerOP(node, ops.TABLE_SET, 0, 0)
 				else
-					error("Cannot set the result of a call.")
+					plume.error.cannotSetCallError(node)
 				end
 			end
 		end
@@ -629,7 +627,7 @@ return function(plume)
 					true -- static
 				)
 				if not variable then
-					error("static '" .. macroName .. "' already exists.")
+					plume.error.letExistingStaticVariableError(node, macroName)
 				end
 				macroObj.name = macroName
 				registerOP(node, ops.STORE_STATIC, 0, variable.offset)
@@ -681,8 +679,10 @@ return function(plume)
 
 		loadSTD()
 
-		local ast = plume.parse(code)
+		local ast = plume.parse(code, filename)
 		registerFileLink()
 		nodeHandler(ast)
+
+		return true
 	end
 end

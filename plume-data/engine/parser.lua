@@ -335,6 +335,7 @@ return function (plume)
             bpos=1,
             epos=#code
         }
+        
         plume.ast.set(ast, "filename", filename)
         plume.ast.set(ast, "code", code)
 

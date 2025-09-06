@@ -66,21 +66,25 @@ return function(plume)
 			lineInfos.noline
 		)
 		local msg =  intro
-		msg = msg .. lineInfos.line
+		msg = msg .. lineInfos.line .. "\n"
 		msg = msg .. (" "):rep(#intro + lineInfos.bpos-1) .. ("^"):rep(lineInfos.len)
 
 		return msg
 	end
 
 	function plume.error.makeMessage(message, node)
-		if node  and node.bpos then
+		if node and node.bpos then
 			local lineInfos = plume.error.getLineInfos(node)
 			message = message .. "\n"..plume.error.formatLine(lineInfos)
 		end
 		return message
 	end
 
-	function plume.error.makeError(runtime, ip, message)
+	function plume.error.makeCompilationError(node, message)
+		return plume.error.makeMessage("Compilation error: " .. message, node)
+	end
+
+	function plume.error.makeRuntimeError(runtime, ip, message)
 		local node
 		for i=ip+1, 1, -1 do
 			node = runtime.mapping[i]
@@ -88,6 +92,6 @@ return function(plume)
 				break
 			end
 		end
-		error(plume.error.makeMessage(message, node))
+		return plume.error.makeMessage("Runtime error: " .. message, node)
 	end
 end

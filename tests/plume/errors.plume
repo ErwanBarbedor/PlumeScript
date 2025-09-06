@@ -1,0 +1,52 @@
+/// Test set unknow variable
+set x = Wings
+/// Error
+Compilation error: Cannot set variable 'x', it isn't defined in the current scope.
+File 'set unknow variable', line 1: set x = Wings
+                                    ^^^^^^^^^^^^^
+/// End
+
+/// Test use unknow variable
+let x = $y
+/// Error
+Compilation error: Cannot use variable 'y', it isn't defined in the current scope.
+File 'use unknow variable', line 1: let x = $y
+                                             ^
+/// End
+
+/// Test set constant variable
+let const x = Wings
+set x = Nib
+/// Error
+Compilation error: Cannot set variable 'x', it is a constant.
+File 'set constant variable', line 2: set x = Nib
+                                      ^^^^^^^^^^^
+/// End
+
+/// Test let empty const
+let const x
+/// Error
+Compilation error: Cannot define an empty constant variable.
+File 'let empty const', line 1: let const x
+                                ^^^^^^^^^^
+/// End
+
+/// Test define twice
+let x = Wings
+let x = Nib
+/// Error
+Compilation error: Cannot define variable 'x', it already exists in the current scope.
+File 'define twice', line 2: let x = Nib
+                             ^^^^^^^^^^^
+/// End
+
+/// Test defice macro twice
+macro wings()
+end
+macro wings()
+end
+/// Error
+Compilation error: Cannot define static variable 'wings', it already exists in the current file scope.
+File 'defice macro twice', line 3: macro wings()
+                                   ^^^^^^^^^^^^^^
+/// End
