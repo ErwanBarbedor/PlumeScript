@@ -257,9 +257,14 @@ return function (plume)
 		for ip, instr in ipairs(runtime.bytecode) do
 			local infos = getInstrInfos(instr, runtime)
 			local raw = string.format("%08X", instr)
-			local value = escapeString(infos.value or "")
+
+			local node = runtime.mapping[ip]
+			local line = ""
+			if node and node.code then
+				line = plume.error.getLineInfos(node).line
+			end
 			
-			table.insert(result, {raw, infos.name, infos.arg1, infos.arg2, value})
+			table.insert(result, {raw, infos.name, infos.arg1, infos.arg2, line})
 		end
 		return result
 	end
