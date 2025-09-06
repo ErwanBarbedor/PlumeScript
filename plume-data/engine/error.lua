@@ -20,6 +20,7 @@ return function(plume)
 		local bpos     = node.bpos
 		local epos     = node.epos
 		local len      = 0
+		local content  = code:sub(bpos, epos)
 		
 		plume.ast.browse(node, function(child)
 			if child.bpos and child.bpos < bpos then
@@ -52,6 +53,7 @@ return function(plume)
 
 		return {
 			line   = capturedLine,
+			content = content,
 			noline = capturedNoline,
 			bpos   = bpos,
 			len    = len,
