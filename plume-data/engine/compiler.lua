@@ -171,7 +171,7 @@ return function(plume)
 				if node.type == "TEXT" then
 					registerOP(node, ops.BEGIN_ACC, 0, 0)
 					f(node)
-					registerOP(node, ops.ACC_TEXT, 0, 0)
+					registerOP(nil, ops.ACC_TEXT, 0, 0)
 				
 				-- More or less a TEXT block with 1 element
 				elseif node.type == "VALUE" then
@@ -181,12 +181,12 @@ return function(plume)
 				elseif node.type == "TABLE" then
 					_accTableInit()
 					f(node)
-					registerOP(node, ops.ACC_TABLE, 0, 0)
+					registerOP(nil, ops.ACC_TABLE, 0, 0)
 				
 				elseif node.type == "EMPTY" then
 					-- Exactly same behavior as BEGIN_ACC (nothing) ACC_TEXT
 					f(node)
-					registerOP(node, ops.LOAD_EMPTY, 0, 0)
+					registerOP(nil, ops.LOAD_EMPTY, 0, 0)
 				end
 			end		
 		end
@@ -201,7 +201,7 @@ return function(plume)
 					table.insert(scopes, {})
 					f(node)
 					table.remove(scopes)
-					registerOP(node, ops.LEAVE_SCOPE, 0, 0)
+					registerOP(nil, ops.LEAVE_SCOPE, 0, 0)
 				else
 					f(node)
 				end
@@ -211,11 +211,11 @@ return function(plume)
 		local function file(f)
 			f = f or childrenHandler
 			return function (node)
-				registerOP(node, ops.ENTER_FILE, 0, runtime.fileCount)
+				registerOP(nil, ops.ENTER_FILE, 0, runtime.fileCount)
 				table.insert(roots, #scopes+1)
 				f(node)
 				table.remove(roots)
-				registerOP(node, ops.RETURN, 0, 0)
+				registerOP(nil, ops.RETURN, 0, 0)
 			end		
 		end
 
@@ -306,6 +306,7 @@ return function(plume)
 				end
 				table.insert(varlist, var)
 				var.name = idn.content
+				var.ref = idn
 			end
 
 			if body then
@@ -318,16 +319,16 @@ return function(plume)
 				for i, var in ipairs(varlist) do
 					if from then
 						if i < #varlist then
-							registerOP(body, ops.DUPLICATE, 0, 0)
+							registerOP(nil, ops.DUPLICATE, 0, 0)
 						end
-						registerOP(body, ops.LOAD_CONSTANT, 0, registerConstant(var.name))
-						registerOP(body, ops.SWITCH, 0, 0)
-						registerOP(body, ops.TABLE_INDEX, 0, 0)
+						registerOP(var.ref, ops.LOAD_CONSTANT, 0, registerConstant(var.name))
+						registerOP(nil, ops.SWITCH, 0, 0)
+						registerOP(nil, ops.TABLE_INDEX, 0, 0)
 					end
 					if static then
-						registerOP(body, ops.STORE_STATIC, 0, var.offset)
+						registerOP(var.ref, ops.STORE_STATIC, 0, var.offset)
 					else
-						registerOP(body, ops.STORE_LOCAL, 0, var.offset)
+						registerOP(var.ref, ops.STORE_LOCAL, 0, var.offset)
 					end
 				end
 			elseif const then
@@ -436,9 +437,10 @@ return function(plume)
 				elseif child.name == "INDEX" then
 					childrenHandler(child)
 				elseif child.name == "DIRECT_INDEX" then
-					local name = plume.ast.get(child, "IDENTIFIER").content
+					local index = plume.ast.get(child, "IDENTIFIER")
+					local name = index.content
 					local offset = registerConstant(name)
-					registerOP(node, ops.LOAD_CONSTANT, 0, offset)
+					registerOP(index, ops.LOAD_CONSTANT, 0, offset)
 				end
 			end
 
@@ -452,9 +454,9 @@ return function(plume)
 					registerOP(node, ops.ACC_CALL, 0, 0)
 				elseif child.name == "INDEX" or child.name == "DIRECT_INDEX" then
 					if node.children[i+1] and node.children[i+1].name == "CALL" then
-						registerOP(node, ops.TABLE_INDEX_ACC_SELF, 0, 0)
+						registerOP(child, ops.TABLE_INDEX_ACC_SELF, 0, 0)
 					else
-						registerOP(node, ops.TABLE_INDEX, 0, 0)
+						registerOP(child, ops.TABLE_INDEX, 0, 0)
 					end
 				end
 			end
@@ -521,24 +523,24 @@ return function(plume)
 
 			childrenHandler(iterator)
 			registerOP(node, ops.GET_ITER, 0, 0)
-			registerOP(node, ops.ENTER_SCOPE, 0, 1)
+			registerOP(nil, ops.ENTER_SCOPE, 0, 1)
 			table.insert(scopes, {})
 
-				registerOP(node, ops.STORE_LOCAL, 0, 1)
+				registerOP(nil, ops.STORE_LOCAL, 0, 1)
 
-				registerLabel(node, "for_begin_"..uid)
-				registerOP(node, ops.LOAD_LOCAL, 0, 1)
-				registerGoto(node, "for_end_"..uid, "FOR_ITER", 1)
+				registerLabel(nil, "for_begin_"..uid)
+				registerOP(nil, ops.LOAD_LOCAL, 0, 1)
+				registerGoto(nil, "for_end_"..uid, "FOR_ITER", 1)
 
 				scope(function(body)
 					local var = registerVariable(identifier)
-					registerOP(node, ops.STORE_LOCAL, 0, var.offset)
+					registerOP(identifier, ops.STORE_LOCAL, 0, var.offset)
 					
 					childrenHandler(body)
 				end, 1)(body)
 
-				registerGoto (node, "for_begin_"..uid)
-				registerLabel(node, "for_end_"..uid)
+				registerGoto (nil, "for_begin_"..uid)
+				registerLabel(nil, "for_end_"..uid)
 
 			table.remove(scopes)
 			registerOP(node, ops.LEAVE_SCOPE, 0, 0)	
@@ -618,7 +620,7 @@ return function(plume)
 			local macroObj       = plume.obj.macro(0)
 			local macroOffset = registerConstant(macroObj)
 			
-			registerOP(node, ops.LOAD_CONSTANT, 0, macroOffset)
+			registerOP(macroIdentifier, ops.LOAD_CONSTANT, 0, macroOffset)
 			
 			if macroIdentifier then
 				local macroName = macroIdentifier.content
@@ -630,10 +632,10 @@ return function(plume)
 					plume.error.letExistingStaticVariableError(node, macroName)
 				end
 				macroObj.name = macroName
-				registerOP(node, ops.STORE_STATIC, 0, variable.offset)
+				registerOP(macroIdentifier, ops.STORE_STATIC, 0, variable.offset)
 			end
 
-			registerGoto(node, "macro_end_" .. uid)
+			registerGoto(nil, "macro_end_" .. uid)
 			registerMacroLink(node, macroOffset)
 
 			

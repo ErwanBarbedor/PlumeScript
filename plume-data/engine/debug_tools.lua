@@ -228,10 +228,13 @@ return function (plume)
 	function plume.debug.printBytecode(runtime)
 		local maxlength = 15
 		for ip, instr in ipairs(runtime.bytecode) do
-			local line = ""
+			local content = ""
 			local node = runtime.mapping[ip]
 			if node then
-				line = plume.error.getLineInfos(node).line
+				content = plume.error.getLineInfos(node).content
+				if content:match('\n') then
+					content = content:match('^[^\n]*').."[...]"
+				end
 			end
 
 			if type(instr) == "table" then
@@ -242,12 +245,12 @@ return function (plume)
 				elseif instr.link then
 					value = "LINK " .. instr.link
 				end
-				printCols({ip..".", "", "", value, ";"..line}, maxlength)
+				printCols({ip..".", "", "", value, "; "..content}, maxlength)
 			else
 				local infos = getInstrInfos(instr, runtime)
 				local raw = string.format("%08x", instr)
 				local value = escapeString(infos.value or "")
-				printCols({ip..".", raw, infos.op.."+"..infos.arg1.."+"..infos.arg2, infos.name, value, ";"..line}, maxlength)
+				printCols({ip..".", raw, infos.op.."+"..infos.arg1.."+"..infos.arg2, infos.name, value, "; "..content}, maxlength)
 			end
 		end
 	end
@@ -259,12 +262,15 @@ return function (plume)
 			local raw = string.format("%08X", instr)
 
 			local node = runtime.mapping[ip]
-			local line = ""
+			local content = ""
 			if node and node.code then
-				line = plume.error.getLineInfos(node).line
+				content = plume.error.getLineInfos(node).content
+				if content:match('\n') then
+					content = content:match('^[^\n]*').."[...]"
+				end
 			end
 			
-			table.insert(result, {raw, infos.name, infos.arg1, infos.arg2, line})
+			table.insert(result, {raw, infos.name, infos.arg1, infos.arg2, content})
 		end
 		return result
 	end
