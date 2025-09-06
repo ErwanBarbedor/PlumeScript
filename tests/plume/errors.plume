@@ -28,7 +28,7 @@ let const x
 /// Error
 Compilation error: Cannot define an empty constant variable.
 File 'let empty const', line 1: let const x
-                                ^^^^^^^^^^
+                                ^^^^^^^^^^^
 /// End
 
 /// Test define twice

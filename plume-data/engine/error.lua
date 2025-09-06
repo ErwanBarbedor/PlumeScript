@@ -86,6 +86,10 @@ return function(plume)
 		return plume.error.makeMessage("Compilation error: " .. message, node)
 	end
 
+	function plume.error.makeSyntaxError(node, message)
+		return plume.error.makeMessage("Syntax error: " .. message, node)
+	end
+
 	function plume.error.makeRuntimeError(runtime, ip, message)
 		local node
 		for i=ip+1, 1, -1 do

@@ -45,7 +45,7 @@ return function (plume)
             return (P(1) - pattern)
         end
 
-        local function E(name, pattern)
+        local function E(errorHandler, pattern)
         	pattern = pattern or NOT(S"\n")^0
             return Cp() * lpeg.C(pattern) * Cp() / function(bpos, content, epos)
                 return {
@@ -53,7 +53,7 @@ return function (plume)
                     bpos = bpos,
                     epos  = epos-1,
                     content = content,
-                    error = true
+                    error = errorHandler
                 }
             end
         end
@@ -195,10 +195,12 @@ return function (plume)
         -- commands --
         --------------
         -- common
-        local iterator  = s * (P"in") * s * Ct("ITERATOR", expr) + E("MISSING_ITERATOR")
-        local condition = s * Ct("CONDITION", expr) + E("MISSING_CONDITION")
+        local iterator  = s * (P"in") * s * Ct("ITERATOR", expr)
+                        + E(plume.error.missingIteratorError)
+        
+        local condition = s * Ct("CONDITION", expr) + E(plume.error.missingConditionError)
         local body      = Ct("BODY", V"statement"^0)
-        local _end      = lt * (P"end" + E("MISSING_END"))
+        local _end      = lt * P"end" + E(plume.error.missingEndError)
 
         -- if/elseif/else
         local _else   = Ct("ELSE", lt*P"else" * body)
@@ -206,7 +208,7 @@ return function (plume)
         local _if     = Ct("IF", P"if" * condition * body * _elseif^0 * _else^-1 * _end)
 
         -- loops
-        local forInd = idn + E("MISSING_LOOP_IDENTIFIER")
+        local forInd = idn + E(plume.error.missingLoopIndentifierError)
         local _while = Ct("WHILE", P"while" * condition * body * _end)
         local _for   = Ct("FOR", P"for" * s * forInd * iterator * body * _end)
 
@@ -261,7 +263,7 @@ return function (plume)
                     		) + sugarFlagParam(Ct("FLAG", "?"*idn))
                     		
         local paramlist  = Ct("PARAMLIST", P"(" * param^-1 * (os * P"," * os * param)^0 * P")")
-        local paramlistM = paramlist + E("MISSING_PARAMLIST")
+        local paramlistM = paramlist + E(plume.error.missingParamListError)
         local macro      = Ct("MACRO", P"macro" * (s * idn)^-1 * os * paramlistM * body * _end)
 
         local arg       = Ct("HASH_ITEM", idn * os * P":" * os * Ct("BODY", V"textic"^-1))	
@@ -277,11 +279,12 @@ return function (plume)
 
         -- affectations
         local lbody    = Ct("BODY", V"firstStatement")
-        local statcont = (s * C("STATIC", P"static"))^-1 * (s * C("CONST", P"const"))^-1
+        local statconst = (s * C("STATIC", P"static"))^-1 * (s * C("CONST", P"const"))^-1
         local idnList = idn * (os * P"," * os * idn)^0
-        local let = Ct("LET", P"let" * statcont * s *  (
-        						  idn * os * C("EQ", P"=")   * lbody
-        						+ idnList * s  * C("FROM", P"from") * s * Ct("EVAL", expr)
+        local let = Ct("LET", P"let" * statconst *  (
+        						  s * idn * os * C("EQ", P"=")   * lbody
+        						+ s * idnList * s  * C("FROM", P"from") * s * Ct("EVAL", expr)
+                                + s * idn
         					)^-1)
         local compound = Ct("COMPOUND", C("ADD", P"+") + C("SUB", P"-")
                        + C("MUL", P"*") + C("DIV", P"/"))
@@ -315,7 +318,7 @@ return function (plume)
             rawtext   = C("TEXT", NOT(S"$\n\\" + P"//")^1),
             rawtextic = C("TEXT", NOT(S"$\n,)\\"+ P"//")^1),
 
-            invalid = E("INVALID", P"set"),
+            invalid = E(plume.error.emptySetError, P"set"),
             evalOpperator = call + index + directindex
         }
 
@@ -333,7 +336,7 @@ return function (plume)
             name="FILE",
             children=lpeg.match(grammar, code),
             bpos=1,
-            epos=#code
+            epos=1
         }
         
         plume.ast.set(ast, "filename", filename)
@@ -344,8 +347,7 @@ return function (plume)
         local pos = 0
         plume.ast.browse(ast, function (node)
             if node.error then
-                -- Todo: better error message
-                error("Error " .. node.name .. " at position " .. (node.bpos) .. ".")
+                node.error(node)
             end
 
             if node.epos and node.epos > pos then
@@ -354,8 +356,12 @@ return function (plume)
         end)
 
         if pos < #code then
-            print("->", code:sub(pos+1, -1):gsub("\n", "\\n").."")
-            error("Malformed code near position " .. (pos+1) .. ".")
+            plume.error.malformedCodeError({
+                filename = filename,
+                code = code,
+                bpos = pos,
+                epos = #code
+            })
         end
         
         plume.ast.markType(ast)

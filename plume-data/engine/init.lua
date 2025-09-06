@@ -21,7 +21,8 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 local plume = {}
 
 require 'plume-data/engine/debug_tools' (plume)
-
+require 'plume-data/engine/error'         (plume)
+require 'plume-data/engine/errorMessages' (plume)
 require 'plume-data/engine/utils'         (plume)
 require 'plume-data/engine/objects'       (plume)
 require 'plume-data/engine/std'           (plume)
@@ -29,8 +30,7 @@ require 'plume-data/engine/parser'        (plume)
 require 'plume-data/engine/compiler'      (plume)
 require 'plume-data/engine/engine'        (plume)
 require 'plume-data/engine/finalizer'     (plume)
-require 'plume-data/engine/error'         (plume)
-require 'plume-data/engine/errorMessages' (plume)
+
 
 function plume.execute(code, filename, runtime)
 	if not runtime then
