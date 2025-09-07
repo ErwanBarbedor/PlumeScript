@@ -86,6 +86,7 @@ return function (plume)
 			local arg2_part = bit.band(instr[3], MASK_ARG2)
 			local byte = bit.bor(op_part, arg1_part, arg2_part)
 			runtime.bytecode[offset] = byte
+			runtime.mapping[offset] = instr.mapsto
 		end
 		runtime.computedInstructionsPointer = #runtime.computedInstructions
 	end
@@ -97,5 +98,7 @@ return function (plume)
 		link(runtime)
 		-- Encode instruction in one 32bits int
 		encode(runtime)
+
+		return true
 	end
 end

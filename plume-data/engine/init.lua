@@ -21,28 +21,40 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 local plume = {}
 
 require 'plume-data/engine/debug_tools' (plume)
+require 'plume-data/engine/error'         (plume)
+require 'plume-data/engine/errorMessages' (plume)
+require 'plume-data/engine/utils'         (plume)
+require 'plume-data/engine/objects'       (plume)
+require 'plume-data/engine/std'           (plume)
+require 'plume-data/engine/parser'        (plume)
+require 'plume-data/engine/compiler'      (plume)
+require 'plume-data/engine/engine'        (plume)
+require 'plume-data/engine/finalizer'     (plume)
 
-require 'plume-data/engine/utils'     (plume)
-require 'plume-data/engine/objects'   (plume)
-require 'plume-data/engine/std'       (plume)
-require 'plume-data/engine/parser'    (plume)
-require 'plume-data/engine/compiler'  (plume)
-require 'plume-data/engine/engine'    (plume)
-require 'plume-data/engine/finalizer' (plume)
 
 function plume.execute(code, filename, runtime)
 	if not runtime then
 		runtime = plume.initRuntime()
 	end
 
-	plume.compileFile(code, filename, runtime)
-	plume.finalize(runtime)
-	local success, result, ip = plume.run(runtime)
+	local success, result, ip
+
+	success, result = pcall(plume.compileFile, code, filename, runtime)
+	
+	if success then
+		success, result = pcall(plume.finalize, runtime)
+	end
 
 	if success then
-		return result
+		success, result, ip = plume.run(runtime)
 	else
-		error("Error at instruction " .. ip .. ": " .. result)
+		return false, result
+	end
+
+	if success then
+		return true, result
+	else
+		return false, plume.error.makeRuntimeError(runtime, ip, result)
 	end
 end
 
