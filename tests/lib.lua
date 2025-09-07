@@ -133,22 +133,21 @@ function lib.executeTests(allTests, plumeEngine)
     for filename, tests in pairs(allTests) do
         if not tests.error then
             for testName, testData in pairs(tests) do
-                -- Use pcall to safely execute the Plume code and capture errors
-                local success, result
                 local runtime = plumeEngine.initRuntime()
-                success, result = pcall(plumeEngine.compileFile, testData.input, testName, runtime)
-                if success then
-                    success, result = pcall(plumeEngine.finalize, runtime)
-                end
+                local x, y, z = pcall(
+                    plumeEngine.execute,
+                    testData.input,
+                    testName,
+                    runtime
+                )
 
-                if success then
-                    success, x, y = pcall(plumeEngine.run, runtime)
-                    if success and x then
-                        result = y
-                    else
-                        success = false
-                        result = x
-                    end
+                local success, result
+                if x then
+                    success = y
+                    result = z
+                else
+                    success = false
+                    result = y
                 end
 
                 testData.obtained = {

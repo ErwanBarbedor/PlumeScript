@@ -153,7 +153,7 @@ return function (plume)
 		if deep==0 and ast.type then
 			print("("..ast.type..")")
 		end
-		for _, node in ipairs(ast.childs) do
+		for _, node in ipairs(ast.children) do
 			local line = ("\t"):rep(deep)..node.name
 			if not (" TEXT MACRO EVAL IDENTIFIER NUMBER EXPR EQ NEQ ADD SUB MUL DIV LT LTE GT GTE AND OR NOT CONDITION LET SET "):match(" "..node.name.." ") then
 				line = line.." ("..(node.type or "")..")"
@@ -163,7 +163,7 @@ return function (plume)
 			end
 
 			print(line)
-			if node.childs then
+			if node.children then
 				plume.debug.printSimpleAST(node, deep+1)
 			end
 		end
@@ -228,6 +228,15 @@ return function (plume)
 	function plume.debug.printBytecode(runtime)
 		local maxlength = 15
 		for ip, instr in ipairs(runtime.bytecode) do
+			local content = ""
+			local node = runtime.mapping[ip]
+			if node then
+				content = plume.error.getLineInfos(node).content
+				if content:match('\n') then
+					content = content:match('^[^\n]*').."[...]"
+				end
+			end
+
 			if type(instr) == "table" then
 				if instr.label then
 					value = "LABEL " .. instr.label
@@ -236,12 +245,12 @@ return function (plume)
 				elseif instr.link then
 					value = "LINK " .. instr.link
 				end
-				printCols({ip..".", "", "", value}, maxlength)
+				printCols({ip..".", "", "", value, "; "..content}, maxlength)
 			else
 				local infos = getInstrInfos(instr, runtime)
 				local raw = string.format("%08x", instr)
 				local value = escapeString(infos.value or "")
-				printCols({ip..".", raw, infos.op.."+"..infos.arg1.."+"..infos.arg2, infos.name, value}, maxlength)
+				printCols({ip..".", raw, infos.op.."+"..infos.arg1.."+"..infos.arg2, infos.name, value, "; "..content}, maxlength)
 			end
 		end
 	end
@@ -251,9 +260,17 @@ return function (plume)
 		for ip, instr in ipairs(runtime.bytecode) do
 			local infos = getInstrInfos(instr, runtime)
 			local raw = string.format("%08X", instr)
-			local value = escapeString(infos.value or "")
+
+			local node = runtime.mapping[ip]
+			local content = ""
+			if node and node.code then
+				content = plume.error.getLineInfos(node).content
+				if content:match('\n') then
+					content = content:match('^[^\n]*').."[...]"
+				end
+			end
 			
-			table.insert(result, {raw, infos.name, infos.arg1, infos.arg2, value})
+			table.insert(result, {raw, infos.name, infos.arg1, infos.arg2, content})
 		end
 		return result
 	end

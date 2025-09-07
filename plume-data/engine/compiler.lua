@@ -24,6 +24,7 @@ return function(plume)
 			computedInstructions = {},
 			bytecode = {},
 
+			mapping = {},
 			
 			instructionsPointer = 0,-- track already traited bytecode
 			computedInstructionsPointer = 0, 
@@ -54,19 +55,19 @@ return function(plume)
 			return fileNo.."_"..uid
 		end
 
-		local function registerOP(op, arg1, arg2)
+		local function registerOP(node, op, arg1, arg2)
 			assert(op)
-			table.insert(instructions, {op, arg1, arg2})
+			table.insert(instructions, {op, arg1, arg2, mapsto=node})
 		end
 
-		local function registerLabel(name)
-			instructions[#instructions+1] = {label=name}
+		local function registerLabel(node, name)
+			instructions[#instructions+1] = {label=name, mapsto=node}
 		end
-		local function registerGoto(name, jump)
-			instructions[#instructions+1] = {_goto=name, jump=jump or "JUMP"}
+		local function registerGoto(node, name, jump)
+			instructions[#instructions+1] = {_goto=name, jump=jump or "JUMP", mapsto=node}
 		end
-		local function registerMacroLink(offset)
-			instructions[#instructions+1] = {link=offset}
+		local function registerMacroLink(node, offset)
+			instructions[#instructions+1] = {link=offset, mapsto=node}
 		end
 		local function registerFileLink(offset)
 			instructions[#instructions+1] = {fileLink=filename}
@@ -142,19 +143,19 @@ return function(plume)
 			handler(node)
 		end
 
-		local function childsHandler(node)
-			for _, child in ipairs(node.childs or {}) do
+		local function childrenHandler(node)
+			for _, child in ipairs(node.children or {}) do
 				nodeHandler(child)
 			end
 		end
 
 		local function _accTableInit()
-			registerOP(ops.BEGIN_ACC, 0, 0)
-			registerOP(ops.TABLE_NEW, 0, 0)
+			registerOP(nil, ops.BEGIN_ACC, 0, 0)
+			registerOP(nil, ops.TABLE_NEW, 0, 0)
 		end
 
 		local function _accTable(node)
-			for _, child in ipairs(node.childs) do
+			for _, child in ipairs(node.children) do
 				if child.name == "LIST_ITEM"
 				or child.name == "HASH_ITEM" then
 					nodeHandler(child)
@@ -165,12 +166,12 @@ return function(plume)
 		end
 
 		local function accBlock(f)
-			f = f or childsHandler
+			f = f or childrenHandler
 			return function (node)
 				if node.type == "TEXT" then
-					registerOP(ops.BEGIN_ACC, 0, 0)
+					registerOP(node, ops.BEGIN_ACC, 0, 0)
 					f(node)
-					registerOP(ops.ACC_TEXT, 0, 0)
+					registerOP(nil, ops.ACC_TEXT, 0, 0)
 				
 				-- More or less a TEXT block with 1 element
 				elseif node.type == "VALUE" then
@@ -180,27 +181,27 @@ return function(plume)
 				elseif node.type == "TABLE" then
 					_accTableInit()
 					f(node)
-					registerOP(ops.ACC_TABLE, 0, 0)
+					registerOP(nil, ops.ACC_TABLE, 0, 0)
 				
 				elseif node.type == "EMPTY" then
 					-- Exactly same behavior as BEGIN_ACC (nothing) ACC_TEXT
 					f(node)
-					registerOP(ops.LOAD_EMPTY, 0, 0)
+					registerOP(nil, ops.LOAD_EMPTY, 0, 0)
 				end
 			end		
 		end
 
 
 		local function scope(f, internVar)
-			f = f or childsHandler
+			f = f or childrenHandler
 			return function (node)
 				local lets = #plume.ast.getAll(node, "LET") + (internVar or 0)
 				if lets>0 or forced then
-					registerOP(ops.ENTER_SCOPE, 0, lets)
+					registerOP(node, ops.ENTER_SCOPE, 0, lets)
 					table.insert(scopes, {})
 					f(node)
 					table.remove(scopes)
-					registerOP(ops.LEAVE_SCOPE, 0, 0)
+					registerOP(nil, ops.LEAVE_SCOPE, 0, 0)
 				else
 					f(node)
 				end
@@ -208,27 +209,27 @@ return function(plume)
 		end
 
 		local function file(f)
-			f = f or childsHandler
+			f = f or childrenHandler
 			return function (node)
-				registerOP(ops.ENTER_FILE, 0, runtime.fileCount)
+				registerOP(nil, ops.ENTER_FILE, 0, runtime.fileCount)
 				table.insert(roots, #scopes+1)
 				f(node)
 				table.remove(roots)
-				registerOP(ops.RETURN, 0, 0)
+				registerOP(nil, ops.RETURN, 0, 0)
 			end		
 		end
 
 		local function opLoadVar(node, varName)
 			local var = getVariable(varName)
 			if not var then
-				error("Cannot eval variable '" .. varName .. "', it doesn't exist.")
+				plume.error.useUnknowVariableError(node, varName)
 			end
 			if var.isStatic then
-				registerOP(ops.LOAD_STATIC, 0, var.offset)
+				registerOP(node, ops.LOAD_STATIC, 0, var.offset)
 			elseif var.frameOffset > 0 then
-				registerOP(ops.LOAD_LEXICAL, var.frameOffset, var.offset)
+				registerOP(node, ops.LOAD_LEXICAL, var.frameOffset, var.offset)
 			else
-				registerOP(ops.LOAD_LOCAL, 0, var.offset)
+				registerOP(node, ops.LOAD_LOCAL, 0, var.offset)
 			end
 		end
 
@@ -237,7 +238,7 @@ return function(plume)
 		-----------
 		nodeHandlerTable.FILE = file(function(node)
 			local lets = #plume.ast.getAll(node, "LET")
-			registerOP(ops.ENTER_SCOPE, 0, lets)
+			registerOP(node, ops.ENTER_SCOPE, 0, lets)
 			table.insert(scopes, {})
 			accBlock()(node)
 			table.remove(scopes)
@@ -251,15 +252,15 @@ return function(plume)
 
 		nodeHandlerTable.TEXT = function(node)
 			local offset = registerConstant(node.content)
-			registerOP(ops.LOAD_CONSTANT, 0, offset)
+			registerOP(node, ops.LOAD_CONSTANT, 0, offset)
 		end
 		nodeHandlerTable.NUMBER = function(node)
 			local offset = registerConstant(tonumber(node.content))
-			registerOP(ops.LOAD_CONSTANT, 0, offset)
+			registerOP(node, ops.LOAD_CONSTANT, 0, offset)
 		end
 		nodeHandlerTable.QUOTE = function(node)
-			local offset = registerConstant(node.childs[1].content)
-			registerOP(ops.LOAD_CONSTANT, 0, offset)
+			local offset = registerConstant(node.children[1].content)
+			registerOP(node, ops.LOAD_CONSTANT, 0, offset)
 		end
 
 		nodeHandlerTable.LIST_ITEM = accBlock()
@@ -272,18 +273,18 @@ return function(plume)
 			local offset = registerConstant(identifier)
 
 			accBlock()(body)
-			registerOP(ops.LOAD_CONSTANT, 0, offset)
+			registerOP(node, ops.LOAD_CONSTANT, 0, offset)
 
 			if meta then
-				registerOP(ops.TABLE_SET_ACC_META, 0, 0)
+				registerOP(node, ops.TABLE_SET_ACC_META, 0, 0)
 			else
-				registerOP(ops.TABLE_SET_ACC, 0, 0)
+				registerOP(node, ops.TABLE_SET_ACC, 0, 0)
 			end
 		end
 
 		nodeHandlerTable.EXPAND = function(node)
-			childsHandler(node)
-			registerOP(ops.TABLE_EXPAND, 0, 0)
+			childrenHandler(node)
+			registerOP(node, ops.TABLE_EXPAND, 0, 0)
 		end
 
 		--------------
@@ -297,16 +298,15 @@ return function(plume)
 			local from    = plume.ast.get(node, "FROM")
 			local eq      = plume.ast.get(node, "EQ")
 
-
-			
 			local varlist = {}
 			for _, idn in ipairs(idns) do
 				local var = registerVariable(idn.content, static, const)
 				if not var then
-					error("Cannot declare variable '" .. idn.content .. "', it already exist in this scope.")
+					plume.error.letExistingVariableError(node, idn.content)
 				end
 				table.insert(varlist, var)
 				var.name = idn.content
+				var.ref = idn
 			end
 
 			if body then
@@ -319,20 +319,20 @@ return function(plume)
 				for i, var in ipairs(varlist) do
 					if from then
 						if i < #varlist then
-							registerOP(ops.DUPLICATE, 0, 0)
+							registerOP(nil, ops.DUPLICATE, 0, 0)
 						end
-						registerOP(ops.LOAD_CONSTANT, 0, registerConstant(var.name))
-						registerOP(ops.SWITCH, 0, 0)
-						registerOP(ops.TABLE_INDEX, 0, 0)
+						registerOP(var.ref, ops.LOAD_CONSTANT, 0, registerConstant(var.name))
+						registerOP(nil, ops.SWITCH, 0, 0)
+						registerOP(nil, ops.TABLE_INDEX, 0, 0)
 					end
 					if static then
-						registerOP(ops.STORE_STATIC, 0, var.offset)
+						registerOP(var.ref, ops.STORE_STATIC, 0, var.offset)
 					else
-						registerOP(ops.STORE_LOCAL, 0, var.offset)
+						registerOP(var.ref, ops.STORE_LOCAL, 0, var.offset)
 					end
 				end
 			elseif const then
-				error("Cannot define a const empty variable.")
+				plume.error.letEmptyConstantError(node)
 			end
 		end
 
@@ -346,9 +346,9 @@ return function(plume)
 			if idn then
 				local var = getVariable(idn.content)
 				if not var then
-					error("Cannot set variable '" .. varName .. "', it doesn't exist.")
+					plume.error.setUnknowVariableError(node, idn.content)
 				elseif var.isConst then
-					error("Cannot set variable '" .. varName .. "', is a constant.")
+					plume.error.setConstantVariableError(node, idn.content)
 				end
 
 				if compound then
@@ -356,48 +356,48 @@ return function(plume)
 				end
 				accBlock()(body)
 				if compound then
-					registerOP(ops["OPP_" .. compound.childs[1].name], 0, 0)
+					registerOP(idn, ops["OPP_" .. compound.children[1].name], 0, 0)
 				end
 
 				if var.isStatic then
-					registerOP(ops.STORE_STATIC, 0, var.offset)
+					registerOP(idn, ops.STORE_STATIC, 0, var.offset)
 				elseif var.frameOffset > 0 then
-					registerOP(ops.STORE_LEXICAL, var.frameOffset, var.offset)
+					registerOP(idn, ops.STORE_LEXICAL, var.frameOffset, var.offset)
 				else
-					registerOP(ops.STORE_LOCAL, 0, var.offset)
+					registerOP(idn, ops.STORE_LOCAL, 0, var.offset)
 				end
 			else
 				-- The last index should be detected by the parser, and not modified here.
 				-- This is a temporary workaround.
-				local last = eval.childs[#eval.childs]
+				local last = eval.children[#eval.children]
 
 				if last.name == "INDEX" or last.name == "DIRECT_INDEX" then
-					eval.childs[#eval.childs] = nil
+					eval.children[#eval.children] = nil
 
 					local function getKey()
 						if last.name == "DIRECT_INDEX" then
-							local key = registerConstant(last.childs[1].content)
-							registerOP(ops.LOAD_CONSTANT, 0, key)
+							local key = registerConstant(last.children[1].content)
+							registerOP(node, ops.LOAD_CONSTANT, 0, key)
 						else
-							childsHandler(last) -- key
+							childrenHandler(last) -- key
 						end
-						childsHandler(eval) -- table
+						childrenHandler(eval) -- table
 					end
 
 					if compound then
 						getKey()
-						registerOP(ops.TABLE_INDEX, 0, 0)
+						registerOP(node, ops.TABLE_INDEX, 0, 0)
 					end
 
 					accBlock()(body) -- value
 					if compound then
-						registerOP(ops["OPP_" .. compound.childs[1].name], 0, 0)
+						registerOP(node, ops["OPP_" .. compound.children[1].name], 0, 0)
 					end
 
 					getKey()
-					registerOP(ops.TABLE_SET, 0, 0)
+					registerOP(node, ops.TABLE_SET, 0, 0)
 				else
-					error("Cannot set the result of a call.")
+					plume.error.cannotSetCallError(node)
 				end
 			end
 		end
@@ -409,15 +409,15 @@ return function(plume)
 
 		for oppName in oppNames:gmatch("%S+") do
 			nodeHandlerTable[oppName] = function(node)
-				nodeHandler(node.childs[1])
-				if node.childs[2] then--only binary
-					nodeHandler(node.childs[2])
+				nodeHandler(node.children[1])
+				if node.children[2] then--only binary
+					nodeHandler(node.children[2])
 				end
-				registerOP(ops["OPP_" .. oppName], 0, 0)
+				registerOP(node, ops["OPP_" .. oppName], 0, 0)
 			end
 		end
 
-		nodeHandlerTable.EXPR = childsHandler
+		nodeHandlerTable.EXPR = childrenHandler
 
 		nodeHandlerTable.IDENTIFIER = function(node)
 			local varName = node.content
@@ -426,36 +426,37 @@ return function(plume)
 
 		nodeHandlerTable.EVAL = function(node)
 			-- Push all index/call info in reverse order
-			for i=#node.childs, 2, -1 do
-				local child = node.childs[i]
+			for i=#node.children, 2, -1 do
+				local child = node.children[i]
 
 				if child.name == "CALL" then
 					_accTableInit()
-					childsHandler(child)
+					childrenHandler(child)
 				elseif child.name == "BLOCK_CALL" then
 					nodeHandler(child)
 				elseif child.name == "INDEX" then
-					childsHandler(child)
+					childrenHandler(child)
 				elseif child.name == "DIRECT_INDEX" then
-					local name = plume.ast.get(child, "IDENTIFIER").content
+					local index = plume.ast.get(child, "IDENTIFIER")
+					local name = index.content
 					local offset = registerConstant(name)
-					registerOP(ops.LOAD_CONSTANT, 0, offset)
+					registerOP(index, ops.LOAD_CONSTANT, 0, offset)
 				end
 			end
 
 			-- Load eval value
-			nodeHandler(node.childs[1])
+			nodeHandler(node.children[1])
 
 			-- Push all index/call op in order
-			for i=2, #node.childs do
-				local child = node.childs[i]
+			for i=2, #node.children do
+				local child = node.children[i]
 				if child.name == "CALL" or child.name == "BLOCK_CALL" then
-					registerOP(ops.ACC_CALL, 0, 0)
+					registerOP(node, ops.ACC_CALL, 0, 0)
 				elseif child.name == "INDEX" or child.name == "DIRECT_INDEX" then
-					if node.childs[i+1] and node.childs[i+1].name == "CALL" then
-						registerOP(ops.TABLE_INDEX_ACC_SELF, 0, 0)
+					if node.children[i+1] and node.children[i+1].name == "CALL" then
+						registerOP(child, ops.TABLE_INDEX_ACC_SELF, 0, 0)
 					else
-						registerOP(ops.TABLE_INDEX, 0, 0)
+						registerOP(child, ops.TABLE_INDEX, 0, 0)
 					end
 				end
 			end
@@ -475,7 +476,7 @@ return function(plume)
 				end
 
 				if node.type == "TABLE" then
-					childsHandler(body)
+					childrenHandler(body)
 				else
 					accBlock()(body)
 				end
@@ -483,15 +484,15 @@ return function(plume)
 		end
 
 		nodeHandlerTable.TRUE = function(node)
-			registerOP(ops.LOAD_TRUE, 0, 0)
+			registerOP(node, ops.LOAD_TRUE, 0, 0)
 		end
 
 		nodeHandlerTable.FALSE = function(node)
-			registerOP(ops.LOAD_FALSE, 0, 0)
+			registerOP(node, ops.LOAD_FALSE, 0, 0)
 		end
 
 		nodeHandlerTable.EMPTY = function(node)
-			registerOP(ops.LOAD_EMPTY, 0, 0)
+			registerOP(node, ops.LOAD_EMPTY, 0, 0)
 		end
 
 		-----------
@@ -502,12 +503,12 @@ return function(plume)
 			local body      = plume.ast.get(node, "BODY")
 			local uid = getUID()
 
-			registerLabel("while_begin_"..uid)
-			childsHandler(condition)
-			registerGoto("while_end_"..uid, "JUMP_IF_NOT")
+			registerLabel(node, "while_begin_"..uid)
+			childrenHandler(condition)
+			registerGoto(node, "while_end_"..uid, "JUMP_IF_NOT")
 			scope()(body)
-			registerGoto("while_begin_"..uid)
-			registerLabel("while_end_"..uid)
+			registerGoto(node, "while_begin_"..uid)
+			registerLabel(node, "while_end_"..uid)
 		end
 
 		nodeHandlerTable.FOR = function(node)
@@ -520,29 +521,29 @@ return function(plume)
 			local iter = registerConstant("iter")
 
 
-			childsHandler(iterator)
-			registerOP(ops.GET_ITER, 0, 0)
-			registerOP(ops.ENTER_SCOPE, 0, 1)
+			childrenHandler(iterator)
+			registerOP(node, ops.GET_ITER, 0, 0)
+			registerOP(nil, ops.ENTER_SCOPE, 0, 1)
 			table.insert(scopes, {})
 
-				registerOP(ops.STORE_LOCAL, 0, 1)
+				registerOP(nil, ops.STORE_LOCAL, 0, 1)
 
-				registerLabel("for_begin_"..uid)
-				registerOP(ops.LOAD_LOCAL, 0, 1)
-				registerGoto("for_end_"..uid, "FOR_ITER", 1)
+				registerLabel(nil, "for_begin_"..uid)
+				registerOP(nil, ops.LOAD_LOCAL, 0, 1)
+				registerGoto(nil, "for_end_"..uid, "FOR_ITER", 1)
 
 				scope(function(body)
 					local var = registerVariable(identifier)
-					registerOP(ops.STORE_LOCAL, 0, var.offset)
+					registerOP(identifier, ops.STORE_LOCAL, 0, var.offset)
 					
-					childsHandler(body)
+					childrenHandler(body)
 				end, 1)(body)
 
-				registerGoto ("for_begin_"..uid)
-				registerLabel("for_end_"..uid)
+				registerGoto (nil, "for_begin_"..uid)
+				registerLabel(nil, "for_end_"..uid)
 
 			table.remove(scopes)
-			registerOP(ops.LEAVE_SCOPE, 0, 0)	
+			registerOP(node, ops.LEAVE_SCOPE, 0, 0)	
 		end
 
 		------------
@@ -590,20 +591,20 @@ return function(plume)
 			for i=1, #branchs, 2 do
 				local body = branchs[i]
 				local condition = branchs[i+1]
-				registerLabel("branch_"..i.."_"..uid)
+				registerLabel(node, "branch_"..i.."_"..uid)
 				if condition then
-					childsHandler(condition)
-					registerGoto("branch_"..(i+2).."_"..uid, "JUMP_IF_NOT")
+					childrenHandler(condition)
+					registerGoto(node, "branch_"..(i+2).."_"..uid, "JUMP_IF_NOT")
 				end
 				scope()(body)
 				if specialValueMode and body.type == "EMPTY" then
-					registerOP(ops.LOAD_EMPTY, 0, 0)
+					registerOP(node, ops.LOAD_EMPTY, 0, 0)
 				end
 
-				registerGoto("branch_"..finalBranch.."_"..uid)
+				registerGoto(node, "branch_"..finalBranch.."_"..uid)
 			end
 
-			registerLabel("branch_"..finalBranch.."_"..uid)
+			registerLabel(node, "branch_"..finalBranch.."_"..uid)
 
 		end
 
@@ -613,13 +614,13 @@ return function(plume)
 		nodeHandlerTable.MACRO = function(node)
 			local macroIdentifier = plume.ast.get(node, "IDENTIFIER")
 			local body            = plume.ast.get(node, "BODY")
-			local paramList       = plume.ast.get(node, "PARAMLIST") or {childs={}}
+			local paramList       = plume.ast.get(node, "PARAMLIST") or {children={}}
 			local uid = getUID()
 
 			local macroObj       = plume.obj.macro(0)
 			local macroOffset = registerConstant(macroObj)
 			
-			registerOP(ops.LOAD_CONSTANT, 0, macroOffset)
+			registerOP(macroIdentifier, ops.LOAD_CONSTANT, 0, macroOffset)
 			
 			if macroIdentifier then
 				local macroName = macroIdentifier.content
@@ -628,31 +629,31 @@ return function(plume)
 					true -- static
 				)
 				if not variable then
-					error("static '" .. macroName .. "' already exists.")
+					plume.error.letExistingStaticVariableError(node, macroName)
 				end
 				macroObj.name = macroName
-				registerOP(ops.STORE_STATIC, 0, variable.offset)
+				registerOP(macroIdentifier, ops.STORE_STATIC, 0, variable.offset)
 			end
 
-			registerGoto("macro_end_" .. uid)
-			registerMacroLink(macroOffset)
+			registerGoto(nil, "macro_end_" .. uid)
+			registerMacroLink(node, macroOffset)
 
 			
 			file(function ()
 				-- Each macro open a scope, but it is handled by ACC_CALL and RETURN.
 				table.insert(scopes, {})
-				for i, param in ipairs(paramList.childs) do
+				for i, param in ipairs(paramList.children) do
 					local paramName = plume.ast.get(param, "IDENTIFIER", 1, 2).content
 					local variadic  = plume.ast.get(param, "VARIADIC")
 					local paramBody = plume.ast.get(param, "BODY")
 					local param = registerVariable(paramName)
 
 					if paramBody then
-						registerOP(ops.LOAD_LOCAL, 0, i)
-						registerGoto("macro_var_" .. i .. "_" .. uid, "JUMP_IF_NOT_EMPTY")
+						registerOP(param, ops.LOAD_LOCAL, 0, i)
+						registerGoto(param, "macro_var_" .. i .. "_" .. uid, "JUMP_IF_NOT_EMPTY")
 						accBlock()(paramBody)
-						registerOP(ops.STORE_LOCAL, 0, i)
-						registerLabel("macro_var_" .. i .. "_" .. uid)
+						registerOP(param, ops.STORE_LOCAL, 0, i)
+						registerLabel(param, "macro_var_" .. i .. "_" .. uid)
 
 						macroObj.namedParamCount = macroObj.namedParamCount+1
 						macroObj.namedParamOffset[paramName] = param.offset
@@ -675,13 +676,15 @@ return function(plume)
 				table.remove(scopes)
 			end) ()
 			
-			registerLabel("macro_end_" .. uid)
+			registerLabel(node, "macro_end_" .. uid)
 		end
 
 		loadSTD()
 
-		local ast = plume.parse(code)
+		local ast = plume.parse(code, filename)
 		registerFileLink()
 		nodeHandler(ast)
+
+		return true
 	end
 end

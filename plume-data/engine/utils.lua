@@ -77,7 +77,7 @@ return function (plume)
 		end
 
 		table.insert(parents, node)
-		for _, child in ipairs(node.childs or {}) do
+		for _, child in ipairs(node.children or {}) do
 			local value = plume.ast.browse(child, f, mindeep, maxdeep, parents)
 			if value == "STOP" then
 				return value
@@ -120,7 +120,7 @@ return function (plume)
 
 	function plume.ast.markType(node)
 		node.type = "EMPTY"
-		for _, child in ipairs(node.childs or {}) do
+		for _, child in ipairs(node.children or {}) do
 			child.parent = node
 			local childType = plume.ast.markType(child)
 

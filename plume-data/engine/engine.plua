@@ -256,7 +256,7 @@ return function (plume)
             local obj = ms[msp]
             local tobj = _type(obj)
             if tobj ~= "table" then
-                @_ERROR{{"Try to iterate over a non-table '" .. tobj .. "' object."}}
+                @_ERROR{{"Try to iterate over a non-table '" .. tobj .. "' value."}}
             end
 
             local iter = obj.meta.iter
@@ -585,6 +585,9 @@ return function (plume)
         @define _CHECK_NUMBER x
             if _type($x) == "string" then
                 $x = tonumber($x)
+                if not $x then
+                    @_ERROR {{"Cannot convert the string value to a number."}}
+                end
             elseif _type($x) ~= "number" then
                 @_ERROR {{"Cannot do comparison or arithmetic with " .. _type($x).. " value."}}
             end
