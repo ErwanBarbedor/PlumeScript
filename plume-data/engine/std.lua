@@ -224,7 +224,7 @@ return function (plume)
         plume.std.lua.table[name] = importLuaFunction(name, _G[name])
     end
 
-    for name in ("string math"):gmatch("%S+") do
+    for name in ("string math os io"):gmatch("%S+") do
         plume.std.lua.table[name] = importLuaTable(name, _G[name])
     end
 end
