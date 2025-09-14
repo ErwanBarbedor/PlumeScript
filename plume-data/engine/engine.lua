@@ -216,7 +216,9 @@ end
 end
 			::TABLE_INDEX::
 	do
-	            ms[msp-1]=ms[msp].table[ms[msp-1]]
+	            local key=ms[msp-1]
+	            key=tonumber(key) or key
+	            ms[msp-1]=ms[msp].table[key]
 	            msp=msp-1
 				goto DISPATCH
 end
@@ -225,7 +227,9 @@ end
 	            table.insert(ms[msf[msfp]], "self")
 	            table.insert(ms[msf[msfp]], ms[msp])
 	            table.insert(ms[msf[msfp]], false)
-	                        ms[msp-1]=ms[msp].table[ms[msp-1]]
+	                        local key=ms[msp-1]
+	            key=tonumber(key) or key
+	            ms[msp-1]=ms[msp].table[key]
 	            msp=msp-1
 				goto DISPATCH
 end

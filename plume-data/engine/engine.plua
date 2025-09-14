@@ -481,7 +481,9 @@ return function (plume)
             --- Stack 1, table[key]
             --- arg1: -
             --- arg2: -
-            ms[msp-1] = ms[msp].table[ms[msp-1]]
+            local key = ms[msp-1]
+            key = tonumber(key) or key
+            ms[msp-1] = ms[msp].table[key]
             msp = msp-1
         @end
 
@@ -509,6 +511,8 @@ return function (plume)
 
         @define _TABLE_SET t k v
             -- if dont exists, register key
+            local key = $k
+            key = tonumber(key) or key
             if not $t.table[$k] then
                 table.insert($t.keys, $k)
             end
@@ -524,7 +528,9 @@ return function (plume)
             --- Set the table.key to value
             --- arg1: -
             --- arg2: -
-            ms[msp].table[ms[msp-1]] = ms[msp-2]
+            local key = ms[msp-1]
+            key = tonumber(key) or key
+            ms[msp].table[key] = ms[msp-2]
             msp = msp-3
         @end
 
