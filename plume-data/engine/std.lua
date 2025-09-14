@@ -64,11 +64,13 @@ return function (plume)
             local start = args.table[1]
             local stop  = args.table[2]
 
-            plume.debug.print(args)
             if not stop then
                 stop = start
                 start = 1
             end
+
+            start = tonumber(start)
+            stop = tonumber(stop)
 
             local iterator = plume.obj.table(1, 2)
             iterator.table[1] = start-1
