@@ -108,6 +108,15 @@ end
 1
 /// End
 
+/// Test #144
+let x = 1.5
+for i in seq(1, x)
+    $i
+end
+/// Output
+1
+/// End
+
 /// Test #147
 let x = 1
 for i in seq(x, 2)
