@@ -42,6 +42,10 @@ return function(plume)
 			end
 			currentPos = currentPos + #line
 		end
+
+		if not capturedLine then
+			return
+		end
 		
 		len  = math.min(epos - bpos + 1, #capturedLine - (bpos - currentPos))
 		bpos = bpos - currentPos
