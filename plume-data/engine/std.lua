@@ -64,6 +64,7 @@ return function (plume)
             local start = args.table[1]
             local stop  = args.table[2]
 
+            plume.debug.print(args)
             if not stop then
                 stop = start
                 start = 1
