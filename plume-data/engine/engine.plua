@@ -483,7 +483,23 @@ return function (plume)
             --- arg2: -
             local key = ms[msp-1]
             key = tonumber(key) or key
-            ms[msp-1] = ms[msp].table[key]
+            if key==empty then
+                @_ERROR {{"Cannot use empty as key."}}
+            end
+            local _table = ms[msp]
+            local t = _type(_table)
+            if t ~= "table" then
+                @_ERROR{{"Try to index a '" ..t .."' value."}}
+            end
+            local value = _table.table[key]
+            if not value then
+                if tonumber(key) then
+                    @_ERROR {{"Invalid index '" .. key .."'."}}
+                else
+                    @_ERROR {{"Unregistered key '" .. key .."'."}}
+                end
+            end
+            ms[msp-1] = value
             msp = msp-1
         @end
 
@@ -574,6 +590,10 @@ return function (plume)
             --- arg1: -
             --- arg2: -
             local t = ms[msp]
+            if _type(t) ~= "table" then
+                @_ERROR{{"Try to expand a '" .._type(t) .."' value."}}
+            end
+
             msp = msp-1
             for _, item in ipairs(t.table) do
                 msp = msp+1

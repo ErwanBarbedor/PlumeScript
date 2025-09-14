@@ -210,7 +210,9 @@ end
 end
 			::TABLE_SET::
 	do
-	            ms[msp].table[ms[msp-1]]=ms[msp-2]
+	            local key=ms[msp-1]
+	            key=tonumber(key) or key
+	            ms[msp].table[key]=ms[msp-2]
 	            msp=msp-3
 				goto DISPATCH
 end
@@ -218,7 +220,23 @@ end
 	do
 	            local key=ms[msp-1]
 	            key=tonumber(key) or key
-	            ms[msp-1]=ms[msp].table[key]
+	            if key==empty then
+	                            return false, "Cannot use empty as key.", ip
+	            end
+	            local _table=ms[msp]
+	            local t=_type(_table)
+	            if t ~="table" then
+	                            return false, "Try to index a '" ..t .."' value.", ip
+	            end
+	            local value=_table.table[key]
+	            if not value then
+	                if tonumber(key) then
+	                                return false, "Invalid index '" .. key .."'.", ip
+	                else
+	                                return false, "Unregistered key '" .. key .."'.", ip
+	                end
+	            end
+	            ms[msp-1]=value
 	            msp=msp-1
 				goto DISPATCH
 end
@@ -229,7 +247,23 @@ end
 	            table.insert(ms[msf[msfp]], false)
 	                        local key=ms[msp-1]
 	            key=tonumber(key) or key
-	            ms[msp-1]=ms[msp].table[key]
+	            if key==empty then
+	                            return false, "Cannot use empty as key.", ip
+	            end
+	            local _table=ms[msp]
+	            local t=_type(_table)
+	            if t ~="table" then
+	                            return false, "Try to index a '" ..t .."' value.", ip
+	            end
+	            local value=_table.table[key]
+	            if not value then
+	                if tonumber(key) then
+	                                return false, "Invalid index '" .. key .."'.", ip
+	                else
+	                                return false, "Unregistered key '" .. key .."'.", ip
+	                end
+	            end
+	            ms[msp-1]=value
 	            msp=msp-1
 				goto DISPATCH
 end
@@ -264,6 +298,9 @@ end
 			::TABLE_EXPAND::
 	do
 	            local t=ms[msp]
+	            if _type(t) ~="table" then
+	                            return false, "Try to expand a '" .._type(t) .."' value.", ip
+	            end
 	            msp=msp-1
 	            for _, item in ipairs(t.table) do
 	                msp=msp+1
@@ -321,7 +358,9 @@ end
 	                if ms[limit-1][i+2] then
 	                                args.meta[ms[limit-1][i]]=ms[limit-1][i+1]
 	                else
-	                                if not args.table[ms[limit-1][i]] then
+	                                local key=ms[limit-1][i]
+	            key=tonumber(key) or key
+	            if not args.table[ms[limit-1][i]] then
 	                table.insert(args.keys, ms[limit-1][i])
 	            end
 	            args.table[ms[limit-1][i]]=ms[limit-1][i+1]
@@ -390,7 +429,9 @@ end
 	                elseif j then
 	                    vs[vsf[vsfp]+j-1]=v
 	                elseif macro.variadicOffset>0 then
-	                                if not capture.table[k] then
+	                                local key=k
+	            key=tonumber(key) or key
+	            if not capture.table[k] then
 	                table.insert(capture.keys, k)
 	            end
 	            capture.table[k]=v
@@ -418,7 +459,9 @@ end
 	                if ms[limit-1][i+2] then
 	                                args.meta[ms[limit-1][i]]=ms[limit-1][i+1]
 	                else
-	                                if not args.table[ms[limit-1][i]] then
+	                                local key=ms[limit-1][i]
+	            key=tonumber(key) or key
+	            if not args.table[ms[limit-1][i]] then
 	                table.insert(args.keys, ms[limit-1][i])
 	            end
 	            args.table[ms[limit-1][i]]=ms[limit-1][i+1]
