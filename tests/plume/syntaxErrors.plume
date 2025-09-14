@@ -86,7 +86,7 @@ end
 /// Error
 Syntax error: Malformed code.
 File 'missing @table', line 1: let x =
-                                   ^^^^
+                                   ^^^
 /// End
 
 /// Test empty set
