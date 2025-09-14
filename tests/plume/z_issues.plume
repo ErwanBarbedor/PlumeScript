@@ -107,3 +107,12 @@ end
 /// Output
 1
 /// End
+
+/// Test #147
+let x = 1
+for i in seq(x, 2)
+    $i
+end
+/// Output
+12
+/// End

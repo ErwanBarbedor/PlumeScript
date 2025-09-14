@@ -126,7 +126,12 @@ return function (plume)
 
 			-- workaround for the case where child is an information,
 			-- not a proper child
-			local avoid = node.name ~= "EVAL" and child.name == "IDENTIFIER"
+			local avoid = child.name == "IDENTIFIER" and (
+			    	node.name ~= "EVAL"
+				and node.name ~= "LIST_ITEM"
+				and node.name ~= "HASH_ITEM"
+			)
+
 
 			if not avoid then
 				if node.type == "EMPTY" then
