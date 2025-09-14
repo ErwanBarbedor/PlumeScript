@@ -186,6 +186,5 @@ return function (plume)
 		else
 			return "EMPTY"
 		end
-		
 	end
 end

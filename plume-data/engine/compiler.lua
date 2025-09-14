@@ -596,7 +596,11 @@ return function(plume)
 					childrenHandler(condition)
 					registerGoto(node, "branch_"..(i+2).."_"..uid, "JUMP_IF_NOT")
 				end
-				scope()(body)
+				if body.type == "TEXT" then
+					scope(accBlock())(body)
+				else
+					scope()(body)
+				end
 				if specialValueMode and body.type == "EMPTY" then
 					registerOP(node, ops.LOAD_EMPTY, 0, 0)
 				end
