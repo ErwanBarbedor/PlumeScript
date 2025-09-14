@@ -159,3 +159,11 @@ $(0.1+0.5)
 /// Output
 0.6
 /// End
+
+/// Test String conversion
+let x = 5
+let y = 6
+$(x<y)
+/// Output
+true
+/// End
