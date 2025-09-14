@@ -290,7 +290,8 @@ return function (plume)
         @define _UNSTACK_POS
             local argcount = msp-msf[msfp]
             if argcount ~= macro.positionalParamCount and macro.variadicOffset==0 then
-                @_ERROR{{"Wrong number of positionnal arguments for macro '" .. macro.name.. "', " ..   argcount .. " instead of " .. macro.positionalParamCount}}
+                local name = macro.name or "???"
+                @_ERROR{{"Wrong number of positionnal arguments for macro '" .. name .. "', " ..   argcount .. " instead of " .. macro.positionalParamCount}}
             end
 
             for i=1, macro.positionalParamCount do
@@ -317,7 +318,8 @@ return function (plume)
                 elseif macro.variadicOffset>0 then
                     @_TABLE_SET capture k v
                 else
-                    @_ERROR{{"Unknow named parameter '" .. k .."' for macro '" .. macro.name .."'."}}
+                    local name = macro.name or "???"
+                    @_ERROR{{"Unknow named parameter '" .. k .."' for macro '" .. name .."'."}}
                 end
             end    
             msp = msp-1

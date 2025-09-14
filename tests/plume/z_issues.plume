@@ -138,3 +138,14 @@ end
 /// Output
 12
 /// End
+
+/// Test #148
+let x = macro()
+end
+
+$x(1)
+/// Error
+Runtime error: Wrong number of positionnal arguments for macro '???', 1 instead of 0
+File '#148', line 3: $x(1)
+                       ^^^^
+/// End

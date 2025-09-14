@@ -366,7 +366,8 @@ end
 	                end
 	                            local argcount=msp-msf[msfp]
 	            if argcount ~=macro.positionalParamCount and macro.variadicOffset==0 then
-	                            return false, "Wrong number of positionnal arguments for macro '" .. macro.name.. "', " ..   argcount .. " instead of " .. macro.positionalParamCount, ip
+	                local name=macro.name or "???"
+	                            return false, "Wrong number of positionnal arguments for macro '" .. name .. "', " ..   argcount .. " instead of " .. macro.positionalParamCount, ip
 	            end
 	            for i=1, macro.positionalParamCount do
 	                vs[vsf[vsfp]+i-1]=ms[msp+i-argcount]
@@ -390,7 +391,8 @@ end
 	            end
 	            capture.table[k]=v
 	                else
-	                                return false, "Unknow named parameter '" .. k .."' for macro '" .. macro.name .."'.", ip
+	                    local name=macro.name or "???"
+	                                return false, "Unknow named parameter '" .. k .."' for macro '" .. name .."'.", ip
 	                end
 	            end
 	            msp=msp-1
