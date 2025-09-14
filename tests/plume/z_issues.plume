@@ -100,6 +100,27 @@ end
 0
 /// End
 
+/// Test #138
+macro wings()
+end
+macro wings()
+end
+/// Error
+Compilation error: Cannot define static variable 'wings', it already exists in the current file scope.
+File '#138', line 3: macro wings()
+                     ^^^^^^^^^^^^^
+/// End
+
+/// Test #141
+let const x = 5
+
+$(x+a)
+/// Error
+Compilation error: Cannot use variable 'a', it isn't defined in the current scope.
+File '#141', line 3: $(x+a)
+                         ^
+/// End
+
 /// Test #143
 for i in seq(1, 1.5)
     $i
@@ -146,6 +167,6 @@ end
 $x(1)
 /// Error
 Runtime error: Wrong number of positionnal arguments for macro '???', 1 instead of 0
-File '#148', line 3: $x(1)
-                       ^^^^
+File '#148', line 4: $x(1)
+                      ^^^^
 /// End
