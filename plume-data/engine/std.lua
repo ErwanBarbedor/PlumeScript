@@ -72,8 +72,8 @@ return function (plume)
             local iterator = plume.obj.table(1, 2)
             iterator.table[1] = start-1
             iterator.table.next = plume.obj.luaFunction("next", function()
-                iterator.table[1]  = iterator.table[1] +1
-                if iterator.table[1] == stop+1 then
+                iterator.table[1]  = iterator.table[1] + 1
+                if iterator.table[1] > stop then
                     return plume.obj.empty
                 else
                     return iterator.table[1]

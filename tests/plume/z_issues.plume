@@ -99,3 +99,11 @@ end
 /// Output
 0
 /// End
+
+/// Test #143
+for i in seq(1, 1.5)
+    $i
+end
+/// Output
+1
+/// End

@@ -153,3 +153,9 @@ $t.value
 /// Output
 3
 /// End
+
+/// Test float
+$(0.1+0.5)
+/// Output
+0.6
+/// End
