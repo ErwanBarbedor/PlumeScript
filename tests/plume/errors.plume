@@ -48,7 +48,7 @@ end
 /// Error
 Compilation error: Cannot define static variable 'wings', it already exists in the current file scope.
 File 'define macro twice', line 3: macro wings()
-                                   ^^^^^^^^^^^^^^
+                                   ^^^^^^^^^^^^^
 /// End
 
 /// Test Add string
@@ -75,5 +75,75 @@ end
 /// Error
 Runtime error: Try to iterate over a non-table 'number' value.
 File 'Iterate over non table', line 1: for x in 1
-                                       ^^^^^^^^^^^
+                                       ^^^^^^^^^^
+/// End
+
+/// Test Empty key
+let t = $table()
+$t[empty]
+/// Error
+Runtime error: Cannot use empty as key.
+File 'Empty key', line 2: $t[empty]
+                            ^^^^^^^
+/// End
+
+/// Test Invalid key (string)
+let t = $table(wing: 5)
+$t.nib
+/// Error
+Runtime error: Unregistered key 'nib'.
+File 'Invalid key (string)', line 2: $t.nib
+                                       ^^^^
+/// End
+
+/// Test Invalid key (int)
+let t = $table(nib, quill)
+$t[3]
+/// Error
+Runtime error: Invalid index '3'.
+File 'Invalid key (int)', line 2: $t[3]
+                                    ^^^
+/// End
+
+/// Test Index non-table
+let t = 1
+$t[3]
+/// Error
+Runtime error: Try to index a 'string' value.
+File 'Index non-table', line 2: $t[3]
+                                  ^^^
+/// End
+
+/// Test Expand non-table
+let t = 1
+...t
+/// Error
+Runtime error: Try to expand a 'string' value.
+File 'Expand non-table', line 2: ...t
+                                 ^^^^
+/// End
+
+/// Test Concat error 1
+let wing = Quill
+let nib = $table()
+
+$wing $nib
+/// Error
+Runtime error: Cannot concat a 'table' value.
+File 'Concat error 1', line 4: $wing $nib
+                                      ^^^
+/// End
+
+/// Test Concat error 2
+let wing = Quill
+let nib = $table()
+
+$wing
+if true
+    $nib
+end
+/// Error
+Runtime error: Cannot concat a 'table' value.
+File 'Concat error 2', line 6: $nib
+                                ^^^
 /// End

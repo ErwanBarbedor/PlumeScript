@@ -28,7 +28,7 @@ return function (plume)
 		
 		ENTER_SCOPE LEAVE_SCOPE
 		ENTER_FILE  LEAVE_FILE
-		BEGIN_ACC ACC_TABLE ACC_TEXT ACC_EMPTY ACC_CALL RETURN
+		BEGIN_ACC ACC_TABLE ACC_TEXT ACC_EMPTY ACC_CALL RETURN ACC_CHECK_TEXT
 
 		JUMP_IF JUMP_IF_NOT JUMP_IF_NOT_EMPTY JUMP
 
@@ -126,7 +126,12 @@ return function (plume)
 
 			-- workaround for the case where child is an information,
 			-- not a proper child
-			local avoid = node.name ~= "EVAL" and child.name == "IDENTIFIER"
+			local avoid = child.name == "IDENTIFIER" and (
+			    	node.name ~= "EVAL"
+				and node.name ~= "LIST_ITEM"
+				and node.name ~= "HASH_ITEM"
+			)
+
 
 			if not avoid then
 				if node.type == "EMPTY" then
@@ -181,6 +186,5 @@ return function (plume)
 		else
 			return "EMPTY"
 		end
-		
 	end
 end

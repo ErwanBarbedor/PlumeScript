@@ -112,31 +112,32 @@ return function (plume)
 			elseif op==28 then goto ACC_EMPTY
 			elseif op==29 then goto ACC_CALL
 			elseif op==30 then goto RETURN
-			elseif op==31 then goto JUMP_IF
-			elseif op==32 then goto JUMP_IF_NOT
-			elseif op==33 then goto JUMP_IF_NOT_EMPTY
-			elseif op==34 then goto JUMP
-			elseif op==35 then goto GET_ITER
-			elseif op==36 then goto FOR_ITER
-			elseif op==37 then goto OPP_ADD
-			elseif op==38 then goto OPP_MUL
-			elseif op==39 then goto OPP_SUB
-			elseif op==40 then goto OPP_DIV
-			elseif op==41 then goto OPP_NEG
-			elseif op==42 then goto OPP_MOD
-			elseif op==43 then goto OPP_POW
-			elseif op==44 then goto OPP_GTE
-			elseif op==45 then goto OPP_LTE
-			elseif op==46 then goto OPP_GT
-			elseif op==47 then goto OPP_LT
-			elseif op==48 then goto OPP_EQ
-			elseif op==49 then goto OPP_NEQ
-			elseif op==50 then goto OPP_AND
-			elseif op==51 then goto OPP_NOT
-			elseif op==52 then goto OPP_OR
-			elseif op==53 then goto DUPLICATE
-			elseif op==54 then goto SWITCH
-			elseif op==55 then goto END
+			elseif op==31 then goto ACC_CHECK_TEXT
+			elseif op==32 then goto JUMP_IF
+			elseif op==33 then goto JUMP_IF_NOT
+			elseif op==34 then goto JUMP_IF_NOT_EMPTY
+			elseif op==35 then goto JUMP
+			elseif op==36 then goto GET_ITER
+			elseif op==37 then goto FOR_ITER
+			elseif op==38 then goto OPP_ADD
+			elseif op==39 then goto OPP_MUL
+			elseif op==40 then goto OPP_SUB
+			elseif op==41 then goto OPP_DIV
+			elseif op==42 then goto OPP_NEG
+			elseif op==43 then goto OPP_MOD
+			elseif op==44 then goto OPP_POW
+			elseif op==45 then goto OPP_GTE
+			elseif op==46 then goto OPP_LTE
+			elseif op==47 then goto OPP_GT
+			elseif op==48 then goto OPP_LT
+			elseif op==49 then goto OPP_EQ
+			elseif op==50 then goto OPP_NEQ
+			elseif op==51 then goto OPP_AND
+			elseif op==52 then goto OPP_NOT
+			elseif op==53 then goto OPP_OR
+			elseif op==54 then goto DUPLICATE
+			elseif op==55 then goto SWITCH
+			elseif op==56 then goto END
 			end
             			::LOAD_CONSTANT::
 	do
@@ -210,13 +211,33 @@ end
 end
 			::TABLE_SET::
 	do
-	            ms[msp].table[ms[msp-1]]=ms[msp-2]
+	            local key=ms[msp-1]
+	            key=tonumber(key) or key
+	            ms[msp].table[key]=ms[msp-2]
 	            msp=msp-3
 				goto DISPATCH
 end
 			::TABLE_INDEX::
 	do
-	            ms[msp-1]=ms[msp].table[ms[msp-1]]
+	            local key=ms[msp-1]
+	            key=tonumber(key) or key
+	            if key==empty then
+	                            return false, "Cannot use empty as key.", ip
+	            end
+	            local _table=ms[msp]
+	            local t=_type(_table)
+	            if t ~="table" then
+	                            return false, "Try to index a '" ..t .."' value.", ip
+	            end
+	            local value=_table.table[key]
+	            if not value then
+	                if tonumber(key) then
+	                                return false, "Invalid index '" .. key .."'.", ip
+	                else
+	                                return false, "Unregistered key '" .. key .."'.", ip
+	                end
+	            end
+	            ms[msp-1]=value
 	            msp=msp-1
 				goto DISPATCH
 end
@@ -225,7 +246,25 @@ end
 	            table.insert(ms[msf[msfp]], "self")
 	            table.insert(ms[msf[msfp]], ms[msp])
 	            table.insert(ms[msf[msfp]], false)
-	                        ms[msp-1]=ms[msp].table[ms[msp-1]]
+	                        local key=ms[msp-1]
+	            key=tonumber(key) or key
+	            if key==empty then
+	                            return false, "Cannot use empty as key.", ip
+	            end
+	            local _table=ms[msp]
+	            local t=_type(_table)
+	            if t ~="table" then
+	                            return false, "Try to index a '" ..t .."' value.", ip
+	            end
+	            local value=_table.table[key]
+	            if not value then
+	                if tonumber(key) then
+	                                return false, "Invalid index '" .. key .."'.", ip
+	                else
+	                                return false, "Unregistered key '" .. key .."'.", ip
+	                end
+	            end
+	            ms[msp-1]=value
 	            msp=msp-1
 				goto DISPATCH
 end
@@ -260,6 +299,9 @@ end
 			::TABLE_EXPAND::
 	do
 	            local t=ms[msp]
+	            if _type(t) ~="table" then
+	                            return false, "Try to expand a '" .._type(t) .."' value.", ip
+	            end
 	            msp=msp-1
 	            for _, item in ipairs(t.table) do
 	                msp=msp+1
@@ -317,7 +359,9 @@ end
 	                if ms[limit-1][i+2] then
 	                                args.meta[ms[limit-1][i]]=ms[limit-1][i+1]
 	                else
-	                                if not args.table[ms[limit-1][i]] then
+	                                local key=ms[limit-1][i]
+	            key=tonumber(key) or key
+	            if not args.table[ms[limit-1][i]] then
 	                table.insert(args.keys, ms[limit-1][i])
 	            end
 	            args.table[ms[limit-1][i]]=ms[limit-1][i+1]
@@ -366,7 +410,8 @@ end
 	                end
 	                            local argcount=msp-msf[msfp]
 	            if argcount ~=macro.positionalParamCount and macro.variadicOffset==0 then
-	                            return false, "Wrong number of positionnal arguments for macro '" .. macro.name.. "', " ..   argcount .. " instead of " .. macro.positionalParamCount, ip
+	                local name=macro.name or "???"
+	                            return false, "Wrong number of positionnal arguments for macro '" .. name .. "', " ..   argcount .. " instead of " .. macro.positionalParamCount, ip
 	            end
 	            for i=1, macro.positionalParamCount do
 	                vs[vsf[vsfp]+i-1]=ms[msp+i-argcount]
@@ -385,12 +430,15 @@ end
 	                elseif j then
 	                    vs[vsf[vsfp]+j-1]=v
 	                elseif macro.variadicOffset>0 then
-	                                if not capture.table[k] then
+	                                local key=k
+	            key=tonumber(key) or key
+	            if not capture.table[k] then
 	                table.insert(capture.keys, k)
 	            end
 	            capture.table[k]=v
 	                else
-	                                return false, "Unknow named parameter '" .. k .."' for macro '" .. macro.name .."'.", ip
+	                    local name=macro.name or "???"
+	                                return false, "Unknow named parameter '" .. k .."' for macro '" .. name .."'.", ip
 	                end
 	            end
 	            msp=msp-1
@@ -412,7 +460,9 @@ end
 	                if ms[limit-1][i+2] then
 	                                args.meta[ms[limit-1][i]]=ms[limit-1][i+1]
 	                else
-	                                if not args.table[ms[limit-1][i]] then
+	                                local key=ms[limit-1][i]
+	            key=tonumber(key) or key
+	            if not args.table[ms[limit-1][i]] then
 	                table.insert(args.keys, ms[limit-1][i])
 	            end
 	            args.table[ms[limit-1][i]]=ms[limit-1][i+1]
@@ -448,6 +498,14 @@ end
 	                        vsp=vsf[vsfp]-1
 	            vsfp=vsfp-1
 	                        mp=mp-1
+				goto DISPATCH
+end
+			::ACC_CHECK_TEXT::
+	do
+	            local t=_type(ms[msp])
+	            if t ~="number" and t ~="string" and ms[msp] ~=empty then
+	                            return false, "Cannot concat a '" ..t .. "' value.", ip
+	            end
 				goto DISPATCH
 end
 			::JUMP_IF::

@@ -32,7 +32,7 @@ return function(plume)
 		local capturedNoline = 0
 		local currentPos = 0
 
-		for line in (code.."\n"):gmatch('[^\n]+\n') do
+		for line in (code.."\n"):gmatch('[^\n]*\n') do
 			capturedNoline = capturedNoline + 1
 			
 			if currentPos + #line >= bpos then
@@ -42,13 +42,21 @@ return function(plume)
 			end
 			currentPos = currentPos + #line
 		end
+
+		if not capturedLine then
+			return
+		end
 		
+		if capturedLine:match('\n$') then
+			capturedLine = capturedLine:gsub('\n$', '')
+		end
+
 		len  = math.min(epos - bpos + 1, #capturedLine - (bpos - currentPos))
 		bpos = bpos - currentPos
 
 		local indent = capturedLine:match('^%s*')
-		capturedLine = capturedLine:sub(#indent, -1)
-		capturedLine = capturedLine:gsub('\n$', '')
+		capturedLine = capturedLine:sub(#indent+1, -1)
+		
 		bpos = bpos - #indent + 1
 
 		return {
