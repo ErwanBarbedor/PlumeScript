@@ -462,6 +462,13 @@ return function (plume)
             @_END_ACC
         @end
 
+        @define ACC_CHECK_TEXT arg1 arg2
+            --- Check if stack top can be concatened
+            local t = _type(ms[msp])
+            if t ~= "number" and t ~= "string" and ms[msp] ~= empty then
+                @_ERROR {{"Cannot concat a '" ..t .. "' value."}}
+            end
+        @end
         -----------
         -- TABLE --
         -----------
