@@ -144,6 +144,6 @@ if true
 end
 /// Error
 Runtime error: Cannot concat a 'table' value.
-File 'Concat error 2', line 6:  $nib
-                                 ^^^
+File 'Concat error 2', line 6: $nib
+                                ^^^
 /// End

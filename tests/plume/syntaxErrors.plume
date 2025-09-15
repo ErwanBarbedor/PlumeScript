@@ -59,7 +59,7 @@ while false
   wing
 /// Error
 Syntax error: Missing end.
-File 'missing end 5', line 2:  wing
+File 'missing end 5', line 2: wing
 /// End
 
 /// Test missing loop identifier
