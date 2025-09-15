@@ -264,9 +264,12 @@ return function (plume)
 			local node = runtime.mapping[ip]
 			local content = ""
 			if node and node.code then
-				content = plume.error.getLineInfos(node).content
-				if content:match('\n') then
-					content = content:match('^[^\n]*').."[...]"
+				local info = plume.error.getLineInfos(node)
+				if info then
+					content = info.content
+					if content:match('\n') then
+						content = content:match('^[^\n]*').."[...]"
+					end
 				end
 			end
 			

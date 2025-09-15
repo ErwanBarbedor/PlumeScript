@@ -3,6 +3,8 @@
 
 local lfs = require("lfs")
 local lpeg = require("lpeg")
+local os = require("os")
+local debug = require("debug")
 
 local lib = {}
 
@@ -130,31 +132,59 @@ end
 -- @param plumeEngine The Plume engine object. Must contain an `execute` method.
 -- @return The `allTests` table, populated with execution results.
 function lib.executeTests(allTests, plumeEngine)
+    local TIMEOUT_SECONDS = 1
+    
     for filename, tests in pairs(allTests) do
         if not tests.error then
             for testName, testData in pairs(tests) do
                 local runtime = plumeEngine.initRuntime()
+                
+                -- Timeout implementation
+                local start_time = os.clock()
+                local function timeout_hook()
+                    if os.clock() - start_time > TIMEOUT_SECONDS then
+                        debug.sethook() -- Disable hook before erroring
+                        error("timeout")
+                    end
+                end
+                
+                -- Set hook to run every 1,000,000 instructions
+                debug.sethook(timeout_hook, "", 1000000)
+                
                 local x, y, z = pcall(
                     plumeEngine.execute,
                     testData.input,
                     testName,
                     runtime
                 )
+                
+                -- CRITICAL: Always disable the hook after the pcall completes
+                debug.sethook()
 
-                local success, result
-                if x then
-                    success = y
-                    result = z
+                if not x and y == "timeout" then
+                    -- The test timed out
+                    testData.obtained = {
+                        output = string.format("TIMEOUT: Execution exceeded %d second(s).", TIMEOUT_SECONDS),
+                        bytecode = nil,
+                        error = true,
+                    }
                 else
-                    success = false
-                    result = y
-                end
+                    -- Standard execution path (success or other error)
+                    local success, result
+                    if x then
+                        success = y
+                        result = z
+                    else
+                        success = false
+                        result = y
+                    end
 
-                testData.obtained = {
-                    output = normalizeOutput(result),
-                    bytecode = runtime.bytecode and plumeEngine.debug.bytecodeGrid(runtime),
-                    error = not success,
-                }
+                    testData.obtained = {
+                        output = normalizeOutput(result),
+                        bytecode = runtime.bytecode and plumeEngine.debug.bytecodeGrid(runtime),
+                        error = not success,
+                    }
+                end
             end
         end
     end
@@ -205,6 +235,7 @@ function lib.analyzeResults(allTests)
 
     return allTests
 end
+
 
 --- Escapes special HTML characters in a string.
 -- @local

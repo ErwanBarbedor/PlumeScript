@@ -290,7 +290,8 @@ return function (plume)
         @define _UNSTACK_POS
             local argcount = msp-msf[msfp]
             if argcount ~= macro.positionalParamCount and macro.variadicOffset==0 then
-                @_ERROR{{"Wrong number of positionnal arguments for macro '" .. macro.name.. "', " ..   argcount .. " instead of " .. macro.positionalParamCount}}
+                local name = macro.name or "???"
+                @_ERROR{{"Wrong number of positionnal arguments for macro '" .. name .. "', " ..   argcount .. " instead of " .. macro.positionalParamCount}}
             end
 
             for i=1, macro.positionalParamCount do
@@ -317,7 +318,8 @@ return function (plume)
                 elseif macro.variadicOffset>0 then
                     @_TABLE_SET capture k v
                 else
-                    @_ERROR{{"Unknow named parameter '" .. k .."' for macro '" .. macro.name .."'."}}
+                    local name = macro.name or "???"
+                    @_ERROR{{"Unknow named parameter '" .. k .."' for macro '" .. name .."'."}}
                 end
             end    
             msp = msp-1
@@ -460,6 +462,13 @@ return function (plume)
             @_END_ACC
         @end
 
+        @define ACC_CHECK_TEXT arg1 arg2
+            --- Check if stack top can be concatened
+            local t = _type(ms[msp])
+            if t ~= "number" and t ~= "string" and ms[msp] ~= empty then
+                @_ERROR {{"Cannot concat a '" ..t .. "' value."}}
+            end
+        @end
         -----------
         -- TABLE --
         -----------
@@ -479,7 +488,25 @@ return function (plume)
             --- Stack 1, table[key]
             --- arg1: -
             --- arg2: -
-            ms[msp-1] = ms[msp].table[ms[msp-1]]
+            local key = ms[msp-1]
+            key = tonumber(key) or key
+            if key==empty then
+                @_ERROR {{"Cannot use empty as key."}}
+            end
+            local _table = ms[msp]
+            local t = _type(_table)
+            if t ~= "table" then
+                @_ERROR{{"Try to index a '" ..t .."' value."}}
+            end
+            local value = _table.table[key]
+            if not value then
+                if tonumber(key) then
+                    @_ERROR {{"Invalid index '" .. key .."'."}}
+                else
+                    @_ERROR {{"Unregistered key '" .. key .."'."}}
+                end
+            end
+            ms[msp-1] = value
             msp = msp-1
         @end
 
@@ -507,6 +534,8 @@ return function (plume)
 
         @define _TABLE_SET t k v
             -- if dont exists, register key
+            local key = $k
+            key = tonumber(key) or key
             if not $t.table[$k] then
                 table.insert($t.keys, $k)
             end
@@ -522,7 +551,9 @@ return function (plume)
             --- Set the table.key to value
             --- arg1: -
             --- arg2: -
-            ms[msp].table[ms[msp-1]] = ms[msp-2]
+            local key = ms[msp-1]
+            key = tonumber(key) or key
+            ms[msp].table[key] = ms[msp-2]
             msp = msp-3
         @end
 
@@ -566,6 +597,10 @@ return function (plume)
             --- arg1: -
             --- arg2: -
             local t = ms[msp]
+            if _type(t) ~= "table" then
+                @_ERROR{{"Try to expand a '" .._type(t) .."' value."}}
+            end
+
             msp = msp-1
             for _, item in ipairs(t.table) do
                 msp = msp+1
