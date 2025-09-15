@@ -147,3 +147,92 @@ Runtime error: Cannot concat a 'table' value.
 File 'Concat error 2', line 6: $nib
                                 ^^^
 /// End
+
+/// Test MixedBlockError 1
+- Wing
+Nib
+/// Error
+Syntax error: Mixed block: the expected type of the block is TABLE, but it contains an element TEXT.
+File 'MixedBlockError 1', line 2: Nib
+                                  ^^^
+/// End
+
+/// Test MixedBlockError 2
+Nib
+- Wing
+/// Error
+Syntax error: Mixed block: the expected type of the block is VALUE, but it contains an element TABLE.
+File 'MixedBlockError 2', line 2: - Wing
+                                  ^^^^^^
+/// End
+
+/// Test MixedBlockError 3
+Wing
+for i in seq(1, 10)
+    - Nib
+end
+/// Error
+Syntax error: Mixed block: the expected type of the block is VALUE, but it contains an element TABLE.
+File 'MixedBlockError 3', line 3: - Nib
+                                  ^^^^^
+/// End
+
+/// Test MixedBlockError 4
+Wing
+if true
+    - nib
+end
+/// Error
+Syntax error: Mixed block: the expected type of the block is VALUE, but it contains an element TABLE.
+File 'MixedBlockError 4', line 3: - nib
+                                  ^^^^^
+/// End
+
+/// Test MixedBlockError 5
+Wing
+if true
+    quill
+else
+    - nib
+end
+/// Error
+Syntax error: Mixed block: the expected type of the block is TEXT, but it contains an element TABLE.
+File 'MixedBlockError 5', line 5: - nib
+                                  ^^^^^
+/// End
+
+/// Test MixedBlockError 6
+Wing
+if true
+    quill
+elseif true
+    paint
+else
+    song
+    - nib
+end
+/// Error
+Syntax error: Mixed block: the expected type of the block is TEXT, but it contains an element TABLE.
+File 'MixedBlockError 6', line 8: - nib
+                                  ^^^^^
+/// End
+
+/// Test no MixedBlockError 1
+let t = @table
+    x: for i in seq(1, 10)
+        - $i
+    end
+end
+/// Output
+
+/// End
+
+/// Test no MixedBlockError 2
+let t = @table
+    x: for i in seq(1, 10)
+        y: $i
+    end
+end
+/// Output
+
+/// End
