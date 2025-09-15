@@ -55,7 +55,7 @@ return function(plume)
 		bpos = bpos - currentPos
 
 		local indent = capturedLine:match('^%s*')
-		capturedLine = capturedLine:sub(#indent, -1)
+		capturedLine = capturedLine:sub(#indent+1, -1)
 		
 		bpos = bpos - #indent + 1
 
