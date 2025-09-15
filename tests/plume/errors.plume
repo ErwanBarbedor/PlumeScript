@@ -122,3 +122,28 @@ Runtime error: Try to expand a 'string' value.
 File 'Expand non-table', line 2: ...t
                                  ^^^^
 /// End
+
+/// Test Concat error 1
+let wing = Quill
+let nib = $table()
+
+$wing $nib
+/// Error
+Runtime error: Cannot concat a 'table' value.
+File 'Concat error 1', line 4: $wing $nib
+                                      ^^^
+/// End
+
+/// Test Concat error 2
+let wing = Quill
+let nib = $table()
+
+$wing
+if true
+    $nib
+end
+/// Error
+Runtime error: Cannot concat a 'table' value.
+File 'Concat error 2', line 6:  $nib
+                                 ^^^
+/// End

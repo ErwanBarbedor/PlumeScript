@@ -41,9 +41,10 @@ return function(plume)
 		local fileNo = runtime.fileCount
 		runtime.filesMemory[fileNo]  = {}
 
-		local static = {}
-		local scopes = {}
-		local roots  = {}
+		local static  = {}
+		local scopes  = {}
+		local concats = {}
+		local roots   = {}
 
 		local constants = runtime.constants
 		local instructions = runtime.instructions
@@ -169,28 +170,30 @@ return function(plume)
 			f = f or childrenHandler
 			return function (node)
 				if node.type == "TEXT" then
+					table.insert(concats, true)
 					registerOP(node, ops.BEGIN_ACC, 0, 0)
 					f(node)
 					registerOP(nil, ops.ACC_TEXT, 0, 0)
-				
-				-- More or less a TEXT block with 1 element
-				elseif node.type == "VALUE" then
-					f(node)
-				
-				-- Handled by block in most cases
-				elseif node.type == "TABLE" then
-					_accTableInit()
-					f(node)
-					registerOP(nil, ops.ACC_TABLE, 0, 0)
-				
-				elseif node.type == "EMPTY" then
-					-- Exactly same behavior as BEGIN_ACC (nothing) ACC_TEXT
-					f(node)
-					registerOP(nil, ops.LOAD_EMPTY, 0, 0)
+				else
+					table.insert(concats, false)
+					-- More or less a TEXT block with 1 element
+					if node.type == "VALUE" then
+						f(node)
+					-- Handled by block in most cases
+					elseif node.type == "TABLE" then
+						_accTableInit()
+						f(node)
+						registerOP(nil, ops.ACC_TABLE, 0, 0)
+					
+					elseif node.type == "EMPTY" then
+						-- Exactly same behavior as BEGIN_ACC (nothing) ACC_TEXT
+						f(node)
+						registerOP(nil, ops.LOAD_EMPTY, 0, 0)
+					end
 				end
+				table.remove(concats)
 			end		
 		end
-
 
 		local function scope(f, internVar)
 			f = f or childrenHandler
@@ -283,7 +286,9 @@ return function(plume)
 		end
 
 		nodeHandlerTable.EXPAND = function(node)
+			table.insert(concats, false)
 			childrenHandler(node)
+			table.remove(concats)
 			registerOP(node, ops.TABLE_EXPAND, 0, 0)
 		end
 
@@ -311,7 +316,9 @@ return function(plume)
 
 			if body then
 				if from then
+					table.insert(concats, false)
 					nodeHandler(body)
+					table.remove(concats)
 				else
 					scope(accBlock())(body)
 				end
@@ -461,7 +468,9 @@ return function(plume)
 				end
 			end
 
-
+			if concats[#concats] then
+				registerOP(node, ops.ACC_CHECK_TEXT, 0, 0)
+			end
 		end
 
 		nodeHandlerTable.BLOCK_CALL = function(node)
@@ -520,8 +529,10 @@ return function(plume)
 			local next = registerConstant("next")
 			local iter = registerConstant("iter")
 
-
+			table.insert(concats, false)
 			childrenHandler(iterator)
+			table.remove(concats)
+
 			registerOP(node, ops.GET_ITER, 0, 0)
 			registerOP(nil, ops.ENTER_SCOPE, 0, 1)
 			table.insert(scopes, {})
