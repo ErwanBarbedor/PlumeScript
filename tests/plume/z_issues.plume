@@ -179,3 +179,9 @@ Runtime error: Wrong number of positionnal arguments for macro '???', 1 instead 
 File '#148', line 4: $x(1)
                       ^^^^
 /// End
+
+/// Test #162
+let blank = $("")
+/// Output
+
+/// End
