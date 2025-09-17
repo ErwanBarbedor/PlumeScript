@@ -79,8 +79,14 @@ return function(plume)
 
 		-- All lua std function are stored as static variables
 		local function loadSTD()
-			for name, f in pairs(plume.std) do
-				registerVariable(name, true, false, f)
+			local keys = {}
+			for key, f in pairs(plume.std) do
+				table.insert(keys, key)
+			end
+			table.sort(keys)
+
+			for _, key in ipairs(keys) do
+				registerVariable(key, true, false, plume.std[key])
 			end
 		end
 
