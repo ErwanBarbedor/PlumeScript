@@ -30,23 +30,19 @@ require 'plume-data/engine/parser'        (plume)
 require 'plume-data/engine/compiler'      (plume)
 require 'plume-data/engine/engine'        (plume)
 require 'plume-data/engine/finalizer'     (plume)
+require 'plume-data/engine/pec'           (plume)
 
-
-function plume.execute(code, filename, runtime)
-	if not runtime then
-		runtime = plume.initRuntime()
-	end
-
+function plume.execute(code, filename, chunk)
 	local success, result, ip
-
-	success, result = pcall(plume.compileFile, code, filename, runtime)
+	local errorSource = chunk
+	success, result = pcall(plume.compileFile, code, filename, chunk)
 	
 	if success then
-		success, result = pcall(plume.finalize, runtime)
+		success, result = pcall(plume.finalize, chunk)
 	end
 
 	if success then
-		success, result, ip = plume.run(runtime)
+		success, result, ip, errorSource = plume.run(chunk)
 	else
 		return false, result
 	end
@@ -54,11 +50,14 @@ function plume.execute(code, filename, runtime)
 	if success then
 		return true, result
 	else
-		return false, plume.error.makeRuntimeError(runtime, ip, result)
+		return false, plume.error.makeRuntimeError(errorSource, ip, result)
 	end
 end
 
-function plume.executeFile(filename)
+function plume.executeFile(filename, state)
+	local chunk = plume.newPlumeExecutableChunk(true, state)
+	chunk.name = filename
+
 	local f = io.open(filename)
 		if not f then
 			error("The file '" .. filename .. "' don't exist or isn't readable.")
@@ -67,7 +66,7 @@ function plume.executeFile(filename)
 		local code = f:read("*a")
 	f:close()
 
-	return plume.execute(code, filename)
+	return plume.execute(code, filename, chunk)
 end
 
 plume.hook = nil -- A function call at each step of the vm
