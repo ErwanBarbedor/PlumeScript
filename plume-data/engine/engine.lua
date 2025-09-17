@@ -11,7 +11,7 @@ You should have received a copy of the GNU General Public License along with Plu
 If not, see <https://www.gnu.org/licenses/>.
 ]]
 return function (plume)
-    function plume.run(runtime)
+    function plume.run(chunk, parameters)
         local empty=plume.obj.empty
         local ptable=plume.obj.table
         local function _type(x)
@@ -36,9 +36,9 @@ return function (plume)
         local MASK_ARG1=bit.lshift(1, ARG1_BITS) - 1
         local MASK_ARG2=bit.lshift(1, ARG2_BITS) - 1
         require("table.new")
-        local bytecode=runtime.bytecode
-        local constants=runtime.constants
-        local filesMemory=runtime.filesMemory
+        local bytecode=chunk.bytecode
+        local constants=chunk.constants
+        local static=chunk.static
         local ip=0
         local tic=0
         local ms=table.new(2^14, 0)
@@ -49,25 +49,30 @@ return function (plume)
         local vsf=table.new(2^8, 0)
         local vsp=0
         local vsfp=0
-        local calls=table.new(2^8, 0)
-        local cp=0
-        local memory=table.new(2^8, 0)
-        local mp=0
         local jump=0
         local instr, op, arg1, arg2=0, 0, 0, 0
-        local limit=0
-        local macro, x, y
         local hook=plume.hook
+        if parameters then
+            for i=1, chunk.localsCount do
+                if parameters[i]==nil then
+                    vs[i]=empty
+                else
+                    vs[i]=parameters[i]
+                end
+            end
+            vsp=chunk.localsCount
+            vsfp=1
+            table.insert(vsf, 1)
+        end
         ::DISPATCH::
                         	if hook then
                 if ip>0 then
                     hook(
+                        chunk,
                         tic, ip, jump,
                         instr, op, arg1, arg2,
                         ms, msp, msf, msfp,
-                        vs, vsp, vsf, vsfp,
-                        calls, cp,
-                        memory, mp
+                        vs, vsp, vsf, vsfp
                     )
                 end
             end
@@ -178,7 +183,7 @@ end
 			::LOAD_STATIC::
 	do
 	            msp=msp+1
-	            ms[msp]=filesMemory[memory[mp]][arg2]
+	            ms[msp]=static[arg2]
 				goto DISPATCH
 end
 			::STORE_LOCAL::
@@ -195,7 +200,7 @@ end
 end
 			::STORE_STATIC::
 	do
-	            filesMemory[memory[mp]][arg2]=ms[msp]
+	            static[arg2]=ms[msp]
 	            msp=msp-1
 				goto DISPATCH
 end
@@ -222,19 +227,19 @@ end
 	            local key=ms[msp-1]
 	            key=tonumber(key) or key
 	            if key==empty then
-	                            return false, "Cannot use empty as key.", ip
+	                            return false, "Cannot use empty as key.", ip, chunk
 	            end
 	            local _table=ms[msp]
 	            local t=_type(_table)
 	            if t ~="table" then
-	                            return false, "Try to index a '" ..t .."' value.", ip
+	                            return false, "Try to index a '" ..t .."' value.", ip, chunk
 	            end
 	            local value=_table.table[key]
 	            if not value then
 	                if tonumber(key) then
-	                                return false, "Invalid index '" .. key .."'.", ip
+	                                return false, "Invalid index '" .. key .."'.", ip, chunk
 	                else
-	                                return false, "Unregistered key '" .. key .."'.", ip
+	                                return false, "Unregistered key '" .. key .."'.", ip, chunk
 	                end
 	            end
 	            ms[msp-1]=value
@@ -249,19 +254,19 @@ end
 	                        local key=ms[msp-1]
 	            key=tonumber(key) or key
 	            if key==empty then
-	                            return false, "Cannot use empty as key.", ip
+	                            return false, "Cannot use empty as key.", ip, chunk
 	            end
 	            local _table=ms[msp]
 	            local t=_type(_table)
 	            if t ~="table" then
-	                            return false, "Try to index a '" ..t .."' value.", ip
+	                            return false, "Try to index a '" ..t .."' value.", ip, chunk
 	            end
 	            local value=_table.table[key]
 	            if not value then
 	                if tonumber(key) then
-	                                return false, "Invalid index '" .. key .."'.", ip
+	                                return false, "Invalid index '" .. key .."'.", ip, chunk
 	                else
-	                                return false, "Unregistered key '" .. key .."'.", ip
+	                                return false, "Unregistered key '" .. key .."'.", ip, chunk
 	                end
 	            end
 	            ms[msp-1]=value
@@ -300,7 +305,7 @@ end
 	do
 	            local t=ms[msp]
 	            if _type(t) ~="table" then
-	                            return false, "Try to expand a '" .._type(t) .."' value.", ip
+	                            return false, "Try to expand a '" .._type(t) .."' value.", ip, chunk
 	            end
 	            msp=msp-1
 	            for _, item in ipairs(t.table) do
@@ -332,14 +337,11 @@ end
 end
 			::ENTER_FILE::
 	do
-	            mp=mp+1
-	            memory[mp]=arg2
-				goto DISPATCH
+					goto DISPATCH
 end
 			::LEAVE_FILE::
 	do
-	            mp=mp-1
-				goto DISPATCH
+					goto DISPATCH
 end
 			::BEGIN_ACC::
 	do
@@ -349,7 +351,7 @@ end
 end
 			::ACC_TABLE::
 	do
-	            limit=msf[msfp]+1
+	            local limit=msf[msfp]+1
 	            local keyCount=#ms[limit-1] / 2
 	            local args=ptable(msp-limit+1, keyCount)
 	            for i=1, msp-limit+1 do
@@ -374,7 +376,7 @@ end
 end
 			::ACC_TEXT::
 	do
-	            limit=msf[msfp]
+	            local limit=msf[msfp]
 	                for i=limit, msp do
 	                    if ms[i]==empty then
 	                        ms[i]=""
@@ -398,23 +400,18 @@ end
 	            msp=msp - 1
 	            local t=_type(macro)
 	            if t=="macro" then
-	                            vsfp=vsfp+1
-	            vsf[vsfp]=vsp+1-0
-	            for i=1, macro.localsCount-0 do
-	                vsp=vsp+1
-	                vs[vsp]=empty
-	            end
 	                local capture
+	                local parameters={}
 	                if macro.variadicOffset>0 then
 	                    capture=ptable(0, 0)
 	                end
 	                            local argcount=msp-msf[msfp]
 	            if argcount ~=macro.positionalParamCount and macro.variadicOffset==0 then
 	                local name=macro.name or "???"
-	                            return false, "Wrong number of positionnal arguments for macro '" .. name .. "', " ..   argcount .. " instead of " .. macro.positionalParamCount, ip
+	                            return false, "Wrong number of positionnal arguments for macro '" .. name .. "', " ..   argcount .. " instead of " .. macro.positionalParamCount, ip, chunk
 	            end
 	            for i=1, macro.positionalParamCount do
-	                vs[vsf[vsfp]+i-1]=ms[msp+i-argcount]
+	                parameters[i]=ms[msp+i-argcount]
 	            end
 	            for i=macro.positionalParamCount+1, argcount do
 	                table.insert(capture.table, ms[msp+i-argcount])
@@ -428,7 +425,7 @@ end
 	                if m then
 	                                capture.meta[k]=v
 	                elseif j then
-	                    vs[vsf[vsfp]+j-1]=v
+	                    parameters[j]=v
 	                elseif macro.variadicOffset>0 then
 	                                local key=k
 	            key=tonumber(key) or key
@@ -438,19 +435,22 @@ end
 	            capture.table[k]=v
 	                else
 	                    local name=macro.name or "???"
-	                                return false, "Unknow named parameter '" .. k .."' for macro '" .. name .."'.", ip
+	                                return false, "Unknow named parameter '" .. k .."' for macro '" .. name .."'.", ip, chunk
 	                end
 	            end
 	            msp=msp-1
 	                if macro.variadicOffset>0 then
-	                    vs[vsf[vsfp]+macro.variadicOffset-1]=capture
+	                    parameters[macro.variadicOffset]=capture
 	                end
 	                            msfp=msfp-1
-	                jump=macro.offset
-	                cp=cp + 1
-	                calls[cp]=ip+1
+	                local success, result, cip=plume.run(macro, parameters)
+	                if not success then
+	                    return success, result, cip, macro
+	                end
+	                msp=msp+1
+	                ms[msp]=result
 	            elseif t=="luaFunction" then
-	                            limit=msf[msfp]+1
+	                            local limit=msf[msfp]+1
 	            local keyCount=#ms[limit-1] / 2
 	            local args=ptable(msp-limit+1, keyCount)
 	            for i=1, msp-limit+1 do
@@ -471,20 +471,13 @@ end
 	            ms[limit-1]=args
 	            msp=limit - 1
 	                        msfp=msfp-1
-	                local result, isJump=macro.callable(ms[msp], runtime)
-	                if isJump then
-	                    jump=result
-	                    cp=cp + 1
-	                    calls[cp]=ip+1
-	                    msp=msp - 1
-	                else
-	                    if result==nil then
-	                        result=empty
-	                    end
-	                    ms[msp]=result
+	                local result=macro.callable(ms[msp], chunk)
+	                if result==nil then
+	                    result=empty
 	                end
+	                ms[msp]=result
 	            else
-	                            return false, "Try to call a '" .. t .. "' value", ip
+	                            return false, "Try to call a '" .. t .. "' value", ip, chunk
 	            end
 				goto DISPATCH
 end
@@ -497,14 +490,13 @@ end
 	            cp=cp - 1
 	                        vsp=vsf[vsfp]-1
 	            vsfp=vsfp-1
-	                        mp=mp-1
 				goto DISPATCH
 end
 			::ACC_CHECK_TEXT::
 	do
 	            local t=_type(ms[msp])
 	            if t ~="number" and t ~="string" and ms[msp] ~=empty then
-	                            return false, "Cannot concat a '" ..t .. "' value.", ip
+	                            return false, "Cannot concat a '" ..t .. "' value.", ip, chunk
 	            end
 				goto DISPATCH
 end
@@ -550,7 +542,7 @@ end
 	            local obj=ms[msp]
 	            local tobj=_type(obj)
 	            if tobj ~="table" then
-	                            return false, "Try to iterate over a non-table '" .. tobj .. "' value.", ip
+	                            return false, "Try to iterate over a non-table '" .. tobj .. "' value.", ip, chunk
 	            end
 	            local iter=obj.meta.iter
 	            if iter.type=="luaFunction" then
@@ -580,18 +572,18 @@ end
 	                        if _type(x)=="string" then
 	                x=tonumber(x)
 	                if not x then
-	                                return false, "Cannot convert the string value to a number.", ip
+	                                return false, "Cannot convert the string value to a number.", ip, chunk
 	                end
 	            elseif _type(x) ~="number" then
-	                            return false, "Cannot do comparison or arithmetic with " .. _type(x).. " value.", ip
+	                            return false, "Cannot do comparison or arithmetic with " .. _type(x).. " value.", ip, chunk
 	            end
 	                        if _type(y)=="string" then
 	                y=tonumber(y)
 	                if not y then
-	                                return false, "Cannot convert the string value to a number.", ip
+	                                return false, "Cannot convert the string value to a number.", ip, chunk
 	                end
 	            elseif _type(y) ~="number" then
-	                            return false, "Cannot do comparison or arithmetic with " .. _type(y).. " value.", ip
+	                            return false, "Cannot do comparison or arithmetic with " .. _type(y).. " value.", ip, chunk
 	            end
 	            msp=msp-1
 	            ms[msp]=x + y
@@ -604,18 +596,18 @@ end
 	                        if _type(x)=="string" then
 	                x=tonumber(x)
 	                if not x then
-	                                return false, "Cannot convert the string value to a number.", ip
+	                                return false, "Cannot convert the string value to a number.", ip, chunk
 	                end
 	            elseif _type(x) ~="number" then
-	                            return false, "Cannot do comparison or arithmetic with " .. _type(x).. " value.", ip
+	                            return false, "Cannot do comparison or arithmetic with " .. _type(x).. " value.", ip, chunk
 	            end
 	                        if _type(y)=="string" then
 	                y=tonumber(y)
 	                if not y then
-	                                return false, "Cannot convert the string value to a number.", ip
+	                                return false, "Cannot convert the string value to a number.", ip, chunk
 	                end
 	            elseif _type(y) ~="number" then
-	                            return false, "Cannot do comparison or arithmetic with " .. _type(y).. " value.", ip
+	                            return false, "Cannot do comparison or arithmetic with " .. _type(y).. " value.", ip, chunk
 	            end
 	            msp=msp-1
 	            ms[msp]=x * y
@@ -628,18 +620,18 @@ end
 	                        if _type(x)=="string" then
 	                x=tonumber(x)
 	                if not x then
-	                                return false, "Cannot convert the string value to a number.", ip
+	                                return false, "Cannot convert the string value to a number.", ip, chunk
 	                end
 	            elseif _type(x) ~="number" then
-	                            return false, "Cannot do comparison or arithmetic with " .. _type(x).. " value.", ip
+	                            return false, "Cannot do comparison or arithmetic with " .. _type(x).. " value.", ip, chunk
 	            end
 	                        if _type(y)=="string" then
 	                y=tonumber(y)
 	                if not y then
-	                                return false, "Cannot convert the string value to a number.", ip
+	                                return false, "Cannot convert the string value to a number.", ip, chunk
 	                end
 	            elseif _type(y) ~="number" then
-	                            return false, "Cannot do comparison or arithmetic with " .. _type(y).. " value.", ip
+	                            return false, "Cannot do comparison or arithmetic with " .. _type(y).. " value.", ip, chunk
 	            end
 	            msp=msp-1
 	            ms[msp]=x - y
@@ -652,18 +644,18 @@ end
 	                        if _type(x)=="string" then
 	                x=tonumber(x)
 	                if not x then
-	                                return false, "Cannot convert the string value to a number.", ip
+	                                return false, "Cannot convert the string value to a number.", ip, chunk
 	                end
 	            elseif _type(x) ~="number" then
-	                            return false, "Cannot do comparison or arithmetic with " .. _type(x).. " value.", ip
+	                            return false, "Cannot do comparison or arithmetic with " .. _type(x).. " value.", ip, chunk
 	            end
 	                        if _type(y)=="string" then
 	                y=tonumber(y)
 	                if not y then
-	                                return false, "Cannot convert the string value to a number.", ip
+	                                return false, "Cannot convert the string value to a number.", ip, chunk
 	                end
 	            elseif _type(y) ~="number" then
-	                            return false, "Cannot do comparison or arithmetic with " .. _type(y).. " value.", ip
+	                            return false, "Cannot do comparison or arithmetic with " .. _type(y).. " value.", ip, chunk
 	            end
 	            msp=msp-1
 	            ms[msp]=x / y
@@ -675,10 +667,10 @@ end
 	                        if _type(x)=="string" then
 	                x=tonumber(x)
 	                if not x then
-	                                return false, "Cannot convert the string value to a number.", ip
+	                                return false, "Cannot convert the string value to a number.", ip, chunk
 	                end
 	            elseif _type(x) ~="number" then
-	                            return false, "Cannot do comparison or arithmetic with " .. _type(x).. " value.", ip
+	                            return false, "Cannot do comparison or arithmetic with " .. _type(x).. " value.", ip, chunk
 	            end
 	            ms[msp]=- x
 				goto DISPATCH
@@ -690,18 +682,18 @@ end
 	                        if _type(x)=="string" then
 	                x=tonumber(x)
 	                if not x then
-	                                return false, "Cannot convert the string value to a number.", ip
+	                                return false, "Cannot convert the string value to a number.", ip, chunk
 	                end
 	            elseif _type(x) ~="number" then
-	                            return false, "Cannot do comparison or arithmetic with " .. _type(x).. " value.", ip
+	                            return false, "Cannot do comparison or arithmetic with " .. _type(x).. " value.", ip, chunk
 	            end
 	                        if _type(y)=="string" then
 	                y=tonumber(y)
 	                if not y then
-	                                return false, "Cannot convert the string value to a number.", ip
+	                                return false, "Cannot convert the string value to a number.", ip, chunk
 	                end
 	            elseif _type(y) ~="number" then
-	                            return false, "Cannot do comparison or arithmetic with " .. _type(y).. " value.", ip
+	                            return false, "Cannot do comparison or arithmetic with " .. _type(y).. " value.", ip, chunk
 	            end
 	            msp=msp-1
 	            ms[msp]=x % y
@@ -714,18 +706,18 @@ end
 	                        if _type(x)=="string" then
 	                x=tonumber(x)
 	                if not x then
-	                                return false, "Cannot convert the string value to a number.", ip
+	                                return false, "Cannot convert the string value to a number.", ip, chunk
 	                end
 	            elseif _type(x) ~="number" then
-	                            return false, "Cannot do comparison or arithmetic with " .. _type(x).. " value.", ip
+	                            return false, "Cannot do comparison or arithmetic with " .. _type(x).. " value.", ip, chunk
 	            end
 	                        if _type(y)=="string" then
 	                y=tonumber(y)
 	                if not y then
-	                                return false, "Cannot convert the string value to a number.", ip
+	                                return false, "Cannot convert the string value to a number.", ip, chunk
 	                end
 	            elseif _type(y) ~="number" then
-	                            return false, "Cannot do comparison or arithmetic with " .. _type(y).. " value.", ip
+	                            return false, "Cannot do comparison or arithmetic with " .. _type(y).. " value.", ip, chunk
 	            end
 	            msp=msp-1
 	            ms[msp]=x ^ y
@@ -738,18 +730,18 @@ end
 	                        if _type(x)=="string" then
 	                x=tonumber(x)
 	                if not x then
-	                                return false, "Cannot convert the string value to a number.", ip
+	                                return false, "Cannot convert the string value to a number.", ip, chunk
 	                end
 	            elseif _type(x) ~="number" then
-	                            return false, "Cannot do comparison or arithmetic with " .. _type(x).. " value.", ip
+	                            return false, "Cannot do comparison or arithmetic with " .. _type(x).. " value.", ip, chunk
 	            end
 	                        if _type(y)=="string" then
 	                y=tonumber(y)
 	                if not y then
-	                                return false, "Cannot convert the string value to a number.", ip
+	                                return false, "Cannot convert the string value to a number.", ip, chunk
 	                end
 	            elseif _type(y) ~="number" then
-	                            return false, "Cannot do comparison or arithmetic with " .. _type(y).. " value.", ip
+	                            return false, "Cannot do comparison or arithmetic with " .. _type(y).. " value.", ip, chunk
 	            end
 	            msp=msp-1
 	            ms[msp]=x >=y
@@ -762,18 +754,18 @@ end
 	                        if _type(x)=="string" then
 	                x=tonumber(x)
 	                if not x then
-	                                return false, "Cannot convert the string value to a number.", ip
+	                                return false, "Cannot convert the string value to a number.", ip, chunk
 	                end
 	            elseif _type(x) ~="number" then
-	                            return false, "Cannot do comparison or arithmetic with " .. _type(x).. " value.", ip
+	                            return false, "Cannot do comparison or arithmetic with " .. _type(x).. " value.", ip, chunk
 	            end
 	                        if _type(y)=="string" then
 	                y=tonumber(y)
 	                if not y then
-	                                return false, "Cannot convert the string value to a number.", ip
+	                                return false, "Cannot convert the string value to a number.", ip, chunk
 	                end
 	            elseif _type(y) ~="number" then
-	                            return false, "Cannot do comparison or arithmetic with " .. _type(y).. " value.", ip
+	                            return false, "Cannot do comparison or arithmetic with " .. _type(y).. " value.", ip, chunk
 	            end
 	            msp=msp-1
 	            ms[msp]=x <=y
@@ -786,18 +778,18 @@ end
 	                        if _type(x)=="string" then
 	                x=tonumber(x)
 	                if not x then
-	                                return false, "Cannot convert the string value to a number.", ip
+	                                return false, "Cannot convert the string value to a number.", ip, chunk
 	                end
 	            elseif _type(x) ~="number" then
-	                            return false, "Cannot do comparison or arithmetic with " .. _type(x).. " value.", ip
+	                            return false, "Cannot do comparison or arithmetic with " .. _type(x).. " value.", ip, chunk
 	            end
 	                        if _type(y)=="string" then
 	                y=tonumber(y)
 	                if not y then
-	                                return false, "Cannot convert the string value to a number.", ip
+	                                return false, "Cannot convert the string value to a number.", ip, chunk
 	                end
 	            elseif _type(y) ~="number" then
-	                            return false, "Cannot do comparison or arithmetic with " .. _type(y).. " value.", ip
+	                            return false, "Cannot do comparison or arithmetic with " .. _type(y).. " value.", ip, chunk
 	            end
 	            msp=msp-1
 	            ms[msp]=x > y
@@ -810,18 +802,18 @@ end
 	                        if _type(x)=="string" then
 	                x=tonumber(x)
 	                if not x then
-	                                return false, "Cannot convert the string value to a number.", ip
+	                                return false, "Cannot convert the string value to a number.", ip, chunk
 	                end
 	            elseif _type(x) ~="number" then
-	                            return false, "Cannot do comparison or arithmetic with " .. _type(x).. " value.", ip
+	                            return false, "Cannot do comparison or arithmetic with " .. _type(x).. " value.", ip, chunk
 	            end
 	                        if _type(y)=="string" then
 	                y=tonumber(y)
 	                if not y then
-	                                return false, "Cannot convert the string value to a number.", ip
+	                                return false, "Cannot convert the string value to a number.", ip, chunk
 	                end
 	            elseif _type(y) ~="number" then
-	                            return false, "Cannot do comparison or arithmetic with " .. _type(y).. " value.", ip
+	                            return false, "Cannot do comparison or arithmetic with " .. _type(y).. " value.", ip, chunk
 	            end
 	            msp=msp-1
 	            ms[msp]=x < y
@@ -906,6 +898,10 @@ end
 				goto DISPATCH
 end
 		::END::
-        	return true, plume.std.tostring.callable({table={ms[1]}}), ip
+        	local result=empty
+        if #ms >=1 then
+            result=ms[1]
+        end
+        return true, result, ip
     end
 end
