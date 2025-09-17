@@ -92,4 +92,9 @@ return function(plume)
 		local message = "Malformed code."
 		throwSyntaxError(node, message)
 	end
+
+	function plume.error.mixedBlockError(node, expected, found)
+		local message = string.format("Mixed block: the expected type of the block is %s, but it contains an element %s.", expected, found)
+		throwSyntaxError(node, message)
+	end
 end

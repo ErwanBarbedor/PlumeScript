@@ -14,64 +14,39 @@ If not, see <https://www.gnu.org/licenses/>.
 ]]
 
 return function(plume)
-	function plume.initRuntime ()
-		return {
-			filesOffset = {},
-			filesMemory  = {},
-			filesVarMap  = {},
-			
-			instructions = {},
-			computedInstructions = {},
-			bytecode = {},
-
-			mapping = {},
-			
-			instructionsPointer = 0,-- track already traited bytecode
-			computedInstructionsPointer = 0, 
-
-			constants    = {},
-			fileCount    = 0
-		}
-	end
-
-	function plume.compileFile(code, filename, runtime)
-		runtime.fileCount = runtime.fileCount+1
-		runtime.filesVarMap[filename]  = {}
-
-		local fileNo = runtime.fileCount
-		runtime.filesMemory[fileNo]  = {}
-
+	function plume.compileFile(code, filename, chunk)
 		local static  = {}
 		local scopes  = {}
 		local concats = {}
 		local roots   = {}
+		local chunks  = {chunk}
 
-		local constants = runtime.constants
-		local instructions = runtime.instructions
+		local constants = chunk.constants
 		local ops = plume.ops
 
 		local uid = 0
 		local function getUID()
 			uid = uid+1
-			return fileNo.."_"..uid
+			return uid
 		end
 
 		local function registerOP(node, op, arg1, arg2)
 			assert(op)
-			table.insert(instructions, {op, arg1, arg2, mapsto=node})
+			local current = chunks[#chunks].instructions
+			table.insert(current, {op, arg1, arg2, mapsto=node})
 		end
 
 		local function registerLabel(node, name)
-			instructions[#instructions+1] = {label=name, mapsto=node}
+			local current = chunks[#chunks].instructions
+			current[#current+1] = {label=name, mapsto=node}
 		end
 		local function registerGoto(node, name, jump)
-			instructions[#instructions+1] = {_goto=name, jump=jump or "JUMP", mapsto=node}
+			local current = chunks[#chunks].instructions
+			current[#current+1] = {_goto=name, jump=jump or "JUMP", mapsto=node}
 		end
 		local function registerMacroLink(node, offset)
-			instructions[#instructions+1] = {link=offset, mapsto=node}
-		end
-		local function registerFileLink(offset)
-			instructions[#instructions+1] = {fileLink=filename}
+			local current = chunks[#chunks].instructions
+			current[#current+1] = {link=offset, mapsto=node}
 		end
 
 		local function registerConstant(value)
@@ -87,7 +62,7 @@ return function(plume)
 			local scope
 			if isStatic then
 				scope = static
-				table.insert(runtime.filesMemory[fileNo], staticValue or plume.obj.empty)
+				table.insert(chunk.static, staticValue or plume.obj.empty)
 			else
 				scope = scopes[#scopes]
 			end
@@ -104,8 +79,14 @@ return function(plume)
 
 		-- All lua std function are stored as static variables
 		local function loadSTD()
-			for name, f in pairs(plume.std) do
-				registerVariable(name, true, false, f)
+			local keys = {}
+			for key, f in pairs(plume.std) do
+				table.insert(keys, key)
+			end
+			table.sort(keys)
+
+			for _, key in ipairs(keys) do
+				registerVariable(key, true, false, plume.std[key])
 			end
 		end
 
@@ -214,11 +195,9 @@ return function(plume)
 		local function file(f)
 			f = f or childrenHandler
 			return function (node)
-				registerOP(nil, ops.ENTER_FILE, 0, runtime.fileCount)
 				table.insert(roots, #scopes+1)
 				f(node)
 				table.remove(roots)
-				registerOP(nil, ops.RETURN, 0, 0)
 			end		
 		end
 
@@ -262,7 +241,8 @@ return function(plume)
 			registerOP(node, ops.LOAD_CONSTANT, 0, offset)
 		end
 		nodeHandlerTable.QUOTE = function(node)
-			local offset = registerConstant(node.children[1].content)
+			local content = (node.children[1] and node.children[1].content) or ""
+			local offset = registerConstant(content)
 			registerOP(node, ops.LOAD_CONSTANT, 0, offset)
 		end
 
@@ -632,8 +612,10 @@ return function(plume)
 			local paramList       = plume.ast.get(node, "PARAMLIST") or {children={}}
 			local uid = getUID()
 
-			local macroObj       = plume.obj.macro(0)
-			local macroOffset = registerConstant(macroObj)
+			local macroObj     = plume.newPlumeExecutableChunk(false, chunk.state)
+			macroObj.static    = chunk.static
+			macroObj.constants = constants
+			local macroOffset  = registerConstant(macroObj)
 			
 			registerOP(macroIdentifier, ops.LOAD_CONSTANT, 0, macroOffset)
 			
@@ -650,13 +632,10 @@ return function(plume)
 				registerOP(macroIdentifier, ops.STORE_STATIC, 0, variable.offset)
 			end
 
-			registerGoto(nil, "macro_end_" .. uid)
-			registerMacroLink(node, macroOffset)
-
-			
 			file(function ()
 				-- Each macro open a scope, but it is handled by ACC_CALL and RETURN.
 				table.insert(scopes, {})
+				table.insert(chunks, macroObj)
 				for i, param in ipairs(paramList.children) do
 					local paramName = plume.ast.get(param, "IDENTIFIER", 1, 2).content
 					local variadic  = plume.ast.get(param, "VARIADIC")
@@ -678,7 +657,6 @@ return function(plume)
 						macroObj.positionalParamCount = macroObj.positionalParamCount+1
 					end
 				end
-
 				-- always register self parameter
 				if not getVariable("self") then
 					local param = registerVariable("self")
@@ -688,16 +666,18 @@ return function(plume)
 
 				accBlock()(body)
 				macroObj.localsCount = #scopes[#scopes]
+				
 				table.remove(scopes)
+				table.remove(chunks)
 			end) ()
-			
+
+			plume.finalize(macroObj)
 			registerLabel(node, "macro_end_" .. uid)
 		end
 
 		loadSTD()
 
 		local ast = plume.parse(code, filename)
-		registerFileLink()
 		nodeHandler(ast)
 
 		return true

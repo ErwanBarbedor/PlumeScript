@@ -225,11 +225,11 @@ return function (plume)
 		end
 	end
 
-	function plume.debug.printBytecode(runtime)
+	function plume.debug.printBytecode(chunk)
 		local maxlength = 15
-		for ip, instr in ipairs(runtime.bytecode) do
+		for ip, instr in ipairs(chunk.bytecode) do
 			local content = ""
-			local node = runtime.mapping[ip]
+			local node = chunk.mapping[ip]
 			if node then
 				content = plume.error.getLineInfos(node).content
 				if content:match('\n') then
@@ -247,7 +247,7 @@ return function (plume)
 				end
 				printCols({ip..".", "", "", value, "; "..content}, maxlength)
 			else
-				local infos = getInstrInfos(instr, runtime)
+				local infos = getInstrInfos(instr, chunk)
 				local raw = string.format("%08x", instr)
 				local value = escapeString(infos.value or "")
 				printCols({ip..".", raw, infos.op.."+"..infos.arg1.."+"..infos.arg2, infos.name, value, "; "..content}, maxlength)
@@ -312,7 +312,8 @@ return function (plume)
 		return result
 	end
 
-	function plume.debug.hookPrintVMState(tic, ip, jump, instr, op, arg1, arg2, ms, msp, msf, msfp, vs, vsp, vsf, vsfp, calls, cp, memory, mp)
+	function plume.debug.hookPrintVMState(chunk, tic, ip, jump, instr, op, arg1, arg2, ms, msp, msf, msfp, vs, vsp, vsf, vsfp)
+
 
 		if jump==0 then
 			jump = ip+1
@@ -330,9 +331,7 @@ return function (plume)
 		getStack(s_ms, ms, msp, msf, msfp)
 		getStack(s_vs, vs, vsp, vsf, vsfp)
 
-		local cm = string.format("Calls: {%s}, Memory: {%s}", table.concat(calls, "", 1, cp), table.concat(memory, "", 1, mp))
-
-		local show = {header, table.concat(s_ms), table.concat(s_vs), cm, ""}
+		local show = {header, table.concat(s_ms), table.concat(s_vs), ""}
 
 		print(table.concat(show, "\n\t"))
 		

@@ -18,7 +18,7 @@ If not, see <https://www.gnu.org/licenses/>.
 -- More informations: /doc/vm.md
 
 return function (plume)
-    function plume.run(runtime)
+    function plume.run(chunk, parameters)
         local empty  = plume.obj.empty
         local ptable = plume.obj.table
 
@@ -53,9 +53,9 @@ return function (plume)
         --===============--
         require("table.new")
 
-        local bytecode    = runtime.bytecode
-        local constants   = runtime.constants
-        local filesMemory = runtime.filesMemory
+        local bytecode    = chunk.bytecode
+        local constants   = chunk.constants
+        local static      = chunk.static
 
         local ip      = 0 -- instruction pointer
         local tic     = 0 -- total instruction count
@@ -69,29 +69,35 @@ return function (plume)
         local vsf  = table.new(2^8, 0)   -- variables stack frames (lexical scope)
         local vsp  = 0                   -- pointers
         local vsfp = 0
-
-        local calls   = table.new(2^8, 0)  -- return from functions
-        local cp      = 0 -- call pointer
-        local memory  = table.new(2^8, 0)  -- return from files
-                                           -- (not offsets, handled by functions,
-                                           -- but static memory pointer)
-        local mp      = 0 -- file memory pointer
         
         local jump    = 0 -- easier debuging than setting ip
         local instr, op, arg1, arg2 = 0, 0, 0, 0
 
-        -- utils
-        local limit = 0
-        local macro, x, y 
-
         --debug
         local hook = plume.hook
+
+        --------------------
+        -- When is called -- 
+        --------------------
+        if parameters then
+            for i=1, chunk.localsCount do
+                if parameters[i] == nil then
+                    vs[i] = empty
+                else
+                    vs[i] = parameters[i]
+                end
+            end
+
+            vsp = chunk.localsCount
+            vsfp = 1
+            table.insert(vsf, 1)
+        end
 
         -----------
         -- ERROR -- 
         -----------
         @define _ERROR msg
-            return false, $msg, ip
+            return false, $msg, ip, chunk
         @end
 
         ----------------
@@ -101,12 +107,11 @@ return function (plume)
             if hook then
                 if ip>0 then
                     hook(
+                        chunk,
                         tic, ip, jump,
                         instr, op, arg1, arg2,
                         ms, msp, msf, msfp,
-                        vs, vsp, vsf, vsfp,
-                        calls, cp,
-                        memory, mp
+                        vs, vsp, vsf, vsfp
                     )
                 end
             end
@@ -214,7 +219,7 @@ return function (plume)
             --- arg1: -
             --- arg2: vs offset
             msp = msp+1
-            ms[msp] = filesMemory[memory[mp]][$arg2]
+            ms[msp] = static[$arg2]
         @end
 
         @define STORE_LOCAL arg1 arg2
@@ -241,7 +246,7 @@ return function (plume)
             --- file intern memory
             --- arg1: -
             --- arg2: frame offset
-            filesMemory[memory[mp]][$arg2] = ms[msp]
+            static[$arg2] = ms[msp]
             msp = msp-1
         @end
 
@@ -295,7 +300,7 @@ return function (plume)
             end
 
             for i=1, macro.positionalParamCount do
-                vs[vsf[vsfp]+i-1] = ms[msp+i-argcount]
+                parameters[i] = ms[msp+i-argcount]
             end
 
             for i=macro.positionalParamCount+1, argcount do
@@ -314,7 +319,7 @@ return function (plume)
                 if m then
                     @_TABLE_META_SET capture k v
                 elseif j then
-                    vs[vsf[vsfp]+j-1] = v
+                    parameters[j] = v
                 elseif macro.variadicOffset>0 then
                     @_TABLE_SET capture k v
                 else
@@ -339,34 +344,31 @@ return function (plume)
             msp = msp - 1
             local t = _type(macro)
             if t == "macro" then
-                @ENTER_SCOPE 0 macro.localsCount
                 local capture
+                local parameters = {}
                 if macro.variadicOffset>0 then -- variadic
                     capture = ptable(0, 0) -- can be optimized
                 end
                 @_UNSTACK_POS
                 @_UNSTACK_NAMED
                 if macro.variadicOffset>0 then -- variadic
-                    vs[vsf[vsfp]+macro.variadicOffset-1] = capture
+                    parameters[macro.variadicOffset] = capture
                 end
                 @_END_ACC
-                jump = macro.offset
-                cp = cp + 1
-                calls[cp] = ip+1
+
+                local success, result, cip  = plume.run(macro, parameters)
+                if not success then
+                    return success, result, cip, macro
+                end
+                msp = msp+1
+                ms[msp] = result
             elseif t == "luaFunction" then
                 @ACC_TABLE
-                local result, isJump = macro.callable(ms[msp], runtime)
-                if isJump then
-                    jump = result
-                    cp = cp + 1
-                    calls[cp] = ip+1
-                    msp = msp - 1
-                else
-                    if result == nil then
-                        result = empty
-                    end
-                    ms[msp] = result
+                local result  =  macro.callable(ms[msp], chunk)
+                if result == nil then
+                    result = empty
                 end
+                ms[msp] = result
             else
                 @_ERROR {{"Try to call a '" .. t .. "' value"}}
             end
@@ -384,7 +386,6 @@ return function (plume)
             end
             cp = cp - 1
             @LEAVE_SCOPE 0 0
-            @LEAVE_FILE
         @end
 
         ---------
@@ -408,7 +409,7 @@ return function (plume)
             --- Unstack main stack frame
             --- arg1: -
             --- arg2: -
-            limit = msf[msfp]
+            local limit = msf[msfp]
             --if msp-limit>=1 then
                 for i=limit, msp do
                     if ms[i] == empty then
@@ -434,7 +435,7 @@ return function (plume)
             --- Unstack main stack frame
             --- arg1: -
             --- arg2: -
-            limit = msf[msfp]+1 -- Count items
+            local limit = msf[msfp]+1 -- Count items
             local keyCount = #ms[limit-1] / 2
             local args = ptable(msp-limit+1, keyCount)
             for i=1, msp-limit+1 do -- dump items
@@ -763,24 +764,6 @@ return function (plume)
             vsfp = vsfp-1
         @end
 
-        @define ENTER_FILE arg1 arg2
-            --- Present in each file/macro beginning.
-            --- Serve to link STATIC_STORE/STATIC_LOAD to
-            --- correct static memory
-            --- Stack 1 to memory, the current file index
-            --- arg1: -
-            --- arg2: Fileid
-            mp = mp+1
-            memory[mp] = $arg2
-        @end
-
-        @define LEAVE_FILE arg1 arg2
-            --- Unstack 1 to memory
-            --- arg1: -
-            --- arg2: -
-            mp = mp-1
-        @end
-
         @define NULL arg1 arg2
             --- Do nothing
             --- arg1: -
@@ -799,6 +782,11 @@ return function (plume)
             @_DISPATCH
             @_INSTRUCTIONS
 
-        return true, plume.std.tostring.callable({table={ms[1]}}), ip
+        local result = empty
+        if #ms >= 1 then
+            result = ms[1]
+        end
+
+        return true, result, ip
     end
 end

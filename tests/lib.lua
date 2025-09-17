@@ -137,7 +137,6 @@ function lib.executeTests(allTests, plumeEngine)
     for filename, tests in pairs(allTests) do
         if not tests.error then
             for testName, testData in pairs(tests) do
-                local runtime = plumeEngine.initRuntime()
                 
                 -- Timeout implementation
                 local start_time = os.clock()
@@ -151,11 +150,13 @@ function lib.executeTests(allTests, plumeEngine)
                 -- Set hook to run every 1,000,000 instructions
                 debug.sethook(timeout_hook, "", 1000000)
                 
+                local chunk = plumeEngine.newPlumeExecutableChunk(true)
+                chunk.name = "main"
                 local x, y, z = pcall(
                     plumeEngine.execute,
                     testData.input,
                     testName,
-                    runtime
+                    chunk
                 )
                 
                 -- CRITICAL: Always disable the hook after the pcall completes
@@ -179,9 +180,51 @@ function lib.executeTests(allTests, plumeEngine)
                         result = y
                     end
 
+                    if success then
+                        result = plumeEngine.std.tostring.callable({table={result}})
+                    end
+
+                    -- Process bytecode state for single or multiple chunks
+                    local bytecode_info
+                    local numChunks = 0
+                    if chunk and chunk.state then
+                        numChunks = #chunk.state
+                    end
+
+                    if numChunks <= 1 then
+                        bytecode_info = {
+                            is_multi = false,
+                            grid = chunk.bytecode and plumeEngine.debug.bytecodeGrid(chunk)
+                        }
+                    else
+                        local chunks_list = {}
+                        for _, subChunk in ipairs(chunk.state) do
+                            if subChunk.bytecode and #subChunk.bytecode > 0 then
+                                table.insert(chunks_list, {
+                                    name = subChunk.name or "???",
+                                    grid = plumeEngine.debug.bytecodeGrid(subChunk)
+                                })
+                            end
+                        end
+                        
+                        table.sort(chunks_list, function(a, b) return a.name < b.name end)
+
+                        if #chunks_list <= 1 then
+                             bytecode_info = {
+                                is_multi = false,
+                                grid = chunks_list[1] and chunks_list[1].grid or nil
+                            }
+                        else
+                            bytecode_info = {
+                                is_multi = true,
+                                chunks = chunks_list
+                            }
+                        end
+                    end
+
                     testData.obtained = {
                         output = normalizeOutput(result),
-                        bytecode = runtime.bytecode and plumeEngine.debug.bytecodeGrid(runtime),
+                        bytecode = bytecode_info,
                         error = not success,
                     }
                 end
@@ -308,10 +351,10 @@ function lib.generateDiffHtml(expectedStr, obtainedStr)
     }
 end
 
---- Generates HTML for displaying the bytecode with syntax highlighting.
+--- Generates HTML for the content of a bytecode grid.
 -- @param bytecodeGrid The bytecode table.
--- @return A string containing the formatted HTML.
-local function generateBytecodeHtml(bytecodeGrid)
+-- @return A string containing the formatted HTML lines.
+local function formatBytecodeGrid(bytecodeGrid)
     if not bytecodeGrid or #bytecodeGrid == 0 then
         return '<span class="no-bytecode">Bytecode not generated or unavailable.</span>'
     end
@@ -323,8 +366,6 @@ local function generateBytecodeHtml(bytecodeGrid)
         -- Line number
         table.insert(lineParts, string.format('<span class="bc-line-num">%03d</span>', i))
         
-         -- table.insert(lineParts, string.format('<span class="raw-opcode">%-8s</span>', op[1]))
-
         -- Opcode name (fixed column for alignment)
         table.insert(lineParts, string.format('<span class="bc-opcode">%-16s</span>', escapeHtml(op[2])))
         
@@ -345,6 +386,58 @@ local function generateBytecodeHtml(bytecodeGrid)
     end
     
     return table.concat(htmlLines, "\n")
+end
+
+local bytecodeTabCounter = 0
+--- Generates the complete HTML for displaying bytecode, handling single or multiple chunks.
+-- @param bytecode_info The bytecode info structure.
+-- @return A string containing the formatted HTML block.
+local function generateBytecodeDisplayHtml(bytecode_info)
+    if not bytecode_info or (not bytecode_info.is_multi and not bytecode_info.grid) then
+        return '<pre><code class="language-bytecode"><span class="no-bytecode">Bytecode not generated or unavailable.</span></code></pre>'
+    end
+
+    if not bytecode_info.is_multi then
+        local grid_html = formatBytecodeGrid(bytecode_info.grid)
+        return string.format("<pre><code class=\"language-bytecode\">%s</code></pre>", grid_html)
+    end
+
+    if not bytecode_info.chunks or #bytecode_info.chunks == 0 then
+        return '<pre><code class="language-bytecode"><span class="no-bytecode">No bytecode chunks found.</span></code></pre>'
+    end
+    
+    bytecodeTabCounter = bytecodeTabCounter + 1
+    local id_prefix = "bc_tabs_" .. bytecodeTabCounter
+
+    local html = {}
+    table.insert(html, '<div class="tab-container">')
+    
+    -- Tab headers
+    table.insert(html, '<div class="tab-headers">')
+    for i, chunkData in ipairs(bytecode_info.chunks) do
+        local tabId = id_prefix .. "_content_" .. i
+        local activeClass = (i == 1) and " active" or ""
+        table.insert(html, string.format(
+            '<button class="tab-link%s" onclick="openBytecodeTab(event, \'%s\')">%s</button>',
+            activeClass, tabId, escapeHtml(chunkData.name)
+        ))
+    end
+    table.insert(html, '</div>')
+
+    -- Tab content
+    for i, chunkData in ipairs(bytecode_info.chunks) do
+        local tabId = id_prefix .. "_content_" .. i
+        local displayStyle = (i == 1) and "block" or "none"
+        table.insert(html, string.format('<div id="%s" class="tab-content" style="display: %s;">', tabId, displayStyle))
+        
+        local grid_html = formatBytecodeGrid(chunkData.grid)
+        table.insert(html, string.format("<pre><code class=\"language-bytecode\">%s</code></pre>", grid_html))
+
+        table.insert(html, '</div>')
+    end
+
+    table.insert(html, '</div>')
+    return table.concat(html, '\n')
 end
 
 --- Generates the complete HTML block for a single test result.
@@ -379,12 +472,10 @@ function lib.generateTestBlockHtml(testName, testData)
     table.insert(htmlParts, "</code></pre>")
     table.insert(htmlParts, "</div>")
 
-    -- Column 2: Bytecode
+    -- Column 2: Bytecode (now capable of showing tabs)
     table.insert(htmlParts, "<div>")
     table.insert(htmlParts, "<h4>Bytecode</h4>")
-    table.insert(htmlParts, "<pre><code class=\"language-bytecode\">")
-    table.insert(htmlParts, generateBytecodeHtml(testData.obtained.bytecode))
-    table.insert(htmlParts, "</code></pre>")
+    table.insert(htmlParts, generateBytecodeDisplayHtml(testData.obtained.bytecode))
     table.insert(htmlParts, "</div>")
 
     table.insert(htmlParts, "</div>") -- close code-grid
@@ -516,7 +607,8 @@ function lib.generateReport(allTests, outputPath)
         
         .code-grid {
             display: grid;
-            grid-template-columns: 1fr 1fr;
+            /* MODIFICATION : La 1ère colonne (Code) prend l'espace restant, la 2ème (Bytecode) a une largeur fixe. */
+            grid-template-columns: 1fr 500px;
             gap: 15px;
             margin-bottom: 20px;
         }
@@ -530,13 +622,25 @@ function lib.generateReport(allTests, outputPath)
             margin: 0 0 8px 0; 
             flex-shrink: 0;
         }
-        
-        .code-grid pre {
+
+        .code-grid > div > pre, .code-grid > div > .tab-container {
             flex-grow: 1;
             min-height: 0;
             margin: 0;
+        }
+        .code-grid > div > .tab-container .tab-content {
+             max-height: 400px;
+             overflow: auto;
+             display: flex;
+             flex-direction: column;
+        }
+        .code-grid > div > .tab-container .tab-content pre {
+            flex-grow: 1;
+        }
+        
+        .code-grid > div > pre {
             max-height: 400px;
-            overflow-y: auto;
+            overflow: auto;
         }
 
         .language-bytecode { white-space: pre; }
@@ -557,6 +661,15 @@ function lib.generateReport(allTests, outputPath)
         .diff-obtained { background-color: rgba(198, 40, 40, 0.1);}
         .result-type-header { font-size: 0.85em; color: #555; font-style: italic; margin-bottom: 4px; padding-left: 2px; position: absolute; top:0; left: 50%; transform: translate(-50%,-50%); background: white;}
         .result-type-mismatch { color: #c62828; font-weight: bold; }
+
+        /* Styles for Bytecode Tabs */
+        .tab-container { border: 1px solid #ddd; border-radius: 4px; overflow: hidden; }
+        .tab-headers { display: flex; flex-wrap: wrap; background-color: #f1f1f1; border-bottom: 1px solid #ddd; }
+        .tab-link { background-color: inherit; border: none; outline: none; cursor: pointer; padding: 8px 12px; transition: 0.2s; font-size: 0.9em; }
+        .tab-link:hover { background-color: #ddd; }
+        .tab-link.active { background-color: #fff; font-weight: bold; position: relative; }
+        .tab-content { display: none; padding: 0; }
+        .tab-content pre { margin: 0; border: none; border-radius: 0; }
     </style>
 </head>
 <body>
@@ -613,10 +726,38 @@ function lib.generateReport(allTests, outputPath)
         end
     end
     
-    table.insert(htmlParts, "</div></body></html>")
+    table.insert(htmlParts, [[
+</div>
+
+<script>
+function openBytecodeTab(evt, tabId) {
+    var i, tabcontent, tablinks;
+    var container = evt.currentTarget.closest('.tab-container');
+    if (!container) return;
+
+    tabcontent = container.getElementsByClassName("tab-content");
+    for (i = 0; i < tabcontent.length; i++) {
+        tabcontent[i].style.display = "none";
+    }
+
+    tablinks = container.getElementsByClassName("tab-link");
+    for (i = 0; i < tablinks.length; i++) {
+        tablinks[i].className = tablinks[i].className.replace(" active", "");
+    }
+
+    var tabToShow = document.getElementById(tabId);
+    if(tabToShow) {
+        tabToShow.style.display = "block";
+    }
+    evt.currentTarget.className += " active";
+}
+</script>
+
+</body></html>
+    ]])
     
     local finalHtml = table.concat(htmlParts, "\n")
-    local file, err = io.open(outputPath, "w")
+    local file, err = io.open( outputPath, "w" )
     
     if not file then
         return false, "Failed to open output file: " .. tostring(err)
