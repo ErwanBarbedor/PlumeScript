@@ -197,3 +197,14 @@ set t[1].wing = red
 /// Output
 
 /// End
+
+/// Test #169
+let t = $table()
+let t2 = if false
+    $t
+else
+    $t
+end
+/// Output
+
+/// End
