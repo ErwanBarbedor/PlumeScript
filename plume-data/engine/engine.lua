@@ -396,7 +396,7 @@ end
 end
 			::ACC_CALL::
 	do
-	            macro=ms[msp]
+	            local macro=ms[msp]
 	            msp=msp - 1
 	            local t=_type(macro)
 	            if t=="macro" then
