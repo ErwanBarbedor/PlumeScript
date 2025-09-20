@@ -147,7 +147,7 @@ return function(plume)
 			end
 		end
 
-		local function accBlock(f)
+		local function accBlock(f, noConcat)
 			f = f or childrenHandler
 			return function (node)
 				if node.type == "TEXT" then
@@ -368,7 +368,9 @@ return function(plume)
 						else
 							childrenHandler(last) -- key
 						end
-						childrenHandler(eval) -- table
+						table.insert(concats, false) -- prevent value to be checked against text type
+						nodeHandler(eval) -- table
+						table.remove(concats)
 					end
 
 					if compound then

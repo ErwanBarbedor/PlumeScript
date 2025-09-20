@@ -185,3 +185,15 @@ let blank = $("")
 /// Output
 
 /// End
+
+/// Test #166
+let t = @table
+    - @table
+        wing: blue
+    end
+end
+
+set t[1].wing = red
+/// Output
+
+/// End
