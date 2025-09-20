@@ -340,7 +340,7 @@ return function (plume)
             --- Stack current ip to calls
             --- arg1: -
             --- arg2: -
-            macro = ms[msp]
+            local macro = ms[msp]
             msp = msp - 1
             local t = _type(macro)
             if t == "macro" then
@@ -355,7 +355,6 @@ return function (plume)
                     parameters[macro.variadicOffset] = capture
                 end
                 @_END_ACC
-
                 local success, result, cip  = plume.run(macro, parameters)
                 if not success then
                     return success, result, cip, macro
