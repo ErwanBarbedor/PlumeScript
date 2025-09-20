@@ -132,7 +132,6 @@ return function (plume)
 				or node.parent.name == "ELSE"
 				or node.parent.name == "ELSEIF"
 			)))	 then
-
 			node.type = node.parent.type
 		else
 			node.type = "EMPTY"
