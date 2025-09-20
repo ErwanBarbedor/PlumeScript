@@ -198,6 +198,23 @@ return function (plume)
 			else
 				return "VALUE"
 			end
+		elseif node.name == "ADD"
+			or node.name == "SUB"
+			or node.name == "MUL"
+			or node.name == "DIV"
+			or node.name == "POW"
+
+			or node.name == "EQ"
+			or node.name == "NEQ"
+			or node.name == "LT"
+			or node.name == "GT"
+			or node.name == "LTE"
+			or node.name == "GTE"
+
+		    or node.name == "AND"
+		    or node.name == "NOT"
+		    or node.name == "OR" then
+			return "VALUE"
 		else
 			return "EMPTY"
 		end
