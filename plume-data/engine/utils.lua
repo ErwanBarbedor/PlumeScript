@@ -211,7 +211,7 @@ return function (plume)
 			or node.name == "MUL"
 			or node.name == "DIV"
 			or node.name == "POW"
-
+			or node.name == "MOD"
 			or node.name == "EQ"
 			or node.name == "NEQ"
 			or node.name == "LT"
