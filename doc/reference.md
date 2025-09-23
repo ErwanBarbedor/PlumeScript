@@ -14,7 +14,7 @@ This is a valid Plume program.
 
 To distinguish control flow and logic from text, Plume recognizes a set of **statements**. A line is treated as a statement if it begins (after any leading whitespace) with one of the following keywords:
 
-*   `if`, `elseif`, `else`, `for`, `while`, `macro`, `end`
+*   `if`, `elseif`, `else`, `for`, `while`, `macro`, `end`, `do`
 *   `let`, `set`
 *   `-` (initiates a table item)
 *   `key:` (initiates a named table item, where `key` is any valid identifier)
@@ -204,7 +204,6 @@ The following call formats are available:
     ```
 
 #### `let`
-#### `let`
 Declares a new variable in the **current scope**.
 
 ```
@@ -324,6 +323,39 @@ For a complete explanation, see `Syntax > macro and Calls`.
     *   **Call:** `$songMacro(write, paint)`
     *   **Index:** `$wingTable[0]`, `$wingTable[keyName]`
     *   **Member:** `$quillObject.property` (Syntactic sugar for `$quillObject["property"]`)
+
+### Calls for Side-Effects (`do`)
+
+By default, every expression in Plume, including macro calls, contributes its return value to the current accumulation block. This can be undesirable for macros that are executed solely for their side-effects (e.g., printing to the console, writing to a file).
+
+To execute a macro call without its return value affecting the accumulation context, prefix the call with the `do` keyword. The `do` statement ensures the macro is executed, but its return value is discarded.
+
+```plume
+let myTable = @defineTable
+    // $print returns 'empty', but 'do' prevents it from converting
+    // this block into a TEXT block.
+    do $print(Initializing table definition...)
+
+    // This remains a valid TABLE block
+    id: 42
+    name: Plume
+end
+```
+
+The `do` statement can be used with both standard and block calls:
+
+```plume
+// Standard call
+do $myMacro(arg1)
+
+// Block call
+do @myMacro
+    - arg1
+    - arg2
+end
+```
+
+Using `do` allows for imperative-style procedure calls within Plume's expression-oriented architecture, providing a clear and safe way to manage side-effects.
 
 ### Escaping
 

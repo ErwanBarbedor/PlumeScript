@@ -227,6 +227,8 @@ return function(plume)
 			-- LEAVE_SCOPE handled by RETURN
 		end)
 
+		nodeHandlerTable.DO = scope
+
 		------------------
 		-- TEXT & table --
 		------------------

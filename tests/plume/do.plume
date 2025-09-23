@@ -1,0 +1,42 @@
+/// Test do side effect
+let static x = 1
+
+macro incX()
+  set x += 1
+  $x
+end
+
+do $incX()
+$incX()
+
+/// Output
+2
+/// End
+
+
+/// Test do return noting
+let static x = 1
+
+macro incX()
+  set x += 1
+  $x
+end
+
+do $incX()
+
+/// Output
+/// End
+
+/// Test do block
+let static x = 1
+
+macro incX()
+  set x += 1
+  $x
+end
+
+do @incX()
+	Wings
+end
+/// Output
+/// End
