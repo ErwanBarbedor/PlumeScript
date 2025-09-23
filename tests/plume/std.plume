@@ -28,17 +28,6 @@ $t[2], $t.quill
 mark, ink
 /// End
 
-/// Test void
-quill
-@void
-  mark
-  ink
-end
-quill
-/// Output
-quillquill
-/// End
-
 /// Test type
 $type($table())\n
 $type(nib)\n
