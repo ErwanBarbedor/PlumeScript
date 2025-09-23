@@ -45,9 +45,6 @@ return function (plume)
             return table.concat(args.table, sep)
         end,
 
-        void = function(args)
-        end,
-
         -- temporary name
         tostring = function(args)
             local result = {}
