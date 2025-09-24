@@ -272,10 +272,10 @@ return function (plume)
                         + Ct("LIST_ITEM", V"textic")
 
         local call      = Ct("CALL", P"(" * arg^-1 * (os * P"," * os * arg)^0 * P")")
-        -- local block     = Ct("BLOCK", P"@" * idn * os * call^-1 * body * _end)
         local block = Ct("EVAL", P"@" * idn * (index + directindex)^0 * os
         					* Ct("BLOCK_CALL", call^-1 * body)
         				* _end)
+        local leave     = C("LEAVE", P"leave")
 
         -- affectations
         local lbody    = Ct("BODY", V"firstStatement")
@@ -309,7 +309,7 @@ return function (plume)
                                 * (V"command" +  V"invalid"^-1 * V"text"),
             statement    = lt * (Ct("DO", P"do" * s * V"firstStatement") + V"firstStatement"),
 
-            command =  _if + _while + _for + macro + block + let + set + listitem + hashitem + expand,
+            command =  _if + _while + _for + macro + block + let + set + leave + listitem + hashitem + expand,
 
             text =   (escaped + eval + V"comment" + V"rawtext")^1,
             textic = (escaped + eval + V"comment" + V"rawtextic")^1,

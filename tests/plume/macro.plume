@@ -110,3 +110,44 @@ $write(?flag)
 sing
 paint
 /// End
+
+/// Test Leave macro (text)
+let t = @table
+  - blue
+  - red
+  - green
+end
+
+macro index(t, y)
+  for i in seq(1, len(t))
+    if t[i] == y
+      $i
+      leave
+    end
+  end
+end
+
+$index($t, red)
+/// Output
+2
+/// End
+
+/// Test Leave macro (table)
+macro t()
+  content: wing
+  leave
+  content: nib
+end
+
+$t().content
+/// Output
+wing
+/// End
+
+/// Test Leave file
+Nib
+leave
+Wing
+/// Output
+Nib
+/// End
