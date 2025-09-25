@@ -14,7 +14,7 @@ This is a valid Plume program.
 
 To distinguish control flow and logic from text, Plume recognizes a set of **statements**. A line is treated as a statement if it begins (after any leading whitespace) with one of the following keywords:
 
-*   `if`, `elseif`, `else`, `for`, `while`, `macro`, `end`
+*   `if`, `elseif`, `else`, `for`, `while`, `macro`, `end`, `do`, `leave`, `break`, `continue`
 *   `let`, `set`
 *   `-` (initiates a table item)
 *   `key:` (initiates a named table item, where `key` is any valid identifier)
@@ -59,7 +59,8 @@ let z = $(1 + myMacro(x, y))
 
 ### 3. Accumulation Blocks
 
-Every executable block in Plume (the program itself, a macro body, or a block call) implicitly builds a return value in what is known as an **accumulation block**. The type of the block is determined by its content.
+Every executable block in Plume (the program itself, a macro body, or a block call) implicitly builds a return value in what is known as an **accumulation block**. The type of the block is determined by its content. The `leave` statement can be used to exit the block prematurely, returning the value that has been accumulated at that point.
+
 
 There are four types of accumulation blocks:
 
@@ -152,8 +153,43 @@ while evaluation
 end
 ```
 
+#### `break` and `continue`
+The `break` and `continue` statements provide fine-grained control over the execution of `for` and `while` loops. They only affect the innermost loop in which they are placed.
+
+*   **`break`**
+    The `break` statement immediately terminates the execution of the innermost `for` or `while` loop. Program execution resumes at the statement following the loop's `end`.
+
+    ```plume
+    // Search for a specific user ID
+    let foundUser = for user in userList
+        if user.id == targetId
+            $user
+            // User found, no need to continue looping
+            break
+        end
+    end
+    ```
+
+*   **`continue`**
+    The `continue` statement immediately stops the current iteration of the loop and proceeds to the next one.
+    *   In a `for` loop, it advances to the next element in the sequence.
+    *   In a `while` loop, it jumps back to the condition evaluation.
+
+    ```plume
+    // Process only positive numbers
+    for number in dataSet
+        if number <= 0
+            // Skip this item and move to the next
+            continue
+        end
+        do $process(number)
+    end
+    ```
+
+Both `break` and `continue` must appear on their own lines. Using either statement outside of a `for` or `while` loop will result in an error.
+
 #### `macro` and Calls
-Macros are the primary way to create reusable logic in Plume.
+Macros are the primary way to create reusable logic in Plume. A macro is a block of code that accepts arguments and produces a return value. By default, a macro returns the final value of its implicit accumulation block. However, execution can be terminated at any point using the `leave` statement, which causes the macro to return the value accumulated up to that moment.
 
 **Definition:**
 ```plume
@@ -202,8 +238,35 @@ The following call formats are available:
         active: $true
     end
     ```
+#### `leave`
+Exits the current execution block (macro or file) and immediately returns the value accumulated up to that point. It provides a mechanism for an early return, similar to a `return` statement in other languages.
 
-#### `let`
+```plume
+leave
+```
+
+The `leave` statement must appear on its own line. When executed, it stops all further processing within its block. If `leave` is executed inside a nested structure like a `for` or `while` loop, it terminates the entire macro or file, not just the loop.
+
+The type of the returned value depends on the accumulation block's context at the time `leave` is called:
+*   If the block has already been identified as a `TABLE` block (i.e., it contains at least one table item like `-` or `key:`), `leave` will return the table accumulated so far. If no items have been accumulated, it returns an empty table.
+*   Otherwise, it returns accumulated text (or the `empty` constant).
+
+```plume
+macro generateList(source, limit: 100)
+    let i = 0
+    - for item in source
+        - if i >= limit
+            // Return the partially built list if limit is reached
+            leave
+        end
+        - $processItem(item)
+        set i = $(i + 1)
+    end
+    // This item is only added if the loop completes without 'leave' being called.
+    status: Completed
+end
+```
+
 #### `let`
 Declares a new variable in the **current scope**.
 
@@ -324,6 +387,39 @@ For a complete explanation, see `Syntax > macro and Calls`.
     *   **Call:** `$songMacro(write, paint)`
     *   **Index:** `$wingTable[0]`, `$wingTable[keyName]`
     *   **Member:** `$quillObject.property` (Syntactic sugar for `$quillObject["property"]`)
+
+### Calls for Side-Effects (`do`)
+
+By default, every expression in Plume, including macro calls, contributes its return value to the current accumulation block. This can be undesirable for macros that are executed solely for their side-effects (e.g., printing to the console, writing to a file).
+
+To execute a macro call without its return value affecting the accumulation context, prefix the call with the `do` keyword. The `do` statement ensures the macro is executed, but its return value is discarded.
+
+```plume
+let myTable = @defineTable
+    // $print returns 'empty', but 'do' prevents it from converting
+    // this block into a TEXT block.
+    do $print(Initializing table definition...)
+
+    // This remains a valid TABLE block
+    id: 42
+    name: Plume
+end
+```
+
+The `do` statement can be used with both standard and block calls:
+
+```plume
+// Standard call
+do $myMacro(arg1)
+
+// Block call
+do @myMacro
+    - arg1
+    - arg2
+end
+```
+
+Using `do` allows for imperative-style procedure calls within Plume's expression-oriented architecture, providing a clear and safe way to manage side-effects.
 
 ### Escaping
 

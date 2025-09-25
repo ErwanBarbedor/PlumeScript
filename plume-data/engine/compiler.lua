@@ -19,6 +19,7 @@ return function(plume)
 		local scopes  = {}
 		local concats = {}
 		local roots   = {}
+		local loops   = {}
 		local chunks  = {chunk}
 
 		local constants = chunk.constants
@@ -147,28 +148,40 @@ return function(plume)
 			end
 		end
 
-		local function accBlock(f)
+		local function accBlock(f, noConcat)
 			f = f or childrenHandler
-			return function (node)
+			return function (node, label)
 				if node.type == "TEXT" then
 					table.insert(concats, true)
 					registerOP(node, ops.BEGIN_ACC, 0, 0)
 					f(node)
+					if label then
+						registerLabel(node, label)
+					end
 					registerOP(nil, ops.ACC_TEXT, 0, 0)
 				else
 					table.insert(concats, false)
 					-- More or less a TEXT block with 1 element
 					if node.type == "VALUE" then
 						f(node)
+						if label then
+							registerLabel(node, label)
+						end
 					-- Handled by block in most cases
 					elseif node.type == "TABLE" then
 						_accTableInit()
 						f(node)
+						if label then
+							registerLabel(node, label)
+						end
 						registerOP(nil, ops.ACC_TABLE, 0, 0)
 					
 					elseif node.type == "EMPTY" then
 						-- Exactly same behavior as BEGIN_ACC (nothing) ACC_TEXT
 						f(node)
+						if label then
+							registerLabel(node, label)
+						end
 						registerOP(nil, ops.LOAD_EMPTY, 0, 0)
 					end
 				end
@@ -222,10 +235,12 @@ return function(plume)
 			local lets = #plume.ast.getAll(node, "LET")
 			registerOP(node, ops.ENTER_SCOPE, 0, lets)
 			table.insert(scopes, {})
-			accBlock()(node)
+			accBlock()(node, "macro_end")
 			table.remove(scopes)
 			-- LEAVE_SCOPE handled by RETURN
 		end)
+
+		nodeHandlerTable.DO = scope
 
 		------------------
 		-- TEXT & table --
@@ -368,7 +383,9 @@ return function(plume)
 						else
 							childrenHandler(last) -- key
 						end
-						childrenHandler(eval) -- table
+						table.insert(concats, false) -- prevent value to be checked against text type
+						nodeHandler(eval) -- table
+						table.remove(concats)
 					end
 
 					if compound then
@@ -495,13 +512,17 @@ return function(plume)
 			registerLabel(node, "while_begin_"..uid)
 			childrenHandler(condition)
 			registerGoto(node, "while_end_"..uid, "JUMP_IF_NOT")
+
+			table.insert(loops, {begin_label="while_begin_"..uid, end_label="while_end_"..uid})
 			scope()(body)
+			table.remove(loops)
+
 			registerGoto(node, "while_begin_"..uid)
 			registerLabel(node, "while_end_"..uid)
 		end
 
 		nodeHandlerTable.FOR = function(node)
-			local identifier = plume.ast.get(node, "IDENTIFIER").content
+			local identifier = plume.ast.get(node, "IDENTIFIER")
 			local iterator   = plume.ast.get(node, "ITERATOR")
 			local body       = plume.ast.get(node, "BODY")
 			local uid = getUID()
@@ -524,10 +545,13 @@ return function(plume)
 				registerGoto(nil, "for_end_"..uid, "FOR_ITER", 1)
 
 				scope(function(body)
-					local var = registerVariable(identifier)
+					local var = registerVariable(identifier.content)
 					registerOP(identifier, ops.STORE_LOCAL, 0, var.offset)
 					
+					table.insert(loops, {begin_label="for_loop_end_"..uid, end_label="for_end_"..uid})
 					childrenHandler(body)
+					table.remove(loops)
+					registerLabel(nil, "for_loop_end_"..uid)
 				end, 1)(body)
 
 				registerGoto (nil, "for_begin_"..uid)
@@ -535,6 +559,22 @@ return function(plume)
 
 			table.remove(scopes)
 			registerOP(node, ops.LEAVE_SCOPE, 0, 0)	
+		end
+
+		nodeHandlerTable.CONTINUE = function(node)
+			local loop = loops[#loops]
+			if not loop or not loop.begin_label then
+				plume.error.cannotUseBreakOutsideLoop(node)
+			end
+			registerGoto (node, loop.begin_label)
+		end
+
+		nodeHandlerTable.BREAK = function(node)
+			local loop = loops[#loops]
+			if not loop or not loop.end_label then
+				plume.error.cannotUseBreakOutsideLoop(node)
+			end
+			registerGoto (node, loop.end_label)
 		end
 
 		------------
@@ -635,6 +675,7 @@ return function(plume)
 			file(function ()
 				-- Each macro open a scope, but it is handled by ACC_CALL and RETURN.
 				table.insert(scopes, {})
+				table.insert(loops, {})
 				table.insert(chunks, macroObj)
 				for i, param in ipairs(paramList.children) do
 					local paramName = plume.ast.get(param, "IDENTIFIER", 1, 2).content
@@ -664,15 +705,20 @@ return function(plume)
 					macroObj.namedParamOffset.self = param.offset
 				end
 
-				accBlock()(body)
+				accBlock()(body, "macro_end")
 				macroObj.localsCount = #scopes[#scopes]
 				
 				table.remove(scopes)
 				table.remove(chunks)
+				
 			end) ()
 
 			plume.finalize(macroObj)
-			registerLabel(node, "macro_end_" .. uid)
+			
+		end
+
+		nodeHandlerTable.LEAVE = function(node)
+			registerGoto(node, "macro_end")
 		end
 
 		loadSTD()

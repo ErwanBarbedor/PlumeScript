@@ -119,6 +119,8 @@ return function (plume)
 	end
 
 	function plume.ast.markType(node)
+		local waitOneValue = node.parent and (node.parent.name == "ELSE" or node.parent.name == "ELSEIF")
+
 		if node.parent and (
 			   node.name == "FOR"
 			or node.name == "WHILE"
@@ -132,11 +134,12 @@ return function (plume)
 				or node.parent.name == "ELSE"
 				or node.parent.name == "ELSEIF"
 			)))	 then
-
 			node.type = node.parent.type
 		else
 			node.type = "EMPTY"
 		end
+
+
 
 		for _, child in ipairs(node.children or {}) do
 			child.parent = node
@@ -159,7 +162,11 @@ return function (plume)
 					end
 				elseif node.type == "VALUE"
 				and (childType == "TEXT" or childType == "VALUE") then
-					node.type = "TEXT"
+					if waitOneValue then
+						waitOneValue = false
+					else
+						node.type = "TEXT"
+					end
 				elseif node.type == "TEXT" and childType == "VALUE" then
 					node.type = "TEXT"
 				elseif childType ~= "EMPTY" and node.type ~= childType then
@@ -199,6 +206,23 @@ return function (plume)
 			else
 				return "VALUE"
 			end
+		elseif node.name == "ADD"
+			or node.name == "SUB"
+			or node.name == "MUL"
+			or node.name == "DIV"
+			or node.name == "POW"
+			or node.name == "MOD"
+			or node.name == "EQ"
+			or node.name == "NEQ"
+			or node.name == "LT"
+			or node.name == "GT"
+			or node.name == "LTE"
+			or node.name == "GTE"
+
+		    or node.name == "AND"
+		    or node.name == "NOT"
+		    or node.name == "OR" then
+			return "VALUE"
 		else
 			return "EMPTY"
 		end

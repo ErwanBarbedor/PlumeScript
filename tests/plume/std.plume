@@ -28,17 +28,6 @@ $t[2], $t.quill
 mark, ink
 /// End
 
-/// Test void
-quill
-@void
-  mark
-  ink
-end
-quill
-/// Output
-quillquill
-/// End
-
 /// Test type
 $type($table())\n
 $type(nib)\n
@@ -131,4 +120,33 @@ end
 $len($t)
 /// Output
 2
+/// End
+
+/// Test table append
+let t = @table
+  - Wing
+  - Nib
+  quill: blue
+end
+$len($t)\n
+$append($t, paint)
+$len($t)
+/// Output
+2
+3
+/// End
+
+/// Test table remove
+let t = @table
+  - Wing
+  - Nib
+  quill: blue
+end
+$len($t)\n
+$remove($t)\n
+$len($t)
+/// Output
+2
+Nib
+1
 /// End
