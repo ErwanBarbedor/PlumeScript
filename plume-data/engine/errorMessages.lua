@@ -57,6 +57,16 @@ return function(plume)
 		throwCompilationError(node, message)
 	end
 
+	function plume.error.cannotUseBreakOutsideLoop(node)
+		local message = "Cannot use break keyword outside a loop."
+		throwCompilationError(node, message)
+	end
+
+	function plume.error.cannotUseContinueOutsideLoop(node)
+		local message = "Cannot use continue keyword outside a loop."
+		throwCompilationError(node, message)
+	end
+
 	function plume.error.missingIteratorError(node)
 		local message = "Missing iterator."
 		throwSyntaxError(node, message)
