@@ -14,14 +14,14 @@ If not, see <https://www.gnu.org/licenses/>.
 ]]
 
 return function (plume)
-	local std = {
-		print = function(arg)
-			print(table.unpack(arg.table))
-		end,
+    local std = {
+        print = function(arg)
+            print(table.unpack(arg.table))
+        end,
 
-		type = function(args)
+        type = function(args)
             local value = args.table[1]
-			local t = type(value)
+            local t = type(value)
             if t=="table" then
                 if value==plume.obj.empty then
                     return "empty"
@@ -43,9 +43,6 @@ return function (plume)
                 sep = ""
             end
             return table.concat(args.table, sep)
-        end,
-
-        void = function(args)
         end,
 
         -- temporary name
@@ -183,8 +180,19 @@ return function (plume)
         len = function(args)
             local t = args.table[1]
             return #t.table
+        end,
+
+        append = function(args)
+            local t = args.table[1]
+            local value = args.table[2]
+            table.insert(t.table, value)
+        end,
+
+        remove = function(args)
+            local t = args.table[1]
+            return table.remove(t.table)
         end
-	}
+    }
 
     plume.std = {}
     for name, f in pairs(std) do
