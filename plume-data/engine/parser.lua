@@ -212,6 +212,9 @@ return function (plume)
         local _while = Ct("WHILE", P"while" * condition * body * _end)
         local _for   = Ct("FOR", P"for" * s * forInd * iterator * body * _end)
 
+        local _break   = C("BREAK", P"break")
+        local continue = C("CONTINUE", P"continue")
+
         -- macro & calls
         local function sugarFlagParam(p)
         	return p / function(capture)
@@ -309,7 +312,7 @@ return function (plume)
                                 * (V"command" +  V"invalid"^-1 * V"text"),
             statement    = lt * (Ct("DO", P"do" * s * V"firstStatement") + V"firstStatement"),
 
-            command =  _if + _while + _for + macro + block + let + set + leave + listitem + hashitem + expand,
+            command =  _if + _while + _for + _break + continue + macro + block + let + set + leave + listitem + hashitem + expand,
 
             text =   (escaped + eval + V"comment" + V"rawtext")^1,
             textic = (escaped + eval + V"comment" + V"rawtextic")^1,

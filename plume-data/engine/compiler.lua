@@ -19,6 +19,7 @@ return function(plume)
 		local scopes  = {}
 		local concats = {}
 		local roots   = {}
+		local loops   = {}
 		local chunks  = {chunk}
 
 		local constants = chunk.constants
@@ -511,7 +512,11 @@ return function(plume)
 			registerLabel(node, "while_begin_"..uid)
 			childrenHandler(condition)
 			registerGoto(node, "while_end_"..uid, "JUMP_IF_NOT")
+
+			table.insert(loops, {begin_label="while_begin_"..uid, end_label="while_end_"..uid})
 			scope()(body)
+			table.remove(loops)
+
 			registerGoto(node, "while_begin_"..uid)
 			registerLabel(node, "while_end_"..uid)
 		end
@@ -543,7 +548,10 @@ return function(plume)
 					local var = registerVariable(identifier.content)
 					registerOP(identifier, ops.STORE_LOCAL, 0, var.offset)
 					
+					table.insert(loops, {begin_label="for_loop_end_"..uid, end_label="for_end_"..uid})
 					childrenHandler(body)
+					table.remove(loops)
+					registerLabel(nil, "for_loop_end_"..uid)
 				end, 1)(body)
 
 				registerGoto (nil, "for_begin_"..uid)
@@ -551,6 +559,22 @@ return function(plume)
 
 			table.remove(scopes)
 			registerOP(node, ops.LEAVE_SCOPE, 0, 0)	
+		end
+
+		nodeHandlerTable.CONTINUE = function(node)
+			local loop = loops[#loops]
+			if not loop or not loop.begin_label then
+				plume.error.cannotUseBreakOutsideLoop(node)
+			end
+			registerGoto (node, loop.begin_label)
+		end
+
+		nodeHandlerTable.BREAK = function(node)
+			local loop = loops[#loops]
+			if not loop or not loop.end_label then
+				plume.error.cannotUseBreakOutsideLoop(node)
+			end
+			registerGoto (node, loop.end_label)
 		end
 
 		------------
@@ -651,6 +675,7 @@ return function(plume)
 			file(function ()
 				-- Each macro open a scope, but it is handled by ACC_CALL and RETURN.
 				table.insert(scopes, {})
+				table.insert(loops, {})
 				table.insert(chunks, macroObj)
 				for i, param in ipairs(paramList.children) do
 					local paramName = plume.ast.get(param, "IDENTIFIER", 1, 2).content

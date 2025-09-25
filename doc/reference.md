@@ -14,7 +14,7 @@ This is a valid Plume program.
 
 To distinguish control flow and logic from text, Plume recognizes a set of **statements**. A line is treated as a statement if it begins (after any leading whitespace) with one of the following keywords:
 
-*   `if`, `elseif`, `else`, `for`, `while`, `macro`, `end`, `do`, `leave`
+*   `if`, `elseif`, `else`, `for`, `while`, `macro`, `end`, `do`, `leave`, `break`, `continue`
 *   `let`, `set`
 *   `-` (initiates a table item)
 *   `key:` (initiates a named table item, where `key` is any valid identifier)
@@ -152,6 +152,41 @@ while evaluation
     ...
 end
 ```
+
+#### `break` and `continue`
+The `break` and `continue` statements provide fine-grained control over the execution of `for` and `while` loops. They only affect the innermost loop in which they are placed.
+
+*   **`break`**
+    The `break` statement immediately terminates the execution of the innermost `for` or `while` loop. Program execution resumes at the statement following the loop's `end`.
+
+    ```plume
+    // Search for a specific user ID
+    let foundUser = for user in userList
+        if user.id == targetId
+            $user
+            // User found, no need to continue looping
+            break
+        end
+    end
+    ```
+
+*   **`continue`**
+    The `continue` statement immediately stops the current iteration of the loop and proceeds to the next one.
+    *   In a `for` loop, it advances to the next element in the sequence.
+    *   In a `while` loop, it jumps back to the condition evaluation.
+
+    ```plume
+    // Process only positive numbers
+    for number in dataSet
+        if number <= 0
+            // Skip this item and move to the next
+            continue
+        end
+        do $process(number)
+    end
+    ```
+
+Both `break` and `continue` must appear on their own lines. Using either statement outside of a `for` or `while` loop will result in an error.
 
 #### `macro` and Calls
 Macros are the primary way to create reusable logic in Plume. A macro is a block of code that accepts arguments and produces a return value. By default, a macro returns the final value of its implicit accumulation block. However, execution can be terminated at any point using the `leave` statement, which causes the macro to return the value accumulated up to that moment.
