@@ -148,7 +148,7 @@ return function(plume)
 			end
 		end
 
-		local function accBlock(f, noConcat)
+		local function accBlock(f)
 			f = f or childrenHandler
 			return function (node, label)
 				if node.type == "TEXT" then
@@ -175,7 +175,6 @@ return function(plume)
 							registerLabel(node, label)
 						end
 						registerOP(nil, ops.ACC_TABLE, 0, 0)
-					
 					elseif node.type == "EMPTY" then
 						-- Exactly same behavior as BEGIN_ACC (nothing) ACC_TEXT
 						f(node)
@@ -240,7 +239,12 @@ return function(plume)
 			-- LEAVE_SCOPE handled by RETURN
 		end)
 
-		nodeHandlerTable.DO = scope
+		nodeHandlerTable.DO = function(node)
+			accBlock(function(node)
+				childrenHandler(node)
+			end)(node)
+			registerOP(node, ops.STORE_VOID, 0, 0)
+		end
 
 		------------------
 		-- TEXT & table --
