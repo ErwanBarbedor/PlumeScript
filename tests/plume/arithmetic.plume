@@ -167,3 +167,47 @@ $(x<y)
 /// Output
 true
 /// End
+
+/// Test lazy or 1
+let static x = 0
+macro inc()
+  set x += 1
+end
+let cond = $(false or inc())
+$x
+/// Output
+1
+/// End
+
+/// Test lazy or 2
+let static x = 0
+macro inc()
+  set x += 1
+end
+let cond = $(true or inc())
+$x
+/// Output
+0
+/// End
+
+/// Test lazy and 1
+let static x = 0
+macro inc()
+  set x += 1
+end
+let cond = $(false and inc())
+$x
+/// Output
+0
+/// End
+
+/// Test lazy and 2
+let static x = 0
+macro inc()
+  set x += 1
+end
+let cond = $(true and inc())
+$x
+/// Output
+1
+/// End

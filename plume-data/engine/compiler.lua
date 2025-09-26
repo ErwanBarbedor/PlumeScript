@@ -409,7 +409,7 @@ return function(plume)
 		----------
 		-- EVAL --
 		----------
-		local oppNames = "ADD SUB MUL DIV MOD LT GT LTE GTE EQ NEQ OR AND NOT NEG POW"
+		local oppNames = "ADD SUB MUL DIV MOD LT GT LTE GTE EQ NEQ NOT NEG POW"
 
 		for oppName in oppNames:gmatch("%S+") do
 			nodeHandlerTable[oppName] = function(node)
@@ -419,6 +419,24 @@ return function(plume)
 				end
 				registerOP(node, ops["OPP_" .. oppName], 0, 0)
 			end
+		end
+
+		nodeHandlerTable.OR = function(node)
+			local uid = getUID()
+			nodeHandler(node.children[1])
+			registerGoto(node, "or_end_"..uid, "JUMP_IF_PEEK")
+			nodeHandler(node.children[2])
+			registerOP(node, ops["OPP_OR"], 0, 0)
+			registerLabel(node, "or_end_"..uid)
+		end
+
+		nodeHandlerTable.AND = function(node)
+			local uid = getUID()
+			nodeHandler(node.children[1])
+			registerGoto(node, "and_end_"..uid, "JUMP_IF_NOT_PEEK")
+			nodeHandler(node.children[2])
+			registerOP(node, ops["OPP_AND"], 0, 0)
+			registerLabel(node, "and_end_"..uid)
 		end
 
 		nodeHandlerTable.EXPR = childrenHandler
