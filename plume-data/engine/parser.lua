@@ -309,8 +309,13 @@ return function (plume)
 
             statementTerminator = P"elseif" + P"else" + P"end",
             firstStatement = os * (-V"statementTerminator")
-                                * (V"command" +  V"invalid"^-1 * V"text"),
-            statement    = lt * (Ct("DO", P"do" * s * V"firstStatement") + V"firstStatement"),
+                                * (
+                                      V"command"
+                                    + Ct("DO", P"do" * s * V"firstStatement")
+                                    + V"invalid"^-1 * V"text"
+                                )
+                                ,
+            statement    = lt * V"firstStatement",
 
             command =  _if + _while + _for + _break + continue + macro + block + let + set + leave + listitem + hashitem + expand,
 
