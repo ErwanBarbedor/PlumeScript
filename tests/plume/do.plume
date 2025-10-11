@@ -7,14 +7,14 @@ macro incX()
 end
 
 do $incX()
-$incX()
+$x
 
 /// Output
 2
 /// End
 
 
-/// Test do return noting
+/// Test do return noting & side effect
 let static x = 1
 
 macro incX()
@@ -23,14 +23,15 @@ macro incX()
 end
 
 do $incX()
-
+$x
 /// Output
+2
 /// End
 
 /// Test do block
 let static x = 1
 
-macro incX()
+macro incX(body)
   set x += 1
   $x
 end

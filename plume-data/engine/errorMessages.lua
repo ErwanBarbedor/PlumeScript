@@ -82,6 +82,16 @@ return function(plume)
 		throwSyntaxError(node, message)
 	end
 
+	function plume.error.emptyExprError(node)
+		local message = "Evaluation cannot be empty."
+		throwSyntaxError(node, message)
+	end
+
+	function plume.error.missingClosingBraveError(node)
+		local message = "Missing ')' to close evaluation."
+		throwSyntaxError(node, message)
+	end
+
 	function plume.error.missingLoopIdentifierError(node)
 		local message = "Missing loop identifier."
 		throwSyntaxError(node, message)
@@ -89,6 +99,11 @@ return function(plume)
 
 	function plume.error.missingParamListError(node)
 		local message = "Missing parameters list."
+		throwSyntaxError(node, message)
+	end
+
+	function plume.error.missingParamError(node)
+		local message = "Missing parameter name."
 		throwSyntaxError(node, message)
 	end
 
