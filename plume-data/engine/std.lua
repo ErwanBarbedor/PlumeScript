@@ -143,16 +143,21 @@ return function (plume)
 
         import = function(args, chunk)
             local filename = args.table[1]
+            
+            if args.table.lua then
+                return require(filename)(plume) 
+            else
+                local ext = "plume"
+                if not filename:match('%'..ext..'$') then
+                    filename = filename .. "." .. ext
+                end
 
-            if not filename:match('%.plume$') then
-                filename = filename .. ".plume"
+                local success, result = plume.executeFile(filename, chunk.state)
+                if not success then
+                    error(result)
+                end
+                return result
             end
-
-            local success, result = plume.executeFile(filename, chunk.state)
-            if not success then
-                error(result)
-            end
-            return result
         end,
 
         write = function(args)
