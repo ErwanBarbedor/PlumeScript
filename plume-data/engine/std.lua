@@ -145,7 +145,7 @@ return function (plume)
             local filename = args.table[1]
             
             if args.table.lua then
-                return require(filename)(plume) 
+                return dofile(filename..".lua")(plume) 
             else
                 local ext = "plume"
                 if not filename:match('%'..ext..'$') then
