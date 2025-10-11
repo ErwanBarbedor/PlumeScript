@@ -96,3 +96,33 @@ Syntax error: Using set without giving it a value.
 File 'empty set', line 1: set x
                           ^^^
 /// End
+
+/// Test empty macro parameter
+macro wings(nib,,quill)
+end
+/// Error
+Syntax error: Missing parameter name.
+File 'empty macro parameter', line 1: macro wings(nib,,quill)
+/// End
+
+/// Test non closed eval
+$(1
+/// Error
+Syntax error: Missing ')' to close evaluation.
+File 'non closed eval', line 1: $(1
+/// End
+
+/// Test empty eval 1
+$()
+/// Error
+Syntax error: Evaluation cannot be empty.
+File 'empty eval 1', line 1: $()
+                               ^
+/// End
+
+/// Test empty eval 2
+$(
+/// Error
+Syntax error: Evaluation cannot be empty.
+File 'empty eval 2', line 1: $(
+/// End

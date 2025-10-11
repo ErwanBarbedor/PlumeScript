@@ -46,10 +46,10 @@ return function (plume)
         end
 
         local function E(errorHandler, pattern)
-        	pattern = pattern or NOT(S"\n")^0
+        	pattern = (pattern or NOT(S"\n")^0) 
             return Cp() * lpeg.C(pattern) * Cp() / function(bpos, content, epos)
                 return {
-                    name = name,
+                    name = "Error",
                     bpos = bpos,
                     epos  = epos-1,
                     content = content,
@@ -186,7 +186,14 @@ return function (plume)
         end
 
         local expr = Ct("EXPR", genALU())
-        local evalBase = Ct("EVAL", (P"(" * expr * P")" + idn) * V"evalOpperator"^0)
+        local evalBase = Ct("EVAL", (
+                  P"("
+                    * (expr + E(plume.error.emptyExprError))
+                * (P")" + E(plume.error.missingClosingBraveError))
+                + idn
+            ) * V"evalOpperator"^0
+        )
+
         local eval = P"$" * evalBase
         local index = Ct("INDEX", P"[" * expr * P"]")
         local directindex = Ct("DIRECT_INDEX", P"." * idn)
@@ -265,7 +272,11 @@ return function (plume)
                     			+ Ct("VARIADIC", P"..." * idn)
                     		) + sugarFlagParam(Ct("FLAG", "?"*idn))
                     		
-        local paramlist  = Ct("PARAMLIST", P"(" * param^-1 * (os * P"," * os * param)^0 * P")")
+        local paramlist  = Ct("PARAMLIST",
+                P"("
+                    * param^-1 * (os * P"," * os * (param + E(plume.error.missingParamError, -param)))^0
+                * P")"
+            )
         local paramlistM = paramlist + E(plume.error.missingParamListError)
         local macro      = Ct("MACRO", P"macro" * (s * idn)^-1 * os * paramlistM * body * _end)
 
@@ -309,8 +320,13 @@ return function (plume)
 
             statementTerminator = P"elseif" + P"else" + P"end",
             firstStatement = os * (-V"statementTerminator")
-                                * (V"command" +  V"invalid"^-1 * V"text"),
-            statement    = lt * (Ct("DO", P"do" * s * V"firstStatement") + V"firstStatement"),
+                                * (
+                                      V"command"
+                                    + Ct("DO", P"do" * s * V"firstStatement")
+                                    + V"invalid"^-1 * V"text"
+                                )
+                                ,
+            statement    = lt * V"firstStatement",
 
             command =  _if + _while + _for + _break + continue + macro + block + let + set + leave + listitem + hashitem + expand,
 

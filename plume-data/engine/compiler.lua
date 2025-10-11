@@ -148,7 +148,7 @@ return function(plume)
 			end
 		end
 
-		local function accBlock(f, noConcat)
+		local function accBlock(f)
 			f = f or childrenHandler
 			return function (node, label)
 				if node.type == "TEXT" then
@@ -175,7 +175,6 @@ return function(plume)
 							registerLabel(node, label)
 						end
 						registerOP(nil, ops.ACC_TABLE, 0, 0)
-					
 					elseif node.type == "EMPTY" then
 						-- Exactly same behavior as BEGIN_ACC (nothing) ACC_TEXT
 						f(node)
@@ -240,7 +239,12 @@ return function(plume)
 			-- LEAVE_SCOPE handled by RETURN
 		end)
 
-		nodeHandlerTable.DO = scope
+		nodeHandlerTable.DO = function(node)
+			accBlock(function(node)
+				childrenHandler(node)
+			end)(node)
+			registerOP(node, ops.STORE_VOID, 0, 0)
+		end
 
 		------------------
 		-- TEXT & table --
@@ -409,7 +413,7 @@ return function(plume)
 		----------
 		-- EVAL --
 		----------
-		local oppNames = "ADD SUB MUL DIV MOD LT GT LTE GTE EQ NEQ OR AND NOT NEG POW"
+		local oppNames = "ADD SUB MUL DIV MOD LT GT LTE GTE EQ NEQ NOT NEG POW"
 
 		for oppName in oppNames:gmatch("%S+") do
 			nodeHandlerTable[oppName] = function(node)
@@ -419,6 +423,24 @@ return function(plume)
 				end
 				registerOP(node, ops["OPP_" .. oppName], 0, 0)
 			end
+		end
+
+		nodeHandlerTable.OR = function(node)
+			local uid = getUID()
+			nodeHandler(node.children[1])
+			registerGoto(node, "or_end_"..uid, "JUMP_IF_PEEK")
+			nodeHandler(node.children[2])
+			registerOP(node, ops["OPP_OR"], 0, 0)
+			registerLabel(node, "or_end_"..uid)
+		end
+
+		nodeHandlerTable.AND = function(node)
+			local uid = getUID()
+			nodeHandler(node.children[1])
+			registerGoto(node, "and_end_"..uid, "JUMP_IF_NOT_PEEK")
+			nodeHandler(node.children[2])
+			registerOP(node, ops["OPP_AND"], 0, 0)
+			registerLabel(node, "and_end_"..uid)
 		end
 
 		nodeHandlerTable.EXPR = childrenHandler
