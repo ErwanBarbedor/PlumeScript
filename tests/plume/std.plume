@@ -111,6 +111,14 @@ $lib.wing() $infos
 blue quill bird
 /// End
 
+/// Test lua import
+let double = $import(tests/plume/toimport/lib, ?lua)
+
+$double(3)
+/// Output
+6
+/// End
+
 /// Test len
 let t = @table
   - Wing
