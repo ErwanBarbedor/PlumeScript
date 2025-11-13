@@ -1,0 +1,94 @@
+@define _UNSTACK_POS
+    local argcount = msp-msf[msfp]
+    if argcount ~= macro.positionalParamCount and macro.variadicOffset==0 then
+        local name = macro.name or "???"
+        @_ERROR{{"Wrong number of positionnal arguments for macro '" .. name .. "', " ..   argcount .. " instead of " .. macro.positionalParamCount}}
+    end
+
+    for i=1, macro.positionalParamCount do
+        parameters[i] = ms[msp+i-argcount]
+    end
+
+    for i=macro.positionalParamCount+1, argcount do
+        table.insert(capture.table, ms[msp+i-argcount])
+    end
+
+    msp = msf[msfp]
+@end
+
+@define _UNSTACK_NAMED
+    for i=1, #ms[msf[msfp]], 3 do
+        local k=ms[msf[msfp]][i]
+        local v=ms[msf[msfp]][i+1]
+        local m=ms[msf[msfp]][i+2]
+        local j = macro.namedParamOffset[k]
+        if m then
+            @_TABLE_META_SET capture k v
+        elseif j then
+            parameters[j] = v
+        elseif macro.variadicOffset>0 then
+            @_TABLE_SET capture k v
+        else
+            local name = macro.name or "???"
+            @_ERROR{{"Unknow named parameter '" .. k .."' for macro '" .. name .."'."}}
+        end
+    end    
+    msp = msp-1
+@end
+
+@define ACC_CALL arg1 arg2
+    --- Unstack 1 (the macro)
+    --- Unstack until frame begin + 1 (all positionals arguments)
+    --- Unstack 1 (table of named arguments)
+    --- Create a new scope
+    --- Stack all arguments to varstack
+    --- Set jump to macro offset
+    --- Stack current ip to calls
+    --- arg1: -
+    --- arg2: -
+    local macro = ms[msp]
+    msp = msp - 1
+    local t = _type(macro)
+    if t == "macro" then
+        local capture
+        local parameters = {}
+        if macro.variadicOffset>0 then -- variadic
+            capture = ptable(0, 0) -- can be optimized
+        end
+        @_UNSTACK_POS
+        @_UNSTACK_NAMED
+        if macro.variadicOffset>0 then -- variadic
+            parameters[macro.variadicOffset] = capture
+        end
+        @_END_ACC
+        local success, result, cip  = plume.run(macro, parameters)
+        if not success then
+            return success, result, cip, macro
+        end
+        msp = msp+1
+        ms[msp] = result
+    elseif t == "luaFunction" then
+        @ACC_TABLE
+        local result  =  macro.callable(ms[msp], chunk)
+        if result == nil then
+            result = empty
+        end
+        ms[msp] = result
+    else
+        @_ERROR {{"Try to call a '" .. t .. "' value"}}
+    end
+@end
+
+@define RETURN arg1 arg2
+    --- Unstack 1 from calls
+    --- Set jump to it
+    --- Leave scope
+    --- arg1: -
+    --- arg2: -
+    jump = calls[cp]
+    if not jump then -- exit the main programm
+        jump = #bytecode -- goto to END
+    end
+    cp = cp - 1
+    @LEAVE_SCOPE 0 0
+@end

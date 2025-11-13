@@ -1,0 +1,35 @@
+@define GET_ITER
+    --- Unstack 1 iterable object
+    --- Stack 1 iterator object
+    --- arg1: -
+    --- arg2: -
+    local obj = ms[msp]
+    local tobj = _type(obj)
+    if tobj ~= "table" then
+        @_ERROR{{"Try to iterate over a non-table '" .. tobj .. "' value."}}
+    end
+
+    local iter = obj.meta.iter
+
+    if iter.type == "luaFunction" then
+        ms[msp] = iter.callable()
+    elseif iter.type == "macro" then
+        jump = iter.offset
+        cp = cp + 1
+        calls[cp] = ip+1
+    end
+@end
+
+@define FOR_ITER arg1 arg2
+    --- Unstack 1 iterator object
+    --- Stack 1 next call result OR jump to for end
+    --- arg1: -
+    --- arg2: jump to end for
+    local result = ms[msp].table.next.callable()
+    if result == empty then
+        msp = msp-1
+        @JUMP 0 $arg1
+    else
+        ms[msp] = result
+    end
+@end
