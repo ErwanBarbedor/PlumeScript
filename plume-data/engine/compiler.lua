@@ -681,8 +681,9 @@ return function(plume)
 			
 			registerOP(macroIdentifier, ops.LOAD_CONSTANT, 0, macroOffset)
 			
+			local macroName
 			if macroIdentifier then
-				local macroName = macroIdentifier.content
+				macroName = macroIdentifier.content
 				local variable = registerVariable(
 					macroName,
 					true -- static
@@ -690,9 +691,11 @@ return function(plume)
 				if not variable then
 					plume.error.letExistingStaticVariableError(node, macroName)
 				end
-				macroObj.name = macroName
+				
 				registerOP(macroIdentifier, ops.STORE_STATIC, 0, variable.offset)
 			end
+
+			macroObj.name = macroName or node.label
 
 			file(function ()
 				-- Each macro open a scope, but it is handled by ACC_CALL and RETURN.

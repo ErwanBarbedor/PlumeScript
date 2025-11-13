@@ -240,4 +240,15 @@ return function (plume)
 		end
 		return true
 	end
+
+	function plume.ast.labelMacro(ast)
+		plume.ast.browse(ast, function(node)
+			if node.name == "HASH_ITEM" and node.children[1].name == "IDENTIFIER"  then
+				local value = node.children[2]
+				if value.name == "BODY" and #value.children == 1 and value.children[1].name == "MACRO" then
+					value.children[1].label = node.children[1].content
+				end
+			end
+		end)
+	end
 end

@@ -415,7 +415,13 @@ end
 	        end
 	            local argcount=msp-msf[msfp]
 	    if argcount ~=macro.positionalParamCount and macro.variadicOffset==0 then
-	        local name=macro.name or "???"
+	        local name
+	        if chunk.mapping[ip-1] then
+	            name=chunk.mapping[ip-1].content
+	        end
+	        if not name then
+	            name=macro.name or "???"
+	        end
 	            return false, "Wrong number of positionnal arguments for macro '" .. name .. "', " ..   argcount .. " instead of " .. macro.positionalParamCount .. ".", ip, chunk
 	    end
 	    for i=1, macro.positionalParamCount do

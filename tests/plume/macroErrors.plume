@@ -46,6 +46,46 @@ Traceback (most recent call first):
                                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^
 /// End
 
+/// Test get macro name 1
+let quill = macro ()
+end
+$quill(a)
+/// Error
+Runtime error: Wrong number of positionnal arguments for macro 'quill', 1 instead of 0.
+
+Traceback (most recent call first):
+  File 'get macro name 1', line 3: $quill(a)
+                                    ^^^^^^^^
+/// End
+
+/// Test get macro name 2
+let quill = @table
+  mark: macro ()
+  end
+end
+$quill.mark(a)
+/// Error
+Runtime error: Wrong number of positionnal arguments for macro 'mark', 1 instead of 0.
+
+Traceback (most recent call first):
+  File 'get macro name 2', line 5: $quill.mark(a)
+                                    ^^^^^^^^^^^^^
+/// End
+
+/// Test get macro name 3
+let quill = @table
+  - macro ()
+  end
+end
+$quill[1](a)
+/// Error
+Runtime error: Wrong number of positionnal arguments for macro '???', 1 instead of 0.
+
+Traceback (most recent call first):
+  File 'get macro name 3', line 5: $quill[1](a)
+                                    ^^^^^^^^^^^
+/// End
+
 /// Test call a non-macro
 $(1)()
 /// Error
