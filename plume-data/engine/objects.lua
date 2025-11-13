@@ -19,18 +19,6 @@ return function(plume)
 	plume.obj = {}
 	plume.obj.empty = {type = "empty"}
 
-	function plume.obj.macro (offset, name)
-		return {
-			type = "macro",
-			offset = offset,
-			positionalParamCount = 0,
-			namedParamCount = 0,
-			namedParamOffset = {},
-			name=name,
-			variadicOffset=0 -- 0 for non variadic
-		}
-	end
-
 	--- lua fonction take 1 parameter: the plume table of all given arguments
 	function plume.obj.luaFunction (name, f)
 		return {
