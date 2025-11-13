@@ -260,7 +260,6 @@ return function(plume)
 			registerOP(node, ops.LOAD_CONSTANT, 0, offset)
 		end
 		nodeHandlerTable.QUOTE = function(node)
-			print("!")
 			local content = (node.children[1] and node.children[1].content) or ""
 			local offset = registerConstant(content)
 			registerOP(node, ops.LOAD_CONSTANT, 0, offset)

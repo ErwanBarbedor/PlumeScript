@@ -5195,7 +5195,7 @@ Item 3 is bird.
 <div>
 <h4>Code</h4>
 <pre><code class="language-plume">
-let lib = $import(tests/plume/toimport/lib)
+let lib = $import(./tests/plume/toimport/lib)
 $lib.nib
 
 </code></pre>
@@ -5204,23 +5204,10 @@ $lib.nib
 <h4>Bytecode</h4>
 <div class="tab-container">
 <div class="tab-headers">
-<button class="tab-link active" onclick="openBytecodeTab(event, 'bc_tabs_33_content_1')">main</button>
-<button class="tab-link" onclick="openBytecodeTab(event, 'bc_tabs_33_content_2')">tests/plume/toimport/lib.plume</button>
+<button class="tab-link active" onclick="openBytecodeTab(event, 'bc_tabs_33_content_1')">./tests/plume/toimport/lib.plume</button>
+<button class="tab-link" onclick="openBytecodeTab(event, 'bc_tabs_33_content_2')">main</button>
 </div>
 <div id="bc_tabs_33_content_1" class="tab-content" style="display: block;">
-<pre><code class="language-bytecode"><span class="bc-line-num">001</span> <span class="bc-opcode">ENTER_SCOPE     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; l</span>
-<span class="bc-line-num">002</span> <span class="bc-opcode">BEGIN_ACC       </span> <span class="bc-arg">0 0</span>
-<span class="bc-line-num">003</span> <span class="bc-opcode">TABLE_NEW       </span> <span class="bc-arg">0 0</span>
-<span class="bc-line-num">004</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 1</span> <span class="bc-info">; tests/plume/toimport/lib</span>
-<span class="bc-line-num">005</span> <span class="bc-opcode">LOAD_STATIC     </span> <span class="bc-arg">0 3</span> <span class="bc-info">; import</span>
-<span class="bc-line-num">006</span> <span class="bc-opcode">ACC_CALL        </span> <span class="bc-arg">0 0</span> <span class="bc-info">; import(tests/plume/toimport/lib)</span>
-<span class="bc-line-num">007</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; lib</span>
-<span class="bc-line-num">008</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 2</span> <span class="bc-info">; nib</span>
-<span class="bc-line-num">009</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 1</span> <span class="bc-info">; lib</span>
-<span class="bc-line-num">010</span> <span class="bc-opcode">TABLE_INDEX     </span> <span class="bc-arg">0 0</span> <span class="bc-info">; .nib</span>
-<span class="bc-line-num">011</span> <span class="bc-opcode">END             </span> <span class="bc-arg">0 0</span></code></pre>
-</div>
-<div id="bc_tabs_33_content_2" class="tab-content" style="display: none;">
 <pre><code class="language-bytecode"><span class="bc-line-num">001</span> <span class="bc-opcode">ENTER_SCOPE     </span> <span class="bc-arg">0 0</span> <span class="bc-info">; n</span>
 <span class="bc-line-num">002</span> <span class="bc-opcode">BEGIN_ACC       </span> <span class="bc-arg">0 0</span>
 <span class="bc-line-num">003</span> <span class="bc-opcode">TABLE_NEW       </span> <span class="bc-arg">0 0</span>
@@ -5229,6 +5216,19 @@ $lib.nib
 <span class="bc-line-num">006</span> <span class="bc-opcode">TABLE_SET_ACC   </span> <span class="bc-arg">0 0</span> <span class="bc-info">; nib: quill</span>
 <span class="bc-line-num">007</span> <span class="bc-opcode">ACC_TABLE       </span> <span class="bc-arg">0 0</span>
 <span class="bc-line-num">008</span> <span class="bc-opcode">END             </span> <span class="bc-arg">0 0</span></code></pre>
+</div>
+<div id="bc_tabs_33_content_2" class="tab-content" style="display: none;">
+<pre><code class="language-bytecode"><span class="bc-line-num">001</span> <span class="bc-opcode">ENTER_SCOPE     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; l</span>
+<span class="bc-line-num">002</span> <span class="bc-opcode">BEGIN_ACC       </span> <span class="bc-arg">0 0</span>
+<span class="bc-line-num">003</span> <span class="bc-opcode">TABLE_NEW       </span> <span class="bc-arg">0 0</span>
+<span class="bc-line-num">004</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 1</span> <span class="bc-info">; ./tests/plume/toimport/lib</span>
+<span class="bc-line-num">005</span> <span class="bc-opcode">LOAD_STATIC     </span> <span class="bc-arg">0 3</span> <span class="bc-info">; import</span>
+<span class="bc-line-num">006</span> <span class="bc-opcode">ACC_CALL        </span> <span class="bc-arg">0 0</span> <span class="bc-info">; import(./tests/plume/toimport/lib)</span>
+<span class="bc-line-num">007</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; lib</span>
+<span class="bc-line-num">008</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 2</span> <span class="bc-info">; nib</span>
+<span class="bc-line-num">009</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 1</span> <span class="bc-info">; lib</span>
+<span class="bc-line-num">010</span> <span class="bc-opcode">TABLE_INDEX     </span> <span class="bc-arg">0 0</span> <span class="bc-info">; .nib</span>
+<span class="bc-line-num">011</span> <span class="bc-opcode">END             </span> <span class="bc-arg">0 0</span></code></pre>
 </div>
 </div>
 </div>
@@ -5368,7 +5368,7 @@ wings
 <h4>Code</h4>
 <pre><code class="language-plume">
 quill\n
-$import(tests/plume/toimport/text)\n
+$import(./tests/plume/toimport/text)\n
 nib
 
 </code></pre>
@@ -5377,29 +5377,29 @@ nib
 <h4>Bytecode</h4>
 <div class="tab-container">
 <div class="tab-headers">
-<button class="tab-link active" onclick="openBytecodeTab(event, 'bc_tabs_36_content_1')">main</button>
-<button class="tab-link" onclick="openBytecodeTab(event, 'bc_tabs_36_content_2')">tests/plume/toimport/text.plume</button>
+<button class="tab-link active" onclick="openBytecodeTab(event, 'bc_tabs_36_content_1')">./tests/plume/toimport/text.plume</button>
+<button class="tab-link" onclick="openBytecodeTab(event, 'bc_tabs_36_content_2')">main</button>
 </div>
 <div id="bc_tabs_36_content_1" class="tab-content" style="display: block;">
+<pre><code class="language-bytecode"><span class="bc-line-num">001</span> <span class="bc-opcode">ENTER_SCOPE     </span> <span class="bc-arg">0 0</span> <span class="bc-info">; w</span>
+<span class="bc-line-num">002</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 5</span> <span class="bc-info">; wings</span>
+<span class="bc-line-num">003</span> <span class="bc-opcode">END             </span> <span class="bc-arg">0 0</span></code></pre>
+</div>
+<div id="bc_tabs_36_content_2" class="tab-content" style="display: none;">
 <pre><code class="language-bytecode"><span class="bc-line-num">001</span> <span class="bc-opcode">ENTER_SCOPE     </span> <span class="bc-arg">0 0</span> <span class="bc-info">; q</span>
 <span class="bc-line-num">002</span> <span class="bc-opcode">BEGIN_ACC       </span> <span class="bc-arg">0 0</span> <span class="bc-info">; q</span>
 <span class="bc-line-num">003</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 1</span> <span class="bc-info">; quill</span>
 <span class="bc-line-num">004</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 2</span>
 <span class="bc-line-num">005</span> <span class="bc-opcode">BEGIN_ACC       </span> <span class="bc-arg">0 0</span>
 <span class="bc-line-num">006</span> <span class="bc-opcode">TABLE_NEW       </span> <span class="bc-arg">0 0</span>
-<span class="bc-line-num">007</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 3</span> <span class="bc-info">; tests/plume/toimport/text</span>
+<span class="bc-line-num">007</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 3</span> <span class="bc-info">; ./tests/plume/toimport/text</span>
 <span class="bc-line-num">008</span> <span class="bc-opcode">LOAD_STATIC     </span> <span class="bc-arg">0 3</span> <span class="bc-info">; import</span>
-<span class="bc-line-num">009</span> <span class="bc-opcode">ACC_CALL        </span> <span class="bc-arg">0 0</span> <span class="bc-info">; import(tests/plume/toimport/text)</span>
-<span class="bc-line-num">010</span> <span class="bc-opcode">ACC_CHECK_TEXT  </span> <span class="bc-arg">0 0</span> <span class="bc-info">; import(tests/plume/toimport/text)</span>
+<span class="bc-line-num">009</span> <span class="bc-opcode">ACC_CALL        </span> <span class="bc-arg">0 0</span> <span class="bc-info">; import(./tests/plume/toimport/text)</span>
+<span class="bc-line-num">010</span> <span class="bc-opcode">ACC_CHECK_TEXT  </span> <span class="bc-arg">0 0</span> <span class="bc-info">; import(./tests/plume/toimport/text)</span>
 <span class="bc-line-num">011</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 2</span>
 <span class="bc-line-num">012</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 4</span> <span class="bc-info">; nib</span>
 <span class="bc-line-num">013</span> <span class="bc-opcode">ACC_TEXT        </span> <span class="bc-arg">0 0</span>
 <span class="bc-line-num">014</span> <span class="bc-opcode">END             </span> <span class="bc-arg">0 0</span></code></pre>
-</div>
-<div id="bc_tabs_36_content_2" class="tab-content" style="display: none;">
-<pre><code class="language-bytecode"><span class="bc-line-num">001</span> <span class="bc-opcode">ENTER_SCOPE     </span> <span class="bc-arg">0 0</span> <span class="bc-info">; w</span>
-<span class="bc-line-num">002</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 5</span> <span class="bc-info">; wings</span>
-<span class="bc-line-num">003</span> <span class="bc-opcode">END             </span> <span class="bc-arg">0 0</span></code></pre>
 </div>
 </div>
 </div>
