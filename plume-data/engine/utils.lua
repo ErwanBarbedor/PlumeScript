@@ -231,4 +231,13 @@ return function (plume)
 			return "EMPTY"
 		end
 	end
+
+	function plume.checkIdentifier(identifier)
+		for kw in ('if then elseif else while for do macro let set const static'):gmatch('%S+') do
+			if identifier == kw then
+				return false
+			end
+		end
+		return true
+	end
 end

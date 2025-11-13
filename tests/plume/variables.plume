@@ -85,3 +85,11 @@ end
 /// Output
 0
 /// End
+
+/// Test wrong indentifier
+let if = 5
+/// Error
+Syntax error: Cannot use 'if' as identifier.
+File 'wrong indentifier', line 1: let if = 5
+                                      ^^
+/// End

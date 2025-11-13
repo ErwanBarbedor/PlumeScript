@@ -369,6 +369,12 @@ return function (plume)
                 node.error(node)
             end
 
+            if node.name == "IDENTIFIER" then
+                if not plume.checkIdentifier(node.content) then
+                    plume.error.wrongIdentifierError(node, node.content)
+                end
+            end
+
             if node.epos and node.epos > pos then
                 pos = node.epos
             end
