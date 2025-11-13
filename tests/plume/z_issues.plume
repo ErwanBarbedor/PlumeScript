@@ -209,8 +209,38 @@ end
 
 /// End
 
+
+/// Test #174-1
+let t = @table
+  mark: song
+  quill: macro(write)
+    $write $self.mark
+  end
+end
+
+@t.quill
+    write
+end
+/// Output
+write song
+/// End
+
+/// Test #174-2
+let t = @table
+  mark: song
+  quill: macro()
+     $self.mark
+  end
+end
+
+$t.quill()
+/// Output
+song
+/// End
+
 /// Test #177
 do nothing
 /// Output
 
 /// End
+
