@@ -222,7 +222,10 @@ return function (plume)
 
 		    or node.name == "AND"
 		    or node.name == "NOT"
-		    or node.name == "OR" then
+		    or node.name == "OR"
+
+		    or node.name == "FALSE"
+		    or node.name == "TRUE" then
 			return "VALUE"
 		else
 			return "EMPTY"
