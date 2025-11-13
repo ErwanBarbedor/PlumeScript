@@ -88,7 +88,7 @@ wings
 
 /// Test import text 2
 quill\n
-$import(tests/plume/toimport/text)\n
+$import(./tests/plume/toimport/text)\n
 nib
 /// Output
 quill
@@ -97,7 +97,7 @@ nib
 /// End
 
 /// Test import lib 1
-let lib = $import(tests/plume/toimport/lib)
+let lib = $import(./tests/plume/toimport/lib)
 $lib.nib
 /// Output
 quill

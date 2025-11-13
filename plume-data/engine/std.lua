@@ -14,6 +14,53 @@ If not, see <https://www.gnu.org/licenses/>.
 ]]
 
 return function (plume)
+    local pathTemplates = {
+        "%base%%path%.%ext%",
+        "%base%%path%/init.%ext%",
+    }
+    local function getFilenameFromPath(path, lua, chunk)
+        path = path:gsub('\\', '/')
+        
+        local root
+        if path:match('^%.+/') or path == "." then
+            root = chunk.name:gsub('\\', '/'):gsub('/[^/]+$', '')
+        else
+            root = chunk.state[1].name:gsub('\\', '/'):gsub('/[^/]+$', '')
+        end
+
+        if root ~= "" then
+            root = root .. "/"
+        end
+
+        local ext
+        if lua then
+            ext = "lua"
+        else
+            ext = "plume"
+        end
+
+        searchPaths = {}
+        for _, base in ipairs({root, ""}) do
+            for _, template in ipairs(pathTemplates) do
+                template = template:gsub('%%base%%', base)
+                template = template:gsub('%%path%%', path)
+                template = template:gsub('%%ext%%', ext)
+
+                table.insert(searchPaths, template)
+            end
+        end
+
+        for _, search in ipairs(searchPaths) do
+            local f = io.open(search)
+            if f then
+                f:close()
+                return search
+            end
+        end
+        
+        return nil, searchPaths
+    end
+
     local std = {
         print = function(arg)
             print(table.unpack(arg.table))
@@ -142,21 +189,21 @@ return function (plume)
         end,
 
         import = function(args, chunk)
-            local filename = args.table[1]
+            local filename, searchPaths = getFilenameFromPath(args.table[1], args.table.lua, chunk)
             
-            if args.table.lua then
-                return dofile(filename..".lua")(plume) 
+            if filename then
+                if args.table.lua then
+                    return dofile(filename)(plume) 
+                else
+                    local success, result = plume.executeFile(filename, chunk.state)
+                    if not success then
+                        error(result)
+                    end
+                    return result
+                end
             else
-                local ext = "plume"
-                if not filename:match('%'..ext..'$') then
-                    filename = filename .. "." .. ext
-                end
-
-                local success, result = plume.executeFile(filename, chunk.state)
-                if not success then
-                    error(result)
-                end
-                return result
+                msg = "Error: cannot open '" .. args.table[1] .. "'.\nPaths tried:\n\t" .. table.concat(searchPaths, '\n\t')
+                error(msg)
             end
         end,
 
