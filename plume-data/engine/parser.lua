@@ -74,7 +74,7 @@ return function (plume)
         ------------
         local s  = S" \t"^1
         local os = S" \t"^0
-        local lt = (os * S";\n")^1 * os -- linestart
+        local lt = (os * S"\n")^1 * os -- linestart
         local num = C("NUMBER", (R"09"^1 * P"." * R"09"^1) + R"09"^1)
         -- strict identifier
         local idns = C("IDENTIFIER", (R"az"+R"AZ"+P"_") * (R"az"+R"AZ"+P"_"+R"09")^0)
