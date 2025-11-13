@@ -175,9 +175,11 @@ end
 
 $x(1)
 /// Error
-Runtime error: Wrong number of positionnal arguments for macro '???', 1 instead of 0
-File '#148', line 4: $x(1)
-                      ^^^^
+Runtime error: Wrong number of positionnal arguments for macro '???', 1 instead of 0.
+
+Traceback (most recent call first):
+  File '#148', line 4: $x(1)
+                        ^^^^
 /// End
 
 /// Test #162

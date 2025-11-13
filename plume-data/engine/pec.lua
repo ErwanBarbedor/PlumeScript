@@ -30,7 +30,7 @@ return function(plume)
 			namedParamOffset     = {},
 			localsCount          = 0,
 			variadicOffset       = 0, -- 0 for non variadic
-			state                = state,	
+			state                = state
 		}
 
 		if state[1] then

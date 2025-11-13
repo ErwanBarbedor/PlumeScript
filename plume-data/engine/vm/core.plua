@@ -109,7 +109,6 @@ return function (plume)
         if #ms >= 1 then
             result = ms[1]
         end
-
         return true, result, ip
     end
 end

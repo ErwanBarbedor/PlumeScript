@@ -69,24 +69,46 @@ return function(plume)
 		}
 	end
 
-	function plume.error.formatLine(lineInfos)
+	function plume.error.formatLine(lineInfos, macro, syntax)
 		local intro = string.format(
-			"File '%s', line %i: ",
+			"%sFile '%s', line %i",
+			syntax and "" or "  ",
 			lineInfos.filename,
 			lineInfos.noline
 		)
-		local msg =  intro
-		msg = msg .. lineInfos.line .. "\n"
-		msg = msg .. (" "):rep(#intro + lineInfos.bpos-1) .. ("^"):rep(lineInfos.len)
+		
+
+		if macro then
+			intro = intro .. ", in macro " .. macro
+		end
+
+		local msg = intro
+
+		msg = msg .. ": " ..lineInfos.line .. "\n"
+		msg = msg .. (" "):rep(#intro + lineInfos.bpos+1) .. ("^"):rep(lineInfos.len)
 
 		return msg
+	end
+
+	function plume.error.getNode(runtime, ip)
+		local node
+		for i=ip, 1, -1 do
+			node = runtime.mapping[i]
+			if node and node.bpos then
+				break
+			end
+		end
+		return node
 	end
 
 	function plume.error.makeMessage(message, node)
 		if node and node.bpos then
 			local lineInfos = plume.error.getLineInfos(node)
-			message = message .. "\n"..plume.error.formatLine(lineInfos)
+			message = message .. "\n"..plume.error.formatLine(lineInfos, nil, true)
+		else
+			message = "Unexpected error"
 		end
+
 		return message
 	end
 
@@ -99,13 +121,34 @@ return function(plume)
 	end
 
 	function plume.error.makeRuntimeError(runtime, ip, message)
-		local node
-		for i=ip+1, 1, -1 do
-			node = runtime.mapping[i]
-			if node and node.bpos then
-				break
+		local node = plume.error.getNode(runtime, ip)
+		local message = "Runtime error: " .. message
+
+		local errorCallstack = {}
+		local lineInfos = plume.error.getLineInfos(node)
+		table.insert(
+			errorCallstack,
+			plume.error.formatLine(lineInfos, (not runtime.isFile) and runtime.name)
+		)
+
+		if plume.callstack then
+			for i=#plume.callstack, 1, -1 do
+				local chunk = plume.callstack[i]
+				if chunk.macro.type == "macro" then
+					local node = plume.error.getNode(chunk.macro, chunk.ip)
+					if node then
+						local lineInfos = plume.error.getLineInfos(node)
+						table.insert(
+							errorCallstack,
+							plume.error.formatLine(lineInfos, (not chunk.macro.isFile) and chunk.macro.name)
+						)
+					end
+				end
 			end
 		end
-		return plume.error.makeMessage("Runtime error: " .. message, node)
+
+		message = message .. "\n\nTraceback (most recent call first):\n" .. table.concat(errorCallstack, "\n")
+
+		return message
 	end
 end
