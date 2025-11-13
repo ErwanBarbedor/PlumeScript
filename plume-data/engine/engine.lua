@@ -416,7 +416,7 @@ end
 	            local argcount=msp-msf[msfp]
 	    if argcount ~=macro.positionalParamCount and macro.variadicOffset==0 then
 	        local name=macro.name or "???"
-	            return false, "Wrong number of positionnal arguments for macro '" .. name .. "', " ..   argcount .. " instead of " .. macro.positionalParamCount, ip, chunk
+	            return false, "Wrong number of positionnal arguments for macro '" .. name .. "', " ..   argcount .. " instead of " .. macro.positionalParamCount .. ".", ip, chunk
 	    end
 	    for i=1, macro.positionalParamCount do
 	        parameters[i]=ms[msp+i-argcount]
@@ -451,10 +451,13 @@ end
 	            parameters[macro.variadicOffset]=capture
 	        end
 	            msfp=msfp-1
-	        local success, result, cip=plume.run(macro, parameters)
+	        plume.callstack=plume.callstack or {}
+	        table.insert(plume.callstack, {macro=chunk, ip=ip})
+	        local success, result, cip, source=plume.run(macro, parameters)
 	        if not success then
-	            return success, result, cip, macro
+	            return success, result, cip, (source or macro)
 	        end
+	        table.remove(plume.callstack)
 	        msp=msp+1
 	        ms[msp]=result
 	    elseif t=="luaFunction" then
