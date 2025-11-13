@@ -65,28 +65,28 @@ return function (plume)
             table.insert(vsf, 1)
         end
         ::DISPATCH::
-                        	if hook then
-                if ip>0 then
-                    hook(
-                        chunk,
-                        tic, ip, jump,
-                        instr, op, arg1, arg2,
-                        ms, msp, msf, msfp,
-                        vs, vsp, vsf, vsfp
-                    )
-                end
-            end
-            if jump>0 then
-                ip=jump
-                jump=0
-            else
-                ip=ip+1
-            end
-            tic=tic+1
-                        instr=bytecode[ip]
-            op=bit.band(bit.rshift(instr, OP_SHIFT), MASK_OP)
-            arg1=bit.band(bit.rshift(instr, ARG1_SHIFT), MASK_ARG1)
-            arg2=bit.band(instr, MASK_ARG2)
+                	if hook then
+        if ip>0 then
+            hook(
+                chunk,
+                tic, ip, jump,
+                instr, op, arg1, arg2,
+                ms, msp, msf, msfp,
+                vs, vsp, vsf, vsfp
+            )
+        end
+    end
+    if jump>0 then
+        ip=jump
+        jump=0
+    else
+        ip=ip+1
+    end
+    tic=tic+1
+                instr=bytecode[ip]
+    op=bit.band(bit.rshift(instr, OP_SHIFT), MASK_OP)
+    arg1=bit.band(bit.rshift(instr, ARG1_SHIFT), MASK_ARG1)
+    arg2=bit.band(instr, MASK_ARG2)
             			if op==1 then goto LOAD_CONSTANT
 			elseif op==2 then goto LOAD_TRUE
 			elseif op==3 then goto LOAD_FALSE
@@ -149,73 +149,73 @@ return function (plume)
 			end
             			::LOAD_CONSTANT::
 	do
-	            msp=msp+1
-	            ms[msp]=constants[arg2]
+	    msp=msp+1
+	    ms[msp]=constants[arg2]
 				goto DISPATCH
 end
 			::LOAD_TRUE::
 	do
-	            msp=msp+1
-	            ms[msp]=true
+	    msp=msp+1
+	    ms[msp]=true
 				goto DISPATCH
 end
 			::LOAD_FALSE::
 	do
-	            msp=msp+1
-	            ms[msp]=false
+	    msp=msp+1
+	    ms[msp]=false
 				goto DISPATCH
 end
 			::LOAD_EMPTY::
 	do
-	            msp=msp+1
-	            ms[msp]=empty
+	    msp=msp+1
+	    ms[msp]=empty
 				goto DISPATCH
 end
 			::LOAD_LOCAL::
 	do
-	            msp=msp+1
-	            ms[msp]=vs[vsf[vsfp] + arg2-1]
+	    msp=msp+1
+	    ms[msp]=vs[vsf[vsfp] + arg2-1]
 				goto DISPATCH
 end
 			::LOAD_LEXICAL::
 	do
-	            msp=msp+1
-	            ms[msp]=vs[vsf[vsfp-arg1]+arg2-1]
+	    msp=msp+1
+	    ms[msp]=vs[vsf[vsfp-arg1]+arg2-1]
 				goto DISPATCH
 end
 			::LOAD_STATIC::
 	do
-	            msp=msp+1
-	            ms[msp]=static[arg2]
+	    msp=msp+1
+	    ms[msp]=static[arg2]
 				goto DISPATCH
 end
 			::STORE_LOCAL::
 	do
-	            vs[vsf[vsfp] + arg2-1]=ms[msp]
-	            msp=msp-1
+	    vs[vsf[vsfp] + arg2-1]=ms[msp]
+	    msp=msp-1
 				goto DISPATCH
 end
 			::STORE_LEXICAL::
 	do
-	            vs[vsf[vsfp-arg1]+arg2-1]=ms[msp]
-	            msp=msp-1
+	    vs[vsf[vsfp-arg1]+arg2-1]=ms[msp]
+	    msp=msp-1
 				goto DISPATCH
 end
 			::STORE_STATIC::
 	do
-	            static[arg2]=ms[msp]
-	            msp=msp-1
+	    static[arg2]=ms[msp]
+	    msp=msp-1
 				goto DISPATCH
 end
 			::STORE_VOID::
 	do
-	            msp=msp-1
+	    msp=msp-1
 				goto DISPATCH
 end
 			::TABLE_NEW::
 	do
-	            msp=msp + 1
-	            ms[msp]=table.new(0, arg1)
+	    msp=msp + 1
+	    ms[msp]=table.new(0, arg1)
 				goto DISPATCH
 end
 			::TABLE_ADD::
@@ -224,123 +224,123 @@ end
 end
 			::TABLE_SET::
 	do
-	            local key=ms[msp-1]
-	            key=tonumber(key) or key
-	            ms[msp].table[key]=ms[msp-2]
-	            msp=msp-3
+	    local key=ms[msp-1]
+	    key=tonumber(key) or key
+	    ms[msp].table[key]=ms[msp-2]
+	    msp=msp-3
 				goto DISPATCH
 end
 			::TABLE_INDEX::
 	do
-	            local key=ms[msp-1]
-	            key=tonumber(key) or key
-	            if key==empty then
-	                            return false, "Cannot use empty as key.", ip, chunk
-	            end
-	            local _table=ms[msp]
-	            local t=_type(_table)
-	            if t ~="table" then
-	                            return false, "Try to index a '" ..t .."' value.", ip, chunk
-	            end
-	            local value=_table.table[key]
-	            if not value then
-	                if tonumber(key) then
-	                                return false, "Invalid index '" .. key .."'.", ip, chunk
-	                else
-	                                return false, "Unregistered key '" .. key .."'.", ip, chunk
-	                end
-	            end
-	            ms[msp-1]=value
-	            msp=msp-1
+	    local key=ms[msp-1]
+	    key=tonumber(key) or key
+	    if key==empty then
+	            return false, "Cannot use empty as key.", ip, chunk
+	    end
+	    local _table=ms[msp]
+	    local t=_type(_table)
+	    if t ~="table" then
+	            return false, "Try to index a '" ..t .."' value.", ip, chunk
+	    end
+	    local value=_table.table[key]
+	    if not value then
+	        if tonumber(key) then
+	                return false, "Invalid index '" .. key .."'.", ip, chunk
+	        else
+	                return false, "Unregistered key '" .. key .."'.", ip, chunk
+	        end
+	    end
+	    ms[msp-1]=value
+	    msp=msp-1
 				goto DISPATCH
 end
 			::TABLE_INDEX_ACC_SELF::
 	do
-	            table.insert(ms[msf[msfp]], "self")
-	            table.insert(ms[msf[msfp]], ms[msp])
-	            table.insert(ms[msf[msfp]], false)
-	                        local key=ms[msp-1]
-	            key=tonumber(key) or key
-	            if key==empty then
-	                            return false, "Cannot use empty as key.", ip, chunk
-	            end
-	            local _table=ms[msp]
-	            local t=_type(_table)
-	            if t ~="table" then
-	                            return false, "Try to index a '" ..t .."' value.", ip, chunk
-	            end
-	            local value=_table.table[key]
-	            if not value then
-	                if tonumber(key) then
-	                                return false, "Invalid index '" .. key .."'.", ip, chunk
-	                else
-	                                return false, "Unregistered key '" .. key .."'.", ip, chunk
-	                end
-	            end
-	            ms[msp-1]=value
-	            msp=msp-1
+	    table.insert(ms[msf[msfp]], "self")
+	    table.insert(ms[msf[msfp]], ms[msp])
+	    table.insert(ms[msf[msfp]], false)
+	        local key=ms[msp-1]
+	    key=tonumber(key) or key
+	    if key==empty then
+	            return false, "Cannot use empty as key.", ip, chunk
+	    end
+	    local _table=ms[msp]
+	    local t=_type(_table)
+	    if t ~="table" then
+	            return false, "Try to index a '" ..t .."' value.", ip, chunk
+	    end
+	    local value=_table.table[key]
+	    if not value then
+	        if tonumber(key) then
+	                return false, "Invalid index '" .. key .."'.", ip, chunk
+	        else
+	                return false, "Unregistered key '" .. key .."'.", ip, chunk
+	        end
+	    end
+	    ms[msp-1]=value
+	    msp=msp-1
 				goto DISPATCH
 end
 			::TABLE_SET_META::
 	do
-	            ms[msp-2].meta[ms[msp-1]]=ms[msp]
-	            msp=msp-3
+	    ms[msp-2].meta[ms[msp-1]]=ms[msp]
+	    msp=msp-3
 				goto DISPATCH
 end
 			::TABLE_INDEX_META::
 	do
-	            ms[msp-1]=ms[msp].meta[ms[msp-1]]
-	            msp=msp-1
+	    ms[msp-1]=ms[msp].meta[ms[msp-1]]
+	    msp=msp-1
 				goto DISPATCH
 end
 			::TABLE_SET_ACC::
 	do
-	            table.insert(ms[msf[msfp]], ms[msp])
-	            table.insert(ms[msf[msfp]], ms[msp-1])
-	            table.insert(ms[msf[msfp]], false)
-	            msp=msp-2
+	    table.insert(ms[msf[msfp]], ms[msp])
+	    table.insert(ms[msf[msfp]], ms[msp-1])
+	    table.insert(ms[msf[msfp]], false)
+	    msp=msp-2
 				goto DISPATCH
 end
 			::TABLE_SET_ACC_META::
 	do
-	            table.insert(ms[msf[msfp]], ms[msp])
-	            table.insert(ms[msf[msfp]], ms[msp-1])
-	            table.insert(ms[msf[msfp]], true)
-	            msp=msp-2
+	    table.insert(ms[msf[msfp]], ms[msp])
+	    table.insert(ms[msf[msfp]], ms[msp-1])
+	    table.insert(ms[msf[msfp]], true)
+	    msp=msp-2
 				goto DISPATCH
 end
 			::TABLE_EXPAND::
 	do
-	            local t=ms[msp]
-	            if _type(t) ~="table" then
-	                            return false, "Try to expand a '" .._type(t) .."' value.", ip, chunk
-	            end
-	            msp=msp-1
-	            for _, item in ipairs(t.table) do
-	                msp=msp+1
-	                ms[msp]=item
-	            end
-	            for _, key in ipairs(t.keys) do
-	                table.insert(ms[msf[msfp]], key)
-	                table.insert(ms[msf[msfp]], t.table[key])
-	                table.insert(ms[msf[msfp]], false)
-	            end
+	    local t=ms[msp]
+	    if _type(t) ~="table" then
+	            return false, "Try to expand a '" .._type(t) .."' value.", ip, chunk
+	    end
+	    msp=msp-1
+	    for _, item in ipairs(t.table) do
+	        msp=msp+1
+	        ms[msp]=item
+	    end
+	    for _, key in ipairs(t.keys) do
+	        table.insert(ms[msf[msfp]], key)
+	        table.insert(ms[msf[msfp]], t.table[key])
+	        table.insert(ms[msf[msfp]], false)
+	    end
 				goto DISPATCH
 end
 			::ENTER_SCOPE::
 	do
-	            vsfp=vsfp+1
-	            vsf[vsfp]=vsp+1-arg1
-	            for i=1, arg2-arg1 do
-	                vsp=vsp+1
-	                vs[vsp]=empty
-	            end
+	    vsfp=vsfp+1
+	    vsf[vsfp]=vsp+1-arg1
+	    for i=1, arg2-arg1 do
+	        vsp=vsp+1
+	        vs[vsp]=empty
+	    end
 				goto DISPATCH
 end
 			::LEAVE_SCOPE::
 	do
-	            vsp=vsf[vsfp]-1
-	            vsfp=vsfp-1
+	    vsp=vsf[vsfp]-1
+	    vsfp=vsfp-1
 				goto DISPATCH
 end
 			::ENTER_FILE::
@@ -353,578 +353,578 @@ end
 end
 			::BEGIN_ACC::
 	do
-	            msfp=msfp + 1
-	            msf[msfp]=msp+1
+	    msfp=msfp + 1
+	    msf[msfp]=msp+1
 				goto DISPATCH
 end
 			::ACC_TABLE::
 	do
-	            local limit=msf[msfp]+1
-	            local keyCount=#ms[limit-1] / 2
-	            local args=ptable(msp-limit+1, keyCount)
-	            for i=1, msp-limit+1 do
-	                args.table[i]=ms[limit+i-1]
-	            end
-	            for i=1, #ms[limit-1], 3 do
-	                if ms[limit-1][i+2] then
-	                                args.meta[ms[limit-1][i]]=ms[limit-1][i+1]
-	                else
-	                                local key=ms[limit-1][i]
-	            key=tonumber(key) or key
-	            if not args.table[ms[limit-1][i]] then
-	                table.insert(args.keys, ms[limit-1][i])
-	            end
-	            args.table[ms[limit-1][i]]=ms[limit-1][i+1]
-	                end
-	            end
-	            ms[limit-1]=args
-	            msp=limit - 1
-	                        msfp=msfp-1
+	    local limit=msf[msfp]+1
+	    local keyCount=#ms[limit-1] / 2
+	    local args=ptable(msp-limit+1, keyCount)
+	    for i=1, msp-limit+1 do
+	        args.table[i]=ms[limit+i-1]
+	    end
+	    for i=1, #ms[limit-1], 3 do
+	        if ms[limit-1][i+2] then
+	                args.meta[ms[limit-1][i]]=ms[limit-1][i+1]
+	        else
+	                local key=ms[limit-1][i]
+	    key=tonumber(key) or key
+	    if not args.table[ms[limit-1][i]] then
+	        table.insert(args.keys, ms[limit-1][i])
+	    end
+	    args.table[ms[limit-1][i]]=ms[limit-1][i+1]
+	        end
+	    end
+	    ms[limit-1]=args
+	    msp=limit - 1
+	        msfp=msfp-1
 				goto DISPATCH
 end
 			::ACC_TEXT::
 	do
-	            local limit=msf[msfp]
-	                for i=limit, msp do
-	                    if ms[i]==empty then
-	                        ms[i]=""
-	                    end
-	                end
-	                ms[limit]=table.concat(ms, "", limit, msp)
-	            msp=limit
-	                        msfp=msfp-1
+	    local limit=msf[msfp]
+	        for i=limit, msp do
+	            if ms[i]==empty then
+	                ms[i]=""
+	            end
+	        end
+	        ms[limit]=table.concat(ms, "", limit, msp)
+	    msp=limit
+	        msfp=msfp-1
 				goto DISPATCH
 end
 			::ACC_EMPTY::
 	do
-	            msp=msp+1
-	            ms[msp]=empty
-	                        msfp=msfp-1
+	    msp=msp+1
+	    ms[msp]=empty
+	        msfp=msfp-1
 				goto DISPATCH
 end
 			::ACC_CALL::
 	do
-	            local macro=ms[msp]
-	            msp=msp - 1
-	            local t=_type(macro)
-	            if t=="macro" then
-	                local capture
-	                local parameters={}
-	                if macro.variadicOffset>0 then
-	                    capture=ptable(0, 0)
-	                end
-	                            local argcount=msp-msf[msfp]
-	            if argcount ~=macro.positionalParamCount and macro.variadicOffset==0 then
-	                local name=macro.name or "???"
-	                            return false, "Wrong number of positionnal arguments for macro '" .. name .. "', " ..   argcount .. " instead of " .. macro.positionalParamCount, ip, chunk
-	            end
-	            for i=1, macro.positionalParamCount do
-	                parameters[i]=ms[msp+i-argcount]
-	            end
-	            for i=macro.positionalParamCount+1, argcount do
-	                table.insert(capture.table, ms[msp+i-argcount])
-	            end
-	            msp=msf[msfp]
-	                            for i=1, #ms[msf[msfp]], 3 do
-	                local k=ms[msf[msfp]][i]
-	                local v=ms[msf[msfp]][i+1]
-	                local m=ms[msf[msfp]][i+2]
-	                local j=macro.namedParamOffset[k]
-	                if m then
-	                                capture.meta[k]=v
-	                elseif j then
-	                    parameters[j]=v
-	                elseif macro.variadicOffset>0 then
-	                                local key=k
-	            key=tonumber(key) or key
-	            if not capture.table[k] then
-	                table.insert(capture.keys, k)
-	            end
-	            capture.table[k]=v
-	                else
-	                    local name=macro.name or "???"
-	                                return false, "Unknow named parameter '" .. k .."' for macro '" .. name .."'.", ip, chunk
-	                end
-	            end
-	            msp=msp-1
-	                if macro.variadicOffset>0 then
-	                    parameters[macro.variadicOffset]=capture
-	                end
-	                            msfp=msfp-1
-	                local success, result, cip=plume.run(macro, parameters)
-	                if not success then
-	                    return success, result, cip, macro
-	                end
-	                msp=msp+1
-	                ms[msp]=result
-	            elseif t=="luaFunction" then
-	                            local limit=msf[msfp]+1
-	            local keyCount=#ms[limit-1] / 2
-	            local args=ptable(msp-limit+1, keyCount)
-	            for i=1, msp-limit+1 do
-	                args.table[i]=ms[limit+i-1]
-	            end
-	            for i=1, #ms[limit-1], 3 do
-	                if ms[limit-1][i+2] then
-	                                args.meta[ms[limit-1][i]]=ms[limit-1][i+1]
-	                else
-	                                local key=ms[limit-1][i]
-	            key=tonumber(key) or key
-	            if not args.table[ms[limit-1][i]] then
-	                table.insert(args.keys, ms[limit-1][i])
-	            end
-	            args.table[ms[limit-1][i]]=ms[limit-1][i+1]
-	                end
-	            end
-	            ms[limit-1]=args
-	            msp=limit - 1
-	                        msfp=msfp-1
-	                local result=macro.callable(ms[msp], chunk)
-	                if result==nil then
-	                    result=empty
-	                end
-	                ms[msp]=result
-	            else
-	                            return false, "Try to call a '" .. t .. "' value", ip, chunk
-	            end
+	    local macro=ms[msp]
+	    msp=msp - 1
+	    local t=_type(macro)
+	    if t=="macro" then
+	        local capture
+	        local parameters={}
+	        if macro.variadicOffset>0 then
+	            capture=ptable(0, 0)
+	        end
+	            local argcount=msp-msf[msfp]
+	    if argcount ~=macro.positionalParamCount and macro.variadicOffset==0 then
+	        local name=macro.name or "???"
+	            return false, "Wrong number of positionnal arguments for macro '" .. name .. "', " ..   argcount .. " instead of " .. macro.positionalParamCount, ip, chunk
+	    end
+	    for i=1, macro.positionalParamCount do
+	        parameters[i]=ms[msp+i-argcount]
+	    end
+	    for i=macro.positionalParamCount+1, argcount do
+	        table.insert(capture.table, ms[msp+i-argcount])
+	    end
+	    msp=msf[msfp]
+	            for i=1, #ms[msf[msfp]], 3 do
+	        local k=ms[msf[msfp]][i]
+	        local v=ms[msf[msfp]][i+1]
+	        local m=ms[msf[msfp]][i+2]
+	        local j=macro.namedParamOffset[k]
+	        if m then
+	                capture.meta[k]=v
+	        elseif j then
+	            parameters[j]=v
+	        elseif macro.variadicOffset>0 then
+	                local key=k
+	    key=tonumber(key) or key
+	    if not capture.table[k] then
+	        table.insert(capture.keys, k)
+	    end
+	    capture.table[k]=v
+	        else
+	            local name=macro.name or "???"
+	                return false, "Unknow named parameter '" .. k .."' for macro '" .. name .."'.", ip, chunk
+	        end
+	    end
+	    msp=msp-1
+	        if macro.variadicOffset>0 then
+	            parameters[macro.variadicOffset]=capture
+	        end
+	            msfp=msfp-1
+	        local success, result, cip=plume.run(macro, parameters)
+	        if not success then
+	            return success, result, cip, macro
+	        end
+	        msp=msp+1
+	        ms[msp]=result
+	    elseif t=="luaFunction" then
+	            local limit=msf[msfp]+1
+	    local keyCount=#ms[limit-1] / 2
+	    local args=ptable(msp-limit+1, keyCount)
+	    for i=1, msp-limit+1 do
+	        args.table[i]=ms[limit+i-1]
+	    end
+	    for i=1, #ms[limit-1], 3 do
+	        if ms[limit-1][i+2] then
+	                args.meta[ms[limit-1][i]]=ms[limit-1][i+1]
+	        else
+	                local key=ms[limit-1][i]
+	    key=tonumber(key) or key
+	    if not args.table[ms[limit-1][i]] then
+	        table.insert(args.keys, ms[limit-1][i])
+	    end
+	    args.table[ms[limit-1][i]]=ms[limit-1][i+1]
+	        end
+	    end
+	    ms[limit-1]=args
+	    msp=limit - 1
+	        msfp=msfp-1
+	        local result=macro.callable(ms[msp], chunk)
+	        if result==nil then
+	            result=empty
+	        end
+	        ms[msp]=result
+	    else
+	            return false, "Try to call a '" .. t .. "' value", ip, chunk
+	    end
 				goto DISPATCH
 end
 			::RETURN::
 	do
-	            jump=calls[cp]
-	            if not jump then
-	                jump=#bytecode
-	            end
-	            cp=cp - 1
-	                        vsp=vsf[vsfp]-1
-	            vsfp=vsfp-1
+	    jump=calls[cp]
+	    if not jump then
+	        jump=#bytecode
+	    end
+	    cp=cp - 1
+	        vsp=vsf[vsfp]-1
+	    vsfp=vsfp-1
 				goto DISPATCH
 end
 			::ACC_CHECK_TEXT::
 	do
-	            local t=_type(ms[msp])
-	            if t ~="number" and t ~="string" and ms[msp] ~=empty then
-	                            return false, "Cannot concat a '" ..t .. "' value.", ip, chunk
-	            end
+	    local t=_type(ms[msp])
+	    if t ~="number" and t ~="string" and ms[msp] ~=empty then
+	            return false, "Cannot concat a '" ..t .. "' value.", ip, chunk
+	    end
 				goto DISPATCH
 end
 			::JUMP_IF::
 	do
-	            local test=ms[msp]
-	                        if test==empty then
-	                test=false
-	            end
-	            if test then
-	                jump=arg2
-	            end
-	            msp=msp-1
+	    local test=ms[msp]
+	        if test==empty then
+	        test=false
+	    end
+	    if test then
+	        jump=arg2
+	    end
+	    msp=msp-1
 				goto DISPATCH
 end
 			::JUMP_IF_NOT::
 	do
-	            local test=ms[msp]
-	                        if test==empty then
-	                test=false
-	            end
-	            if not test then
-	                jump=arg2
-	            end
-	            msp=msp-1
+	    local test=ms[msp]
+	        if test==empty then
+	        test=false
+	    end
+	    if not test then
+	        jump=arg2
+	    end
+	    msp=msp-1
 				goto DISPATCH
 end
 			::JUMP_IF_NOT_EMPTY::
 	do
-	            if ms[msp] ~=empty then
-	                jump=arg2
-	            end
-	            msp=msp-1
+	    if ms[msp] ~=empty then
+	        jump=arg2
+	    end
+	    msp=msp-1
 				goto DISPATCH
 end
 			::JUMP::
 	do
-	            jump=arg2
+	    jump=arg2
 				goto DISPATCH
 end
 			::JUMP_IF_PEEK::
 	do
-	            local test=ms[msp]
-	                        if test==empty then
-	                test=false
-	            end
-	            if test then
-	                jump=arg2
-	            end
+	    local test=ms[msp]
+	        if test==empty then
+	        test=false
+	    end
+	    if test then
+	        jump=arg2
+	    end
 				goto DISPATCH
 end
 			::JUMP_IF_NOT_PEEK::
 	do
-	            local test=ms[msp]
-	                        if test==empty then
-	                test=false
-	            end
-	            if not test then
-	                jump=arg2
-	            end
+	    local test=ms[msp]
+	        if test==empty then
+	        test=false
+	    end
+	    if not test then
+	        jump=arg2
+	    end
 				goto DISPATCH
 end
 			::GET_ITER::
 	do
-	            local obj=ms[msp]
-	            local tobj=_type(obj)
-	            if tobj ~="table" then
-	                            return false, "Try to iterate over a non-table '" .. tobj .. "' value.", ip, chunk
-	            end
-	            local iter=obj.meta.iter
-	            if iter.type=="luaFunction" then
-	                ms[msp]=iter.callable()
-	            elseif iter.type=="macro" then
-	                jump=iter.offset
-	                cp=cp + 1
-	                calls[cp]=ip+1
-	            end
+	    local obj=ms[msp]
+	    local tobj=_type(obj)
+	    if tobj ~="table" then
+	            return false, "Try to iterate over a non-table '" .. tobj .. "' value.", ip, chunk
+	    end
+	    local iter=obj.meta.iter
+	    if iter.type=="luaFunction" then
+	        ms[msp]=iter.callable()
+	    elseif iter.type=="macro" then
+	        jump=iter.offset
+	        cp=cp + 1
+	        calls[cp]=ip+1
+	    end
 				goto DISPATCH
 end
 			::FOR_ITER::
 	do
-	            local result=ms[msp].table.next.callable()
-	            if result==empty then
-	                msp=msp-1
-	                            jump=arg2
-	            else
-	                ms[msp]=result
-	            end
+	    local result=ms[msp].table.next.callable()
+	    if result==empty then
+	        msp=msp-1
+	            jump=arg2
+	    else
+	        ms[msp]=result
+	    end
 				goto DISPATCH
 end
 			::OPP_ADD::
 	do
-	            x=ms[msp-1]
-	            y=ms[msp]
-	                        if _type(x)=="string" then
-	                x=tonumber(x)
-	                if not x then
-	                                return false, "Cannot convert the string value to a number.", ip, chunk
-	                end
-	            elseif _type(x) ~="number" then
-	                            return false, "Cannot do comparison or arithmetic with " .. _type(x).. " value.", ip, chunk
-	            end
-	                        if _type(y)=="string" then
-	                y=tonumber(y)
-	                if not y then
-	                                return false, "Cannot convert the string value to a number.", ip, chunk
-	                end
-	            elseif _type(y) ~="number" then
-	                            return false, "Cannot do comparison or arithmetic with " .. _type(y).. " value.", ip, chunk
-	            end
-	            msp=msp-1
-	            ms[msp]=x + y
+	    x=ms[msp-1]
+	    y=ms[msp]
+	        if _type(x)=="string" then
+	        x=tonumber(x)
+	        if not x then
+	                return false, "Cannot convert the string value to a number.", ip, chunk
+	        end
+	    elseif _type(x) ~="number" then
+	            return false, "Cannot do comparison or arithmetic with " .. _type(x).. " value.", ip, chunk
+	    end
+	        if _type(y)=="string" then
+	        y=tonumber(y)
+	        if not y then
+	                return false, "Cannot convert the string value to a number.", ip, chunk
+	        end
+	    elseif _type(y) ~="number" then
+	            return false, "Cannot do comparison or arithmetic with " .. _type(y).. " value.", ip, chunk
+	    end
+	    msp=msp-1
+	    ms[msp]=x + y
 				goto DISPATCH
 end
 			::OPP_MUL::
 	do
-	            x=ms[msp-1]
-	            y=ms[msp]
-	                        if _type(x)=="string" then
-	                x=tonumber(x)
-	                if not x then
-	                                return false, "Cannot convert the string value to a number.", ip, chunk
-	                end
-	            elseif _type(x) ~="number" then
-	                            return false, "Cannot do comparison or arithmetic with " .. _type(x).. " value.", ip, chunk
-	            end
-	                        if _type(y)=="string" then
-	                y=tonumber(y)
-	                if not y then
-	                                return false, "Cannot convert the string value to a number.", ip, chunk
-	                end
-	            elseif _type(y) ~="number" then
-	                            return false, "Cannot do comparison or arithmetic with " .. _type(y).. " value.", ip, chunk
-	            end
-	            msp=msp-1
-	            ms[msp]=x * y
+	    x=ms[msp-1]
+	    y=ms[msp]
+	        if _type(x)=="string" then
+	        x=tonumber(x)
+	        if not x then
+	                return false, "Cannot convert the string value to a number.", ip, chunk
+	        end
+	    elseif _type(x) ~="number" then
+	            return false, "Cannot do comparison or arithmetic with " .. _type(x).. " value.", ip, chunk
+	    end
+	        if _type(y)=="string" then
+	        y=tonumber(y)
+	        if not y then
+	                return false, "Cannot convert the string value to a number.", ip, chunk
+	        end
+	    elseif _type(y) ~="number" then
+	            return false, "Cannot do comparison or arithmetic with " .. _type(y).. " value.", ip, chunk
+	    end
+	    msp=msp-1
+	    ms[msp]=x * y
 				goto DISPATCH
 end
 			::OPP_SUB::
 	do
-	            x=ms[msp-1]
-	            y=ms[msp]
-	                        if _type(x)=="string" then
-	                x=tonumber(x)
-	                if not x then
-	                                return false, "Cannot convert the string value to a number.", ip, chunk
-	                end
-	            elseif _type(x) ~="number" then
-	                            return false, "Cannot do comparison or arithmetic with " .. _type(x).. " value.", ip, chunk
-	            end
-	                        if _type(y)=="string" then
-	                y=tonumber(y)
-	                if not y then
-	                                return false, "Cannot convert the string value to a number.", ip, chunk
-	                end
-	            elseif _type(y) ~="number" then
-	                            return false, "Cannot do comparison or arithmetic with " .. _type(y).. " value.", ip, chunk
-	            end
-	            msp=msp-1
-	            ms[msp]=x - y
+	    x=ms[msp-1]
+	    y=ms[msp]
+	        if _type(x)=="string" then
+	        x=tonumber(x)
+	        if not x then
+	                return false, "Cannot convert the string value to a number.", ip, chunk
+	        end
+	    elseif _type(x) ~="number" then
+	            return false, "Cannot do comparison or arithmetic with " .. _type(x).. " value.", ip, chunk
+	    end
+	        if _type(y)=="string" then
+	        y=tonumber(y)
+	        if not y then
+	                return false, "Cannot convert the string value to a number.", ip, chunk
+	        end
+	    elseif _type(y) ~="number" then
+	            return false, "Cannot do comparison or arithmetic with " .. _type(y).. " value.", ip, chunk
+	    end
+	    msp=msp-1
+	    ms[msp]=x - y
 				goto DISPATCH
 end
 			::OPP_DIV::
 	do
-	            x=ms[msp-1]
-	            y=ms[msp]
-	                        if _type(x)=="string" then
-	                x=tonumber(x)
-	                if not x then
-	                                return false, "Cannot convert the string value to a number.", ip, chunk
-	                end
-	            elseif _type(x) ~="number" then
-	                            return false, "Cannot do comparison or arithmetic with " .. _type(x).. " value.", ip, chunk
-	            end
-	                        if _type(y)=="string" then
-	                y=tonumber(y)
-	                if not y then
-	                                return false, "Cannot convert the string value to a number.", ip, chunk
-	                end
-	            elseif _type(y) ~="number" then
-	                            return false, "Cannot do comparison or arithmetic with " .. _type(y).. " value.", ip, chunk
-	            end
-	            msp=msp-1
-	            ms[msp]=x / y
+	    x=ms[msp-1]
+	    y=ms[msp]
+	        if _type(x)=="string" then
+	        x=tonumber(x)
+	        if not x then
+	                return false, "Cannot convert the string value to a number.", ip, chunk
+	        end
+	    elseif _type(x) ~="number" then
+	            return false, "Cannot do comparison or arithmetic with " .. _type(x).. " value.", ip, chunk
+	    end
+	        if _type(y)=="string" then
+	        y=tonumber(y)
+	        if not y then
+	                return false, "Cannot convert the string value to a number.", ip, chunk
+	        end
+	    elseif _type(y) ~="number" then
+	            return false, "Cannot do comparison or arithmetic with " .. _type(y).. " value.", ip, chunk
+	    end
+	    msp=msp-1
+	    ms[msp]=x / y
 				goto DISPATCH
 end
 			::OPP_NEG::
 	do
-	            x=ms[msp]
-	                        if _type(x)=="string" then
-	                x=tonumber(x)
-	                if not x then
-	                                return false, "Cannot convert the string value to a number.", ip, chunk
-	                end
-	            elseif _type(x) ~="number" then
-	                            return false, "Cannot do comparison or arithmetic with " .. _type(x).. " value.", ip, chunk
-	            end
-	            ms[msp]=- x
+	    x=ms[msp]
+	        if _type(x)=="string" then
+	        x=tonumber(x)
+	        if not x then
+	                return false, "Cannot convert the string value to a number.", ip, chunk
+	        end
+	    elseif _type(x) ~="number" then
+	            return false, "Cannot do comparison or arithmetic with " .. _type(x).. " value.", ip, chunk
+	    end
+	    ms[msp]=- x
 				goto DISPATCH
 end
 			::OPP_MOD::
 	do
-	            x=ms[msp-1]
-	            y=ms[msp]
-	                        if _type(x)=="string" then
-	                x=tonumber(x)
-	                if not x then
-	                                return false, "Cannot convert the string value to a number.", ip, chunk
-	                end
-	            elseif _type(x) ~="number" then
-	                            return false, "Cannot do comparison or arithmetic with " .. _type(x).. " value.", ip, chunk
-	            end
-	                        if _type(y)=="string" then
-	                y=tonumber(y)
-	                if not y then
-	                                return false, "Cannot convert the string value to a number.", ip, chunk
-	                end
-	            elseif _type(y) ~="number" then
-	                            return false, "Cannot do comparison or arithmetic with " .. _type(y).. " value.", ip, chunk
-	            end
-	            msp=msp-1
-	            ms[msp]=x % y
+	    x=ms[msp-1]
+	    y=ms[msp]
+	        if _type(x)=="string" then
+	        x=tonumber(x)
+	        if not x then
+	                return false, "Cannot convert the string value to a number.", ip, chunk
+	        end
+	    elseif _type(x) ~="number" then
+	            return false, "Cannot do comparison or arithmetic with " .. _type(x).. " value.", ip, chunk
+	    end
+	        if _type(y)=="string" then
+	        y=tonumber(y)
+	        if not y then
+	                return false, "Cannot convert the string value to a number.", ip, chunk
+	        end
+	    elseif _type(y) ~="number" then
+	            return false, "Cannot do comparison or arithmetic with " .. _type(y).. " value.", ip, chunk
+	    end
+	    msp=msp-1
+	    ms[msp]=x % y
 				goto DISPATCH
 end
 			::OPP_POW::
 	do
-	            x=ms[msp-1]
-	            y=ms[msp]
-	                        if _type(x)=="string" then
-	                x=tonumber(x)
-	                if not x then
-	                                return false, "Cannot convert the string value to a number.", ip, chunk
-	                end
-	            elseif _type(x) ~="number" then
-	                            return false, "Cannot do comparison or arithmetic with " .. _type(x).. " value.", ip, chunk
-	            end
-	                        if _type(y)=="string" then
-	                y=tonumber(y)
-	                if not y then
-	                                return false, "Cannot convert the string value to a number.", ip, chunk
-	                end
-	            elseif _type(y) ~="number" then
-	                            return false, "Cannot do comparison or arithmetic with " .. _type(y).. " value.", ip, chunk
-	            end
-	            msp=msp-1
-	            ms[msp]=x ^ y
+	    x=ms[msp-1]
+	    y=ms[msp]
+	        if _type(x)=="string" then
+	        x=tonumber(x)
+	        if not x then
+	                return false, "Cannot convert the string value to a number.", ip, chunk
+	        end
+	    elseif _type(x) ~="number" then
+	            return false, "Cannot do comparison or arithmetic with " .. _type(x).. " value.", ip, chunk
+	    end
+	        if _type(y)=="string" then
+	        y=tonumber(y)
+	        if not y then
+	                return false, "Cannot convert the string value to a number.", ip, chunk
+	        end
+	    elseif _type(y) ~="number" then
+	            return false, "Cannot do comparison or arithmetic with " .. _type(y).. " value.", ip, chunk
+	    end
+	    msp=msp-1
+	    ms[msp]=x ^ y
 				goto DISPATCH
 end
 			::OPP_GTE::
 	do
-	            x=ms[msp-1]
-	            y=ms[msp]
-	                        if _type(x)=="string" then
-	                x=tonumber(x)
-	                if not x then
-	                                return false, "Cannot convert the string value to a number.", ip, chunk
-	                end
-	            elseif _type(x) ~="number" then
-	                            return false, "Cannot do comparison or arithmetic with " .. _type(x).. " value.", ip, chunk
-	            end
-	                        if _type(y)=="string" then
-	                y=tonumber(y)
-	                if not y then
-	                                return false, "Cannot convert the string value to a number.", ip, chunk
-	                end
-	            elseif _type(y) ~="number" then
-	                            return false, "Cannot do comparison or arithmetic with " .. _type(y).. " value.", ip, chunk
-	            end
-	            msp=msp-1
-	            ms[msp]=x >=y
+	    x=ms[msp-1]
+	    y=ms[msp]
+	        if _type(x)=="string" then
+	        x=tonumber(x)
+	        if not x then
+	                return false, "Cannot convert the string value to a number.", ip, chunk
+	        end
+	    elseif _type(x) ~="number" then
+	            return false, "Cannot do comparison or arithmetic with " .. _type(x).. " value.", ip, chunk
+	    end
+	        if _type(y)=="string" then
+	        y=tonumber(y)
+	        if not y then
+	                return false, "Cannot convert the string value to a number.", ip, chunk
+	        end
+	    elseif _type(y) ~="number" then
+	            return false, "Cannot do comparison or arithmetic with " .. _type(y).. " value.", ip, chunk
+	    end
+	    msp=msp-1
+	    ms[msp]=x >=y
 				goto DISPATCH
 end
 			::OPP_LTE::
 	do
-	            x=ms[msp-1]
-	            y=ms[msp]
-	                        if _type(x)=="string" then
-	                x=tonumber(x)
-	                if not x then
-	                                return false, "Cannot convert the string value to a number.", ip, chunk
-	                end
-	            elseif _type(x) ~="number" then
-	                            return false, "Cannot do comparison or arithmetic with " .. _type(x).. " value.", ip, chunk
-	            end
-	                        if _type(y)=="string" then
-	                y=tonumber(y)
-	                if not y then
-	                                return false, "Cannot convert the string value to a number.", ip, chunk
-	                end
-	            elseif _type(y) ~="number" then
-	                            return false, "Cannot do comparison or arithmetic with " .. _type(y).. " value.", ip, chunk
-	            end
-	            msp=msp-1
-	            ms[msp]=x <=y
+	    x=ms[msp-1]
+	    y=ms[msp]
+	        if _type(x)=="string" then
+	        x=tonumber(x)
+	        if not x then
+	                return false, "Cannot convert the string value to a number.", ip, chunk
+	        end
+	    elseif _type(x) ~="number" then
+	            return false, "Cannot do comparison or arithmetic with " .. _type(x).. " value.", ip, chunk
+	    end
+	        if _type(y)=="string" then
+	        y=tonumber(y)
+	        if not y then
+	                return false, "Cannot convert the string value to a number.", ip, chunk
+	        end
+	    elseif _type(y) ~="number" then
+	            return false, "Cannot do comparison or arithmetic with " .. _type(y).. " value.", ip, chunk
+	    end
+	    msp=msp-1
+	    ms[msp]=x <=y
 				goto DISPATCH
 end
 			::OPP_GT::
 	do
-	            x=ms[msp-1]
-	            y=ms[msp]
-	                        if _type(x)=="string" then
-	                x=tonumber(x)
-	                if not x then
-	                                return false, "Cannot convert the string value to a number.", ip, chunk
-	                end
-	            elseif _type(x) ~="number" then
-	                            return false, "Cannot do comparison or arithmetic with " .. _type(x).. " value.", ip, chunk
-	            end
-	                        if _type(y)=="string" then
-	                y=tonumber(y)
-	                if not y then
-	                                return false, "Cannot convert the string value to a number.", ip, chunk
-	                end
-	            elseif _type(y) ~="number" then
-	                            return false, "Cannot do comparison or arithmetic with " .. _type(y).. " value.", ip, chunk
-	            end
-	            msp=msp-1
-	            ms[msp]=x > y
+	    x=ms[msp-1]
+	    y=ms[msp]
+	        if _type(x)=="string" then
+	        x=tonumber(x)
+	        if not x then
+	                return false, "Cannot convert the string value to a number.", ip, chunk
+	        end
+	    elseif _type(x) ~="number" then
+	            return false, "Cannot do comparison or arithmetic with " .. _type(x).. " value.", ip, chunk
+	    end
+	        if _type(y)=="string" then
+	        y=tonumber(y)
+	        if not y then
+	                return false, "Cannot convert the string value to a number.", ip, chunk
+	        end
+	    elseif _type(y) ~="number" then
+	            return false, "Cannot do comparison or arithmetic with " .. _type(y).. " value.", ip, chunk
+	    end
+	    msp=msp-1
+	    ms[msp]=x > y
 				goto DISPATCH
 end
 			::OPP_LT::
 	do
-	            x=ms[msp-1]
-	            y=ms[msp]
-	                        if _type(x)=="string" then
-	                x=tonumber(x)
-	                if not x then
-	                                return false, "Cannot convert the string value to a number.", ip, chunk
-	                end
-	            elseif _type(x) ~="number" then
-	                            return false, "Cannot do comparison or arithmetic with " .. _type(x).. " value.", ip, chunk
-	            end
-	                        if _type(y)=="string" then
-	                y=tonumber(y)
-	                if not y then
-	                                return false, "Cannot convert the string value to a number.", ip, chunk
-	                end
-	            elseif _type(y) ~="number" then
-	                            return false, "Cannot do comparison or arithmetic with " .. _type(y).. " value.", ip, chunk
-	            end
-	            msp=msp-1
-	            ms[msp]=x < y
+	    x=ms[msp-1]
+	    y=ms[msp]
+	        if _type(x)=="string" then
+	        x=tonumber(x)
+	        if not x then
+	                return false, "Cannot convert the string value to a number.", ip, chunk
+	        end
+	    elseif _type(x) ~="number" then
+	            return false, "Cannot do comparison or arithmetic with " .. _type(x).. " value.", ip, chunk
+	    end
+	        if _type(y)=="string" then
+	        y=tonumber(y)
+	        if not y then
+	                return false, "Cannot convert the string value to a number.", ip, chunk
+	        end
+	    elseif _type(y) ~="number" then
+	            return false, "Cannot do comparison or arithmetic with " .. _type(y).. " value.", ip, chunk
+	    end
+	    msp=msp-1
+	    ms[msp]=x < y
 				goto DISPATCH
 end
 			::OPP_EQ::
 	do
-	            x=ms[msp-1]
-	            y=ms[msp]
-	                        if _type(x)=="string" then
-	                x=tonumber(x) or x
-	            end
-	                        if _type(y)=="string" then
-	                y=tonumber(y) or y
-	            end
-	            msp=msp-1
-	            ms[msp]=x==y
+	    x=ms[msp-1]
+	    y=ms[msp]
+	        if _type(x)=="string" then
+	        x=tonumber(x) or x
+	    end
+	        if _type(y)=="string" then
+	        y=tonumber(y) or y
+	    end
+	    msp=msp-1
+	    ms[msp]=x==y
 				goto DISPATCH
 end
 			::OPP_NEQ::
 	do
-	            x=ms[msp-1]
-	            y=ms[msp]
-	                        if _type(x)=="string" then
-	                x=tonumber(x) or x
-	            end
-	                        if _type(y)=="string" then
-	                y=tonumber(y) or y
-	            end
-	            msp=msp-1
-	            ms[msp]=x ~=y
+	    x=ms[msp-1]
+	    y=ms[msp]
+	        if _type(x)=="string" then
+	        x=tonumber(x) or x
+	    end
+	        if _type(y)=="string" then
+	        y=tonumber(y) or y
+	    end
+	    msp=msp-1
+	    ms[msp]=x ~=y
 				goto DISPATCH
 end
 			::OPP_AND::
 	do
-	            x=ms[msp-1]
-	            y=ms[msp]
-	                        if x==empty then
-	                x=false
-	            end
-	                        if y==empty then
-	                y=false
-	            end
-	            msp=msp-1
-	            ms[msp]=x and y
+	    x=ms[msp-1]
+	    y=ms[msp]
+	        if x==empty then
+	        x=false
+	    end
+	        if y==empty then
+	        y=false
+	    end
+	    msp=msp-1
+	    ms[msp]=x and y
 				goto DISPATCH
 end
 			::OPP_NOT::
 	do
-	            x=ms[msp]
-	                        if x==empty then
-	                x=false
-	            end
-	            ms[msp]=not x
+	    x=ms[msp]
+	        if x==empty then
+	        x=false
+	    end
+	    ms[msp]=not x
 				goto DISPATCH
 end
 			::OPP_OR::
 	do
-	            x=ms[msp-1]
-	            y=ms[msp]
-	                        if x==empty then
-	                x=false
-	            end
-	                        if y==empty then
-	                y=false
-	            end
-	            msp=msp-1
-	            ms[msp]=x or y
+	    x=ms[msp-1]
+	    y=ms[msp]
+	        if x==empty then
+	        x=false
+	    end
+	        if y==empty then
+	        y=false
+	    end
+	    msp=msp-1
+	    ms[msp]=x or y
 				goto DISPATCH
 end
 			::DUPLICATE::
 	do
-	            msp=msp+1
-	            ms[msp]=ms[msp-1]
+	    msp=msp+1
+	    ms[msp]=ms[msp-1]
 				goto DISPATCH
 end
 			::SWITCH::
 	do
-	            local temp=ms[msp]
-	            ms[msp]=ms[msp-1]
-	            ms[msp-1]=temp
+	    local temp=ms[msp]
+	    ms[msp]=ms[msp-1]
+	    ms[msp-1]=temp
 				goto DISPATCH
 end
 		::END::

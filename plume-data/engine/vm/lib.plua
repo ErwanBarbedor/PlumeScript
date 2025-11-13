@@ -1,0 +1,4 @@
+@define _FORWARD stack
+	msp = msp+1
+	$stack
+@end
