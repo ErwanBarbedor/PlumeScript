@@ -244,3 +244,11 @@ do nothing
 
 /// End
 
+/// Test #181
+macro wing(x)
+end
+
+$(wing(false))
+/// Output
+
+/// End
