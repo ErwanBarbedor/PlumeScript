@@ -380,6 +380,8 @@ return function (plume)
             end
         end)
 
+        plume.ast.labelMacro(ast)
+
         if pos < #code then
             plume.error.malformedCodeError({
                 filename = filename,
