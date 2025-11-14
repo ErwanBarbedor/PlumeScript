@@ -31,6 +31,7 @@ require 'plume-data/engine/compiler'      (plume)
 require 'plume-data/engine/engine'        (plume)
 require 'plume-data/engine/finalizer'     (plume)
 require 'plume-data/engine/pec'           (plume)
+require 'plume-data/engine/env'           (plume)
 
 function plume.execute(code, filename, chunk)
 	local success, result, ip

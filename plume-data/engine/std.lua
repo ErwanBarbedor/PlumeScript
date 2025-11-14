@@ -18,18 +18,29 @@ return function (plume)
         "%base%%path%.%ext%",
         "%base%%path%/init.%ext%",
     }
+    local function formatDir(s)
+        local result = s:gsub('\\', '/')
+        if result ~= "" and not result:match('/$') then
+            result = result .. "/"
+        end
+        return result
+    end
+    local function formatDirFromFilename(s)
+        local result = formatDir(s:gsub('/[^/]+$', ''))
+        if result ~= "" and not result:match('/$') then
+            result = result .. "/"
+        end
+        return result
+    end
+
     local function getFilenameFromPath(path, lua, chunk)
         path = path:gsub('\\', '/')
         
         local root
         if path:match('^%.+/') or path == "." then
-            root = chunk.name:gsub('\\', '/'):gsub('/[^/]+$', '')
+            root = formatDirFromFilename(chunk.name)
         else
-            root = chunk.state[1].name:gsub('\\', '/'):gsub('/[^/]+$', '')
-        end
-
-        if root ~= "" then
-            root = root .. "/"
+            root = formatDirFromFilename(chunk.state[1].name)
         end
 
         local ext
@@ -39,8 +50,19 @@ return function (plume)
             ext = "plume"
         end
 
-        searchPaths = {}
-        for _, base in ipairs({root, ""}) do
+        local basedirs = {}
+        local env = plume.env.plume_path
+        if env then
+            for dir in env:gmatch('[^;]+') do
+                dir = formatDir(dir)
+                table.insert(basedirs, dir)
+            end
+        end
+        table.insert(basedirs, root)
+        table.insert(basedirs, "")
+
+        local searchPaths = {}
+        for _, base in ipairs(basedirs) do
             for _, template in ipairs(pathTemplates) do
                 template = template:gsub('%%base%%', base)
                 template = template:gsub('%%path%%', path)
@@ -188,6 +210,9 @@ return function (plume)
             return iterator
         end,
 
+        -- If start by ./ or ../, search relativly to current file
+        -- Else, search from root file and dir from PLUME_PATH (separated by comma)
+        -- For a given path, search for path.plume and path/init.plume
         import = function(args, chunk)
             local filename, searchPaths = getFilenameFromPath(args.table[1], args.table.lua, chunk)
             
@@ -207,6 +232,16 @@ return function (plume)
             end
         end,
 
+        -- path
+        setPlumePath = function(args)
+            plume.env.plume_path = args.table[1]
+        end,
+
+        addToPlumePath = function(args)
+            plume.env.plume_path = (plume.env.plume_path or "") .. ";" .. args.table[1]
+        end,
+
+        -- io
         write = function(args)
             local filename = args.table[1]
             local content = table.concat(args.table, 2,  #args.table)
@@ -229,6 +264,7 @@ return function (plume)
             return content
         end,
 
+        -- table
         len = function(args)
             local t = args.table[1]
             return #t.table
