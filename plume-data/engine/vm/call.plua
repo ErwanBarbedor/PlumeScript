@@ -47,6 +47,16 @@
     msp = msp-1
 @end
 
+@define _CALL macro parameters
+    plume.callstack = plume.callstack or {}
+    table.insert(plume.callstack, {macro=chunk, ip=ip})
+    local success, callResult, cip, source  = plume.run($macro, $parameters)
+    if not success then
+        return success, callResult, cip, (source or macro)
+    end
+    table.remove(plume.callstack)
+@end
+
 @define ACC_CALL arg1 arg2
     --- Unstack 1 (the macro)
     --- Unstack until frame begin + 1 (all positionals arguments)
@@ -72,15 +82,9 @@
             parameters[macro.variadicOffset] = capture
         end
         @_END_ACC
-        plume.callstack = plume.callstack or {}
-        table.insert(plume.callstack, {macro=chunk, ip=ip})
-        local success, result, cip, source  = plume.run(macro, parameters)
-        if not success then
-            return success, result, cip, (source or macro)
-        end
-        table.remove(plume.callstack)
+        @_CALL macro parameters
         msp = msp+1
-        ms[msp] = result
+        ms[msp] = callResult
     elseif t == "luaFunction" then
         @ACC_TABLE
         local success, result  =  pcall(macro.callable, ms[msp], chunk)

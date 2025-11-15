@@ -1,0 +1,121 @@
+/// Test addr
+let t = @table
+  meta addr: macro(x)
+    $(x+1)
+  end
+end
+$(t+1)
+/// Output
+2
+/// End
+
+/// Test addl
+let t = @table
+  meta addl: macro(x)
+    $(x+1)
+  end
+end
+$(1+t)
+/// Output
+2
+/// End
+
+/// Test add fallback 1
+let t = @table
+  meta add: macro(x, y)
+    $(y+1)
+  end
+end
+$(t+1)
+/// Output
+2
+/// End
+
+/// Test add fallback 2
+let t = @table
+  meta add: macro(x, y)
+    $(x+1)
+  end
+end
+$(1+t)
+/// Output
+2
+/// End
+
+/// Test self access
+let t = @table
+  value: 10
+  meta add: macro(x, y)
+    $(self.value+y)
+  end
+end
+$(t+1)
+/// Output
+11
+/// End
+
+/// Test mul
+let t = @table
+  meta mulr: macro(x)
+    $(x+1)
+  end
+end
+$(t*2)
+/// Output
+3
+/// End
+
+/// Test sub
+let t = @table
+  meta subr: macro(x)
+    $(x+1)
+  end
+end
+$(t-2)
+/// Output
+3
+/// End
+
+/// Test div
+let t = @table
+  meta divr: macro(x)
+    $(x+1)
+  end
+end
+$(t/2)
+/// Output
+3
+/// End
+
+/// Test pow
+let t = @table
+  meta powr: macro(x)
+    $(x+1)
+  end
+end
+$(t^2)
+/// Output
+3
+/// End
+
+/// Test mod
+let t = @table
+  meta modr: macro(x)
+    $(x+1)
+  end
+end
+$(t%2)
+/// Output
+3
+/// End
+
+/// Test minus
+let t = @table
+  meta minus: macro()
+    $(-1)
+  end
+end
+$(-t)
+/// Output
+-1
+/// End
