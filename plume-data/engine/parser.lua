@@ -78,9 +78,9 @@ return function (plume)
         local num = C("NUMBER", (R"09"^1 * P"." * R"09"^1) + R"09"^1)
         -- strict identifier
         local idns = C("IDENTIFIER", (R"az"+R"AZ"+P"_") * (R"az"+R"AZ"+P"_"+R"09")^0)
-        local idn = C("TRUE", P"true")
-        		  + C("FALSE", P"false")
-        		  + C("EMPTY", P"empty")
+        local idn = C("TRUE", P"true")   * -idns
+        		  + C("FALSE", P"false") * -idns
+        		  + C("EMPTY", P"empty") * -idns
         		  + idns
         local escaped = P"\\s" * Cc("TEXT", " ")
                       + P"\\t" * Cc("TEXT", "\t")
