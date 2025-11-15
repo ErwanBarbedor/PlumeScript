@@ -275,3 +275,8 @@ $(notwing)
 /// Output
 1
 /// End
+
+/// Test #199
+let trues = 1
+/// Output
+/// End
