@@ -254,3 +254,17 @@ $(wing(false))
 /// Output
 
 /// End
+
+/// Test #187
+macro Wing(...s, ?optn)
+    if optn
+       true 
+    else
+       false
+    end
+end
+$Wing(?optn)
+$Wing( ?optn)
+/// Output
+true true
+/// End

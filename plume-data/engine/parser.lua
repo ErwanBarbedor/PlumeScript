@@ -280,8 +280,8 @@ return function (plume)
         local paramlistM = paramlist + E(plume.error.missingParamListError)
         local macro      = Ct("MACRO", P"macro" * (s * idn)^-1 * os * paramlistM * body * _end)
 
-        local arg       = Ct("HASH_ITEM", idn * os * P":" * os * Ct("BODY", V"textic"^-1))	
-        				+ sugarFlagCall(Ct("FLAG", "?"*idn))
+        local arg       = Ct("HASH_ITEM", os *idn * os * P":" * os * Ct("BODY", V"textic"^-1))	
+        				+ sugarFlagCall(Ct("FLAG", os *"?"*idn))
                         + Ct("EXPAND", P"..."*evalBase)
                         + Ct("LIST_ITEM", V"textic")
 
