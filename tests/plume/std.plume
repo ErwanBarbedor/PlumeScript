@@ -158,3 +158,18 @@ $len($t)
 Nib
 1
 /// End
+
+/// Test Error
+let t = @table
+  - macro()
+  end
+end
+
+$join($t)
+/// Error
+Runtime error: invalid value (table) at index 1 in table for 'concat'
+
+Traceback (most recent call first):
+  File 'Error', line 6: $join($t)
+                         ^^^^^^^^
+/// End

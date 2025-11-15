@@ -488,7 +488,10 @@ end
 	    ms[limit-1]=args
 	    msp=limit - 1
 	        msfp=msfp-1
-	        local result=macro.callable(ms[msp], chunk)
+	        local success, result=pcall(macro.callable, ms[msp], chunk)
+	        if not success then
+	            return success, result, ip, chunk
+	        end
 	        if result==nil then
 	            result=empty
 	        end
