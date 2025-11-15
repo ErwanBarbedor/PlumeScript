@@ -156,11 +156,13 @@ local function applyCalls(code, calls)
 			local sep = "\n" .. call.indent
 			body = table.concat(call.macro.lines, sep)
 			for i=1, #call.macro.args do
-				local param = "$"..call.macro.args[i]
-				local arg   = call.args[i]
+				
 
-				if arg then
-					body = body:gsub(escapePattern(param), escapeSubPattern(arg))
+				if call.args[i] then
+					local param1 = escapePattern("$"..call.macro.args[i])
+					local param2 = escapePattern("$("..call.macro.args[i] .. ")")
+					local arg    = arg and escapeSubPattern(call.args[i])
+					body = body:gsub(param1, arg):gsub(param2, arg)
 				end
 			end
 			body = body .. "\n"
