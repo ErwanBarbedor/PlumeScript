@@ -56,8 +56,10 @@ let x = Wings
 $(x+1)
 /// Error
 Runtime error: Cannot convert the string value to a number.
-File 'Add string', line 2: $(x+1)
-                             ^^^
+
+Traceback (most recent call first):
+  File 'Add string', line 2: $(x+1)
+                               ^^^
 /// End
 
 /// Test Add table
@@ -65,8 +67,10 @@ let x = $table()
 $(x+1)
 /// Error
 Runtime error: Cannot do comparison or arithmetic with table value.
-File 'Add table', line 2: $(x+1)
-                            ^^^
+
+Traceback (most recent call first):
+  File 'Add table', line 2: $(x+1)
+                              ^^^
 /// End
 
 /// Test Iterate over non table
@@ -74,8 +78,10 @@ for x in 1
 end
 /// Error
 Runtime error: Try to iterate over a non-table 'number' value.
-File 'Iterate over non table', line 1: for x in 1
-                                       ^^^^^^^^^^
+
+Traceback (most recent call first):
+  File 'Iterate over non table', line 1: for x in 1
+                                         ^^^^^^^^^^
 /// End
 
 /// Test Empty key
@@ -83,8 +89,10 @@ let t = $table()
 $t[empty]
 /// Error
 Runtime error: Cannot use empty as key.
-File 'Empty key', line 2: $t[empty]
-                            ^^^^^^^
+
+Traceback (most recent call first):
+  File 'Empty key', line 2: $t[empty]
+                              ^^^^^^^
 /// End
 
 /// Test Invalid key (string)
@@ -92,8 +100,10 @@ let t = $table(wing: 5)
 $t.nib
 /// Error
 Runtime error: Unregistered key 'nib'.
-File 'Invalid key (string)', line 2: $t.nib
-                                       ^^^^
+
+Traceback (most recent call first):
+  File 'Invalid key (string)', line 2: $t.nib
+                                         ^^^^
 /// End
 
 /// Test Invalid key (int)
@@ -101,8 +111,10 @@ let t = $table(nib, quill)
 $t[3]
 /// Error
 Runtime error: Invalid index '3'.
-File 'Invalid key (int)', line 2: $t[3]
-                                    ^^^
+
+Traceback (most recent call first):
+  File 'Invalid key (int)', line 2: $t[3]
+                                      ^^^
 /// End
 
 /// Test Index non-table
@@ -110,8 +122,10 @@ let t = 1
 $t[3]
 /// Error
 Runtime error: Try to index a 'string' value.
-File 'Index non-table', line 2: $t[3]
-                                  ^^^
+
+Traceback (most recent call first):
+  File 'Index non-table', line 2: $t[3]
+                                    ^^^
 /// End
 
 /// Test Expand non-table
@@ -119,8 +133,10 @@ let t = 1
 ...t
 /// Error
 Runtime error: Try to expand a 'string' value.
-File 'Expand non-table', line 2: ...t
-                                 ^^^^
+
+Traceback (most recent call first):
+  File 'Expand non-table', line 2: ...t
+                                   ^^^^
 /// End
 
 /// Test Concat error 1
@@ -130,8 +146,10 @@ let nib = $table()
 $wing $nib
 /// Error
 Runtime error: Cannot concat a 'table' value.
-File 'Concat error 1', line 4: $wing $nib
-                                      ^^^
+
+Traceback (most recent call first):
+  File 'Concat error 1', line 4: $wing $nib
+                                        ^^^
 /// End
 
 /// Test Concat error 2
@@ -144,8 +162,10 @@ if true
 end
 /// Error
 Runtime error: Cannot concat a 'table' value.
-File 'Concat error 2', line 6: $nib
-                                ^^^
+
+Traceback (most recent call first):
+  File 'Concat error 2', line 6: $nib
+                                  ^^^
 /// End
 
 /// Test MixedBlockError 1
@@ -235,4 +255,29 @@ let t = @table
 end
 /// Output
 
+/// End
+
+/// Test callstack
+macro paint()
+end
+
+macro sing()
+    $paint(1)
+end
+
+macro wing()
+    $sing()
+end
+
+$wing()
+/// Error
+Runtime error: Wrong number of positionnal arguments for macro 'paint', 1 instead of 0.
+
+Traceback (most recent call first):
+  File 'callstack', line 5, in macro sing: $paint(1)
+                                            ^^^^^^^^
+  File 'callstack', line 9, in macro wing: $sing()
+                                            ^^^^^^
+  File 'callstack', line 12: $wing()
+                              ^^^^^^
 /// End

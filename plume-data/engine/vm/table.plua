@@ -1,0 +1,140 @@
+ @define TABLE_NEW arg1 arg2
+    --- Stack 1 table
+    --- arg1: -
+    --- arg2: -
+    msp = msp + 1
+    ms[msp] = table.new(0, $arg1)
+@end
+
+@define TABLE_ADD arg1 arg2
+@end
+
+@define TABLE_INDEX arg1 arg2
+    --- Unstack 2, in order: table, key
+    --- Stack 1, table[key]
+    --- arg1: -
+    --- arg2: -
+    local key = ms[msp-1]
+    key = tonumber(key) or key
+    if key==empty then
+        @_ERROR {{"Cannot use empty as key."}}
+    end
+    local _table = ms[msp]
+    local t = _type(_table)
+    if t ~= "table" then
+        @_ERROR{{"Try to index a '" ..t .."' value."}}
+    end
+    local value = _table.table[key]
+    if not value then
+        if tonumber(key) then
+            @_ERROR {{"Invalid index '" .. key .."'."}}
+        else
+            @_ERROR {{"Unregistered key '" .. key .."'."}}
+        end
+    end
+    ms[msp-1] = value
+    msp = msp-1
+@end
+
+@define TABLE_INDEX_ACC_SELF arg1 arg2
+    --- Unstack 2, in order: table, key
+    --- Add current table as self key for current
+    --- call table.
+    --- Stack 1, table[key]
+    --- arg1: -
+    --- arg2: -
+    table.insert(ms[msf[msfp]], "self")
+    table.insert(ms[msf[msfp]], ms[msp])
+    table.insert(ms[msf[msfp]], false)
+    @TABLE_INDEX
+@end
+
+@define TABLE_INDEX_META arg1 arg2
+    --- Unstack 2, in order: table, key
+    --- Stack 1, table[key]
+    --- arg1: -
+    --- arg2: -
+    ms[msp-1] = ms[msp].meta[ms[msp-1]]
+    msp = msp-1
+@end
+
+@define _TABLE_SET t k v
+    -- if dont exists, register key
+    local key = $k
+    key = tonumber(key) or key
+    if not $t.table[$k] then
+        table.insert($t.keys, $k)
+    end
+    $t.table[$k] = $v --set
+@end
+
+@define _TABLE_META_SET t k v
+    $t.meta[$k] = $v --set
+@end
+
+@define TABLE_SET arg1 arg2
+    --- Unstack 3, in order: table, key, value
+    --- Set the table.key to value
+    --- arg1: -
+    --- arg2: -
+    local key = ms[msp-1]
+    key = tonumber(key) or key
+    ms[msp].table[key] = ms[msp-2]
+    msp = msp-3
+@end
+
+@define TABLE_SET_META arg1 arg2
+    --- Unstack 3, in order: table, key, value
+    --- Set the table.key to value
+    --- arg1: -
+    --- arg2: -
+    ms[msp-2].meta[ms[msp-1]] = ms[msp]
+    msp = msp-3
+@end
+
+@define TABLE_SET_ACC arg1 arg2
+    --- Unstack 2: a key, then a value
+    --- Assume the main stack frame first value is a table
+    --- Register key, then value in
+    --- arg1: -
+    --- arg2: -
+    table.insert(ms[msf[msfp]], ms[msp])
+    table.insert(ms[msf[msfp]], ms[msp-1])
+    table.insert(ms[msf[msfp]], false)
+    msp = msp-2
+@end
+
+@define TABLE_SET_ACC_META arg1 arg2
+    --- Unstack 2: a key, then a value
+    --- Assume the main stack frame first value is a table
+    --- Register key, then value in
+    --- arg1: -
+    --- arg2: -
+    table.insert(ms[msf[msfp]], ms[msp])
+    table.insert(ms[msf[msfp]], ms[msp-1])
+    table.insert(ms[msf[msfp]], true)
+    msp = msp-2
+@end
+
+@define TABLE_EXPAND arg1 arg2
+    --- Unstack 1: a table
+    --- Stack all list item
+    --- Put all hash item on the acc table
+    --- arg1: -
+    --- arg2: -
+    local t = ms[msp]
+    if _type(t) ~= "table" then
+        @_ERROR{{"Try to expand a '" .._type(t) .."' value."}}
+    end
+
+    msp = msp-1
+    for _, item in ipairs(t.table) do
+        msp = msp+1
+        ms[msp] = item
+    end
+    for _, key in ipairs(t.keys) do
+        table.insert(ms[msf[msfp]], key)
+        table.insert(ms[msf[msfp]], t.table[key])
+        table.insert(ms[msf[msfp]], false)
+    end
+@end

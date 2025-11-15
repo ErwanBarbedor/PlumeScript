@@ -175,9 +175,11 @@ end
 
 $x(1)
 /// Error
-Runtime error: Wrong number of positionnal arguments for macro '???', 1 instead of 0
-File '#148', line 4: $x(1)
-                      ^^^^
+Runtime error: Wrong number of positionnal arguments for macro 'x', 1 instead of 0.
+
+Traceback (most recent call first):
+  File '#148', line 4: $x(1)
+                        ^^^^
 /// End
 
 /// Test #162
@@ -209,8 +211,72 @@ end
 
 /// End
 
+
+/// Test #174-1
+let t = @table
+  mark: song
+  quill: macro(write)
+    $write $self.mark
+  end
+end
+
+@t.quill
+    write
+end
+/// Output
+write song
+/// End
+
+/// Test #174-2
+let t = @table
+  mark: song
+  quill: macro()
+     $self.mark
+  end
+end
+
+$t.quill()
+/// Output
+song
+/// End
+
 /// Test #177
 do nothing
 /// Output
 
+/// End
+
+/// Test #181
+macro wing(x)
+end
+
+$(wing(false))
+/// Output
+
+/// End
+
+/// Test #187
+macro Wing(...s, ?optn)
+    if optn
+       true 
+    else
+       false
+    end
+end
+$Wing(?optn)
+$Wing( ?optn)
+/// Output
+true true
+/// End
+
+/// Test #189
+let notwing = 1
+$(notwing)
+/// Output
+1
+/// End
+
+/// Test #199
+let trues = 1
+/// Output
 /// End
