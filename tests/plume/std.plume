@@ -88,7 +88,7 @@ wings
 
 /// Test import text 2
 quill\n
-$import(tests/plume/toimport/text)\n
+$import(./tests/plume/toimport/text)\n
 nib
 /// Output
 quill
@@ -97,7 +97,7 @@ nib
 /// End
 
 /// Test import lib 1
-let lib = $import(tests/plume/toimport/lib)
+let lib = $import(./tests/plume/toimport/lib)
 $lib.nib
 /// Output
 quill
@@ -109,6 +109,14 @@ let lib = $import(tests/plume/toimport/lib2)
 $lib.wing() $infos
 /// Output
 blue quill bird
+/// End
+
+/// Test lua import
+let double = $import(tests/plume/toimport/lib, ?lua)
+
+$double(3)
+/// Output
+6
 /// End
 
 /// Test len
@@ -149,4 +157,19 @@ $len($t)
 2
 Nib
 1
+/// End
+
+/// Test Error
+let t = @table
+  - macro()
+  end
+end
+
+$join($t)
+/// Error
+Runtime error: invalid value (table) at index 1 in table for 'concat'
+
+Traceback (most recent call first):
+  File 'Error', line 6: $join($t)
+                         ^^^^^^^^
 /// End

@@ -118,6 +118,11 @@ return function(plume)
 		throwSyntaxError(node, message)
 	end
 
+	function plume.error.wrongIdentifierError(node, name)
+		local message = string.format("Cannot use '%s' as identifier.", name)
+		throwSyntaxError(node, message)
+	end
+
 	function plume.error.mixedBlockError(node, expected, found)
 		local message = string.format("Mixed block: the expected type of the block is %s, but it contains an element %s.", expected, found)
 		throwSyntaxError(node, message)

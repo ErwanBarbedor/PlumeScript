@@ -459,6 +459,7 @@ return function(plume)
 					_accTableInit()
 					childrenHandler(child)
 				elseif child.name == "BLOCK_CALL" then
+					_accTableInit()
 					nodeHandler(child)
 				elseif child.name == "INDEX" then
 					childrenHandler(child)
@@ -479,7 +480,7 @@ return function(plume)
 				if child.name == "CALL" or child.name == "BLOCK_CALL" then
 					registerOP(node, ops.ACC_CALL, 0, 0)
 				elseif child.name == "INDEX" or child.name == "DIRECT_INDEX" then
-					if node.children[i+1] and node.children[i+1].name == "CALL" then
+					if node.children[i+1] and (node.children[i+1].name == "CALL" or node.children[i+1].name == "BLOCK_CALL") then
 						registerOP(child, ops.TABLE_INDEX_ACC_SELF, 0, 0)
 					else
 						registerOP(child, ops.TABLE_INDEX, 0, 0)
@@ -497,8 +498,6 @@ return function(plume)
 			local body    = plume.ast.get(node, "BODY")
 
 			scope(function()
-				_accTableInit()
-
 				if argList then
 					_accTable(argList)
 				end
@@ -681,8 +680,9 @@ return function(plume)
 			
 			registerOP(macroIdentifier, ops.LOAD_CONSTANT, 0, macroOffset)
 			
+			local macroName
 			if macroIdentifier then
-				local macroName = macroIdentifier.content
+				macroName = macroIdentifier.content
 				local variable = registerVariable(
 					macroName,
 					true -- static
@@ -690,9 +690,11 @@ return function(plume)
 				if not variable then
 					plume.error.letExistingStaticVariableError(node, macroName)
 				end
-				macroObj.name = macroName
+				
 				registerOP(macroIdentifier, ops.STORE_STATIC, 0, variable.offset)
 			end
+
+			macroObj.name = macroName or node.label
 
 			file(function ()
 				-- Each macro open a scope, but it is handled by ACC_CALL and RETURN.

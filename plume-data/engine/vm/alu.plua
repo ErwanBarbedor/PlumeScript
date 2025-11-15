@@ -1,0 +1,73 @@
+@define _CHECK_NUMBER x
+    if _type($x) == "string" then
+        $x = tonumber($x)
+        if not $x then
+            @_ERROR {{"Cannot convert the string value to a number."}}
+        end
+    elseif _type($x) ~= "number" then
+        @_ERROR {{"Cannot do comparison or arithmetic with " .. _type($x).. " value."}}
+    end
+@end
+
+@define _CHECK_BOOL x
+    if $x == empty then
+        $x = false
+    end
+@end
+
+@define _CHECK_OPTN_NUMBER x
+    if _type($x) == "string" then
+        $x = tonumber($x) or $x
+    end
+@end
+
+@define _BIN_OPP opp check
+    --- Classic opperations
+    --- Unstack 2
+    --- Stack 1, the result
+    --- arg1: -
+    --- arg2: -
+    x = ms[msp-1]
+    y = ms[msp]
+
+    @_CHECK_$check x
+    @_CHECK_$check y
+
+    msp = msp-1
+    ms[msp] = x $opp y
+@end
+
+@define _UN_OPP opp check
+    --- Classic opperations
+    --- Unstack 1
+    --- Stack 1, the result
+    --- arg1: -
+    --- arg2: -
+    x = ms[msp]
+
+    @_CHECK_$check x
+
+    ms[msp] = $opp x
+@end
+
+
+@define OPP_ADD @_BIN_OPP + NUMBER @end
+@define OPP_SUB @_BIN_OPP - NUMBER @end
+@define OPP_MUL @_BIN_OPP * NUMBER @end
+@define OPP_DIV @_BIN_OPP / NUMBER @end
+@define OPP_MOD @_BIN_OPP % NUMBER @end
+@define OPP_POW @_BIN_OPP ^ NUMBER @end
+@define OPP_NEG @_UN_OPP  - NUMBER @end
+
+-- comp
+@define OPP_GTE  @_BIN_OPP >= NUMBER @end
+@define OPP_LTE  @_BIN_OPP <= NUMBER @end
+@define OPP_GT   @_BIN_OPP >  NUMBER @end
+@define OPP_LT   @_BIN_OPP <  NUMBER @end
+@define OPP_EQ   @_BIN_OPP == OPTN_NUMBER @end
+@define OPP_NEQ  @_BIN_OPP ~= OPTN_NUMBER @end
+
+-- bool
+@define OPP_AND  @_BIN_OPP and BOOL @end
+@define OPP_OR   @_BIN_OPP or  BOOL @end
+@define OPP_NOT  @_UN_OPP  not BOOL @end

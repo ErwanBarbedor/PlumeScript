@@ -74,13 +74,13 @@ return function (plume)
         ------------
         local s  = S" \t"^1
         local os = S" \t"^0
-        local lt = (os * S";\n")^1 * os -- linestart
+        local lt = (os * S"\n")^1 * os -- linestart
         local num = C("NUMBER", (R"09"^1 * P"." * R"09"^1) + R"09"^1)
         -- strict identifier
         local idns = C("IDENTIFIER", (R"az"+R"AZ"+P"_") * (R"az"+R"AZ"+P"_"+R"09")^0)
-        local idn = C("TRUE", P"true")
-        		  + C("FALSE", P"false")
-        		  + C("EMPTY", P"empty")
+        local idn = C("TRUE", P"true")   * -idns
+        		  + C("FALSE", P"false") * -idns
+        		  + C("EMPTY", P"empty") * -idns
         		  + idns
         local escaped = P"\\s" * Cc("TEXT", " ")
                       + P"\\t" * Cc("TEXT", "\t")
@@ -150,7 +150,14 @@ return function (plume)
                 local rule
                 for i, opp in ipairs(opps) do
                     local name, pattern, unary = opp[1], opp[2], opp[3]
-                    local opprule = C(name, P(pattern))
+
+                    local opprule
+                    if pattern:match('^[a-z]+$') then
+                        opprule = C(name, P(pattern)) * -idn
+                    else
+                        opprule = C(name, P(pattern))
+                    end
+      
                     if i==1 then
                         rule = opprule
                     else
@@ -280,8 +287,8 @@ return function (plume)
         local paramlistM = paramlist + E(plume.error.missingParamListError)
         local macro      = Ct("MACRO", P"macro" * (s * idn)^-1 * os * paramlistM * body * _end)
 
-        local arg       = Ct("HASH_ITEM", idn * os * P":" * os * Ct("BODY", V"textic"^-1))	
-        				+ sugarFlagCall(Ct("FLAG", "?"*idn))
+        local arg       = Ct("HASH_ITEM", os *idn * os * P":" * os * Ct("BODY", V"textic"^-1))	
+        				+ sugarFlagCall(Ct("FLAG", os *"?"*idn))
                         + Ct("EXPAND", P"..."*evalBase)
                         + Ct("LIST_ITEM", V"textic")
 
@@ -369,10 +376,18 @@ return function (plume)
                 node.error(node)
             end
 
+            if node.name == "IDENTIFIER" then
+                if not plume.checkIdentifier(node.content) then
+                    plume.error.wrongIdentifierError(node, node.content)
+                end
+            end
+
             if node.epos and node.epos > pos then
                 pos = node.epos
             end
         end)
+
+        plume.ast.labelMacro(ast)
 
         if pos < #code then
             plume.error.malformedCodeError({

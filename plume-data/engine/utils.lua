@@ -222,10 +222,33 @@ return function (plume)
 
 		    or node.name == "AND"
 		    or node.name == "NOT"
-		    or node.name == "OR" then
+		    or node.name == "OR"
+
+		    or node.name == "FALSE"
+		    or node.name == "TRUE" then
 			return "VALUE"
 		else
 			return "EMPTY"
 		end
+	end
+
+	function plume.checkIdentifier(identifier)
+		for kw in ('if then elseif else while for do macro let set const static'):gmatch('%S+') do
+			if identifier == kw then
+				return false
+			end
+		end
+		return true
+	end
+
+	function plume.ast.labelMacro(ast)
+		plume.ast.browse(ast, function(node)
+			if node.name == "HASH_ITEM" and node.children[1].name == "IDENTIFIER"  then
+				local value = node.children[2]
+				if value.name == "BODY" and #value.children == 1 and value.children[1].name == "MACRO" then
+					value.children[1].label = node.children[1].content
+				end
+			end
+		end)
 	end
 end
