@@ -150,7 +150,14 @@ return function (plume)
                 local rule
                 for i, opp in ipairs(opps) do
                     local name, pattern, unary = opp[1], opp[2], opp[3]
-                    local opprule = C(name, P(pattern))
+
+                    local opprule
+                    if pattern:match('^[a-z]+$') then
+                        opprule = C(name, P(pattern)) * -idn
+                    else
+                        opprule = C(name, P(pattern))
+                    end
+      
                     if i==1 then
                         rule = opprule
                     else

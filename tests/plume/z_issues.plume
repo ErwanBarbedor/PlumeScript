@@ -268,3 +268,10 @@ $Wing( ?optn)
 /// Output
 true true
 /// End
+
+/// Test #189
+let notwing = 1
+$(notwing)
+/// Output
+1
+/// End
