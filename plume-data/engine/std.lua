@@ -222,13 +222,13 @@ return function (plume)
                 else
                     local success, result = plume.executeFile(filename, chunk.state)
                     if not success then
-                        error(result)
+                        error(result, 0)
                     end
                     return result
                 end
             else
                 msg = "Error: cannot open '" .. args.table[1] .. "'.\nPaths tried:\n\t" .. table.concat(searchPaths, '\n\t')
-                error(msg)
+                error(msg, 0)
             end
         end,
 
