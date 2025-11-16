@@ -407,6 +407,16 @@ end
 	    local macro=ms[msp]
 	    msp=msp - 1
 	    local t=_type(macro)
+	    if t=="table" then
+	        if macro.meta and macro.meta.table.call then
+	            local params=ms[msp]
+	            table.insert(params, "self")
+	            table.insert(params, macro)
+	            table.insert(params, false)
+	            t="macro"
+	            macro=macro.meta.table.call
+	        end
+	    end
 	    if t=="macro" then
 	        local capture
 	        local parameters={}

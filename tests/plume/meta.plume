@@ -119,3 +119,28 @@ $(-t)
 /// Output
 -1
 /// End
+
+/// Test call
+let t = @table
+  meta call: macro()
+    I'm a called table
+  end
+end
+
+$t()
+/// Output
+I'm a called table
+/// End
+
+/// Test call with self
+let t = @table
+  value: 5
+  meta call: macro()
+    My value is $self.value
+  end
+end
+
+$t()
+/// Output
+My value is 5
+/// End
