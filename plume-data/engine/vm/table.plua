@@ -76,6 +76,7 @@
 @end
 
 @define _TABLE_META_SET t k v
+    @_META_CHECK $k $v
     $t.meta.table[$k] = $v --set
 @end
 

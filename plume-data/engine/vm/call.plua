@@ -70,15 +70,12 @@
     local macro = ms[msp]
     msp = msp - 1
     local t = _type(macro)
+    local self
 
     if t == "table" then
         if macro.meta and macro.meta.table.call then
             local params = ms[msp]
-
-            -- Add self to params
-            table.insert(params, "self")
-            table.insert(params, macro)
-            table.insert(params, false)
+            self = macro
 
             t = "macro"
             macro = macro.meta.table.call
@@ -93,6 +90,12 @@
         end
         @_UNSTACK_POS
         @_UNSTACK_NAMED
+
+        -- Add self to params
+        if self then  
+            table.insert(parameters, self)
+        end
+
         if macro.variadicOffset>0 then -- variadic
             parameters[macro.variadicOffset] = capture
         end

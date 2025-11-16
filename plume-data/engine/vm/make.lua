@@ -210,7 +210,7 @@ local function process(target, path, predefined)
 		if #calls==0 then
 			break
 		end
-		if i>5 then
+		if i>6 then
 			break
 		end
 	end

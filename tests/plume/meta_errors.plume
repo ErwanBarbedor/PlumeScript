@@ -1,0 +1,63 @@
+/// Test meta wrong parameter number 1
+let t = @table
+  meta add: macro()
+    $true
+  end
+end
+
+$(t+1)
+/// Error
+Runtime error: Wrong number of positionnal parameters for meta-macro 'add', 0 instead of 2.
+
+Traceback (most recent call first):
+  File 'meta wrong parameter number 1', line 1: let t = @table
+                                                        ^^^^^^
+/// End
+
+/// Test meta wrong parameter number 2
+let t = @table
+  meta add: macro(x, y, z)
+    $true
+  end
+end
+
+$(t+1)
+/// Error
+Runtime error: Wrong number of positionnal parameters for meta-macro 'add', 3 instead of 2.
+
+Traceback (most recent call first):
+  File 'meta wrong parameter number 2', line 1: let t = @table
+                                                        ^^^^^^
+/// End
+
+/// Test meta wrong parameter number 3
+let t = @table
+  meta add: macro(x, y, z: quill)
+    $true
+  end
+end
+
+$(t+1)
+/// Error
+Runtime error: Meta-macro 'add' dont support named parameters.
+
+Traceback (most recent call first):
+  File 'meta wrong parameter number 3', line 1: let t = @table
+                                                        ^^^^^^
+/// End
+
+/// Test meta wrong parameter number 4
+let t = @table
+  meta call: macro(x, y, z: quill)
+    $true
+  end
+end
+
+$t(1)
+/// Error
+Runtime error: Wrong number of positionnal arguments for macro 't', 1 instead of 2.
+
+Traceback (most recent call first):
+  File 'meta wrong parameter number 4', line 7: $t(1)
+                                                 ^^^^
+/// End

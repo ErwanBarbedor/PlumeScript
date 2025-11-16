@@ -367,7 +367,38 @@ end
 	    end
 	    for i=1, #ms[limit-1], 3 do
 	        if ms[limit-1][i+2] then
-	                args.meta.table[ms[limit-1][i]]=ms[limit-1][i+1]
+	                	local comopps="add mul div sub mod pow"
+		local binopps="eq lt gt"
+		local unopps="minus"
+		local expectedParamCount
+		for opp in comopps:gmatch('%S+') do
+			if ms[limit-1][i]==opp then
+				expectedParamCount=2
+			elseif ms[limit-1][i]:match("^" .. opp .. "[rl]$") then
+				expectedParamCount=1
+			end
+		end
+		for opp in binopps:gmatch('%S+') do
+			if ms[limit-1][i]==opp then
+				expectedParamCount=1
+			end
+		end
+		for opp in unopps:gmatch('%S+') do
+			if ms[limit-1][i]==opp then
+				expectedParamCount=0
+			end
+		end
+		if expectedParamCount then
+			if ms[limit-1][i+1].positionalParamCount ~=expectedParamCount then
+				    return false, "Wrong number of positionnal parameters for meta-macro '" .. ms[limit-1][i] .. "', " .. ms[limit-1][i+1].positionalParamCount .. " instead of " .. expectedParamCount .. ".", ip, chunk
+			end
+			if ms[limit-1][i+1].namedParamCount > 1 then
+				    return false, "Meta-macro '" .. ms[limit-1][i] .. "' dont support named parameters.", ip, chunk
+			end
+		elseif ms[limit-1][i] ~="call" then
+			    return false, "'" .. ms[limit-1][i] .. "' isn't a valid meta-macro name.", ip, chunk
+		end
+	    args.meta.table[ms[limit-1][i]]=ms[limit-1][i+1]
 	        else
 	                local key=ms[limit-1][i]
 	    key=tonumber(key) or key
@@ -407,12 +438,11 @@ end
 	    local macro=ms[msp]
 	    msp=msp - 1
 	    local t=_type(macro)
+	    local self
 	    if t=="table" then
 	        if macro.meta and macro.meta.table.call then
 	            local params=ms[msp]
-	            table.insert(params, "self")
-	            table.insert(params, macro)
-	            table.insert(params, false)
+	            self=macro
 	            t="macro"
 	            macro=macro.meta.table.call
 	        end
@@ -447,7 +477,38 @@ end
 	        local m=ms[msf[msfp]][i+2]
 	        local j=macro.namedParamOffset[k]
 	        if m then
-	                capture.meta.table[k]=v
+	                	local comopps="add mul div sub mod pow"
+		local binopps="eq lt gt"
+		local unopps="minus"
+		local expectedParamCount
+		for opp in comopps:gmatch('%S+') do
+			if k==opp then
+				expectedParamCount=2
+			elseif k:match("^" .. opp .. "[rl]$") then
+				expectedParamCount=1
+			end
+		end
+		for opp in binopps:gmatch('%S+') do
+			if k==opp then
+				expectedParamCount=1
+			end
+		end
+		for opp in unopps:gmatch('%S+') do
+			if k==opp then
+				expectedParamCount=0
+			end
+		end
+		if expectedParamCount then
+			if v.positionalParamCount ~=expectedParamCount then
+				    return false, "Wrong number of positionnal parameters for meta-macro '" .. k .. "', " .. v.positionalParamCount .. " instead of " .. expectedParamCount .. ".", ip, chunk
+			end
+			if v.namedParamCount > 1 then
+				    return false, "Meta-macro '" .. k .. "' dont support named parameters.", ip, chunk
+			end
+		elseif k ~="call" then
+			    return false, "'" .. k .. "' isn't a valid meta-macro name.", ip, chunk
+		end
+	    capture.meta.table[k]=v
 	        elseif j then
 	            parameters[j]=v
 	        elseif macro.variadicOffset>0 then
@@ -463,6 +524,9 @@ end
 	        end
 	    end
 	    msp=msp-1
+	        if self then
+	            table.insert(parameters, self)
+	        end
 	        if macro.variadicOffset>0 then
 	            parameters[macro.variadicOffset]=capture
 	        end
@@ -485,7 +549,38 @@ end
 	    end
 	    for i=1, #ms[limit-1], 3 do
 	        if ms[limit-1][i+2] then
-	                args.meta.table[ms[limit-1][i]]=ms[limit-1][i+1]
+	                	local comopps="add mul div sub mod pow"
+		local binopps="eq lt gt"
+		local unopps="minus"
+		local expectedParamCount
+		for opp in comopps:gmatch('%S+') do
+			if ms[limit-1][i]==opp then
+				expectedParamCount=2
+			elseif ms[limit-1][i]:match("^" .. opp .. "[rl]$") then
+				expectedParamCount=1
+			end
+		end
+		for opp in binopps:gmatch('%S+') do
+			if ms[limit-1][i]==opp then
+				expectedParamCount=1
+			end
+		end
+		for opp in unopps:gmatch('%S+') do
+			if ms[limit-1][i]==opp then
+				expectedParamCount=0
+			end
+		end
+		if expectedParamCount then
+			if ms[limit-1][i+1].positionalParamCount ~=expectedParamCount then
+				    return false, "Wrong number of positionnal parameters for meta-macro '" .. ms[limit-1][i] .. "', " .. ms[limit-1][i+1].positionalParamCount .. " instead of " .. expectedParamCount .. ".", ip, chunk
+			end
+			if ms[limit-1][i+1].namedParamCount > 1 then
+				    return false, "Meta-macro '" .. ms[limit-1][i] .. "' dont support named parameters.", ip, chunk
+			end
+		elseif ms[limit-1][i] ~="call" then
+			    return false, "'" .. ms[limit-1][i] .. "' isn't a valid meta-macro name.", ip, chunk
+		end
+	    args.meta.table[ms[limit-1][i]]=ms[limit-1][i+1]
 	        else
 	                local key=ms[limit-1][i]
 	    key=tonumber(key) or key
