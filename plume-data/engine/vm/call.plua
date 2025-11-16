@@ -50,6 +50,10 @@
 @define _CALL macro parameters
     plume.callstack = plume.callstack or {}
     table.insert(plume.callstack, {macro=chunk, ip=ip})
+    if #plume.callstack>1000 then
+        @_ERROR {{"stack overflow"}}
+    end
+
     local success, callResult, cip, source  = plume.run($macro, $parameters)
     if not success then
         return success, callResult, cip, (source or macro)
