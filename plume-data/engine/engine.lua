@@ -283,13 +283,13 @@ end
 end
 			::TABLE_SET_META::
 	do
-	    ms[msp-2].meta[ms[msp-1]]=ms[msp]
+	    	    ms[msp-2].meta.table[ms[msp-1]]=ms[msp]
 	    msp=msp-3
 				goto DISPATCH
 end
 			::TABLE_INDEX_META::
 	do
-	    ms[msp-1]=ms[msp].meta[ms[msp-1]]
+	    	    ms[msp-1]=ms[msp].meta.table[ms[msp-1]]
 	    msp=msp-1
 				goto DISPATCH
 end
@@ -367,7 +367,38 @@ end
 	    end
 	    for i=1, #ms[limit-1], 3 do
 	        if ms[limit-1][i+2] then
-	                args.meta[ms[limit-1][i]]=ms[limit-1][i+1]
+	                	local comopps="add mul div sub mod pow"
+		local binopps="eq lt gt"
+		local unopps="minus"
+		local expectedParamCount
+		for opp in comopps:gmatch('%S+') do
+			if ms[limit-1][i]==opp then
+				expectedParamCount=2
+			elseif ms[limit-1][i]:match("^" .. opp .. "[rl]$") then
+				expectedParamCount=1
+			end
+		end
+		for opp in binopps:gmatch('%S+') do
+			if ms[limit-1][i]==opp then
+				expectedParamCount=1
+			end
+		end
+		for opp in unopps:gmatch('%S+') do
+			if ms[limit-1][i]==opp then
+				expectedParamCount=0
+			end
+		end
+		if expectedParamCount then
+			if ms[limit-1][i+1].positionalParamCount ~=expectedParamCount then
+				    return false, "Wrong number of positionnal parameters for meta-macro '" .. ms[limit-1][i] .. "', " .. ms[limit-1][i+1].positionalParamCount .. " instead of " .. expectedParamCount .. ".", ip, chunk
+			end
+			if ms[limit-1][i+1].namedParamCount > 1 then
+				    return false, "Meta-macro '" .. ms[limit-1][i] .. "' dont support named parameters.", ip, chunk
+			end
+		elseif ms[limit-1][i] ~="call" then
+			    return false, "'" .. ms[limit-1][i] .. "' isn't a valid meta-macro name.", ip, chunk
+		end
+	    args.meta.table[ms[limit-1][i]]=ms[limit-1][i+1]
 	        else
 	                local key=ms[limit-1][i]
 	    key=tonumber(key) or key
@@ -407,6 +438,15 @@ end
 	    local macro=ms[msp]
 	    msp=msp - 1
 	    local t=_type(macro)
+	    local self
+	    if t=="table" then
+	        if macro.meta and macro.meta.table.call then
+	            local params=ms[msp]
+	            self=macro
+	            t="macro"
+	            macro=macro.meta.table.call
+	        end
+	    end
 	    if t=="macro" then
 	        local capture
 	        local parameters={}
@@ -437,7 +477,38 @@ end
 	        local m=ms[msf[msfp]][i+2]
 	        local j=macro.namedParamOffset[k]
 	        if m then
-	                capture.meta[k]=v
+	                	local comopps="add mul div sub mod pow"
+		local binopps="eq lt gt"
+		local unopps="minus"
+		local expectedParamCount
+		for opp in comopps:gmatch('%S+') do
+			if k==opp then
+				expectedParamCount=2
+			elseif k:match("^" .. opp .. "[rl]$") then
+				expectedParamCount=1
+			end
+		end
+		for opp in binopps:gmatch('%S+') do
+			if k==opp then
+				expectedParamCount=1
+			end
+		end
+		for opp in unopps:gmatch('%S+') do
+			if k==opp then
+				expectedParamCount=0
+			end
+		end
+		if expectedParamCount then
+			if v.positionalParamCount ~=expectedParamCount then
+				    return false, "Wrong number of positionnal parameters for meta-macro '" .. k .. "', " .. v.positionalParamCount .. " instead of " .. expectedParamCount .. ".", ip, chunk
+			end
+			if v.namedParamCount > 1 then
+				    return false, "Meta-macro '" .. k .. "' dont support named parameters.", ip, chunk
+			end
+		elseif k ~="call" then
+			    return false, "'" .. k .. "' isn't a valid meta-macro name.", ip, chunk
+		end
+	    capture.meta.table[k]=v
 	        elseif j then
 	            parameters[j]=v
 	        elseif macro.variadicOffset>0 then
@@ -453,19 +524,25 @@ end
 	        end
 	    end
 	    msp=msp-1
+	        if self then
+	            table.insert(parameters, self)
+	        end
 	        if macro.variadicOffset>0 then
 	            parameters[macro.variadicOffset]=capture
 	        end
 	            msfp=msfp-1
-	        plume.callstack=plume.callstack or {}
-	        table.insert(plume.callstack, {macro=chunk, ip=ip})
-	        local success, result, cip, source=plume.run(macro, parameters)
-	        if not success then
-	            return success, result, cip, (source or macro)
-	        end
-	        table.remove(plume.callstack)
+	            plume.callstack=plume.callstack or {}
+	    table.insert(plume.callstack, {macro=chunk, ip=ip})
+	    if #plume.callstack>1000 then
+	            return false, "stack overflow", ip, chunk
+	    end
+	    local success, callResult, cip, source=plume.run(macro, parameters)
+	    if not success then
+	        return success, callResult, cip, (source or macro)
+	    end
+	    table.remove(plume.callstack)
 	        msp=msp+1
-	        ms[msp]=result
+	        ms[msp]=callResult
 	    elseif t=="luaFunction" then
 	            local limit=msf[msfp]+1
 	    local keyCount=#ms[limit-1] / 2
@@ -475,7 +552,38 @@ end
 	    end
 	    for i=1, #ms[limit-1], 3 do
 	        if ms[limit-1][i+2] then
-	                args.meta[ms[limit-1][i]]=ms[limit-1][i+1]
+	                	local comopps="add mul div sub mod pow"
+		local binopps="eq lt gt"
+		local unopps="minus"
+		local expectedParamCount
+		for opp in comopps:gmatch('%S+') do
+			if ms[limit-1][i]==opp then
+				expectedParamCount=2
+			elseif ms[limit-1][i]:match("^" .. opp .. "[rl]$") then
+				expectedParamCount=1
+			end
+		end
+		for opp in binopps:gmatch('%S+') do
+			if ms[limit-1][i]==opp then
+				expectedParamCount=1
+			end
+		end
+		for opp in unopps:gmatch('%S+') do
+			if ms[limit-1][i]==opp then
+				expectedParamCount=0
+			end
+		end
+		if expectedParamCount then
+			if ms[limit-1][i+1].positionalParamCount ~=expectedParamCount then
+				    return false, "Wrong number of positionnal parameters for meta-macro '" .. ms[limit-1][i] .. "', " .. ms[limit-1][i+1].positionalParamCount .. " instead of " .. expectedParamCount .. ".", ip, chunk
+			end
+			if ms[limit-1][i+1].namedParamCount > 1 then
+				    return false, "Meta-macro '" .. ms[limit-1][i] .. "' dont support named parameters.", ip, chunk
+			end
+		elseif ms[limit-1][i] ~="call" then
+			    return false, "'" .. ms[limit-1][i] .. "' isn't a valid meta-macro name.", ip, chunk
+		end
+	    args.meta.table[ms[limit-1][i]]=ms[limit-1][i+1]
 	        else
 	                local key=ms[limit-1][i]
 	    key=tonumber(key) or key
@@ -586,7 +694,7 @@ end
 	    if tobj ~="table" then
 	            return false, "Try to iterate over a non-table '" .. tobj .. "' value.", ip, chunk
 	    end
-	    local iter=obj.meta.iter
+	    local iter=obj.meta.table.iter
 	    if iter.type=="luaFunction" then
 	        ms[msp]=iter.callable()
 	    elseif iter.type=="macro" then
@@ -611,282 +719,625 @@ end
 	do
 	    x=ms[msp-1]
 	    y=ms[msp]
+	    local err
 	        if _type(x)=="string" then
 	        x=tonumber(x)
 	        if not x then
-	                return false, "Cannot convert the string value to a number.", ip, chunk
+	            err="Cannot convert the string value to a number."
 	        end
 	    elseif _type(x) ~="number" then
-	            return false, "Cannot do comparison or arithmetic with " .. _type(x).. " value.", ip, chunk
+	        err="Cannot do comparison or arithmetic with " .. _type(x).. " value."
 	    end
 	        if _type(y)=="string" then
 	        y=tonumber(y)
 	        if not y then
-	                return false, "Cannot convert the string value to a number.", ip, chunk
+	            err="Cannot convert the string value to a number."
 	        end
 	    elseif _type(y) ~="number" then
-	            return false, "Cannot do comparison or arithmetic with " .. _type(y).. " value.", ip, chunk
+	        err="Cannot do comparison or arithmetic with " .. _type(y).. " value."
 	    end
 	    msp=msp-1
-	    ms[msp]=x + y
+	    if err then
+	            local meta
+	    local params
+	    if _type(x)=="table" and x.meta and x.meta.table.addr then
+	        meta=x.meta.table.addr
+	        params={y, x}
+	    elseif _type(y)=="table" and y.meta and y.meta.table.addl then
+	        meta=y.meta.table.addl
+	        params={x, y}
+	    elseif _type(x)=="table" and x.meta and x.meta.table.add then
+	        meta=x.meta.table.add
+	        params={x, y, x}
+	    elseif _type(y)=="table" and y.meta and y.meta.table.add then
+	        meta=y.meta.table.add
+	        params={x, y, y}
+	    end
+	    if not meta then
+	            return false, err, ip, chunk
+	    end
+	        plume.callstack=plume.callstack or {}
+	    table.insert(plume.callstack, {macro=chunk, ip=ip})
+	    if #plume.callstack>1000 then
+	            return false, "stack overflow", ip, chunk
+	    end
+	    local success, callResult, cip, source=plume.run(meta, params)
+	    if not success then
+	        return success, callResult, cip, (source or macro)
+	    end
+	    table.remove(plume.callstack)
+	    ms[msp]=callResult
+	    else
+	        ms[msp]=x + y
+	    end
 				goto DISPATCH
 end
 			::OPP_MUL::
 	do
 	    x=ms[msp-1]
 	    y=ms[msp]
+	    local err
 	        if _type(x)=="string" then
 	        x=tonumber(x)
 	        if not x then
-	                return false, "Cannot convert the string value to a number.", ip, chunk
+	            err="Cannot convert the string value to a number."
 	        end
 	    elseif _type(x) ~="number" then
-	            return false, "Cannot do comparison or arithmetic with " .. _type(x).. " value.", ip, chunk
+	        err="Cannot do comparison or arithmetic with " .. _type(x).. " value."
 	    end
 	        if _type(y)=="string" then
 	        y=tonumber(y)
 	        if not y then
-	                return false, "Cannot convert the string value to a number.", ip, chunk
+	            err="Cannot convert the string value to a number."
 	        end
 	    elseif _type(y) ~="number" then
-	            return false, "Cannot do comparison or arithmetic with " .. _type(y).. " value.", ip, chunk
+	        err="Cannot do comparison or arithmetic with " .. _type(y).. " value."
 	    end
 	    msp=msp-1
-	    ms[msp]=x * y
+	    if err then
+	            local meta
+	    local params
+	    if _type(x)=="table" and x.meta and x.meta.table.mulr then
+	        meta=x.meta.table.mulr
+	        params={y, x}
+	    elseif _type(y)=="table" and y.meta and y.meta.table.mull then
+	        meta=y.meta.table.mull
+	        params={x, y}
+	    elseif _type(x)=="table" and x.meta and x.meta.table.mul then
+	        meta=x.meta.table.mul
+	        params={x, y, x}
+	    elseif _type(y)=="table" and y.meta and y.meta.table.mul then
+	        meta=y.meta.table.mul
+	        params={x, y, y}
+	    end
+	    if not meta then
+	            return false, err, ip, chunk
+	    end
+	        plume.callstack=plume.callstack or {}
+	    table.insert(plume.callstack, {macro=chunk, ip=ip})
+	    if #plume.callstack>1000 then
+	            return false, "stack overflow", ip, chunk
+	    end
+	    local success, callResult, cip, source=plume.run(meta, params)
+	    if not success then
+	        return success, callResult, cip, (source or macro)
+	    end
+	    table.remove(plume.callstack)
+	    ms[msp]=callResult
+	    else
+	        ms[msp]=x * y
+	    end
 				goto DISPATCH
 end
 			::OPP_SUB::
 	do
 	    x=ms[msp-1]
 	    y=ms[msp]
+	    local err
 	        if _type(x)=="string" then
 	        x=tonumber(x)
 	        if not x then
-	                return false, "Cannot convert the string value to a number.", ip, chunk
+	            err="Cannot convert the string value to a number."
 	        end
 	    elseif _type(x) ~="number" then
-	            return false, "Cannot do comparison or arithmetic with " .. _type(x).. " value.", ip, chunk
+	        err="Cannot do comparison or arithmetic with " .. _type(x).. " value."
 	    end
 	        if _type(y)=="string" then
 	        y=tonumber(y)
 	        if not y then
-	                return false, "Cannot convert the string value to a number.", ip, chunk
+	            err="Cannot convert the string value to a number."
 	        end
 	    elseif _type(y) ~="number" then
-	            return false, "Cannot do comparison or arithmetic with " .. _type(y).. " value.", ip, chunk
+	        err="Cannot do comparison or arithmetic with " .. _type(y).. " value."
 	    end
 	    msp=msp-1
-	    ms[msp]=x - y
+	    if err then
+	            local meta
+	    local params
+	    if _type(x)=="table" and x.meta and x.meta.table.subr then
+	        meta=x.meta.table.subr
+	        params={y, x}
+	    elseif _type(y)=="table" and y.meta and y.meta.table.subl then
+	        meta=y.meta.table.subl
+	        params={x, y}
+	    elseif _type(x)=="table" and x.meta and x.meta.table.sub then
+	        meta=x.meta.table.sub
+	        params={x, y, x}
+	    elseif _type(y)=="table" and y.meta and y.meta.table.sub then
+	        meta=y.meta.table.sub
+	        params={x, y, y}
+	    end
+	    if not meta then
+	            return false, err, ip, chunk
+	    end
+	        plume.callstack=plume.callstack or {}
+	    table.insert(plume.callstack, {macro=chunk, ip=ip})
+	    if #plume.callstack>1000 then
+	            return false, "stack overflow", ip, chunk
+	    end
+	    local success, callResult, cip, source=plume.run(meta, params)
+	    if not success then
+	        return success, callResult, cip, (source or macro)
+	    end
+	    table.remove(plume.callstack)
+	    ms[msp]=callResult
+	    else
+	        ms[msp]=x - y
+	    end
 				goto DISPATCH
 end
 			::OPP_DIV::
 	do
 	    x=ms[msp-1]
 	    y=ms[msp]
+	    local err
 	        if _type(x)=="string" then
 	        x=tonumber(x)
 	        if not x then
-	                return false, "Cannot convert the string value to a number.", ip, chunk
+	            err="Cannot convert the string value to a number."
 	        end
 	    elseif _type(x) ~="number" then
-	            return false, "Cannot do comparison or arithmetic with " .. _type(x).. " value.", ip, chunk
+	        err="Cannot do comparison or arithmetic with " .. _type(x).. " value."
 	    end
 	        if _type(y)=="string" then
 	        y=tonumber(y)
 	        if not y then
-	                return false, "Cannot convert the string value to a number.", ip, chunk
+	            err="Cannot convert the string value to a number."
 	        end
 	    elseif _type(y) ~="number" then
-	            return false, "Cannot do comparison or arithmetic with " .. _type(y).. " value.", ip, chunk
+	        err="Cannot do comparison or arithmetic with " .. _type(y).. " value."
 	    end
 	    msp=msp-1
-	    ms[msp]=x / y
+	    if err then
+	            local meta
+	    local params
+	    if _type(x)=="table" and x.meta and x.meta.table.divr then
+	        meta=x.meta.table.divr
+	        params={y, x}
+	    elseif _type(y)=="table" and y.meta and y.meta.table.divl then
+	        meta=y.meta.table.divl
+	        params={x, y}
+	    elseif _type(x)=="table" and x.meta and x.meta.table.div then
+	        meta=x.meta.table.div
+	        params={x, y, x}
+	    elseif _type(y)=="table" and y.meta and y.meta.table.div then
+	        meta=y.meta.table.div
+	        params={x, y, y}
+	    end
+	    if not meta then
+	            return false, err, ip, chunk
+	    end
+	        plume.callstack=plume.callstack or {}
+	    table.insert(plume.callstack, {macro=chunk, ip=ip})
+	    if #plume.callstack>1000 then
+	            return false, "stack overflow", ip, chunk
+	    end
+	    local success, callResult, cip, source=plume.run(meta, params)
+	    if not success then
+	        return success, callResult, cip, (source or macro)
+	    end
+	    table.remove(plume.callstack)
+	    ms[msp]=callResult
+	    else
+	        ms[msp]=x / y
+	    end
 				goto DISPATCH
 end
 			::OPP_NEG::
 	do
 	    x=ms[msp]
+	    local err
 	        if _type(x)=="string" then
 	        x=tonumber(x)
 	        if not x then
-	                return false, "Cannot convert the string value to a number.", ip, chunk
+	            err="Cannot convert the string value to a number."
 	        end
 	    elseif _type(x) ~="number" then
-	            return false, "Cannot do comparison or arithmetic with " .. _type(x).. " value.", ip, chunk
+	        err="Cannot do comparison or arithmetic with " .. _type(x).. " value."
 	    end
-	    ms[msp]=- x
+	    if err then
+	            local meta
+	    local params={x}
+	    if _type(x)=="table" and x.meta and x.meta.table.minus then
+	        meta=x.meta.table.minus
+	    end
+	    if not meta then
+	            return false, err, ip, chunk
+	    end
+	        plume.callstack=plume.callstack or {}
+	    table.insert(plume.callstack, {macro=chunk, ip=ip})
+	    if #plume.callstack>1000 then
+	            return false, "stack overflow", ip, chunk
+	    end
+	    local success, callResult, cip, source=plume.run(meta, params)
+	    if not success then
+	        return success, callResult, cip, (source or macro)
+	    end
+	    table.remove(plume.callstack)
+	    ms[msp]=callResult
+	    else
+	        ms[msp]=- x
+	    end
 				goto DISPATCH
 end
 			::OPP_MOD::
 	do
 	    x=ms[msp-1]
 	    y=ms[msp]
+	    local err
 	        if _type(x)=="string" then
 	        x=tonumber(x)
 	        if not x then
-	                return false, "Cannot convert the string value to a number.", ip, chunk
+	            err="Cannot convert the string value to a number."
 	        end
 	    elseif _type(x) ~="number" then
-	            return false, "Cannot do comparison or arithmetic with " .. _type(x).. " value.", ip, chunk
+	        err="Cannot do comparison or arithmetic with " .. _type(x).. " value."
 	    end
 	        if _type(y)=="string" then
 	        y=tonumber(y)
 	        if not y then
-	                return false, "Cannot convert the string value to a number.", ip, chunk
+	            err="Cannot convert the string value to a number."
 	        end
 	    elseif _type(y) ~="number" then
-	            return false, "Cannot do comparison or arithmetic with " .. _type(y).. " value.", ip, chunk
+	        err="Cannot do comparison or arithmetic with " .. _type(y).. " value."
 	    end
 	    msp=msp-1
-	    ms[msp]=x % y
+	    if err then
+	            local meta
+	    local params
+	    if _type(x)=="table" and x.meta and x.meta.table.modr then
+	        meta=x.meta.table.modr
+	        params={y, x}
+	    elseif _type(y)=="table" and y.meta and y.meta.table.modl then
+	        meta=y.meta.table.modl
+	        params={x, y}
+	    elseif _type(x)=="table" and x.meta and x.meta.table.mod then
+	        meta=x.meta.table.mod
+	        params={x, y, x}
+	    elseif _type(y)=="table" and y.meta and y.meta.table.mod then
+	        meta=y.meta.table.mod
+	        params={x, y, y}
+	    end
+	    if not meta then
+	            return false, err, ip, chunk
+	    end
+	        plume.callstack=plume.callstack or {}
+	    table.insert(plume.callstack, {macro=chunk, ip=ip})
+	    if #plume.callstack>1000 then
+	            return false, "stack overflow", ip, chunk
+	    end
+	    local success, callResult, cip, source=plume.run(meta, params)
+	    if not success then
+	        return success, callResult, cip, (source or macro)
+	    end
+	    table.remove(plume.callstack)
+	    ms[msp]=callResult
+	    else
+	        ms[msp]=x % y
+	    end
 				goto DISPATCH
 end
 			::OPP_POW::
 	do
 	    x=ms[msp-1]
 	    y=ms[msp]
+	    local err
 	        if _type(x)=="string" then
 	        x=tonumber(x)
 	        if not x then
-	                return false, "Cannot convert the string value to a number.", ip, chunk
+	            err="Cannot convert the string value to a number."
 	        end
 	    elseif _type(x) ~="number" then
-	            return false, "Cannot do comparison or arithmetic with " .. _type(x).. " value.", ip, chunk
+	        err="Cannot do comparison or arithmetic with " .. _type(x).. " value."
 	    end
 	        if _type(y)=="string" then
 	        y=tonumber(y)
 	        if not y then
-	                return false, "Cannot convert the string value to a number.", ip, chunk
+	            err="Cannot convert the string value to a number."
 	        end
 	    elseif _type(y) ~="number" then
-	            return false, "Cannot do comparison or arithmetic with " .. _type(y).. " value.", ip, chunk
+	        err="Cannot do comparison or arithmetic with " .. _type(y).. " value."
 	    end
 	    msp=msp-1
-	    ms[msp]=x ^ y
+	    if err then
+	            local meta
+	    local params
+	    if _type(x)=="table" and x.meta and x.meta.table.powr then
+	        meta=x.meta.table.powr
+	        params={y, x}
+	    elseif _type(y)=="table" and y.meta and y.meta.table.powl then
+	        meta=y.meta.table.powl
+	        params={x, y}
+	    elseif _type(x)=="table" and x.meta and x.meta.table.pow then
+	        meta=x.meta.table.pow
+	        params={x, y, x}
+	    elseif _type(y)=="table" and y.meta and y.meta.table.pow then
+	        meta=y.meta.table.pow
+	        params={x, y, y}
+	    end
+	    if not meta then
+	            return false, err, ip, chunk
+	    end
+	        plume.callstack=plume.callstack or {}
+	    table.insert(plume.callstack, {macro=chunk, ip=ip})
+	    if #plume.callstack>1000 then
+	            return false, "stack overflow", ip, chunk
+	    end
+	    local success, callResult, cip, source=plume.run(meta, params)
+	    if not success then
+	        return success, callResult, cip, (source or macro)
+	    end
+	    table.remove(plume.callstack)
+	    ms[msp]=callResult
+	    else
+	        ms[msp]=x ^ y
+	    end
 				goto DISPATCH
 end
 			::OPP_GTE::
 	do
-	    x=ms[msp-1]
-	    y=ms[msp]
-	        if _type(x)=="string" then
-	        x=tonumber(x)
-	        if not x then
-	                return false, "Cannot convert the string value to a number.", ip, chunk
-	        end
-	    elseif _type(x) ~="number" then
-	            return false, "Cannot do comparison or arithmetic with " .. _type(x).. " value.", ip, chunk
-	    end
-	        if _type(y)=="string" then
-	        y=tonumber(y)
-	        if not y then
-	                return false, "Cannot convert the string value to a number.", ip, chunk
-	        end
-	    elseif _type(y) ~="number" then
-	            return false, "Cannot do comparison or arithmetic with " .. _type(y).. " value.", ip, chunk
-	    end
-	    msp=msp-1
-	    ms[msp]=x >=y
-				goto DISPATCH
+					goto DISPATCH
 end
 			::OPP_LTE::
 	do
-	    x=ms[msp-1]
-	    y=ms[msp]
-	        if _type(x)=="string" then
-	        x=tonumber(x)
-	        if not x then
-	                return false, "Cannot convert the string value to a number.", ip, chunk
-	        end
-	    elseif _type(x) ~="number" then
-	            return false, "Cannot do comparison or arithmetic with " .. _type(x).. " value.", ip, chunk
-	    end
-	        if _type(y)=="string" then
-	        y=tonumber(y)
-	        if not y then
-	                return false, "Cannot convert the string value to a number.", ip, chunk
-	        end
-	    elseif _type(y) ~="number" then
-	            return false, "Cannot do comparison or arithmetic with " .. _type(y).. " value.", ip, chunk
-	    end
-	    msp=msp-1
-	    ms[msp]=x <=y
-				goto DISPATCH
+					goto DISPATCH
 end
 			::OPP_GT::
 	do
 	    x=ms[msp-1]
 	    y=ms[msp]
+	    local err
 	        if _type(x)=="string" then
 	        x=tonumber(x)
 	        if not x then
-	                return false, "Cannot convert the string value to a number.", ip, chunk
+	            err="Cannot convert the string value to a number."
 	        end
 	    elseif _type(x) ~="number" then
-	            return false, "Cannot do comparison or arithmetic with " .. _type(x).. " value.", ip, chunk
+	        err="Cannot do comparison or arithmetic with " .. _type(x).. " value."
 	    end
 	        if _type(y)=="string" then
 	        y=tonumber(y)
 	        if not y then
-	                return false, "Cannot convert the string value to a number.", ip, chunk
+	            err="Cannot convert the string value to a number."
 	        end
 	    elseif _type(y) ~="number" then
-	            return false, "Cannot do comparison or arithmetic with " .. _type(y).. " value.", ip, chunk
+	        err="Cannot do comparison or arithmetic with " .. _type(y).. " value."
 	    end
 	    msp=msp-1
-	    ms[msp]=x > y
+	    if err then
+	        local macro, params, meta
+	        if _type(x)=="table" and x.meta and x.meta.table.gt then
+	            meta=x.meta.table.gt
+	            params={y, x}
+	        elseif _type(y)=="table" and y.meta and y.meta.table.lt then
+	            meta=y.meta.table.lt
+	            params={x, y}
+	        end
+	        if not meta then
+	                return false, err, ip, chunk
+	        end
+	            plume.callstack=plume.callstack or {}
+	    table.insert(plume.callstack, {macro=chunk, ip=ip})
+	    if #plume.callstack>1000 then
+	            return false, "stack overflow", ip, chunk
+	    end
+	    local success, callResult, cip, source=plume.run(meta, params)
+	    if not success then
+	        return success, callResult, cip, (source or macro)
+	    end
+	    table.remove(plume.callstack)
+	        if invert then
+	            callResult=not callResult
+	            if callResult then
+	                ms[msp]=callResult
+	            else
+	                msp=msp+1
+	                    x=ms[msp-1]
+	    y=ms[msp]
+	    msp=msp-1
+	    local macro, params, meta
+	    if _type(x)=="table" and x.meta and x.meta.table.eq then
+	        meta=x.meta.table.eq
+	        params={y, x}
+	    elseif _type(y)=="table" and y.meta and y.meta.table.eq then
+	        meta=y.meta.table.eq
+	        params={x, y}
+	    end
+	    if meta then
+	            plume.callstack=plume.callstack or {}
+	    table.insert(plume.callstack, {macro=chunk, ip=ip})
+	    if #plume.callstack>1000 then
+	            return false, "stack overflow", ip, chunk
+	    end
+	    local success, callResult, cip, source=plume.run(meta, params)
+	    if not success then
+	        return success, callResult, cip, (source or macro)
+	    end
+	    table.remove(plume.callstack)
+	        ms[msp]=callResult
+	    else
+	        ms[msp]=x==y
+	    end
+	            end
+	        else
+	            ms[msp]=callResult
+	        end
+	    else
+	        ms[msp]=x > y
+	    end
 				goto DISPATCH
 end
 			::OPP_LT::
 	do
 	    x=ms[msp-1]
 	    y=ms[msp]
+	    local err
 	        if _type(x)=="string" then
 	        x=tonumber(x)
 	        if not x then
-	                return false, "Cannot convert the string value to a number.", ip, chunk
+	            err="Cannot convert the string value to a number."
 	        end
 	    elseif _type(x) ~="number" then
-	            return false, "Cannot do comparison or arithmetic with " .. _type(x).. " value.", ip, chunk
+	        err="Cannot do comparison or arithmetic with " .. _type(x).. " value."
 	    end
 	        if _type(y)=="string" then
 	        y=tonumber(y)
 	        if not y then
-	                return false, "Cannot convert the string value to a number.", ip, chunk
+	            err="Cannot convert the string value to a number."
 	        end
 	    elseif _type(y) ~="number" then
-	            return false, "Cannot do comparison or arithmetic with " .. _type(y).. " value.", ip, chunk
+	        err="Cannot do comparison or arithmetic with " .. _type(y).. " value."
 	    end
 	    msp=msp-1
-	    ms[msp]=x < y
+	    if err then
+	        local macro, params, meta, invert
+	        if _type(x)=="table" and x.meta and x.meta.table.lt then
+	            meta=x.meta.table.lt
+	            params={y, x}
+	        elseif _type(y)=="table" and y.meta and y.meta.table.gt then
+	            meta=y.meta.table.gt
+	            params={x, y}
+	        elseif _type(x)=="table" and x.meta and x.meta.table.gt then
+	            meta=x.meta.table.gt
+	            params={y, x}
+	            invert=true
+	        elseif _type(y)=="table" and y.meta and y.meta.table.lt then
+	            meta=y.meta.table.lt
+	            params={x, y}
+	            invert=true
+	        end
+	        if not meta then
+	                return false, err, ip, chunk
+	        end
+	            plume.callstack=plume.callstack or {}
+	    table.insert(plume.callstack, {macro=chunk, ip=ip})
+	    if #plume.callstack>1000 then
+	            return false, "stack overflow", ip, chunk
+	    end
+	    local success, callResult, cip, source=plume.run(meta, params)
+	    if not success then
+	        return success, callResult, cip, (source or macro)
+	    end
+	    table.remove(plume.callstack)
+	        if invert then
+	            callResult=not callResult
+	            if callResult then
+	                ms[msp]=callResult
+	            else
+	                msp=msp+1
+	                    x=ms[msp-1]
+	    y=ms[msp]
+	    msp=msp-1
+	    local macro, params, meta
+	    if _type(x)=="table" and x.meta and x.meta.table.eq then
+	        meta=x.meta.table.eq
+	        params={y, x}
+	    elseif _type(y)=="table" and y.meta and y.meta.table.eq then
+	        meta=y.meta.table.eq
+	        params={x, y}
+	    end
+	    if meta then
+	            plume.callstack=plume.callstack or {}
+	    table.insert(plume.callstack, {macro=chunk, ip=ip})
+	    if #plume.callstack>1000 then
+	            return false, "stack overflow", ip, chunk
+	    end
+	    local success, callResult, cip, source=plume.run(meta, params)
+	    if not success then
+	        return success, callResult, cip, (source or macro)
+	    end
+	    table.remove(plume.callstack)
+	        ms[msp]=callResult
+	    else
+	        ms[msp]=x==y
+	    end
+	            end
+	        else
+	            ms[msp]=callResult
+	        end
+	    else
+	        ms[msp]=x < y
+	    end
 				goto DISPATCH
 end
 			::OPP_EQ::
 	do
 	    x=ms[msp-1]
 	    y=ms[msp]
-	        if _type(x)=="string" then
-	        x=tonumber(x) or x
-	    end
-	        if _type(y)=="string" then
-	        y=tonumber(y) or y
-	    end
 	    msp=msp-1
-	    ms[msp]=x==y
+	    local macro, params, meta
+	    if _type(x)=="table" and x.meta and x.meta.table.eq then
+	        meta=x.meta.table.eq
+	        params={y, x}
+	    elseif _type(y)=="table" and y.meta and y.meta.table.eq then
+	        meta=y.meta.table.eq
+	        params={x, y}
+	    end
+	    if meta then
+	            plume.callstack=plume.callstack or {}
+	    table.insert(plume.callstack, {macro=chunk, ip=ip})
+	    if #plume.callstack>1000 then
+	            return false, "stack overflow", ip, chunk
+	    end
+	    local success, callResult, cip, source=plume.run(meta, params)
+	    if not success then
+	        return success, callResult, cip, (source or macro)
+	    end
+	    table.remove(plume.callstack)
+	        ms[msp]=callResult
+	    else
+	        ms[msp]=x==y
+	    end
 				goto DISPATCH
 end
 			::OPP_NEQ::
 	do
 	    x=ms[msp-1]
 	    y=ms[msp]
-	        if _type(x)=="string" then
-	        x=tonumber(x) or x
-	    end
-	        if _type(y)=="string" then
-	        y=tonumber(y) or y
-	    end
 	    msp=msp-1
-	    ms[msp]=x ~=y
+	    local macro, params, meta
+	    if _type(x)=="table" and x.meta and x.meta.table.eq then
+	        meta=x.meta.table.eq
+	        params={y, x}
+	    elseif _type(y)=="table" and y.meta and y.meta.table.eq then
+	        meta=y.meta.table.eq
+	        params={x, y}
+	    end
+	    if meta then
+	            plume.callstack=plume.callstack or {}
+	    table.insert(plume.callstack, {macro=chunk, ip=ip})
+	    if #plume.callstack>1000 then
+	            return false, "stack overflow", ip, chunk
+	    end
+	    local success, callResult, cip, source=plume.run(meta, params)
+	    if not success then
+	        return success, callResult, cip, (source or macro)
+	    end
+	    table.remove(plume.callstack)
+	        ms[msp]=not callResult
+	    else
+	        ms[msp]=x ~=y
+	    end
 				goto DISPATCH
 end
 			::OPP_AND::

@@ -1,0 +1,260 @@
+/// Test addr
+let t = @table
+  meta addr: macro(x)
+    $(x+1)
+  end
+end
+$(t+1)
+/// Output
+2
+/// End
+
+/// Test addl
+let t = @table
+  meta addl: macro(x)
+    $(x+1)
+  end
+end
+$(1+t)
+/// Output
+2
+/// End
+
+/// Test add fallback 1
+let t = @table
+  meta add: macro(x, y)
+    $(y+1)
+  end
+end
+$(t+1)
+/// Output
+2
+/// End
+
+/// Test add fallback 2
+let t = @table
+  meta add: macro(x, y)
+    $(x+1)
+  end
+end
+$(1+t)
+/// Output
+2
+/// End
+
+/// Test self access
+let t = @table
+  value: 10
+  meta add: macro(x, y)
+    $(self.value+y)
+  end
+end
+$(t+1)
+/// Output
+11
+/// End
+
+/// Test mul
+let t = @table
+  meta mulr: macro(x)
+    $(x+1)
+  end
+end
+$(t*2)
+/// Output
+3
+/// End
+
+/// Test sub
+let t = @table
+  meta subr: macro(x)
+    $(x+1)
+  end
+end
+$(t-2)
+/// Output
+3
+/// End
+
+/// Test div
+let t = @table
+  meta divr: macro(x)
+    $(x+1)
+  end
+end
+$(t/2)
+/// Output
+3
+/// End
+
+/// Test pow
+let t = @table
+  meta powr: macro(x)
+    $(x+1)
+  end
+end
+$(t^2)
+/// Output
+3
+/// End
+
+/// Test mod
+let t = @table
+  meta modr: macro(x)
+    $(x+1)
+  end
+end
+$(t%2)
+/// Output
+3
+/// End
+
+/// Test minus
+let t = @table
+  meta minus: macro()
+    $(-1)
+  end
+end
+$(-t)
+/// Output
+-1
+/// End
+
+/// Test call
+let t = @table
+  meta call: macro()
+    I'm a called table
+  end
+end
+
+$t()
+/// Output
+I'm a called table
+/// End
+
+/// Test call with self
+let t = @table
+  value: 5
+  meta call: macro()
+    My value is $self.value
+  end
+end
+
+$t()
+/// Output
+My value is 5
+/// End
+
+/// Test eq
+let t = @table
+  meta eq: macro(x)
+    $true
+  end
+end
+
+$(t==6)
+/// Output
+true
+/// End
+
+/// Test neq fallback
+let t = @table
+  meta eq: macro(x)
+    $true
+  end
+end
+
+$(t!=6)
+/// Output
+false
+/// End
+
+/// Test gt
+let t = @table
+  meta gt: macro(x)
+    $true
+  end
+end
+
+$(t>6)
+/// Output
+true
+/// End
+
+/// Test gt fallback 1
+let t = @table
+  meta gt: macro(x)
+    $true
+  end
+end
+
+$(t<=6)
+/// Output
+false
+/// End
+
+/// Test gt fallback 2
+let t = @table
+  meta gt: macro(x)
+    $true
+  end
+end
+
+$(6<t)
+/// Output
+true
+/// End
+
+/// Test gt fallback 3
+let t = @table
+  meta gt: macro(x)
+    $false
+  end
+end
+
+$(t>=6)
+/// Output
+false
+/// End
+
+/// Test gt fallback 4
+let t = @table
+  meta gt: macro(x)
+    $false
+  end
+  meta eq: macro(x)
+    $true
+  end
+end
+
+$(t>=6)
+/// Output
+true
+/// End
+
+/// Test lt
+let t = @table
+  meta lt: macro(x)
+    $true
+  end
+end
+
+$(t<6)
+/// Output
+true
+/// End
+
+/// Test gt fallback 5
+let t = @table
+  meta gt: macro(x)
+    $(x<=6)
+  end
+  meta eq: macro(x)
+    $(x==6)
+  end
+end
+
+$(t<6)
+/// Output
+true
+/// End
