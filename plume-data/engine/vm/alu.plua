@@ -258,6 +258,8 @@
         @_CALL meta params
         ms[msp] = callResult
     else
+        @_CHECK_OPTN_NUMBER x
+        @_CHECK_OPTN_NUMBER y
         ms[msp] = x == y
     end
 @end
@@ -282,6 +284,8 @@
         @_CALL meta params
         ms[msp] = not callResult
     else
+        @_CHECK_OPTN_NUMBER x
+        @_CHECK_OPTN_NUMBER y
         ms[msp] = x ~= y
     end
 @end
