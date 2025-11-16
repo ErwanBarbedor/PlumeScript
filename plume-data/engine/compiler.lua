@@ -313,6 +313,8 @@ return function(plume)
 				var.ref = idn
 			end
 
+			local dest = #varlist > 1
+
 			if body then
 				if from then
 					table.insert(concats, false)
@@ -328,6 +330,13 @@ return function(plume)
 							registerOP(nil, ops.DUPLICATE, 0, 0)
 						end
 						registerOP(var.ref, ops.LOAD_CONSTANT, 0, registerConstant(var.name))
+						registerOP(nil, ops.SWITCH, 0, 0)
+						registerOP(nil, ops.TABLE_INDEX, 0, 0)
+					elseif dest then
+						if i < #varlist then
+							registerOP(nil, ops.DUPLICATE, 0, 0)
+						end
+						registerOP(nil, ops.LOAD_CONSTANT, 0, registerConstant(i))
 						registerOP(nil, ops.SWITCH, 0, 0)
 						registerOP(nil, ops.TABLE_INDEX, 0, 0)
 					end
