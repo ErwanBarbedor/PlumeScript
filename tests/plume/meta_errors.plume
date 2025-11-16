@@ -84,4 +84,14 @@ end
 
 $(t+1)
 /// Error
+Runtime error: stack overflow
+
+Traceback (most recent call first):
+  File 'stack overflow', line 3: $(self+1)
+                                   ^^^^^^
+    ...
+   (same line 999 more times)
+    ...
+  File 'stack overflow', line 7: $(t+1)
+                                   ^^^
 /// End

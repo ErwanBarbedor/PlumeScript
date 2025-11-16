@@ -120,6 +120,66 @@ return function(plume)
 		return plume.error.makeMessage("Syntax error: " .. message, node)
 	end
 
+	local function simplifyErrorCallstack(errorCallstack)
+		local windowSize = 1
+		local detectedCount = 1
+		while detectedCount > 0 and windowSize < #errorCallstack/2 do
+			detectedCount = 0
+			for i=1, #errorCallstack-windowSize do
+				for j=i+windowSize, #errorCallstack, windowSize do
+					local detection = true
+					for k=0, windowSize do
+						if errorCallstack[i+k] ~= errorCallstack[j+k] then
+							detection = false
+							break
+						end
+					end
+					if not detection then
+						break
+					end
+					detectedCount = detectedCount + i/windowSize
+				end
+
+				if detectedCount > 3 then
+					local newErrorCallstack = {}
+					for j=1, i-1 do
+						table.insert(newErrorCallstack, errorCallstack[j])
+					end
+					if windowSize>1 then
+						table.insert(newErrorCallstack, "  These lines are repeated " .. (detectedCount) .. " times:")
+						table.insert(newErrorCallstack, "  -------------")
+					end
+
+					
+					for j=i, i+windowSize-1 do
+						table.insert(newErrorCallstack, errorCallstack[j])
+					end
+
+
+					if windowSize>1 then
+						table.insert(newErrorCallstack, "  -------------")
+					else
+						table.insert(newErrorCallstack, "    ...")
+						table.insert(newErrorCallstack, "   (same line " .. detectedCount .. " more times)")
+						table.insert(newErrorCallstack, "    ...")
+					end
+
+					for j=i+(detectedCount+1)*windowSize+1, #errorCallstack do
+						table.insert(newErrorCallstack, errorCallstack[j])
+					end
+					errorCallstack = newErrorCallstack
+					break
+				end
+			end
+
+			if detectedCount == 0 then
+				windowSize = windowSize + 1
+				detectedCount = 1
+			end
+		end
+		return errorCallstack
+	end
+
 	function plume.error.makeRuntimeError(runtime, ip, message)
 		local node = plume.error.getNode(runtime, ip)
 		local message = "Runtime error: " .. message
@@ -138,16 +198,21 @@ return function(plume)
 					local node = plume.error.getNode(chunk.macro, chunk.ip)
 					if node then
 						local lineInfos = plume.error.getLineInfos(node)
-						table.insert(
-							errorCallstack,
-							plume.error.formatLine(lineInfos, (not chunk.macro.isFile) and chunk.macro.name)
-						)
+						local formatedLine = plume.error.formatLine(lineInfos, (not chunk.macro.isFile) and chunk.macro.name)
+						table.insert(errorCallstack, formatedLine)
 					end
 				end
 			end
 		end
 
-		message = message .. "\n\nTraceback (most recent call first):\n" .. table.concat(errorCallstack, "\n")
+		
+		if #errorCallstack > 10 then
+			errorCallstack = simplifyErrorCallstack(errorCallstack)
+		end
+
+		local traceback = table.concat(errorCallstack, "\n")
+		-- traceback = ""
+		message = message .. "\n\nTraceback (most recent call first):\n" .. traceback
 
 		return message
 	end
