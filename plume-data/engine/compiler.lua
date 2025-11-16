@@ -413,7 +413,7 @@ return function(plume)
 		----------
 		-- EVAL --
 		----------
-		local oppNames = "ADD SUB MUL DIV MOD LT GT LTE GTE EQ NEQ NOT NEG POW"
+		local oppNames = "ADD SUB MUL DIV MOD LT GT EQ NEQ NOT NEG POW"
 
 		for oppName in oppNames:gmatch("%S+") do
 			nodeHandlerTable[oppName] = function(node)
@@ -423,6 +423,34 @@ return function(plume)
 				end
 				registerOP(node, ops["OPP_" .. oppName], 0, 0)
 			end
+		end
+
+		nodeHandlerTable.LTE = function(node)
+			nodeHandler(node.children[1])
+			nodeHandler(node.children[2])
+			registerOP(node, ops["OPP_LT"], 0, 0)
+
+			local uid = getUID()
+			registerGoto(node, "or_end_"..uid, "JUMP_IF_PEEK")
+			nodeHandler(node.children[1])
+			nodeHandler(node.children[2])
+			registerOP(node, ops["OPP_EQ"], 0, 0)
+			registerOP(node, ops["OPP_OR"], 0, 0)
+			registerLabel(node, "or_end_"..uid)
+		end
+
+		nodeHandlerTable.GTE = function(node)
+			nodeHandler(node.children[1])
+			nodeHandler(node.children[2])
+			registerOP(node, ops["OPP_GT"], 0, 0)
+
+			local uid = getUID()
+			registerGoto(node, "or_end_"..uid, "JUMP_IF_PEEK")
+			nodeHandler(node.children[1])
+			nodeHandler(node.children[2])
+			registerOP(node, ops["OPP_EQ"], 0, 0)
+			registerOP(node, ops["OPP_OR"], 0, 0)
+			registerLabel(node, "or_end_"..uid)
 		end
 
 		nodeHandlerTable.OR = function(node)

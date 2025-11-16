@@ -51,21 +51,240 @@
 @end
 
 
-@define OPP_ADD @_BIN_OPP + NUMBER @end
-@define OPP_SUB @_BIN_OPP - NUMBER @end
-@define OPP_MUL @_BIN_OPP * NUMBER @end
-@define OPP_DIV @_BIN_OPP / NUMBER @end
-@define OPP_MOD @_BIN_OPP % NUMBER @end
-@define OPP_POW @_BIN_OPP ^ NUMBER @end
-@define OPP_NEG @_UN_OPP  - NUMBER @end
+@define _CHECK_NUMBER_META x
+    if _type($x) == "string" then
+        $x = tonumber($x)
+        if not $x then
+            err = "Cannot convert the string value to a number."
+        end
+    elseif _type($x) ~= "number" then
+        err = "Cannot do comparison or arithmetic with " .. _type($x).. " value."
+    end
+@end
+
+@define _HANDLE_META_BIN name
+    local meta
+    local params
+    if _type(x) == "table" and x.meta and x.meta.table.$(name)r then
+        meta = x.meta.table.$(name)r
+        params = {y, x} -- self last
+    elseif _type(y) == "table" and y.meta and y.meta.table.$(name)l then
+        meta = y.meta.table.$(name)l
+        params = {x, y}
+    elseif _type(x) == "table" and x.meta and x.meta.table.$name then
+        meta = x.meta.table.$name
+        params = {x, y, x}
+    elseif _type(y) == "table" and y.meta and y.meta.table.$name then
+        meta = y.meta.table.$name
+        params = {x, y, y}
+    end
+
+    if not meta then
+        @_ERROR err
+    end
+
+    @_CALL meta params
+
+    ms[msp] = callResult
+@end
+
+@define _BIN_OPP_META opp name
+    x = ms[msp-1]
+    y = ms[msp]
+
+    local err
+
+    @_CHECK_NUMBER_META x
+    @_CHECK_NUMBER_META y
+
+    msp = msp-1
+
+    if err then
+        @_HANDLE_META_BIN $name
+    else
+        ms[msp] = x $opp y
+    end
+@end
+
+@define _HANDLE_META_UN name
+    local meta
+    local params = {x}
+    if _type(x) == "table" and x.meta and x.meta.table.$name then
+        meta = x.meta.table.$name
+    end
+
+    if not meta then
+        @_ERROR err
+    end
+
+    @_CALL meta params
+
+    ms[msp] = callResult
+@end
+
+@define _UN_OPP_META opp name
+    x = ms[msp]
+
+    local err
+
+    @_CHECK_NUMBER_META x
+
+    if err then
+        @_HANDLE_META_UN $name
+    else
+        ms[msp] = $opp x
+    end
+@end
+
+@define OPP_ADD @_BIN_OPP_META + add @end
+@define OPP_MUL @_BIN_OPP_META * mul @end
+@define OPP_SUB @_BIN_OPP_META - sub @end
+@define OPP_DIV @_BIN_OPP_META / div @end
+@define OPP_MOD @_BIN_OPP_META % mod @end
+@define OPP_POW @_BIN_OPP_META ^ pow @end
+@define OPP_NEG @_UN_OPP_META  - minus @end
 
 -- comp
-@define OPP_GTE  @_BIN_OPP >= NUMBER @end
-@define OPP_LTE  @_BIN_OPP <= NUMBER @end
-@define OPP_GT   @_BIN_OPP >  NUMBER @end
-@define OPP_LT   @_BIN_OPP <  NUMBER @end
-@define OPP_EQ   @_BIN_OPP == OPTN_NUMBER @end
-@define OPP_NEQ  @_BIN_OPP ~= OPTN_NUMBER @end
+@define OPP_GT
+    x = ms[msp-1]
+    y = ms[msp]
+
+    local err
+
+    @_CHECK_NUMBER_META x
+    @_CHECK_NUMBER_META y
+
+    msp = msp-1
+
+    if err then
+        local macro, params, meta
+        if _type(x) == "table" and x.meta and x.meta.table.gt then
+            meta = x.meta.table.gt
+            params = {y, x}
+        elseif _type(y) == "table" and y.meta and y.meta.table.lt then
+            meta = y.meta.table.lt
+            params = {x, y}
+        end
+        if not meta then
+            @_ERROR err
+        end
+
+        @_CALL meta params
+
+        if invert then
+            callResult = not callResult
+            if callResult then
+                ms[msp] = callResult
+            else
+                msp = msp+1
+                @OPP_EQ
+            end
+        else
+            ms[msp] = callResult
+        end
+    else
+        ms[msp] = x > y
+    end
+@end
+
+@define OPP_LT
+    x = ms[msp-1]
+    y = ms[msp]
+
+    local err
+
+    @_CHECK_NUMBER_META x
+    @_CHECK_NUMBER_META y
+
+    msp = msp-1
+
+    if err then
+        local macro, params, meta, invert
+        if _type(x) == "table" and x.meta and x.meta.table.lt then
+            meta = x.meta.table.lt
+            params = {y, x}
+        elseif _type(y) == "table" and y.meta and y.meta.table.gt then
+            meta = y.meta.table.gt
+            params = {x, y}
+        elseif _type(x) == "table" and x.meta and x.meta.table.gt then
+            meta = x.meta.table.gt
+            params = {y, x}
+            invert = true
+        elseif _type(y) == "table" and y.meta and y.meta.table.lt then
+            meta = y.meta.table.lt
+            params = {x, y}
+            invert = true
+        end
+        if not meta then
+            @_ERROR err
+        end
+
+        @_CALL meta params
+
+        if invert then
+            callResult = not callResult
+            if callResult then
+                ms[msp] = callResult
+            else
+                msp = msp+1
+                @OPP_EQ
+            end
+        else
+            ms[msp] = callResult
+        end
+
+    else
+        ms[msp] = x < y
+    end
+@end
+
+@define OPP_EQ
+    x = ms[msp-1]
+    y = ms[msp]
+
+    msp = msp-1
+
+    local macro, params, meta
+
+    if _type(x) == "table" and x.meta and x.meta.table.eq then
+        meta = x.meta.table.eq
+        params = {y, x}
+    elseif _type(y) == "table" and y.meta and y.meta.table.eq then
+        meta = y.meta.table.eq
+        params = {x, y}
+    end
+
+    if meta then
+        @_CALL meta params
+        ms[msp] = callResult
+    else
+        ms[msp] = x == y
+    end
+@end
+
+@define OPP_NEQ
+    x = ms[msp-1]
+    y = ms[msp]
+
+    msp = msp-1
+
+    local macro, params, meta
+
+    if _type(x) == "table" and x.meta and x.meta.table.eq then
+        meta = x.meta.table.eq
+        params = {y, x}
+    elseif _type(y) == "table" and y.meta and y.meta.table.eq then
+        meta = y.meta.table.eq
+        params = {x, y}
+    end
+
+    if meta then
+        @_CALL meta params
+        ms[msp] = not callResult
+    else
+        ms[msp] = x ~= y
+    end
+@end
 
 -- bool
 @define OPP_AND  @_BIN_OPP and BOOL @end

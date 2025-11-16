@@ -95,3 +95,35 @@ Traceback (most recent call first):
   File 'call a non-macro', line 1: $(1)()
                                     ^^^^^
 /// End
+
+/// Test stack overflow
+let static quill
+let static mark
+
+set quill = macro()
+  $mark()
+end
+
+set mark = macro()
+  $quill()
+end
+
+$mark()
+/// Error
+Runtime error: stack overflow
+
+Traceback (most recent call first):
+  File 'stack overflow', line 5: $mark()
+                                  ^^^^^^
+  These lines are repeated 498 times:
+  -------------
+  File 'stack overflow', line 5: $mark()
+                                  ^^^^^^
+  File 'stack overflow', line 9: $quill()
+                                  ^^^^^^^
+  -------------
+  File 'stack overflow', line 9: $quill()
+                                  ^^^^^^^
+  File 'stack overflow', line 12: $mark()
+                                   ^^^^^^
+/// End

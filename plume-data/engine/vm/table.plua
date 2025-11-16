@@ -9,6 +9,12 @@
 @define TABLE_ADD arg1 arg2
 @end
 
+@define CHECK_META arg1 arg2
+    if not $arg1.meta then
+        $arg1.meta = plume.obj.table(0, 0)
+    end
+@end
+
 @define TABLE_INDEX arg1 arg2
     --- Unstack 2, in order: table, key
     --- Stack 1, table[key]
@@ -54,7 +60,8 @@
     --- Stack 1, table[key]
     --- arg1: -
     --- arg2: -
-    ms[msp-1] = ms[msp].meta[ms[msp-1]]
+    @_CHECK_META ms[msp]
+    ms[msp-1] = ms[msp].meta.table[ms[msp-1]]
     msp = msp-1
 @end
 
@@ -69,7 +76,8 @@
 @end
 
 @define _TABLE_META_SET t k v
-    $t.meta[$k] = $v --set
+    @_META_CHECK $k $v
+    $t.meta.table[$k] = $v --set
 @end
 
 @define TABLE_SET arg1 arg2
@@ -88,7 +96,8 @@
     --- Set the table.key to value
     --- arg1: -
     --- arg2: -
-    ms[msp-2].meta[ms[msp-1]] = ms[msp]
+    @_CHECK_META ms[msp-2]
+    ms[msp-2].meta.table[ms[msp-1]] = ms[msp]
     msp = msp-3
 @end
 

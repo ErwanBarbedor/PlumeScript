@@ -149,7 +149,7 @@ return function (plume)
                 end
             end)
 
-            iterator.meta.iter = plume.obj.luaFunction("iter", function()
+            iterator.meta.table.iter = plume.obj.luaFunction("iter", function()
                 return iterator
             end)
 
@@ -176,7 +176,7 @@ return function (plume)
                 end
             end)
 
-            iterator.meta.iter = plume.obj.luaFunction("iter", function()
+            iterator.meta.table.iter = plume.obj.luaFunction("iter", function()
                 return iterator
             end)
 
@@ -203,7 +203,7 @@ return function (plume)
                 end
             end)
 
-            iterator.meta.iter = plume.obj.luaFunction("iter", function()
+            iterator.meta.table.iter = plume.obj.luaFunction("iter", function()
                 return iterator
             end)
 

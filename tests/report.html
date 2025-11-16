@@ -98,7 +98,7 @@
 <body>
 <div class="container">
     
-<h1>Global: <span style="font-weight: normal;">213 passed out of 213 tests</span></h1>
+<h1>Global: <span style="font-weight: normal;">242 passed out of 242 tests</span></h1>
 <div class="progress-bar"><div class="progress-success" style="width: 100.00%"></div><div class="progress-fail" style="width: 0.00%"></div></div>
 <h2>arithmetic: <span style="font-weight: normal;">30 passed out of 30 tests</span></h2>
 <div class="progress-bar"><div class="progress-success" style="width: 100.00%"></div><div class="progress-fail" style="width: 0.00%"></div></div>
@@ -729,8 +729,15 @@ $(7&lt;=5+2)
 <span class="bc-line-num">003</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 2</span> <span class="bc-info">; 5</span>
 <span class="bc-line-num">004</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 3</span> <span class="bc-info">; 2</span>
 <span class="bc-line-num">005</span> <span class="bc-opcode">OPP_ADD         </span> <span class="bc-arg">0 0</span> <span class="bc-info">; 5+2</span>
-<span class="bc-line-num">006</span> <span class="bc-opcode">OPP_LTE         </span> <span class="bc-arg">0 0</span> <span class="bc-info">; 7&lt;=5+2</span>
-<span class="bc-line-num">007</span> <span class="bc-opcode">END             </span> <span class="bc-arg">0 0</span></code></pre>
+<span class="bc-line-num">006</span> <span class="bc-opcode">OPP_LT          </span> <span class="bc-arg">0 0</span> <span class="bc-info">; 7&lt;=5+2</span>
+<span class="bc-line-num">007</span> <span class="bc-opcode">JUMP_IF_PEEK    </span> <span class="bc-arg">0 14</span>
+<span class="bc-line-num">008</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 1</span> <span class="bc-info">; 7</span>
+<span class="bc-line-num">009</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 2</span> <span class="bc-info">; 5</span>
+<span class="bc-line-num">010</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 3</span> <span class="bc-info">; 2</span>
+<span class="bc-line-num">011</span> <span class="bc-opcode">OPP_ADD         </span> <span class="bc-arg">0 0</span> <span class="bc-info">; 5+2</span>
+<span class="bc-line-num">012</span> <span class="bc-opcode">OPP_EQ          </span> <span class="bc-arg">0 0</span> <span class="bc-info">; 7&lt;=5+2</span>
+<span class="bc-line-num">013</span> <span class="bc-opcode">OPP_OR          </span> <span class="bc-arg">0 0</span> <span class="bc-info">; 7&lt;=5+2</span>
+<span class="bc-line-num">014</span> <span class="bc-opcode">END             </span> <span class="bc-arg">0 0</span></code></pre>
 </div>
 </div>
 <h4>Output</h4>
@@ -1025,8 +1032,15 @@ $(7&gt;=5+2)
 <span class="bc-line-num">003</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 2</span> <span class="bc-info">; 5</span>
 <span class="bc-line-num">004</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 3</span> <span class="bc-info">; 2</span>
 <span class="bc-line-num">005</span> <span class="bc-opcode">OPP_ADD         </span> <span class="bc-arg">0 0</span> <span class="bc-info">; 5+2</span>
-<span class="bc-line-num">006</span> <span class="bc-opcode">OPP_GTE         </span> <span class="bc-arg">0 0</span> <span class="bc-info">; 7&gt;=5+2</span>
-<span class="bc-line-num">007</span> <span class="bc-opcode">END             </span> <span class="bc-arg">0 0</span></code></pre>
+<span class="bc-line-num">006</span> <span class="bc-opcode">OPP_GT          </span> <span class="bc-arg">0 0</span> <span class="bc-info">; 7&gt;=5+2</span>
+<span class="bc-line-num">007</span> <span class="bc-opcode">JUMP_IF_PEEK    </span> <span class="bc-arg">0 14</span>
+<span class="bc-line-num">008</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 1</span> <span class="bc-info">; 7</span>
+<span class="bc-line-num">009</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 2</span> <span class="bc-info">; 5</span>
+<span class="bc-line-num">010</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 3</span> <span class="bc-info">; 2</span>
+<span class="bc-line-num">011</span> <span class="bc-opcode">OPP_ADD         </span> <span class="bc-arg">0 0</span> <span class="bc-info">; 5+2</span>
+<span class="bc-line-num">012</span> <span class="bc-opcode">OPP_EQ          </span> <span class="bc-arg">0 0</span> <span class="bc-info">; 7&gt;=5+2</span>
+<span class="bc-line-num">013</span> <span class="bc-opcode">OPP_OR          </span> <span class="bc-arg">0 0</span> <span class="bc-info">; 7&gt;=5+2</span>
+<span class="bc-line-num">014</span> <span class="bc-opcode">END             </span> <span class="bc-arg">0 0</span></code></pre>
 </div>
 </div>
 <h4>Output</h4>
@@ -4687,7 +4701,7 @@ mark
 </code></pre>
 </div>
 </details>
-<h2>macroErrors: <span style="font-weight: normal;">8 passed out of 8 tests</span></h2>
+<h2>macroErrors: <span style="font-weight: normal;">9 passed out of 9 tests</span></h2>
 <div class="progress-bar"><div class="progress-success" style="width: 100.00%"></div><div class="progress-fail" style="width: 0.00%"></div></div>
 <details>
 <summary>
@@ -4943,6 +4957,88 @@ Traceback (most recent call first):
 </details>
 <details>
 <summary>
+<span class="status-icon status-pass">✓</span> stack overflow
+</summary>
+<div class="test-content">
+<div class="code-grid">
+<div>
+<h4>Code</h4>
+<pre><code class="language-plume">
+let static quill
+let static mark
+
+set quill = macro()
+  $mark()
+end
+
+set mark = macro()
+  $quill()
+end
+
+$mark()
+
+</code></pre>
+</div>
+<div>
+<h4>Bytecode</h4>
+<div class="tab-container">
+<div class="tab-headers">
+<button class="tab-link active" onclick="openBytecodeTab(event, 'bc_tabs_30_content_1')">???</button>
+<button class="tab-link" onclick="openBytecodeTab(event, 'bc_tabs_30_content_2')">???</button>
+<button class="tab-link" onclick="openBytecodeTab(event, 'bc_tabs_30_content_3')">main</button>
+</div>
+<div id="bc_tabs_30_content_1" class="tab-content" style="display: block;">
+<pre><code class="language-bytecode"><span class="bc-line-num">001</span> <span class="bc-opcode">BEGIN_ACC       </span> <span class="bc-arg">0 0</span>
+<span class="bc-line-num">002</span> <span class="bc-opcode">TABLE_NEW       </span> <span class="bc-arg">0 0</span>
+<span class="bc-line-num">003</span> <span class="bc-opcode">LOAD_STATIC     </span> <span class="bc-arg">0 18</span> <span class="bc-info">; quill</span>
+<span class="bc-line-num">004</span> <span class="bc-opcode">ACC_CALL        </span> <span class="bc-arg">0 0</span> <span class="bc-info">; quill()</span>
+<span class="bc-line-num">005</span> <span class="bc-opcode">END             </span> <span class="bc-arg">0 0</span></code></pre>
+</div>
+<div id="bc_tabs_30_content_2" class="tab-content" style="display: none;">
+<pre><code class="language-bytecode"><span class="bc-line-num">001</span> <span class="bc-opcode">BEGIN_ACC       </span> <span class="bc-arg">0 0</span>
+<span class="bc-line-num">002</span> <span class="bc-opcode">TABLE_NEW       </span> <span class="bc-arg">0 0</span>
+<span class="bc-line-num">003</span> <span class="bc-opcode">LOAD_STATIC     </span> <span class="bc-arg">0 19</span> <span class="bc-info">; mark</span>
+<span class="bc-line-num">004</span> <span class="bc-opcode">ACC_CALL        </span> <span class="bc-arg">0 0</span> <span class="bc-info">; mark()</span>
+<span class="bc-line-num">005</span> <span class="bc-opcode">END             </span> <span class="bc-arg">0 0</span></code></pre>
+</div>
+<div id="bc_tabs_30_content_3" class="tab-content" style="display: none;">
+<pre><code class="language-bytecode"><span class="bc-line-num">001</span> <span class="bc-opcode">ENTER_SCOPE     </span> <span class="bc-arg">0 2</span> <span class="bc-info">; l</span>
+<span class="bc-line-num">002</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 1</span>
+<span class="bc-line-num">003</span> <span class="bc-opcode">STORE_STATIC    </span> <span class="bc-arg">0 18</span> <span class="bc-info">; quill</span>
+<span class="bc-line-num">004</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 2</span>
+<span class="bc-line-num">005</span> <span class="bc-opcode">STORE_STATIC    </span> <span class="bc-arg">0 19</span> <span class="bc-info">; mark</span>
+<span class="bc-line-num">006</span> <span class="bc-opcode">BEGIN_ACC       </span> <span class="bc-arg">0 0</span>
+<span class="bc-line-num">007</span> <span class="bc-opcode">TABLE_NEW       </span> <span class="bc-arg">0 0</span>
+<span class="bc-line-num">008</span> <span class="bc-opcode">LOAD_STATIC     </span> <span class="bc-arg">0 19</span> <span class="bc-info">; mark</span>
+<span class="bc-line-num">009</span> <span class="bc-opcode">ACC_CALL        </span> <span class="bc-arg">0 0</span> <span class="bc-info">; mark()</span>
+<span class="bc-line-num">010</span> <span class="bc-opcode">END             </span> <span class="bc-arg">0 0</span></code></pre>
+</div>
+</div>
+</div>
+</div>
+<h4>Error</h4>
+<pre><code>
+Runtime error: stack overflow
+
+Traceback (most recent call first):
+  File &#39;stack overflow&#39;, line 5: $mark()
+                                  ^^^^^^
+  These lines are repeated 498 times:
+  -------------
+  File &#39;stack overflow&#39;, line 5: $mark()
+                                  ^^^^^^
+  File &#39;stack overflow&#39;, line 9: $quill()
+                                  ^^^^^^^
+  -------------
+  File &#39;stack overflow&#39;, line 9: $quill()
+                                  ^^^^^^^
+  File &#39;stack overflow&#39;, line 12: $mark()
+                                   ^^^^^^
+</code></pre>
+</div>
+</details>
+<details>
+<summary>
 <span class="status-icon status-pass">✓</span> to many macro args
 </summary>
 <div class="test-content">
@@ -4960,14 +5056,14 @@ $Wings(paint, write, sing, dance)
 <h4>Bytecode</h4>
 <div class="tab-container">
 <div class="tab-headers">
-<button class="tab-link active" onclick="openBytecodeTab(event, 'bc_tabs_30_content_1')">Wings</button>
-<button class="tab-link" onclick="openBytecodeTab(event, 'bc_tabs_30_content_2')">main</button>
+<button class="tab-link active" onclick="openBytecodeTab(event, 'bc_tabs_31_content_1')">Wings</button>
+<button class="tab-link" onclick="openBytecodeTab(event, 'bc_tabs_31_content_2')">main</button>
 </div>
-<div id="bc_tabs_30_content_1" class="tab-content" style="display: block;">
+<div id="bc_tabs_31_content_1" class="tab-content" style="display: block;">
 <pre><code class="language-bytecode"><span class="bc-line-num">001</span> <span class="bc-opcode">LOAD_EMPTY      </span> <span class="bc-arg">0 0</span>
 <span class="bc-line-num">002</span> <span class="bc-opcode">END             </span> <span class="bc-arg">0 0</span></code></pre>
 </div>
-<div id="bc_tabs_30_content_2" class="tab-content" style="display: none;">
+<div id="bc_tabs_31_content_2" class="tab-content" style="display: none;">
 <pre><code class="language-bytecode"><span class="bc-line-num">001</span> <span class="bc-opcode">ENTER_SCOPE     </span> <span class="bc-arg">0 0</span> <span class="bc-info">; m</span>
 <span class="bc-line-num">002</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 1</span> <span class="bc-info">; Wings</span>
 <span class="bc-line-num">003</span> <span class="bc-opcode">STORE_STATIC    </span> <span class="bc-arg">0 18</span> <span class="bc-info">; Wings</span>
@@ -5013,10 +5109,10 @@ $Wings(wing: red)
 <h4>Bytecode</h4>
 <div class="tab-container">
 <div class="tab-headers">
-<button class="tab-link active" onclick="openBytecodeTab(event, 'bc_tabs_31_content_1')">Wings</button>
-<button class="tab-link" onclick="openBytecodeTab(event, 'bc_tabs_31_content_2')">main</button>
+<button class="tab-link active" onclick="openBytecodeTab(event, 'bc_tabs_32_content_1')">Wings</button>
+<button class="tab-link" onclick="openBytecodeTab(event, 'bc_tabs_32_content_2')">main</button>
 </div>
-<div id="bc_tabs_31_content_1" class="tab-content" style="display: block;">
+<div id="bc_tabs_32_content_1" class="tab-content" style="display: block;">
 <pre><code class="language-bytecode"><span class="bc-line-num">001</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 1</span>
 <span class="bc-line-num">002</span> <span class="bc-opcode">JUMP_IF_NOT_EMPTY</span> <span class="bc-arg">0 5</span>
 <span class="bc-line-num">003</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 2</span> <span class="bc-info">; quill</span>
@@ -5024,7 +5120,7 @@ $Wings(wing: red)
 <span class="bc-line-num">005</span> <span class="bc-opcode">LOAD_EMPTY      </span> <span class="bc-arg">0 0</span>
 <span class="bc-line-num">006</span> <span class="bc-opcode">END             </span> <span class="bc-arg">0 0</span></code></pre>
 </div>
-<div id="bc_tabs_31_content_2" class="tab-content" style="display: none;">
+<div id="bc_tabs_32_content_2" class="tab-content" style="display: none;">
 <pre><code class="language-bytecode"><span class="bc-line-num">001</span> <span class="bc-opcode">ENTER_SCOPE     </span> <span class="bc-arg">0 0</span> <span class="bc-info">; m</span>
 <span class="bc-line-num">002</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 1</span> <span class="bc-info">; Wings</span>
 <span class="bc-line-num">003</span> <span class="bc-opcode">STORE_STATIC    </span> <span class="bc-arg">0 18</span> <span class="bc-info">; Wings</span>
@@ -5069,10 +5165,10 @@ $Wings(nib: blue, wing: red)
 <h4>Bytecode</h4>
 <div class="tab-container">
 <div class="tab-headers">
-<button class="tab-link active" onclick="openBytecodeTab(event, 'bc_tabs_32_content_1')">Wings</button>
-<button class="tab-link" onclick="openBytecodeTab(event, 'bc_tabs_32_content_2')">main</button>
+<button class="tab-link active" onclick="openBytecodeTab(event, 'bc_tabs_33_content_1')">Wings</button>
+<button class="tab-link" onclick="openBytecodeTab(event, 'bc_tabs_33_content_2')">main</button>
 </div>
-<div id="bc_tabs_32_content_1" class="tab-content" style="display: block;">
+<div id="bc_tabs_33_content_1" class="tab-content" style="display: block;">
 <pre><code class="language-bytecode"><span class="bc-line-num">001</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 1</span>
 <span class="bc-line-num">002</span> <span class="bc-opcode">JUMP_IF_NOT_EMPTY</span> <span class="bc-arg">0 5</span>
 <span class="bc-line-num">003</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 2</span> <span class="bc-info">; quill</span>
@@ -5080,7 +5176,7 @@ $Wings(nib: blue, wing: red)
 <span class="bc-line-num">005</span> <span class="bc-opcode">LOAD_EMPTY      </span> <span class="bc-arg">0 0</span>
 <span class="bc-line-num">006</span> <span class="bc-opcode">END             </span> <span class="bc-arg">0 0</span></code></pre>
 </div>
-<div id="bc_tabs_32_content_2" class="tab-content" style="display: none;">
+<div id="bc_tabs_33_content_2" class="tab-content" style="display: none;">
 <pre><code class="language-bytecode"><span class="bc-line-num">001</span> <span class="bc-opcode">ENTER_SCOPE     </span> <span class="bc-arg">0 0</span> <span class="bc-info">; m</span>
 <span class="bc-line-num">002</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 1</span> <span class="bc-info">; Wings</span>
 <span class="bc-line-num">003</span> <span class="bc-opcode">STORE_STATIC    </span> <span class="bc-arg">0 18</span> <span class="bc-info">; Wings</span>
@@ -5109,6 +5205,1631 @@ Traceback (most recent call first):
 </code></pre>
 </div>
 </details>
+<h2>meta: <span style="font-weight: normal;">22 passed out of 22 tests</span></h2>
+<div class="progress-bar"><div class="progress-success" style="width: 100.00%"></div><div class="progress-fail" style="width: 0.00%"></div></div>
+<details>
+<summary>
+<span class="status-icon status-pass">✓</span> add fallback 1
+</summary>
+<div class="test-content">
+<div class="code-grid">
+<div>
+<h4>Code</h4>
+<pre><code class="language-plume">
+let t = @table
+  meta add: macro(x, y)
+    $(y+1)
+  end
+end
+$(t+1)
+
+</code></pre>
+</div>
+<div>
+<h4>Bytecode</h4>
+<div class="tab-container">
+<div class="tab-headers">
+<button class="tab-link active" onclick="openBytecodeTab(event, 'bc_tabs_34_content_1')">???</button>
+<button class="tab-link" onclick="openBytecodeTab(event, 'bc_tabs_34_content_2')">main</button>
+</div>
+<div id="bc_tabs_34_content_1" class="tab-content" style="display: block;">
+<pre><code class="language-bytecode"><span class="bc-line-num">001</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 2</span> <span class="bc-info">; y</span>
+<span class="bc-line-num">002</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 3</span> <span class="bc-info">; 1</span>
+<span class="bc-line-num">003</span> <span class="bc-opcode">OPP_ADD         </span> <span class="bc-arg">0 0</span> <span class="bc-info">; y+1</span>
+<span class="bc-line-num">004</span> <span class="bc-opcode">END             </span> <span class="bc-arg">0 0</span></code></pre>
+</div>
+<div id="bc_tabs_34_content_2" class="tab-content" style="display: none;">
+<pre><code class="language-bytecode"><span class="bc-line-num">001</span> <span class="bc-opcode">ENTER_SCOPE     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; l</span>
+<span class="bc-line-num">002</span> <span class="bc-opcode">BEGIN_ACC       </span> <span class="bc-arg">0 0</span>
+<span class="bc-line-num">003</span> <span class="bc-opcode">TABLE_NEW       </span> <span class="bc-arg">0 0</span>
+<span class="bc-line-num">004</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 2</span>
+<span class="bc-line-num">005</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 1</span> <span class="bc-info">; meta add: macro(x, y)[...]</span>
+<span class="bc-line-num">006</span> <span class="bc-opcode">TABLE_SET_ACC_META</span> <span class="bc-arg">0 0</span> <span class="bc-info">; meta add: macro(x, y)[...]</span>
+<span class="bc-line-num">007</span> <span class="bc-opcode">LOAD_STATIC     </span> <span class="bc-arg">0 14</span> <span class="bc-info">; table</span>
+<span class="bc-line-num">008</span> <span class="bc-opcode">ACC_CALL        </span> <span class="bc-arg">0 0</span> <span class="bc-info">; @table[...]</span>
+<span class="bc-line-num">009</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; t</span>
+<span class="bc-line-num">010</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 1</span> <span class="bc-info">; t</span>
+<span class="bc-line-num">011</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 3</span> <span class="bc-info">; 1</span>
+<span class="bc-line-num">012</span> <span class="bc-opcode">OPP_ADD         </span> <span class="bc-arg">0 0</span> <span class="bc-info">; t+1</span>
+<span class="bc-line-num">013</span> <span class="bc-opcode">END             </span> <span class="bc-arg">0 0</span></code></pre>
+</div>
+</div>
+</div>
+</div>
+<h4>Output</h4>
+<pre><code>
+2
+</code></pre>
+</div>
+</details>
+<details>
+<summary>
+<span class="status-icon status-pass">✓</span> add fallback 2
+</summary>
+<div class="test-content">
+<div class="code-grid">
+<div>
+<h4>Code</h4>
+<pre><code class="language-plume">
+let t = @table
+  meta add: macro(x, y)
+    $(x+1)
+  end
+end
+$(1+t)
+
+</code></pre>
+</div>
+<div>
+<h4>Bytecode</h4>
+<div class="tab-container">
+<div class="tab-headers">
+<button class="tab-link active" onclick="openBytecodeTab(event, 'bc_tabs_35_content_1')">???</button>
+<button class="tab-link" onclick="openBytecodeTab(event, 'bc_tabs_35_content_2')">main</button>
+</div>
+<div id="bc_tabs_35_content_1" class="tab-content" style="display: block;">
+<pre><code class="language-bytecode"><span class="bc-line-num">001</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 1</span> <span class="bc-info">; x</span>
+<span class="bc-line-num">002</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 3</span> <span class="bc-info">; 1</span>
+<span class="bc-line-num">003</span> <span class="bc-opcode">OPP_ADD         </span> <span class="bc-arg">0 0</span> <span class="bc-info">; x+1</span>
+<span class="bc-line-num">004</span> <span class="bc-opcode">END             </span> <span class="bc-arg">0 0</span></code></pre>
+</div>
+<div id="bc_tabs_35_content_2" class="tab-content" style="display: none;">
+<pre><code class="language-bytecode"><span class="bc-line-num">001</span> <span class="bc-opcode">ENTER_SCOPE     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; l</span>
+<span class="bc-line-num">002</span> <span class="bc-opcode">BEGIN_ACC       </span> <span class="bc-arg">0 0</span>
+<span class="bc-line-num">003</span> <span class="bc-opcode">TABLE_NEW       </span> <span class="bc-arg">0 0</span>
+<span class="bc-line-num">004</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 2</span>
+<span class="bc-line-num">005</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 1</span> <span class="bc-info">; meta add: macro(x, y)[...]</span>
+<span class="bc-line-num">006</span> <span class="bc-opcode">TABLE_SET_ACC_META</span> <span class="bc-arg">0 0</span> <span class="bc-info">; meta add: macro(x, y)[...]</span>
+<span class="bc-line-num">007</span> <span class="bc-opcode">LOAD_STATIC     </span> <span class="bc-arg">0 14</span> <span class="bc-info">; table</span>
+<span class="bc-line-num">008</span> <span class="bc-opcode">ACC_CALL        </span> <span class="bc-arg">0 0</span> <span class="bc-info">; @table[...]</span>
+<span class="bc-line-num">009</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; t</span>
+<span class="bc-line-num">010</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 3</span> <span class="bc-info">; 1</span>
+<span class="bc-line-num">011</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 1</span> <span class="bc-info">; t</span>
+<span class="bc-line-num">012</span> <span class="bc-opcode">OPP_ADD         </span> <span class="bc-arg">0 0</span> <span class="bc-info">; 1+t</span>
+<span class="bc-line-num">013</span> <span class="bc-opcode">END             </span> <span class="bc-arg">0 0</span></code></pre>
+</div>
+</div>
+</div>
+</div>
+<h4>Output</h4>
+<pre><code>
+2
+</code></pre>
+</div>
+</details>
+<details>
+<summary>
+<span class="status-icon status-pass">✓</span> addl
+</summary>
+<div class="test-content">
+<div class="code-grid">
+<div>
+<h4>Code</h4>
+<pre><code class="language-plume">
+let t = @table
+  meta addl: macro(x)
+    $(x+1)
+  end
+end
+$(1+t)
+
+</code></pre>
+</div>
+<div>
+<h4>Bytecode</h4>
+<div class="tab-container">
+<div class="tab-headers">
+<button class="tab-link active" onclick="openBytecodeTab(event, 'bc_tabs_36_content_1')">???</button>
+<button class="tab-link" onclick="openBytecodeTab(event, 'bc_tabs_36_content_2')">main</button>
+</div>
+<div id="bc_tabs_36_content_1" class="tab-content" style="display: block;">
+<pre><code class="language-bytecode"><span class="bc-line-num">001</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 1</span> <span class="bc-info">; x</span>
+<span class="bc-line-num">002</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 3</span> <span class="bc-info">; 1</span>
+<span class="bc-line-num">003</span> <span class="bc-opcode">OPP_ADD         </span> <span class="bc-arg">0 0</span> <span class="bc-info">; x+1</span>
+<span class="bc-line-num">004</span> <span class="bc-opcode">END             </span> <span class="bc-arg">0 0</span></code></pre>
+</div>
+<div id="bc_tabs_36_content_2" class="tab-content" style="display: none;">
+<pre><code class="language-bytecode"><span class="bc-line-num">001</span> <span class="bc-opcode">ENTER_SCOPE     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; l</span>
+<span class="bc-line-num">002</span> <span class="bc-opcode">BEGIN_ACC       </span> <span class="bc-arg">0 0</span>
+<span class="bc-line-num">003</span> <span class="bc-opcode">TABLE_NEW       </span> <span class="bc-arg">0 0</span>
+<span class="bc-line-num">004</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 2</span>
+<span class="bc-line-num">005</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 1</span> <span class="bc-info">; meta addl: macro(x)[...]</span>
+<span class="bc-line-num">006</span> <span class="bc-opcode">TABLE_SET_ACC_META</span> <span class="bc-arg">0 0</span> <span class="bc-info">; meta addl: macro(x)[...]</span>
+<span class="bc-line-num">007</span> <span class="bc-opcode">LOAD_STATIC     </span> <span class="bc-arg">0 14</span> <span class="bc-info">; table</span>
+<span class="bc-line-num">008</span> <span class="bc-opcode">ACC_CALL        </span> <span class="bc-arg">0 0</span> <span class="bc-info">; @table[...]</span>
+<span class="bc-line-num">009</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; t</span>
+<span class="bc-line-num">010</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 3</span> <span class="bc-info">; 1</span>
+<span class="bc-line-num">011</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 1</span> <span class="bc-info">; t</span>
+<span class="bc-line-num">012</span> <span class="bc-opcode">OPP_ADD         </span> <span class="bc-arg">0 0</span> <span class="bc-info">; 1+t</span>
+<span class="bc-line-num">013</span> <span class="bc-opcode">END             </span> <span class="bc-arg">0 0</span></code></pre>
+</div>
+</div>
+</div>
+</div>
+<h4>Output</h4>
+<pre><code>
+2
+</code></pre>
+</div>
+</details>
+<details>
+<summary>
+<span class="status-icon status-pass">✓</span> addr
+</summary>
+<div class="test-content">
+<div class="code-grid">
+<div>
+<h4>Code</h4>
+<pre><code class="language-plume">
+let t = @table
+  meta addr: macro(x)
+    $(x+1)
+  end
+end
+$(t+1)
+
+</code></pre>
+</div>
+<div>
+<h4>Bytecode</h4>
+<div class="tab-container">
+<div class="tab-headers">
+<button class="tab-link active" onclick="openBytecodeTab(event, 'bc_tabs_37_content_1')">???</button>
+<button class="tab-link" onclick="openBytecodeTab(event, 'bc_tabs_37_content_2')">main</button>
+</div>
+<div id="bc_tabs_37_content_1" class="tab-content" style="display: block;">
+<pre><code class="language-bytecode"><span class="bc-line-num">001</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 1</span> <span class="bc-info">; x</span>
+<span class="bc-line-num">002</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 3</span> <span class="bc-info">; 1</span>
+<span class="bc-line-num">003</span> <span class="bc-opcode">OPP_ADD         </span> <span class="bc-arg">0 0</span> <span class="bc-info">; x+1</span>
+<span class="bc-line-num">004</span> <span class="bc-opcode">END             </span> <span class="bc-arg">0 0</span></code></pre>
+</div>
+<div id="bc_tabs_37_content_2" class="tab-content" style="display: none;">
+<pre><code class="language-bytecode"><span class="bc-line-num">001</span> <span class="bc-opcode">ENTER_SCOPE     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; l</span>
+<span class="bc-line-num">002</span> <span class="bc-opcode">BEGIN_ACC       </span> <span class="bc-arg">0 0</span>
+<span class="bc-line-num">003</span> <span class="bc-opcode">TABLE_NEW       </span> <span class="bc-arg">0 0</span>
+<span class="bc-line-num">004</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 2</span>
+<span class="bc-line-num">005</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 1</span> <span class="bc-info">; meta addr: macro(x)[...]</span>
+<span class="bc-line-num">006</span> <span class="bc-opcode">TABLE_SET_ACC_META</span> <span class="bc-arg">0 0</span> <span class="bc-info">; meta addr: macro(x)[...]</span>
+<span class="bc-line-num">007</span> <span class="bc-opcode">LOAD_STATIC     </span> <span class="bc-arg">0 14</span> <span class="bc-info">; table</span>
+<span class="bc-line-num">008</span> <span class="bc-opcode">ACC_CALL        </span> <span class="bc-arg">0 0</span> <span class="bc-info">; @table[...]</span>
+<span class="bc-line-num">009</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; t</span>
+<span class="bc-line-num">010</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 1</span> <span class="bc-info">; t</span>
+<span class="bc-line-num">011</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 3</span> <span class="bc-info">; 1</span>
+<span class="bc-line-num">012</span> <span class="bc-opcode">OPP_ADD         </span> <span class="bc-arg">0 0</span> <span class="bc-info">; t+1</span>
+<span class="bc-line-num">013</span> <span class="bc-opcode">END             </span> <span class="bc-arg">0 0</span></code></pre>
+</div>
+</div>
+</div>
+</div>
+<h4>Output</h4>
+<pre><code>
+2
+</code></pre>
+</div>
+</details>
+<details>
+<summary>
+<span class="status-icon status-pass">✓</span> call
+</summary>
+<div class="test-content">
+<div class="code-grid">
+<div>
+<h4>Code</h4>
+<pre><code class="language-plume">
+let t = @table
+  meta call: macro()
+    I&#39;m a called table
+  end
+end
+
+$t()
+
+</code></pre>
+</div>
+<div>
+<h4>Bytecode</h4>
+<div class="tab-container">
+<div class="tab-headers">
+<button class="tab-link active" onclick="openBytecodeTab(event, 'bc_tabs_38_content_1')">???</button>
+<button class="tab-link" onclick="openBytecodeTab(event, 'bc_tabs_38_content_2')">main</button>
+</div>
+<div id="bc_tabs_38_content_1" class="tab-content" style="display: block;">
+<pre><code class="language-bytecode"><span class="bc-line-num">001</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 3</span> <span class="bc-info">; I&#39;m a called table</span>
+<span class="bc-line-num">002</span> <span class="bc-opcode">END             </span> <span class="bc-arg">0 0</span></code></pre>
+</div>
+<div id="bc_tabs_38_content_2" class="tab-content" style="display: none;">
+<pre><code class="language-bytecode"><span class="bc-line-num">001</span> <span class="bc-opcode">ENTER_SCOPE     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; l</span>
+<span class="bc-line-num">002</span> <span class="bc-opcode">BEGIN_ACC       </span> <span class="bc-arg">0 0</span>
+<span class="bc-line-num">003</span> <span class="bc-opcode">TABLE_NEW       </span> <span class="bc-arg">0 0</span>
+<span class="bc-line-num">004</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 2</span>
+<span class="bc-line-num">005</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 1</span> <span class="bc-info">; meta call: macro()[...]</span>
+<span class="bc-line-num">006</span> <span class="bc-opcode">TABLE_SET_ACC_META</span> <span class="bc-arg">0 0</span> <span class="bc-info">; meta call: macro()[...]</span>
+<span class="bc-line-num">007</span> <span class="bc-opcode">LOAD_STATIC     </span> <span class="bc-arg">0 14</span> <span class="bc-info">; table</span>
+<span class="bc-line-num">008</span> <span class="bc-opcode">ACC_CALL        </span> <span class="bc-arg">0 0</span> <span class="bc-info">; @table[...]</span>
+<span class="bc-line-num">009</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; t</span>
+<span class="bc-line-num">010</span> <span class="bc-opcode">BEGIN_ACC       </span> <span class="bc-arg">0 0</span>
+<span class="bc-line-num">011</span> <span class="bc-opcode">TABLE_NEW       </span> <span class="bc-arg">0 0</span>
+<span class="bc-line-num">012</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 1</span> <span class="bc-info">; t</span>
+<span class="bc-line-num">013</span> <span class="bc-opcode">ACC_CALL        </span> <span class="bc-arg">0 0</span> <span class="bc-info">; t()</span>
+<span class="bc-line-num">014</span> <span class="bc-opcode">END             </span> <span class="bc-arg">0 0</span></code></pre>
+</div>
+</div>
+</div>
+</div>
+<h4>Output</h4>
+<pre><code>
+I&#39;m a called table
+</code></pre>
+</div>
+</details>
+<details>
+<summary>
+<span class="status-icon status-pass">✓</span> call with self
+</summary>
+<div class="test-content">
+<div class="code-grid">
+<div>
+<h4>Code</h4>
+<pre><code class="language-plume">
+let t = @table
+  value: 5
+  meta call: macro()
+    My value is $self.value
+  end
+end
+
+$t()
+
+</code></pre>
+</div>
+<div>
+<h4>Bytecode</h4>
+<div class="tab-container">
+<div class="tab-headers">
+<button class="tab-link active" onclick="openBytecodeTab(event, 'bc_tabs_39_content_1')">???</button>
+<button class="tab-link" onclick="openBytecodeTab(event, 'bc_tabs_39_content_2')">main</button>
+</div>
+<div id="bc_tabs_39_content_1" class="tab-content" style="display: block;">
+<pre><code class="language-bytecode"><span class="bc-line-num">001</span> <span class="bc-opcode">BEGIN_ACC       </span> <span class="bc-arg">0 0</span> <span class="bc-info">; [...]</span>
+<span class="bc-line-num">002</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 5</span> <span class="bc-info">; My value is </span>
+<span class="bc-line-num">003</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 1</span> <span class="bc-info">; value</span>
+<span class="bc-line-num">004</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 1</span> <span class="bc-info">; self</span>
+<span class="bc-line-num">005</span> <span class="bc-opcode">TABLE_INDEX     </span> <span class="bc-arg">0 0</span> <span class="bc-info">; .value</span>
+<span class="bc-line-num">006</span> <span class="bc-opcode">ACC_CHECK_TEXT  </span> <span class="bc-arg">0 0</span> <span class="bc-info">; self.value</span>
+<span class="bc-line-num">007</span> <span class="bc-opcode">ACC_TEXT        </span> <span class="bc-arg">0 0</span>
+<span class="bc-line-num">008</span> <span class="bc-opcode">END             </span> <span class="bc-arg">0 0</span></code></pre>
+</div>
+<div id="bc_tabs_39_content_2" class="tab-content" style="display: none;">
+<pre><code class="language-bytecode"><span class="bc-line-num">001</span> <span class="bc-opcode">ENTER_SCOPE     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; l</span>
+<span class="bc-line-num">002</span> <span class="bc-opcode">BEGIN_ACC       </span> <span class="bc-arg">0 0</span>
+<span class="bc-line-num">003</span> <span class="bc-opcode">TABLE_NEW       </span> <span class="bc-arg">0 0</span>
+<span class="bc-line-num">004</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 2</span> <span class="bc-info">; 5</span>
+<span class="bc-line-num">005</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 1</span> <span class="bc-info">; value: 5</span>
+<span class="bc-line-num">006</span> <span class="bc-opcode">TABLE_SET_ACC   </span> <span class="bc-arg">0 0</span> <span class="bc-info">; value: 5</span>
+<span class="bc-line-num">007</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 4</span>
+<span class="bc-line-num">008</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 3</span> <span class="bc-info">; meta call: macro()[...]</span>
+<span class="bc-line-num">009</span> <span class="bc-opcode">TABLE_SET_ACC_META</span> <span class="bc-arg">0 0</span> <span class="bc-info">; meta call: macro()[...]</span>
+<span class="bc-line-num">010</span> <span class="bc-opcode">LOAD_STATIC     </span> <span class="bc-arg">0 14</span> <span class="bc-info">; table</span>
+<span class="bc-line-num">011</span> <span class="bc-opcode">ACC_CALL        </span> <span class="bc-arg">0 0</span> <span class="bc-info">; @table[...]</span>
+<span class="bc-line-num">012</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; t</span>
+<span class="bc-line-num">013</span> <span class="bc-opcode">BEGIN_ACC       </span> <span class="bc-arg">0 0</span>
+<span class="bc-line-num">014</span> <span class="bc-opcode">TABLE_NEW       </span> <span class="bc-arg">0 0</span>
+<span class="bc-line-num">015</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 1</span> <span class="bc-info">; t</span>
+<span class="bc-line-num">016</span> <span class="bc-opcode">ACC_CALL        </span> <span class="bc-arg">0 0</span> <span class="bc-info">; t()</span>
+<span class="bc-line-num">017</span> <span class="bc-opcode">END             </span> <span class="bc-arg">0 0</span></code></pre>
+</div>
+</div>
+</div>
+</div>
+<h4>Output</h4>
+<pre><code>
+My value is 5
+</code></pre>
+</div>
+</details>
+<details>
+<summary>
+<span class="status-icon status-pass">✓</span> div
+</summary>
+<div class="test-content">
+<div class="code-grid">
+<div>
+<h4>Code</h4>
+<pre><code class="language-plume">
+let t = @table
+  meta divr: macro(x)
+    $(x+1)
+  end
+end
+$(t/2)
+
+</code></pre>
+</div>
+<div>
+<h4>Bytecode</h4>
+<div class="tab-container">
+<div class="tab-headers">
+<button class="tab-link active" onclick="openBytecodeTab(event, 'bc_tabs_40_content_1')">???</button>
+<button class="tab-link" onclick="openBytecodeTab(event, 'bc_tabs_40_content_2')">main</button>
+</div>
+<div id="bc_tabs_40_content_1" class="tab-content" style="display: block;">
+<pre><code class="language-bytecode"><span class="bc-line-num">001</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 1</span> <span class="bc-info">; x</span>
+<span class="bc-line-num">002</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 3</span> <span class="bc-info">; 1</span>
+<span class="bc-line-num">003</span> <span class="bc-opcode">OPP_ADD         </span> <span class="bc-arg">0 0</span> <span class="bc-info">; x+1</span>
+<span class="bc-line-num">004</span> <span class="bc-opcode">END             </span> <span class="bc-arg">0 0</span></code></pre>
+</div>
+<div id="bc_tabs_40_content_2" class="tab-content" style="display: none;">
+<pre><code class="language-bytecode"><span class="bc-line-num">001</span> <span class="bc-opcode">ENTER_SCOPE     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; l</span>
+<span class="bc-line-num">002</span> <span class="bc-opcode">BEGIN_ACC       </span> <span class="bc-arg">0 0</span>
+<span class="bc-line-num">003</span> <span class="bc-opcode">TABLE_NEW       </span> <span class="bc-arg">0 0</span>
+<span class="bc-line-num">004</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 2</span>
+<span class="bc-line-num">005</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 1</span> <span class="bc-info">; meta divr: macro(x)[...]</span>
+<span class="bc-line-num">006</span> <span class="bc-opcode">TABLE_SET_ACC_META</span> <span class="bc-arg">0 0</span> <span class="bc-info">; meta divr: macro(x)[...]</span>
+<span class="bc-line-num">007</span> <span class="bc-opcode">LOAD_STATIC     </span> <span class="bc-arg">0 14</span> <span class="bc-info">; table</span>
+<span class="bc-line-num">008</span> <span class="bc-opcode">ACC_CALL        </span> <span class="bc-arg">0 0</span> <span class="bc-info">; @table[...]</span>
+<span class="bc-line-num">009</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; t</span>
+<span class="bc-line-num">010</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 1</span> <span class="bc-info">; t</span>
+<span class="bc-line-num">011</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 4</span> <span class="bc-info">; 2</span>
+<span class="bc-line-num">012</span> <span class="bc-opcode">OPP_DIV         </span> <span class="bc-arg">0 0</span> <span class="bc-info">; t/2</span>
+<span class="bc-line-num">013</span> <span class="bc-opcode">END             </span> <span class="bc-arg">0 0</span></code></pre>
+</div>
+</div>
+</div>
+</div>
+<h4>Output</h4>
+<pre><code>
+3
+</code></pre>
+</div>
+</details>
+<details>
+<summary>
+<span class="status-icon status-pass">✓</span> eq
+</summary>
+<div class="test-content">
+<div class="code-grid">
+<div>
+<h4>Code</h4>
+<pre><code class="language-plume">
+let t = @table
+  meta eq: macro(x)
+    $true
+  end
+end
+
+$(t==6)
+
+</code></pre>
+</div>
+<div>
+<h4>Bytecode</h4>
+<div class="tab-container">
+<div class="tab-headers">
+<button class="tab-link active" onclick="openBytecodeTab(event, 'bc_tabs_41_content_1')">???</button>
+<button class="tab-link" onclick="openBytecodeTab(event, 'bc_tabs_41_content_2')">main</button>
+</div>
+<div id="bc_tabs_41_content_1" class="tab-content" style="display: block;">
+<pre><code class="language-bytecode"><span class="bc-line-num">001</span> <span class="bc-opcode">LOAD_TRUE       </span> <span class="bc-arg">0 0</span> <span class="bc-info">; true</span>
+<span class="bc-line-num">002</span> <span class="bc-opcode">END             </span> <span class="bc-arg">0 0</span></code></pre>
+</div>
+<div id="bc_tabs_41_content_2" class="tab-content" style="display: none;">
+<pre><code class="language-bytecode"><span class="bc-line-num">001</span> <span class="bc-opcode">ENTER_SCOPE     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; l</span>
+<span class="bc-line-num">002</span> <span class="bc-opcode">BEGIN_ACC       </span> <span class="bc-arg">0 0</span>
+<span class="bc-line-num">003</span> <span class="bc-opcode">TABLE_NEW       </span> <span class="bc-arg">0 0</span>
+<span class="bc-line-num">004</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 2</span>
+<span class="bc-line-num">005</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 1</span> <span class="bc-info">; meta eq: macro(x)[...]</span>
+<span class="bc-line-num">006</span> <span class="bc-opcode">TABLE_SET_ACC_META</span> <span class="bc-arg">0 0</span> <span class="bc-info">; meta eq: macro(x)[...]</span>
+<span class="bc-line-num">007</span> <span class="bc-opcode">LOAD_STATIC     </span> <span class="bc-arg">0 14</span> <span class="bc-info">; table</span>
+<span class="bc-line-num">008</span> <span class="bc-opcode">ACC_CALL        </span> <span class="bc-arg">0 0</span> <span class="bc-info">; @table[...]</span>
+<span class="bc-line-num">009</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; t</span>
+<span class="bc-line-num">010</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 1</span> <span class="bc-info">; t</span>
+<span class="bc-line-num">011</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 3</span> <span class="bc-info">; 6</span>
+<span class="bc-line-num">012</span> <span class="bc-opcode">OPP_EQ          </span> <span class="bc-arg">0 0</span> <span class="bc-info">; t==6</span>
+<span class="bc-line-num">013</span> <span class="bc-opcode">END             </span> <span class="bc-arg">0 0</span></code></pre>
+</div>
+</div>
+</div>
+</div>
+<h4>Output</h4>
+<pre><code>
+true
+</code></pre>
+</div>
+</details>
+<details>
+<summary>
+<span class="status-icon status-pass">✓</span> gt
+</summary>
+<div class="test-content">
+<div class="code-grid">
+<div>
+<h4>Code</h4>
+<pre><code class="language-plume">
+let t = @table
+  meta gt: macro(x)
+    $true
+  end
+end
+
+$(t&gt;6)
+
+</code></pre>
+</div>
+<div>
+<h4>Bytecode</h4>
+<div class="tab-container">
+<div class="tab-headers">
+<button class="tab-link active" onclick="openBytecodeTab(event, 'bc_tabs_42_content_1')">???</button>
+<button class="tab-link" onclick="openBytecodeTab(event, 'bc_tabs_42_content_2')">main</button>
+</div>
+<div id="bc_tabs_42_content_1" class="tab-content" style="display: block;">
+<pre><code class="language-bytecode"><span class="bc-line-num">001</span> <span class="bc-opcode">LOAD_TRUE       </span> <span class="bc-arg">0 0</span> <span class="bc-info">; true</span>
+<span class="bc-line-num">002</span> <span class="bc-opcode">END             </span> <span class="bc-arg">0 0</span></code></pre>
+</div>
+<div id="bc_tabs_42_content_2" class="tab-content" style="display: none;">
+<pre><code class="language-bytecode"><span class="bc-line-num">001</span> <span class="bc-opcode">ENTER_SCOPE     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; l</span>
+<span class="bc-line-num">002</span> <span class="bc-opcode">BEGIN_ACC       </span> <span class="bc-arg">0 0</span>
+<span class="bc-line-num">003</span> <span class="bc-opcode">TABLE_NEW       </span> <span class="bc-arg">0 0</span>
+<span class="bc-line-num">004</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 2</span>
+<span class="bc-line-num">005</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 1</span> <span class="bc-info">; meta gt: macro(x)[...]</span>
+<span class="bc-line-num">006</span> <span class="bc-opcode">TABLE_SET_ACC_META</span> <span class="bc-arg">0 0</span> <span class="bc-info">; meta gt: macro(x)[...]</span>
+<span class="bc-line-num">007</span> <span class="bc-opcode">LOAD_STATIC     </span> <span class="bc-arg">0 14</span> <span class="bc-info">; table</span>
+<span class="bc-line-num">008</span> <span class="bc-opcode">ACC_CALL        </span> <span class="bc-arg">0 0</span> <span class="bc-info">; @table[...]</span>
+<span class="bc-line-num">009</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; t</span>
+<span class="bc-line-num">010</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 1</span> <span class="bc-info">; t</span>
+<span class="bc-line-num">011</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 3</span> <span class="bc-info">; 6</span>
+<span class="bc-line-num">012</span> <span class="bc-opcode">OPP_GT          </span> <span class="bc-arg">0 0</span> <span class="bc-info">; t&gt;6</span>
+<span class="bc-line-num">013</span> <span class="bc-opcode">END             </span> <span class="bc-arg">0 0</span></code></pre>
+</div>
+</div>
+</div>
+</div>
+<h4>Output</h4>
+<pre><code>
+true
+</code></pre>
+</div>
+</details>
+<details>
+<summary>
+<span class="status-icon status-pass">✓</span> gt fallback 1
+</summary>
+<div class="test-content">
+<div class="code-grid">
+<div>
+<h4>Code</h4>
+<pre><code class="language-plume">
+let t = @table
+  meta gt: macro(x)
+    $true
+  end
+end
+
+$(t&lt;=6)
+
+</code></pre>
+</div>
+<div>
+<h4>Bytecode</h4>
+<div class="tab-container">
+<div class="tab-headers">
+<button class="tab-link active" onclick="openBytecodeTab(event, 'bc_tabs_43_content_1')">???</button>
+<button class="tab-link" onclick="openBytecodeTab(event, 'bc_tabs_43_content_2')">main</button>
+</div>
+<div id="bc_tabs_43_content_1" class="tab-content" style="display: block;">
+<pre><code class="language-bytecode"><span class="bc-line-num">001</span> <span class="bc-opcode">LOAD_TRUE       </span> <span class="bc-arg">0 0</span> <span class="bc-info">; true</span>
+<span class="bc-line-num">002</span> <span class="bc-opcode">END             </span> <span class="bc-arg">0 0</span></code></pre>
+</div>
+<div id="bc_tabs_43_content_2" class="tab-content" style="display: none;">
+<pre><code class="language-bytecode"><span class="bc-line-num">001</span> <span class="bc-opcode">ENTER_SCOPE     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; l</span>
+<span class="bc-line-num">002</span> <span class="bc-opcode">BEGIN_ACC       </span> <span class="bc-arg">0 0</span>
+<span class="bc-line-num">003</span> <span class="bc-opcode">TABLE_NEW       </span> <span class="bc-arg">0 0</span>
+<span class="bc-line-num">004</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 2</span>
+<span class="bc-line-num">005</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 1</span> <span class="bc-info">; meta gt: macro(x)[...]</span>
+<span class="bc-line-num">006</span> <span class="bc-opcode">TABLE_SET_ACC_META</span> <span class="bc-arg">0 0</span> <span class="bc-info">; meta gt: macro(x)[...]</span>
+<span class="bc-line-num">007</span> <span class="bc-opcode">LOAD_STATIC     </span> <span class="bc-arg">0 14</span> <span class="bc-info">; table</span>
+<span class="bc-line-num">008</span> <span class="bc-opcode">ACC_CALL        </span> <span class="bc-arg">0 0</span> <span class="bc-info">; @table[...]</span>
+<span class="bc-line-num">009</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; t</span>
+<span class="bc-line-num">010</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 1</span> <span class="bc-info">; t</span>
+<span class="bc-line-num">011</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 3</span> <span class="bc-info">; 6</span>
+<span class="bc-line-num">012</span> <span class="bc-opcode">OPP_LT          </span> <span class="bc-arg">0 0</span> <span class="bc-info">; t&lt;=6</span>
+<span class="bc-line-num">013</span> <span class="bc-opcode">JUMP_IF_PEEK    </span> <span class="bc-arg">0 18</span>
+<span class="bc-line-num">014</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 1</span> <span class="bc-info">; t</span>
+<span class="bc-line-num">015</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 3</span> <span class="bc-info">; 6</span>
+<span class="bc-line-num">016</span> <span class="bc-opcode">OPP_EQ          </span> <span class="bc-arg">0 0</span> <span class="bc-info">; t&lt;=6</span>
+<span class="bc-line-num">017</span> <span class="bc-opcode">OPP_OR          </span> <span class="bc-arg">0 0</span> <span class="bc-info">; t&lt;=6</span>
+<span class="bc-line-num">018</span> <span class="bc-opcode">END             </span> <span class="bc-arg">0 0</span></code></pre>
+</div>
+</div>
+</div>
+</div>
+<h4>Output</h4>
+<pre><code>
+false
+</code></pre>
+</div>
+</details>
+<details>
+<summary>
+<span class="status-icon status-pass">✓</span> gt fallback 2
+</summary>
+<div class="test-content">
+<div class="code-grid">
+<div>
+<h4>Code</h4>
+<pre><code class="language-plume">
+let t = @table
+  meta gt: macro(x)
+    $true
+  end
+end
+
+$(6&lt;t)
+
+</code></pre>
+</div>
+<div>
+<h4>Bytecode</h4>
+<div class="tab-container">
+<div class="tab-headers">
+<button class="tab-link active" onclick="openBytecodeTab(event, 'bc_tabs_44_content_1')">???</button>
+<button class="tab-link" onclick="openBytecodeTab(event, 'bc_tabs_44_content_2')">main</button>
+</div>
+<div id="bc_tabs_44_content_1" class="tab-content" style="display: block;">
+<pre><code class="language-bytecode"><span class="bc-line-num">001</span> <span class="bc-opcode">LOAD_TRUE       </span> <span class="bc-arg">0 0</span> <span class="bc-info">; true</span>
+<span class="bc-line-num">002</span> <span class="bc-opcode">END             </span> <span class="bc-arg">0 0</span></code></pre>
+</div>
+<div id="bc_tabs_44_content_2" class="tab-content" style="display: none;">
+<pre><code class="language-bytecode"><span class="bc-line-num">001</span> <span class="bc-opcode">ENTER_SCOPE     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; l</span>
+<span class="bc-line-num">002</span> <span class="bc-opcode">BEGIN_ACC       </span> <span class="bc-arg">0 0</span>
+<span class="bc-line-num">003</span> <span class="bc-opcode">TABLE_NEW       </span> <span class="bc-arg">0 0</span>
+<span class="bc-line-num">004</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 2</span>
+<span class="bc-line-num">005</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 1</span> <span class="bc-info">; meta gt: macro(x)[...]</span>
+<span class="bc-line-num">006</span> <span class="bc-opcode">TABLE_SET_ACC_META</span> <span class="bc-arg">0 0</span> <span class="bc-info">; meta gt: macro(x)[...]</span>
+<span class="bc-line-num">007</span> <span class="bc-opcode">LOAD_STATIC     </span> <span class="bc-arg">0 14</span> <span class="bc-info">; table</span>
+<span class="bc-line-num">008</span> <span class="bc-opcode">ACC_CALL        </span> <span class="bc-arg">0 0</span> <span class="bc-info">; @table[...]</span>
+<span class="bc-line-num">009</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; t</span>
+<span class="bc-line-num">010</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 3</span> <span class="bc-info">; 6</span>
+<span class="bc-line-num">011</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 1</span> <span class="bc-info">; t</span>
+<span class="bc-line-num">012</span> <span class="bc-opcode">OPP_LT          </span> <span class="bc-arg">0 0</span> <span class="bc-info">; 6&lt;t</span>
+<span class="bc-line-num">013</span> <span class="bc-opcode">END             </span> <span class="bc-arg">0 0</span></code></pre>
+</div>
+</div>
+</div>
+</div>
+<h4>Output</h4>
+<pre><code>
+true
+</code></pre>
+</div>
+</details>
+<details>
+<summary>
+<span class="status-icon status-pass">✓</span> gt fallback 3
+</summary>
+<div class="test-content">
+<div class="code-grid">
+<div>
+<h4>Code</h4>
+<pre><code class="language-plume">
+let t = @table
+  meta gt: macro(x)
+    $false
+  end
+end
+
+$(t&gt;=6)
+
+</code></pre>
+</div>
+<div>
+<h4>Bytecode</h4>
+<div class="tab-container">
+<div class="tab-headers">
+<button class="tab-link active" onclick="openBytecodeTab(event, 'bc_tabs_45_content_1')">???</button>
+<button class="tab-link" onclick="openBytecodeTab(event, 'bc_tabs_45_content_2')">main</button>
+</div>
+<div id="bc_tabs_45_content_1" class="tab-content" style="display: block;">
+<pre><code class="language-bytecode"><span class="bc-line-num">001</span> <span class="bc-opcode">LOAD_FALSE      </span> <span class="bc-arg">0 0</span> <span class="bc-info">; false</span>
+<span class="bc-line-num">002</span> <span class="bc-opcode">END             </span> <span class="bc-arg">0 0</span></code></pre>
+</div>
+<div id="bc_tabs_45_content_2" class="tab-content" style="display: none;">
+<pre><code class="language-bytecode"><span class="bc-line-num">001</span> <span class="bc-opcode">ENTER_SCOPE     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; l</span>
+<span class="bc-line-num">002</span> <span class="bc-opcode">BEGIN_ACC       </span> <span class="bc-arg">0 0</span>
+<span class="bc-line-num">003</span> <span class="bc-opcode">TABLE_NEW       </span> <span class="bc-arg">0 0</span>
+<span class="bc-line-num">004</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 2</span>
+<span class="bc-line-num">005</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 1</span> <span class="bc-info">; meta gt: macro(x)[...]</span>
+<span class="bc-line-num">006</span> <span class="bc-opcode">TABLE_SET_ACC_META</span> <span class="bc-arg">0 0</span> <span class="bc-info">; meta gt: macro(x)[...]</span>
+<span class="bc-line-num">007</span> <span class="bc-opcode">LOAD_STATIC     </span> <span class="bc-arg">0 14</span> <span class="bc-info">; table</span>
+<span class="bc-line-num">008</span> <span class="bc-opcode">ACC_CALL        </span> <span class="bc-arg">0 0</span> <span class="bc-info">; @table[...]</span>
+<span class="bc-line-num">009</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; t</span>
+<span class="bc-line-num">010</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 1</span> <span class="bc-info">; t</span>
+<span class="bc-line-num">011</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 3</span> <span class="bc-info">; 6</span>
+<span class="bc-line-num">012</span> <span class="bc-opcode">OPP_GT          </span> <span class="bc-arg">0 0</span> <span class="bc-info">; t&gt;=6</span>
+<span class="bc-line-num">013</span> <span class="bc-opcode">JUMP_IF_PEEK    </span> <span class="bc-arg">0 18</span>
+<span class="bc-line-num">014</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 1</span> <span class="bc-info">; t</span>
+<span class="bc-line-num">015</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 3</span> <span class="bc-info">; 6</span>
+<span class="bc-line-num">016</span> <span class="bc-opcode">OPP_EQ          </span> <span class="bc-arg">0 0</span> <span class="bc-info">; t&gt;=6</span>
+<span class="bc-line-num">017</span> <span class="bc-opcode">OPP_OR          </span> <span class="bc-arg">0 0</span> <span class="bc-info">; t&gt;=6</span>
+<span class="bc-line-num">018</span> <span class="bc-opcode">END             </span> <span class="bc-arg">0 0</span></code></pre>
+</div>
+</div>
+</div>
+</div>
+<h4>Output</h4>
+<pre><code>
+false
+</code></pre>
+</div>
+</details>
+<details>
+<summary>
+<span class="status-icon status-pass">✓</span> gt fallback 4
+</summary>
+<div class="test-content">
+<div class="code-grid">
+<div>
+<h4>Code</h4>
+<pre><code class="language-plume">
+let t = @table
+  meta gt: macro(x)
+    $false
+  end
+  meta eq: macro(x)
+    $true
+  end
+end
+
+$(t&gt;=6)
+
+</code></pre>
+</div>
+<div>
+<h4>Bytecode</h4>
+<div class="tab-container">
+<div class="tab-headers">
+<button class="tab-link active" onclick="openBytecodeTab(event, 'bc_tabs_46_content_1')">???</button>
+<button class="tab-link" onclick="openBytecodeTab(event, 'bc_tabs_46_content_2')">???</button>
+<button class="tab-link" onclick="openBytecodeTab(event, 'bc_tabs_46_content_3')">main</button>
+</div>
+<div id="bc_tabs_46_content_1" class="tab-content" style="display: block;">
+<pre><code class="language-bytecode"><span class="bc-line-num">001</span> <span class="bc-opcode">LOAD_TRUE       </span> <span class="bc-arg">0 0</span> <span class="bc-info">; true</span>
+<span class="bc-line-num">002</span> <span class="bc-opcode">END             </span> <span class="bc-arg">0 0</span></code></pre>
+</div>
+<div id="bc_tabs_46_content_2" class="tab-content" style="display: none;">
+<pre><code class="language-bytecode"><span class="bc-line-num">001</span> <span class="bc-opcode">LOAD_FALSE      </span> <span class="bc-arg">0 0</span> <span class="bc-info">; false</span>
+<span class="bc-line-num">002</span> <span class="bc-opcode">END             </span> <span class="bc-arg">0 0</span></code></pre>
+</div>
+<div id="bc_tabs_46_content_3" class="tab-content" style="display: none;">
+<pre><code class="language-bytecode"><span class="bc-line-num">001</span> <span class="bc-opcode">ENTER_SCOPE     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; l</span>
+<span class="bc-line-num">002</span> <span class="bc-opcode">BEGIN_ACC       </span> <span class="bc-arg">0 0</span>
+<span class="bc-line-num">003</span> <span class="bc-opcode">TABLE_NEW       </span> <span class="bc-arg">0 0</span>
+<span class="bc-line-num">004</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 2</span>
+<span class="bc-line-num">005</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 1</span> <span class="bc-info">; meta gt: macro(x)[...]</span>
+<span class="bc-line-num">006</span> <span class="bc-opcode">TABLE_SET_ACC_META</span> <span class="bc-arg">0 0</span> <span class="bc-info">; meta gt: macro(x)[...]</span>
+<span class="bc-line-num">007</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 4</span>
+<span class="bc-line-num">008</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 3</span> <span class="bc-info">; meta eq: macro(x)[...]</span>
+<span class="bc-line-num">009</span> <span class="bc-opcode">TABLE_SET_ACC_META</span> <span class="bc-arg">0 0</span> <span class="bc-info">; meta eq: macro(x)[...]</span>
+<span class="bc-line-num">010</span> <span class="bc-opcode">LOAD_STATIC     </span> <span class="bc-arg">0 14</span> <span class="bc-info">; table</span>
+<span class="bc-line-num">011</span> <span class="bc-opcode">ACC_CALL        </span> <span class="bc-arg">0 0</span> <span class="bc-info">; @table[...]</span>
+<span class="bc-line-num">012</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; t</span>
+<span class="bc-line-num">013</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 1</span> <span class="bc-info">; t</span>
+<span class="bc-line-num">014</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 5</span> <span class="bc-info">; 6</span>
+<span class="bc-line-num">015</span> <span class="bc-opcode">OPP_GT          </span> <span class="bc-arg">0 0</span> <span class="bc-info">; t&gt;=6</span>
+<span class="bc-line-num">016</span> <span class="bc-opcode">JUMP_IF_PEEK    </span> <span class="bc-arg">0 21</span>
+<span class="bc-line-num">017</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 1</span> <span class="bc-info">; t</span>
+<span class="bc-line-num">018</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 5</span> <span class="bc-info">; 6</span>
+<span class="bc-line-num">019</span> <span class="bc-opcode">OPP_EQ          </span> <span class="bc-arg">0 0</span> <span class="bc-info">; t&gt;=6</span>
+<span class="bc-line-num">020</span> <span class="bc-opcode">OPP_OR          </span> <span class="bc-arg">0 0</span> <span class="bc-info">; t&gt;=6</span>
+<span class="bc-line-num">021</span> <span class="bc-opcode">END             </span> <span class="bc-arg">0 0</span></code></pre>
+</div>
+</div>
+</div>
+</div>
+<h4>Output</h4>
+<pre><code>
+true
+</code></pre>
+</div>
+</details>
+<details>
+<summary>
+<span class="status-icon status-pass">✓</span> gt fallback 5
+</summary>
+<div class="test-content">
+<div class="code-grid">
+<div>
+<h4>Code</h4>
+<pre><code class="language-plume">
+let t = @table
+  meta gt: macro(x)
+    $(x&lt;=6)
+  end
+  meta eq: macro(x)
+    $(x==6)
+  end
+end
+
+$(t&lt;6)
+
+</code></pre>
+</div>
+<div>
+<h4>Bytecode</h4>
+<div class="tab-container">
+<div class="tab-headers">
+<button class="tab-link active" onclick="openBytecodeTab(event, 'bc_tabs_47_content_1')">???</button>
+<button class="tab-link" onclick="openBytecodeTab(event, 'bc_tabs_47_content_2')">???</button>
+<button class="tab-link" onclick="openBytecodeTab(event, 'bc_tabs_47_content_3')">main</button>
+</div>
+<div id="bc_tabs_47_content_1" class="tab-content" style="display: block;">
+<pre><code class="language-bytecode"><span class="bc-line-num">001</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 1</span> <span class="bc-info">; x</span>
+<span class="bc-line-num">002</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 3</span> <span class="bc-info">; 6</span>
+<span class="bc-line-num">003</span> <span class="bc-opcode">OPP_EQ          </span> <span class="bc-arg">0 0</span> <span class="bc-info">; x==6</span>
+<span class="bc-line-num">004</span> <span class="bc-opcode">END             </span> <span class="bc-arg">0 0</span></code></pre>
+</div>
+<div id="bc_tabs_47_content_2" class="tab-content" style="display: none;">
+<pre><code class="language-bytecode"><span class="bc-line-num">001</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 1</span> <span class="bc-info">; x</span>
+<span class="bc-line-num">002</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 3</span> <span class="bc-info">; 6</span>
+<span class="bc-line-num">003</span> <span class="bc-opcode">OPP_LT          </span> <span class="bc-arg">0 0</span> <span class="bc-info">; x&lt;=6</span>
+<span class="bc-line-num">004</span> <span class="bc-opcode">JUMP_IF_PEEK    </span> <span class="bc-arg">0 9</span>
+<span class="bc-line-num">005</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 1</span> <span class="bc-info">; x</span>
+<span class="bc-line-num">006</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 3</span> <span class="bc-info">; 6</span>
+<span class="bc-line-num">007</span> <span class="bc-opcode">OPP_EQ          </span> <span class="bc-arg">0 0</span> <span class="bc-info">; x&lt;=6</span>
+<span class="bc-line-num">008</span> <span class="bc-opcode">OPP_OR          </span> <span class="bc-arg">0 0</span> <span class="bc-info">; x&lt;=6</span>
+<span class="bc-line-num">009</span> <span class="bc-opcode">END             </span> <span class="bc-arg">0 0</span></code></pre>
+</div>
+<div id="bc_tabs_47_content_3" class="tab-content" style="display: none;">
+<pre><code class="language-bytecode"><span class="bc-line-num">001</span> <span class="bc-opcode">ENTER_SCOPE     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; l</span>
+<span class="bc-line-num">002</span> <span class="bc-opcode">BEGIN_ACC       </span> <span class="bc-arg">0 0</span>
+<span class="bc-line-num">003</span> <span class="bc-opcode">TABLE_NEW       </span> <span class="bc-arg">0 0</span>
+<span class="bc-line-num">004</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 2</span>
+<span class="bc-line-num">005</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 1</span> <span class="bc-info">; meta gt: macro(x)[...]</span>
+<span class="bc-line-num">006</span> <span class="bc-opcode">TABLE_SET_ACC_META</span> <span class="bc-arg">0 0</span> <span class="bc-info">; meta gt: macro(x)[...]</span>
+<span class="bc-line-num">007</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 5</span>
+<span class="bc-line-num">008</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 4</span> <span class="bc-info">; meta eq: macro(x)[...]</span>
+<span class="bc-line-num">009</span> <span class="bc-opcode">TABLE_SET_ACC_META</span> <span class="bc-arg">0 0</span> <span class="bc-info">; meta eq: macro(x)[...]</span>
+<span class="bc-line-num">010</span> <span class="bc-opcode">LOAD_STATIC     </span> <span class="bc-arg">0 14</span> <span class="bc-info">; table</span>
+<span class="bc-line-num">011</span> <span class="bc-opcode">ACC_CALL        </span> <span class="bc-arg">0 0</span> <span class="bc-info">; @table[...]</span>
+<span class="bc-line-num">012</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; t</span>
+<span class="bc-line-num">013</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 1</span> <span class="bc-info">; t</span>
+<span class="bc-line-num">014</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 3</span> <span class="bc-info">; 6</span>
+<span class="bc-line-num">015</span> <span class="bc-opcode">OPP_LT          </span> <span class="bc-arg">0 0</span> <span class="bc-info">; t&lt;6</span>
+<span class="bc-line-num">016</span> <span class="bc-opcode">END             </span> <span class="bc-arg">0 0</span></code></pre>
+</div>
+</div>
+</div>
+</div>
+<h4>Output</h4>
+<pre><code>
+true
+</code></pre>
+</div>
+</details>
+<details>
+<summary>
+<span class="status-icon status-pass">✓</span> lt
+</summary>
+<div class="test-content">
+<div class="code-grid">
+<div>
+<h4>Code</h4>
+<pre><code class="language-plume">
+let t = @table
+  meta lt: macro(x)
+    $true
+  end
+end
+
+$(t&lt;6)
+
+</code></pre>
+</div>
+<div>
+<h4>Bytecode</h4>
+<div class="tab-container">
+<div class="tab-headers">
+<button class="tab-link active" onclick="openBytecodeTab(event, 'bc_tabs_48_content_1')">???</button>
+<button class="tab-link" onclick="openBytecodeTab(event, 'bc_tabs_48_content_2')">main</button>
+</div>
+<div id="bc_tabs_48_content_1" class="tab-content" style="display: block;">
+<pre><code class="language-bytecode"><span class="bc-line-num">001</span> <span class="bc-opcode">LOAD_TRUE       </span> <span class="bc-arg">0 0</span> <span class="bc-info">; true</span>
+<span class="bc-line-num">002</span> <span class="bc-opcode">END             </span> <span class="bc-arg">0 0</span></code></pre>
+</div>
+<div id="bc_tabs_48_content_2" class="tab-content" style="display: none;">
+<pre><code class="language-bytecode"><span class="bc-line-num">001</span> <span class="bc-opcode">ENTER_SCOPE     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; l</span>
+<span class="bc-line-num">002</span> <span class="bc-opcode">BEGIN_ACC       </span> <span class="bc-arg">0 0</span>
+<span class="bc-line-num">003</span> <span class="bc-opcode">TABLE_NEW       </span> <span class="bc-arg">0 0</span>
+<span class="bc-line-num">004</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 2</span>
+<span class="bc-line-num">005</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 1</span> <span class="bc-info">; meta lt: macro(x)[...]</span>
+<span class="bc-line-num">006</span> <span class="bc-opcode">TABLE_SET_ACC_META</span> <span class="bc-arg">0 0</span> <span class="bc-info">; meta lt: macro(x)[...]</span>
+<span class="bc-line-num">007</span> <span class="bc-opcode">LOAD_STATIC     </span> <span class="bc-arg">0 14</span> <span class="bc-info">; table</span>
+<span class="bc-line-num">008</span> <span class="bc-opcode">ACC_CALL        </span> <span class="bc-arg">0 0</span> <span class="bc-info">; @table[...]</span>
+<span class="bc-line-num">009</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; t</span>
+<span class="bc-line-num">010</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 1</span> <span class="bc-info">; t</span>
+<span class="bc-line-num">011</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 3</span> <span class="bc-info">; 6</span>
+<span class="bc-line-num">012</span> <span class="bc-opcode">OPP_LT          </span> <span class="bc-arg">0 0</span> <span class="bc-info">; t&lt;6</span>
+<span class="bc-line-num">013</span> <span class="bc-opcode">END             </span> <span class="bc-arg">0 0</span></code></pre>
+</div>
+</div>
+</div>
+</div>
+<h4>Output</h4>
+<pre><code>
+true
+</code></pre>
+</div>
+</details>
+<details>
+<summary>
+<span class="status-icon status-pass">✓</span> minus
+</summary>
+<div class="test-content">
+<div class="code-grid">
+<div>
+<h4>Code</h4>
+<pre><code class="language-plume">
+let t = @table
+  meta minus: macro()
+    $(-1)
+  end
+end
+$(-t)
+
+</code></pre>
+</div>
+<div>
+<h4>Bytecode</h4>
+<div class="tab-container">
+<div class="tab-headers">
+<button class="tab-link active" onclick="openBytecodeTab(event, 'bc_tabs_49_content_1')">???</button>
+<button class="tab-link" onclick="openBytecodeTab(event, 'bc_tabs_49_content_2')">main</button>
+</div>
+<div id="bc_tabs_49_content_1" class="tab-content" style="display: block;">
+<pre><code class="language-bytecode"><span class="bc-line-num">001</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 3</span> <span class="bc-info">; 1</span>
+<span class="bc-line-num">002</span> <span class="bc-opcode">OPP_NEG         </span> <span class="bc-arg">0 0</span> <span class="bc-info">; -1</span>
+<span class="bc-line-num">003</span> <span class="bc-opcode">END             </span> <span class="bc-arg">0 0</span></code></pre>
+</div>
+<div id="bc_tabs_49_content_2" class="tab-content" style="display: none;">
+<pre><code class="language-bytecode"><span class="bc-line-num">001</span> <span class="bc-opcode">ENTER_SCOPE     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; l</span>
+<span class="bc-line-num">002</span> <span class="bc-opcode">BEGIN_ACC       </span> <span class="bc-arg">0 0</span>
+<span class="bc-line-num">003</span> <span class="bc-opcode">TABLE_NEW       </span> <span class="bc-arg">0 0</span>
+<span class="bc-line-num">004</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 2</span>
+<span class="bc-line-num">005</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 1</span> <span class="bc-info">; meta minus: macro()[...]</span>
+<span class="bc-line-num">006</span> <span class="bc-opcode">TABLE_SET_ACC_META</span> <span class="bc-arg">0 0</span> <span class="bc-info">; meta minus: macro()[...]</span>
+<span class="bc-line-num">007</span> <span class="bc-opcode">LOAD_STATIC     </span> <span class="bc-arg">0 14</span> <span class="bc-info">; table</span>
+<span class="bc-line-num">008</span> <span class="bc-opcode">ACC_CALL        </span> <span class="bc-arg">0 0</span> <span class="bc-info">; @table[...]</span>
+<span class="bc-line-num">009</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; t</span>
+<span class="bc-line-num">010</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 1</span> <span class="bc-info">; t</span>
+<span class="bc-line-num">011</span> <span class="bc-opcode">OPP_NEG         </span> <span class="bc-arg">0 0</span> <span class="bc-info">; -t</span>
+<span class="bc-line-num">012</span> <span class="bc-opcode">END             </span> <span class="bc-arg">0 0</span></code></pre>
+</div>
+</div>
+</div>
+</div>
+<h4>Output</h4>
+<pre><code>
+-1
+</code></pre>
+</div>
+</details>
+<details>
+<summary>
+<span class="status-icon status-pass">✓</span> mod
+</summary>
+<div class="test-content">
+<div class="code-grid">
+<div>
+<h4>Code</h4>
+<pre><code class="language-plume">
+let t = @table
+  meta modr: macro(x)
+    $(x+1)
+  end
+end
+$(t%2)
+
+</code></pre>
+</div>
+<div>
+<h4>Bytecode</h4>
+<div class="tab-container">
+<div class="tab-headers">
+<button class="tab-link active" onclick="openBytecodeTab(event, 'bc_tabs_50_content_1')">???</button>
+<button class="tab-link" onclick="openBytecodeTab(event, 'bc_tabs_50_content_2')">main</button>
+</div>
+<div id="bc_tabs_50_content_1" class="tab-content" style="display: block;">
+<pre><code class="language-bytecode"><span class="bc-line-num">001</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 1</span> <span class="bc-info">; x</span>
+<span class="bc-line-num">002</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 3</span> <span class="bc-info">; 1</span>
+<span class="bc-line-num">003</span> <span class="bc-opcode">OPP_ADD         </span> <span class="bc-arg">0 0</span> <span class="bc-info">; x+1</span>
+<span class="bc-line-num">004</span> <span class="bc-opcode">END             </span> <span class="bc-arg">0 0</span></code></pre>
+</div>
+<div id="bc_tabs_50_content_2" class="tab-content" style="display: none;">
+<pre><code class="language-bytecode"><span class="bc-line-num">001</span> <span class="bc-opcode">ENTER_SCOPE     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; l</span>
+<span class="bc-line-num">002</span> <span class="bc-opcode">BEGIN_ACC       </span> <span class="bc-arg">0 0</span>
+<span class="bc-line-num">003</span> <span class="bc-opcode">TABLE_NEW       </span> <span class="bc-arg">0 0</span>
+<span class="bc-line-num">004</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 2</span>
+<span class="bc-line-num">005</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 1</span> <span class="bc-info">; meta modr: macro(x)[...]</span>
+<span class="bc-line-num">006</span> <span class="bc-opcode">TABLE_SET_ACC_META</span> <span class="bc-arg">0 0</span> <span class="bc-info">; meta modr: macro(x)[...]</span>
+<span class="bc-line-num">007</span> <span class="bc-opcode">LOAD_STATIC     </span> <span class="bc-arg">0 14</span> <span class="bc-info">; table</span>
+<span class="bc-line-num">008</span> <span class="bc-opcode">ACC_CALL        </span> <span class="bc-arg">0 0</span> <span class="bc-info">; @table[...]</span>
+<span class="bc-line-num">009</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; t</span>
+<span class="bc-line-num">010</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 1</span> <span class="bc-info">; t</span>
+<span class="bc-line-num">011</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 4</span> <span class="bc-info">; 2</span>
+<span class="bc-line-num">012</span> <span class="bc-opcode">OPP_MOD         </span> <span class="bc-arg">0 0</span> <span class="bc-info">; t%2</span>
+<span class="bc-line-num">013</span> <span class="bc-opcode">END             </span> <span class="bc-arg">0 0</span></code></pre>
+</div>
+</div>
+</div>
+</div>
+<h4>Output</h4>
+<pre><code>
+3
+</code></pre>
+</div>
+</details>
+<details>
+<summary>
+<span class="status-icon status-pass">✓</span> mul
+</summary>
+<div class="test-content">
+<div class="code-grid">
+<div>
+<h4>Code</h4>
+<pre><code class="language-plume">
+let t = @table
+  meta mulr: macro(x)
+    $(x+1)
+  end
+end
+$(t*2)
+
+</code></pre>
+</div>
+<div>
+<h4>Bytecode</h4>
+<div class="tab-container">
+<div class="tab-headers">
+<button class="tab-link active" onclick="openBytecodeTab(event, 'bc_tabs_51_content_1')">???</button>
+<button class="tab-link" onclick="openBytecodeTab(event, 'bc_tabs_51_content_2')">main</button>
+</div>
+<div id="bc_tabs_51_content_1" class="tab-content" style="display: block;">
+<pre><code class="language-bytecode"><span class="bc-line-num">001</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 1</span> <span class="bc-info">; x</span>
+<span class="bc-line-num">002</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 3</span> <span class="bc-info">; 1</span>
+<span class="bc-line-num">003</span> <span class="bc-opcode">OPP_ADD         </span> <span class="bc-arg">0 0</span> <span class="bc-info">; x+1</span>
+<span class="bc-line-num">004</span> <span class="bc-opcode">END             </span> <span class="bc-arg">0 0</span></code></pre>
+</div>
+<div id="bc_tabs_51_content_2" class="tab-content" style="display: none;">
+<pre><code class="language-bytecode"><span class="bc-line-num">001</span> <span class="bc-opcode">ENTER_SCOPE     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; l</span>
+<span class="bc-line-num">002</span> <span class="bc-opcode">BEGIN_ACC       </span> <span class="bc-arg">0 0</span>
+<span class="bc-line-num">003</span> <span class="bc-opcode">TABLE_NEW       </span> <span class="bc-arg">0 0</span>
+<span class="bc-line-num">004</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 2</span>
+<span class="bc-line-num">005</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 1</span> <span class="bc-info">; meta mulr: macro(x)[...]</span>
+<span class="bc-line-num">006</span> <span class="bc-opcode">TABLE_SET_ACC_META</span> <span class="bc-arg">0 0</span> <span class="bc-info">; meta mulr: macro(x)[...]</span>
+<span class="bc-line-num">007</span> <span class="bc-opcode">LOAD_STATIC     </span> <span class="bc-arg">0 14</span> <span class="bc-info">; table</span>
+<span class="bc-line-num">008</span> <span class="bc-opcode">ACC_CALL        </span> <span class="bc-arg">0 0</span> <span class="bc-info">; @table[...]</span>
+<span class="bc-line-num">009</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; t</span>
+<span class="bc-line-num">010</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 1</span> <span class="bc-info">; t</span>
+<span class="bc-line-num">011</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 4</span> <span class="bc-info">; 2</span>
+<span class="bc-line-num">012</span> <span class="bc-opcode">OPP_MUL         </span> <span class="bc-arg">0 0</span> <span class="bc-info">; t*2</span>
+<span class="bc-line-num">013</span> <span class="bc-opcode">END             </span> <span class="bc-arg">0 0</span></code></pre>
+</div>
+</div>
+</div>
+</div>
+<h4>Output</h4>
+<pre><code>
+3
+</code></pre>
+</div>
+</details>
+<details>
+<summary>
+<span class="status-icon status-pass">✓</span> neq fallback
+</summary>
+<div class="test-content">
+<div class="code-grid">
+<div>
+<h4>Code</h4>
+<pre><code class="language-plume">
+let t = @table
+  meta eq: macro(x)
+    $true
+  end
+end
+
+$(t!=6)
+
+</code></pre>
+</div>
+<div>
+<h4>Bytecode</h4>
+<div class="tab-container">
+<div class="tab-headers">
+<button class="tab-link active" onclick="openBytecodeTab(event, 'bc_tabs_52_content_1')">???</button>
+<button class="tab-link" onclick="openBytecodeTab(event, 'bc_tabs_52_content_2')">main</button>
+</div>
+<div id="bc_tabs_52_content_1" class="tab-content" style="display: block;">
+<pre><code class="language-bytecode"><span class="bc-line-num">001</span> <span class="bc-opcode">LOAD_TRUE       </span> <span class="bc-arg">0 0</span> <span class="bc-info">; true</span>
+<span class="bc-line-num">002</span> <span class="bc-opcode">END             </span> <span class="bc-arg">0 0</span></code></pre>
+</div>
+<div id="bc_tabs_52_content_2" class="tab-content" style="display: none;">
+<pre><code class="language-bytecode"><span class="bc-line-num">001</span> <span class="bc-opcode">ENTER_SCOPE     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; l</span>
+<span class="bc-line-num">002</span> <span class="bc-opcode">BEGIN_ACC       </span> <span class="bc-arg">0 0</span>
+<span class="bc-line-num">003</span> <span class="bc-opcode">TABLE_NEW       </span> <span class="bc-arg">0 0</span>
+<span class="bc-line-num">004</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 2</span>
+<span class="bc-line-num">005</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 1</span> <span class="bc-info">; meta eq: macro(x)[...]</span>
+<span class="bc-line-num">006</span> <span class="bc-opcode">TABLE_SET_ACC_META</span> <span class="bc-arg">0 0</span> <span class="bc-info">; meta eq: macro(x)[...]</span>
+<span class="bc-line-num">007</span> <span class="bc-opcode">LOAD_STATIC     </span> <span class="bc-arg">0 14</span> <span class="bc-info">; table</span>
+<span class="bc-line-num">008</span> <span class="bc-opcode">ACC_CALL        </span> <span class="bc-arg">0 0</span> <span class="bc-info">; @table[...]</span>
+<span class="bc-line-num">009</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; t</span>
+<span class="bc-line-num">010</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 1</span> <span class="bc-info">; t</span>
+<span class="bc-line-num">011</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 3</span> <span class="bc-info">; 6</span>
+<span class="bc-line-num">012</span> <span class="bc-opcode">OPP_NEQ         </span> <span class="bc-arg">0 0</span> <span class="bc-info">; t!=6</span>
+<span class="bc-line-num">013</span> <span class="bc-opcode">END             </span> <span class="bc-arg">0 0</span></code></pre>
+</div>
+</div>
+</div>
+</div>
+<h4>Output</h4>
+<pre><code>
+false
+</code></pre>
+</div>
+</details>
+<details>
+<summary>
+<span class="status-icon status-pass">✓</span> pow
+</summary>
+<div class="test-content">
+<div class="code-grid">
+<div>
+<h4>Code</h4>
+<pre><code class="language-plume">
+let t = @table
+  meta powr: macro(x)
+    $(x+1)
+  end
+end
+$(t^2)
+
+</code></pre>
+</div>
+<div>
+<h4>Bytecode</h4>
+<div class="tab-container">
+<div class="tab-headers">
+<button class="tab-link active" onclick="openBytecodeTab(event, 'bc_tabs_53_content_1')">???</button>
+<button class="tab-link" onclick="openBytecodeTab(event, 'bc_tabs_53_content_2')">main</button>
+</div>
+<div id="bc_tabs_53_content_1" class="tab-content" style="display: block;">
+<pre><code class="language-bytecode"><span class="bc-line-num">001</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 1</span> <span class="bc-info">; x</span>
+<span class="bc-line-num">002</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 3</span> <span class="bc-info">; 1</span>
+<span class="bc-line-num">003</span> <span class="bc-opcode">OPP_ADD         </span> <span class="bc-arg">0 0</span> <span class="bc-info">; x+1</span>
+<span class="bc-line-num">004</span> <span class="bc-opcode">END             </span> <span class="bc-arg">0 0</span></code></pre>
+</div>
+<div id="bc_tabs_53_content_2" class="tab-content" style="display: none;">
+<pre><code class="language-bytecode"><span class="bc-line-num">001</span> <span class="bc-opcode">ENTER_SCOPE     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; l</span>
+<span class="bc-line-num">002</span> <span class="bc-opcode">BEGIN_ACC       </span> <span class="bc-arg">0 0</span>
+<span class="bc-line-num">003</span> <span class="bc-opcode">TABLE_NEW       </span> <span class="bc-arg">0 0</span>
+<span class="bc-line-num">004</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 2</span>
+<span class="bc-line-num">005</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 1</span> <span class="bc-info">; meta powr: macro(x)[...]</span>
+<span class="bc-line-num">006</span> <span class="bc-opcode">TABLE_SET_ACC_META</span> <span class="bc-arg">0 0</span> <span class="bc-info">; meta powr: macro(x)[...]</span>
+<span class="bc-line-num">007</span> <span class="bc-opcode">LOAD_STATIC     </span> <span class="bc-arg">0 14</span> <span class="bc-info">; table</span>
+<span class="bc-line-num">008</span> <span class="bc-opcode">ACC_CALL        </span> <span class="bc-arg">0 0</span> <span class="bc-info">; @table[...]</span>
+<span class="bc-line-num">009</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; t</span>
+<span class="bc-line-num">010</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 1</span> <span class="bc-info">; t</span>
+<span class="bc-line-num">011</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 4</span> <span class="bc-info">; 2</span>
+<span class="bc-line-num">012</span> <span class="bc-opcode">OPP_POW         </span> <span class="bc-arg">0 0</span> <span class="bc-info">; t^2</span>
+<span class="bc-line-num">013</span> <span class="bc-opcode">END             </span> <span class="bc-arg">0 0</span></code></pre>
+</div>
+</div>
+</div>
+</div>
+<h4>Output</h4>
+<pre><code>
+3
+</code></pre>
+</div>
+</details>
+<details>
+<summary>
+<span class="status-icon status-pass">✓</span> self access
+</summary>
+<div class="test-content">
+<div class="code-grid">
+<div>
+<h4>Code</h4>
+<pre><code class="language-plume">
+let t = @table
+  value: 10
+  meta add: macro(x, y)
+    $(self.value+y)
+  end
+end
+$(t+1)
+
+</code></pre>
+</div>
+<div>
+<h4>Bytecode</h4>
+<div class="tab-container">
+<div class="tab-headers">
+<button class="tab-link active" onclick="openBytecodeTab(event, 'bc_tabs_54_content_1')">???</button>
+<button class="tab-link" onclick="openBytecodeTab(event, 'bc_tabs_54_content_2')">main</button>
+</div>
+<div id="bc_tabs_54_content_1" class="tab-content" style="display: block;">
+<pre><code class="language-bytecode"><span class="bc-line-num">001</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 1</span> <span class="bc-info">; value</span>
+<span class="bc-line-num">002</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 3</span> <span class="bc-info">; self</span>
+<span class="bc-line-num">003</span> <span class="bc-opcode">TABLE_INDEX     </span> <span class="bc-arg">0 0</span> <span class="bc-info">; .value</span>
+<span class="bc-line-num">004</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 2</span> <span class="bc-info">; y</span>
+<span class="bc-line-num">005</span> <span class="bc-opcode">OPP_ADD         </span> <span class="bc-arg">0 0</span> <span class="bc-info">; self.value+y</span>
+<span class="bc-line-num">006</span> <span class="bc-opcode">END             </span> <span class="bc-arg">0 0</span></code></pre>
+</div>
+<div id="bc_tabs_54_content_2" class="tab-content" style="display: none;">
+<pre><code class="language-bytecode"><span class="bc-line-num">001</span> <span class="bc-opcode">ENTER_SCOPE     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; l</span>
+<span class="bc-line-num">002</span> <span class="bc-opcode">BEGIN_ACC       </span> <span class="bc-arg">0 0</span>
+<span class="bc-line-num">003</span> <span class="bc-opcode">TABLE_NEW       </span> <span class="bc-arg">0 0</span>
+<span class="bc-line-num">004</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 2</span> <span class="bc-info">; 10</span>
+<span class="bc-line-num">005</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 1</span> <span class="bc-info">; value: 10</span>
+<span class="bc-line-num">006</span> <span class="bc-opcode">TABLE_SET_ACC   </span> <span class="bc-arg">0 0</span> <span class="bc-info">; value: 10</span>
+<span class="bc-line-num">007</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 4</span>
+<span class="bc-line-num">008</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 3</span> <span class="bc-info">; meta add: macro(x, y)[...]</span>
+<span class="bc-line-num">009</span> <span class="bc-opcode">TABLE_SET_ACC_META</span> <span class="bc-arg">0 0</span> <span class="bc-info">; meta add: macro(x, y)[...]</span>
+<span class="bc-line-num">010</span> <span class="bc-opcode">LOAD_STATIC     </span> <span class="bc-arg">0 14</span> <span class="bc-info">; table</span>
+<span class="bc-line-num">011</span> <span class="bc-opcode">ACC_CALL        </span> <span class="bc-arg">0 0</span> <span class="bc-info">; @table[...]</span>
+<span class="bc-line-num">012</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; t</span>
+<span class="bc-line-num">013</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 1</span> <span class="bc-info">; t</span>
+<span class="bc-line-num">014</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 5</span> <span class="bc-info">; 1</span>
+<span class="bc-line-num">015</span> <span class="bc-opcode">OPP_ADD         </span> <span class="bc-arg">0 0</span> <span class="bc-info">; t+1</span>
+<span class="bc-line-num">016</span> <span class="bc-opcode">END             </span> <span class="bc-arg">0 0</span></code></pre>
+</div>
+</div>
+</div>
+</div>
+<h4>Output</h4>
+<pre><code>
+11
+</code></pre>
+</div>
+</details>
+<details>
+<summary>
+<span class="status-icon status-pass">✓</span> sub
+</summary>
+<div class="test-content">
+<div class="code-grid">
+<div>
+<h4>Code</h4>
+<pre><code class="language-plume">
+let t = @table
+  meta subr: macro(x)
+    $(x+1)
+  end
+end
+$(t-2)
+
+</code></pre>
+</div>
+<div>
+<h4>Bytecode</h4>
+<div class="tab-container">
+<div class="tab-headers">
+<button class="tab-link active" onclick="openBytecodeTab(event, 'bc_tabs_55_content_1')">???</button>
+<button class="tab-link" onclick="openBytecodeTab(event, 'bc_tabs_55_content_2')">main</button>
+</div>
+<div id="bc_tabs_55_content_1" class="tab-content" style="display: block;">
+<pre><code class="language-bytecode"><span class="bc-line-num">001</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 1</span> <span class="bc-info">; x</span>
+<span class="bc-line-num">002</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 3</span> <span class="bc-info">; 1</span>
+<span class="bc-line-num">003</span> <span class="bc-opcode">OPP_ADD         </span> <span class="bc-arg">0 0</span> <span class="bc-info">; x+1</span>
+<span class="bc-line-num">004</span> <span class="bc-opcode">END             </span> <span class="bc-arg">0 0</span></code></pre>
+</div>
+<div id="bc_tabs_55_content_2" class="tab-content" style="display: none;">
+<pre><code class="language-bytecode"><span class="bc-line-num">001</span> <span class="bc-opcode">ENTER_SCOPE     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; l</span>
+<span class="bc-line-num">002</span> <span class="bc-opcode">BEGIN_ACC       </span> <span class="bc-arg">0 0</span>
+<span class="bc-line-num">003</span> <span class="bc-opcode">TABLE_NEW       </span> <span class="bc-arg">0 0</span>
+<span class="bc-line-num">004</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 2</span>
+<span class="bc-line-num">005</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 1</span> <span class="bc-info">; meta subr: macro(x)[...]</span>
+<span class="bc-line-num">006</span> <span class="bc-opcode">TABLE_SET_ACC_META</span> <span class="bc-arg">0 0</span> <span class="bc-info">; meta subr: macro(x)[...]</span>
+<span class="bc-line-num">007</span> <span class="bc-opcode">LOAD_STATIC     </span> <span class="bc-arg">0 14</span> <span class="bc-info">; table</span>
+<span class="bc-line-num">008</span> <span class="bc-opcode">ACC_CALL        </span> <span class="bc-arg">0 0</span> <span class="bc-info">; @table[...]</span>
+<span class="bc-line-num">009</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; t</span>
+<span class="bc-line-num">010</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 1</span> <span class="bc-info">; t</span>
+<span class="bc-line-num">011</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 4</span> <span class="bc-info">; 2</span>
+<span class="bc-line-num">012</span> <span class="bc-opcode">OPP_SUB         </span> <span class="bc-arg">0 0</span> <span class="bc-info">; t-2</span>
+<span class="bc-line-num">013</span> <span class="bc-opcode">END             </span> <span class="bc-arg">0 0</span></code></pre>
+</div>
+</div>
+</div>
+</div>
+<h4>Output</h4>
+<pre><code>
+3
+</code></pre>
+</div>
+</details>
+<h2>meta_errors: <span style="font-weight: normal;">6 passed out of 6 tests</span></h2>
+<div class="progress-bar"><div class="progress-success" style="width: 100.00%"></div><div class="progress-fail" style="width: 0.00%"></div></div>
+<details>
+<summary>
+<span class="status-icon status-pass">✓</span> meta wrong parameter number 1
+</summary>
+<div class="test-content">
+<div class="code-grid">
+<div>
+<h4>Code</h4>
+<pre><code class="language-plume">
+let t = @table
+  meta add: macro()
+    $true
+  end
+end
+
+$(t+1)
+
+</code></pre>
+</div>
+<div>
+<h4>Bytecode</h4>
+<div class="tab-container">
+<div class="tab-headers">
+<button class="tab-link active" onclick="openBytecodeTab(event, 'bc_tabs_56_content_1')">???</button>
+<button class="tab-link" onclick="openBytecodeTab(event, 'bc_tabs_56_content_2')">main</button>
+</div>
+<div id="bc_tabs_56_content_1" class="tab-content" style="display: block;">
+<pre><code class="language-bytecode"><span class="bc-line-num">001</span> <span class="bc-opcode">LOAD_TRUE       </span> <span class="bc-arg">0 0</span> <span class="bc-info">; true</span>
+<span class="bc-line-num">002</span> <span class="bc-opcode">END             </span> <span class="bc-arg">0 0</span></code></pre>
+</div>
+<div id="bc_tabs_56_content_2" class="tab-content" style="display: none;">
+<pre><code class="language-bytecode"><span class="bc-line-num">001</span> <span class="bc-opcode">ENTER_SCOPE     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; l</span>
+<span class="bc-line-num">002</span> <span class="bc-opcode">BEGIN_ACC       </span> <span class="bc-arg">0 0</span>
+<span class="bc-line-num">003</span> <span class="bc-opcode">TABLE_NEW       </span> <span class="bc-arg">0 0</span>
+<span class="bc-line-num">004</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 2</span>
+<span class="bc-line-num">005</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 1</span> <span class="bc-info">; meta add: macro()[...]</span>
+<span class="bc-line-num">006</span> <span class="bc-opcode">TABLE_SET_ACC_META</span> <span class="bc-arg">0 0</span> <span class="bc-info">; meta add: macro()[...]</span>
+<span class="bc-line-num">007</span> <span class="bc-opcode">LOAD_STATIC     </span> <span class="bc-arg">0 14</span> <span class="bc-info">; table</span>
+<span class="bc-line-num">008</span> <span class="bc-opcode">ACC_CALL        </span> <span class="bc-arg">0 0</span> <span class="bc-info">; @table[...]</span>
+<span class="bc-line-num">009</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; t</span>
+<span class="bc-line-num">010</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 1</span> <span class="bc-info">; t</span>
+<span class="bc-line-num">011</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 3</span> <span class="bc-info">; 1</span>
+<span class="bc-line-num">012</span> <span class="bc-opcode">OPP_ADD         </span> <span class="bc-arg">0 0</span> <span class="bc-info">; t+1</span>
+<span class="bc-line-num">013</span> <span class="bc-opcode">END             </span> <span class="bc-arg">0 0</span></code></pre>
+</div>
+</div>
+</div>
+</div>
+<h4>Error</h4>
+<pre><code>
+Runtime error: Wrong number of positionnal parameters for meta-macro &#39;add&#39;, 0 instead of 2.
+
+Traceback (most recent call first):
+  File &#39;meta wrong parameter number 1&#39;, line 1: let t = @table
+                                                        ^^^^^^
+</code></pre>
+</div>
+</details>
+<details>
+<summary>
+<span class="status-icon status-pass">✓</span> meta wrong parameter number 2
+</summary>
+<div class="test-content">
+<div class="code-grid">
+<div>
+<h4>Code</h4>
+<pre><code class="language-plume">
+let t = @table
+  meta add: macro(x, y, z)
+    $true
+  end
+end
+
+$(t+1)
+
+</code></pre>
+</div>
+<div>
+<h4>Bytecode</h4>
+<div class="tab-container">
+<div class="tab-headers">
+<button class="tab-link active" onclick="openBytecodeTab(event, 'bc_tabs_57_content_1')">???</button>
+<button class="tab-link" onclick="openBytecodeTab(event, 'bc_tabs_57_content_2')">main</button>
+</div>
+<div id="bc_tabs_57_content_1" class="tab-content" style="display: block;">
+<pre><code class="language-bytecode"><span class="bc-line-num">001</span> <span class="bc-opcode">LOAD_TRUE       </span> <span class="bc-arg">0 0</span> <span class="bc-info">; true</span>
+<span class="bc-line-num">002</span> <span class="bc-opcode">END             </span> <span class="bc-arg">0 0</span></code></pre>
+</div>
+<div id="bc_tabs_57_content_2" class="tab-content" style="display: none;">
+<pre><code class="language-bytecode"><span class="bc-line-num">001</span> <span class="bc-opcode">ENTER_SCOPE     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; l</span>
+<span class="bc-line-num">002</span> <span class="bc-opcode">BEGIN_ACC       </span> <span class="bc-arg">0 0</span>
+<span class="bc-line-num">003</span> <span class="bc-opcode">TABLE_NEW       </span> <span class="bc-arg">0 0</span>
+<span class="bc-line-num">004</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 2</span>
+<span class="bc-line-num">005</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 1</span> <span class="bc-info">; meta add: macro(x, y, z)[...]</span>
+<span class="bc-line-num">006</span> <span class="bc-opcode">TABLE_SET_ACC_META</span> <span class="bc-arg">0 0</span> <span class="bc-info">; meta add: macro(x, y, z)[...]</span>
+<span class="bc-line-num">007</span> <span class="bc-opcode">LOAD_STATIC     </span> <span class="bc-arg">0 14</span> <span class="bc-info">; table</span>
+<span class="bc-line-num">008</span> <span class="bc-opcode">ACC_CALL        </span> <span class="bc-arg">0 0</span> <span class="bc-info">; @table[...]</span>
+<span class="bc-line-num">009</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; t</span>
+<span class="bc-line-num">010</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 1</span> <span class="bc-info">; t</span>
+<span class="bc-line-num">011</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 3</span> <span class="bc-info">; 1</span>
+<span class="bc-line-num">012</span> <span class="bc-opcode">OPP_ADD         </span> <span class="bc-arg">0 0</span> <span class="bc-info">; t+1</span>
+<span class="bc-line-num">013</span> <span class="bc-opcode">END             </span> <span class="bc-arg">0 0</span></code></pre>
+</div>
+</div>
+</div>
+</div>
+<h4>Error</h4>
+<pre><code>
+Runtime error: Wrong number of positionnal parameters for meta-macro &#39;add&#39;, 3 instead of 2.
+
+Traceback (most recent call first):
+  File &#39;meta wrong parameter number 2&#39;, line 1: let t = @table
+                                                        ^^^^^^
+</code></pre>
+</div>
+</details>
+<details>
+<summary>
+<span class="status-icon status-pass">✓</span> meta wrong parameter number 3
+</summary>
+<div class="test-content">
+<div class="code-grid">
+<div>
+<h4>Code</h4>
+<pre><code class="language-plume">
+let t = @table
+  meta add: macro(x, y, z: quill)
+    $true
+  end
+end
+
+$(t+1)
+
+</code></pre>
+</div>
+<div>
+<h4>Bytecode</h4>
+<div class="tab-container">
+<div class="tab-headers">
+<button class="tab-link active" onclick="openBytecodeTab(event, 'bc_tabs_58_content_1')">???</button>
+<button class="tab-link" onclick="openBytecodeTab(event, 'bc_tabs_58_content_2')">main</button>
+</div>
+<div id="bc_tabs_58_content_1" class="tab-content" style="display: block;">
+<pre><code class="language-bytecode"><span class="bc-line-num">001</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 3</span>
+<span class="bc-line-num">002</span> <span class="bc-opcode">JUMP_IF_NOT_EMPTY</span> <span class="bc-arg">0 5</span>
+<span class="bc-line-num">003</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 3</span> <span class="bc-info">; quill</span>
+<span class="bc-line-num">004</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">0 3</span>
+<span class="bc-line-num">005</span> <span class="bc-opcode">LOAD_TRUE       </span> <span class="bc-arg">0 0</span> <span class="bc-info">; true</span>
+<span class="bc-line-num">006</span> <span class="bc-opcode">END             </span> <span class="bc-arg">0 0</span></code></pre>
+</div>
+<div id="bc_tabs_58_content_2" class="tab-content" style="display: none;">
+<pre><code class="language-bytecode"><span class="bc-line-num">001</span> <span class="bc-opcode">ENTER_SCOPE     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; l</span>
+<span class="bc-line-num">002</span> <span class="bc-opcode">BEGIN_ACC       </span> <span class="bc-arg">0 0</span>
+<span class="bc-line-num">003</span> <span class="bc-opcode">TABLE_NEW       </span> <span class="bc-arg">0 0</span>
+<span class="bc-line-num">004</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 2</span>
+<span class="bc-line-num">005</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 1</span> <span class="bc-info">; meta add: macro(x, y, z: quill)[...]</span>
+<span class="bc-line-num">006</span> <span class="bc-opcode">TABLE_SET_ACC_META</span> <span class="bc-arg">0 0</span> <span class="bc-info">; meta add: macro(x, y, z: quill)[...]</span>
+<span class="bc-line-num">007</span> <span class="bc-opcode">LOAD_STATIC     </span> <span class="bc-arg">0 14</span> <span class="bc-info">; table</span>
+<span class="bc-line-num">008</span> <span class="bc-opcode">ACC_CALL        </span> <span class="bc-arg">0 0</span> <span class="bc-info">; @table[...]</span>
+<span class="bc-line-num">009</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; t</span>
+<span class="bc-line-num">010</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 1</span> <span class="bc-info">; t</span>
+<span class="bc-line-num">011</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 4</span> <span class="bc-info">; 1</span>
+<span class="bc-line-num">012</span> <span class="bc-opcode">OPP_ADD         </span> <span class="bc-arg">0 0</span> <span class="bc-info">; t+1</span>
+<span class="bc-line-num">013</span> <span class="bc-opcode">END             </span> <span class="bc-arg">0 0</span></code></pre>
+</div>
+</div>
+</div>
+</div>
+<h4>Error</h4>
+<pre><code>
+Runtime error: Meta-macro &#39;add&#39; dont support named parameters.
+
+Traceback (most recent call first):
+  File &#39;meta wrong parameter number 3&#39;, line 1: let t = @table
+                                                        ^^^^^^
+</code></pre>
+</div>
+</details>
+<details>
+<summary>
+<span class="status-icon status-pass">✓</span> meta wrong parameter number 4
+</summary>
+<div class="test-content">
+<div class="code-grid">
+<div>
+<h4>Code</h4>
+<pre><code class="language-plume">
+let t = @table
+  meta call: macro(x, y, z: quill)
+    $true
+  end
+end
+
+$t(1)
+
+</code></pre>
+</div>
+<div>
+<h4>Bytecode</h4>
+<div class="tab-container">
+<div class="tab-headers">
+<button class="tab-link active" onclick="openBytecodeTab(event, 'bc_tabs_59_content_1')">???</button>
+<button class="tab-link" onclick="openBytecodeTab(event, 'bc_tabs_59_content_2')">main</button>
+</div>
+<div id="bc_tabs_59_content_1" class="tab-content" style="display: block;">
+<pre><code class="language-bytecode"><span class="bc-line-num">001</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 3</span>
+<span class="bc-line-num">002</span> <span class="bc-opcode">JUMP_IF_NOT_EMPTY</span> <span class="bc-arg">0 5</span>
+<span class="bc-line-num">003</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 3</span> <span class="bc-info">; quill</span>
+<span class="bc-line-num">004</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">0 3</span>
+<span class="bc-line-num">005</span> <span class="bc-opcode">LOAD_TRUE       </span> <span class="bc-arg">0 0</span> <span class="bc-info">; true</span>
+<span class="bc-line-num">006</span> <span class="bc-opcode">END             </span> <span class="bc-arg">0 0</span></code></pre>
+</div>
+<div id="bc_tabs_59_content_2" class="tab-content" style="display: none;">
+<pre><code class="language-bytecode"><span class="bc-line-num">001</span> <span class="bc-opcode">ENTER_SCOPE     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; l</span>
+<span class="bc-line-num">002</span> <span class="bc-opcode">BEGIN_ACC       </span> <span class="bc-arg">0 0</span>
+<span class="bc-line-num">003</span> <span class="bc-opcode">TABLE_NEW       </span> <span class="bc-arg">0 0</span>
+<span class="bc-line-num">004</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 2</span>
+<span class="bc-line-num">005</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 1</span> <span class="bc-info">; meta call: macro(x, y, z: quill)[...]</span>
+<span class="bc-line-num">006</span> <span class="bc-opcode">TABLE_SET_ACC_META</span> <span class="bc-arg">0 0</span> <span class="bc-info">; meta call: macro(x, y, z: quill)[...]</span>
+<span class="bc-line-num">007</span> <span class="bc-opcode">LOAD_STATIC     </span> <span class="bc-arg">0 14</span> <span class="bc-info">; table</span>
+<span class="bc-line-num">008</span> <span class="bc-opcode">ACC_CALL        </span> <span class="bc-arg">0 0</span> <span class="bc-info">; @table[...]</span>
+<span class="bc-line-num">009</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; t</span>
+<span class="bc-line-num">010</span> <span class="bc-opcode">BEGIN_ACC       </span> <span class="bc-arg">0 0</span>
+<span class="bc-line-num">011</span> <span class="bc-opcode">TABLE_NEW       </span> <span class="bc-arg">0 0</span>
+<span class="bc-line-num">012</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 4</span> <span class="bc-info">; 1</span>
+<span class="bc-line-num">013</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 1</span> <span class="bc-info">; t</span>
+<span class="bc-line-num">014</span> <span class="bc-opcode">ACC_CALL        </span> <span class="bc-arg">0 0</span> <span class="bc-info">; t(1)</span>
+<span class="bc-line-num">015</span> <span class="bc-opcode">END             </span> <span class="bc-arg">0 0</span></code></pre>
+</div>
+</div>
+</div>
+</div>
+<h4>Error</h4>
+<pre><code>
+Runtime error: Wrong number of positionnal arguments for macro &#39;t&#39;, 1 instead of 2.
+
+Traceback (most recent call first):
+  File &#39;meta wrong parameter number 4&#39;, line 7: $t(1)
+                                                 ^^^^
+</code></pre>
+</div>
+</details>
+<details>
+<summary>
+<span class="status-icon status-pass">✓</span> stack overflow
+</summary>
+<div class="test-content">
+<div class="code-grid">
+<div>
+<h4>Code</h4>
+<pre><code class="language-plume">
+let t = @table
+  meta addr: macro(x)
+    $(self+1)
+  end
+end
+
+$(t+1)
+
+</code></pre>
+</div>
+<div>
+<h4>Bytecode</h4>
+<div class="tab-container">
+<div class="tab-headers">
+<button class="tab-link active" onclick="openBytecodeTab(event, 'bc_tabs_60_content_1')">???</button>
+<button class="tab-link" onclick="openBytecodeTab(event, 'bc_tabs_60_content_2')">main</button>
+</div>
+<div id="bc_tabs_60_content_1" class="tab-content" style="display: block;">
+<pre><code class="language-bytecode"><span class="bc-line-num">001</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 2</span> <span class="bc-info">; self</span>
+<span class="bc-line-num">002</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 3</span> <span class="bc-info">; 1</span>
+<span class="bc-line-num">003</span> <span class="bc-opcode">OPP_ADD         </span> <span class="bc-arg">0 0</span> <span class="bc-info">; self+1</span>
+<span class="bc-line-num">004</span> <span class="bc-opcode">END             </span> <span class="bc-arg">0 0</span></code></pre>
+</div>
+<div id="bc_tabs_60_content_2" class="tab-content" style="display: none;">
+<pre><code class="language-bytecode"><span class="bc-line-num">001</span> <span class="bc-opcode">ENTER_SCOPE     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; l</span>
+<span class="bc-line-num">002</span> <span class="bc-opcode">BEGIN_ACC       </span> <span class="bc-arg">0 0</span>
+<span class="bc-line-num">003</span> <span class="bc-opcode">TABLE_NEW       </span> <span class="bc-arg">0 0</span>
+<span class="bc-line-num">004</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 2</span>
+<span class="bc-line-num">005</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 1</span> <span class="bc-info">; meta addr: macro(x)[...]</span>
+<span class="bc-line-num">006</span> <span class="bc-opcode">TABLE_SET_ACC_META</span> <span class="bc-arg">0 0</span> <span class="bc-info">; meta addr: macro(x)[...]</span>
+<span class="bc-line-num">007</span> <span class="bc-opcode">LOAD_STATIC     </span> <span class="bc-arg">0 14</span> <span class="bc-info">; table</span>
+<span class="bc-line-num">008</span> <span class="bc-opcode">ACC_CALL        </span> <span class="bc-arg">0 0</span> <span class="bc-info">; @table[...]</span>
+<span class="bc-line-num">009</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; t</span>
+<span class="bc-line-num">010</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 1</span> <span class="bc-info">; t</span>
+<span class="bc-line-num">011</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 3</span> <span class="bc-info">; 1</span>
+<span class="bc-line-num">012</span> <span class="bc-opcode">OPP_ADD         </span> <span class="bc-arg">0 0</span> <span class="bc-info">; t+1</span>
+<span class="bc-line-num">013</span> <span class="bc-opcode">END             </span> <span class="bc-arg">0 0</span></code></pre>
+</div>
+</div>
+</div>
+</div>
+<h4>Error</h4>
+<pre><code>
+Runtime error: stack overflow
+
+Traceback (most recent call first):
+  File &#39;stack overflow&#39;, line 3: $(self+1)
+                                   ^^^^^^
+    ...
+   (same line 999 more times)
+    ...
+  File &#39;stack overflow&#39;, line 7: $(t+1)
+                                   ^^^
+</code></pre>
+</div>
+</details>
+<details>
+<summary>
+<span class="status-icon status-pass">✓</span> unknow meta
+</summary>
+<div class="test-content">
+<div class="code-grid">
+<div>
+<h4>Code</h4>
+<pre><code class="language-plume">
+let t = @table
+  meta mymacro: macro()
+  end
+end
+
+</code></pre>
+</div>
+<div>
+<h4>Bytecode</h4>
+<div class="tab-container">
+<div class="tab-headers">
+<button class="tab-link active" onclick="openBytecodeTab(event, 'bc_tabs_61_content_1')">???</button>
+<button class="tab-link" onclick="openBytecodeTab(event, 'bc_tabs_61_content_2')">main</button>
+</div>
+<div id="bc_tabs_61_content_1" class="tab-content" style="display: block;">
+<pre><code class="language-bytecode"><span class="bc-line-num">001</span> <span class="bc-opcode">LOAD_EMPTY      </span> <span class="bc-arg">0 0</span>
+<span class="bc-line-num">002</span> <span class="bc-opcode">END             </span> <span class="bc-arg">0 0</span></code></pre>
+</div>
+<div id="bc_tabs_61_content_2" class="tab-content" style="display: none;">
+<pre><code class="language-bytecode"><span class="bc-line-num">001</span> <span class="bc-opcode">ENTER_SCOPE     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; l</span>
+<span class="bc-line-num">002</span> <span class="bc-opcode">BEGIN_ACC       </span> <span class="bc-arg">0 0</span>
+<span class="bc-line-num">003</span> <span class="bc-opcode">TABLE_NEW       </span> <span class="bc-arg">0 0</span>
+<span class="bc-line-num">004</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 2</span>
+<span class="bc-line-num">005</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 1</span> <span class="bc-info">; meta mymacro: macro()[...]</span>
+<span class="bc-line-num">006</span> <span class="bc-opcode">TABLE_SET_ACC_META</span> <span class="bc-arg">0 0</span> <span class="bc-info">; meta mymacro: macro()[...]</span>
+<span class="bc-line-num">007</span> <span class="bc-opcode">LOAD_STATIC     </span> <span class="bc-arg">0 14</span> <span class="bc-info">; table</span>
+<span class="bc-line-num">008</span> <span class="bc-opcode">ACC_CALL        </span> <span class="bc-arg">0 0</span> <span class="bc-info">; @table[...]</span>
+<span class="bc-line-num">009</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; t</span>
+<span class="bc-line-num">010</span> <span class="bc-opcode">LOAD_EMPTY      </span> <span class="bc-arg">0 0</span>
+<span class="bc-line-num">011</span> <span class="bc-opcode">END             </span> <span class="bc-arg">0 0</span></code></pre>
+</div>
+</div>
+</div>
+</div>
+<h4>Error</h4>
+<pre><code>
+Runtime error: &#39;mymacro&#39; isn&#39;t a valid meta-macro name.
+
+Traceback (most recent call first):
+  File &#39;unknow meta&#39;, line 1: let t = @table
+                                      ^^^^^^
+</code></pre>
+</div>
+</details>
 <h2>std: <span style="font-weight: normal;">17 passed out of 17 tests</span></h2>
 <div class="progress-bar"><div class="progress-success" style="width: 100.00%"></div><div class="progress-fail" style="width: 0.00%"></div></div>
 <details>
@@ -5133,14 +6854,14 @@ $join($t)
 <h4>Bytecode</h4>
 <div class="tab-container">
 <div class="tab-headers">
-<button class="tab-link active" onclick="openBytecodeTab(event, 'bc_tabs_33_content_1')">???</button>
-<button class="tab-link" onclick="openBytecodeTab(event, 'bc_tabs_33_content_2')">main</button>
+<button class="tab-link active" onclick="openBytecodeTab(event, 'bc_tabs_62_content_1')">???</button>
+<button class="tab-link" onclick="openBytecodeTab(event, 'bc_tabs_62_content_2')">main</button>
 </div>
-<div id="bc_tabs_33_content_1" class="tab-content" style="display: block;">
+<div id="bc_tabs_62_content_1" class="tab-content" style="display: block;">
 <pre><code class="language-bytecode"><span class="bc-line-num">001</span> <span class="bc-opcode">LOAD_EMPTY      </span> <span class="bc-arg">0 0</span>
 <span class="bc-line-num">002</span> <span class="bc-opcode">END             </span> <span class="bc-arg">0 0</span></code></pre>
 </div>
-<div id="bc_tabs_33_content_2" class="tab-content" style="display: none;">
+<div id="bc_tabs_62_content_2" class="tab-content" style="display: none;">
 <pre><code class="language-bytecode"><span class="bc-line-num">001</span> <span class="bc-opcode">ENTER_SCOPE     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; l</span>
 <span class="bc-line-num">002</span> <span class="bc-opcode">BEGIN_ACC       </span> <span class="bc-arg">0 0</span>
 <span class="bc-line-num">003</span> <span class="bc-opcode">TABLE_NEW       </span> <span class="bc-arg">0 0</span>
@@ -5261,10 +6982,10 @@ $lib.nib
 <h4>Bytecode</h4>
 <div class="tab-container">
 <div class="tab-headers">
-<button class="tab-link active" onclick="openBytecodeTab(event, 'bc_tabs_34_content_1')">./tests/plume/toimport/lib.plume</button>
-<button class="tab-link" onclick="openBytecodeTab(event, 'bc_tabs_34_content_2')">main</button>
+<button class="tab-link active" onclick="openBytecodeTab(event, 'bc_tabs_63_content_1')">./tests/plume/toimport/lib.plume</button>
+<button class="tab-link" onclick="openBytecodeTab(event, 'bc_tabs_63_content_2')">main</button>
 </div>
-<div id="bc_tabs_34_content_1" class="tab-content" style="display: block;">
+<div id="bc_tabs_63_content_1" class="tab-content" style="display: block;">
 <pre><code class="language-bytecode"><span class="bc-line-num">001</span> <span class="bc-opcode">ENTER_SCOPE     </span> <span class="bc-arg">0 0</span> <span class="bc-info">; n</span>
 <span class="bc-line-num">002</span> <span class="bc-opcode">BEGIN_ACC       </span> <span class="bc-arg">0 0</span>
 <span class="bc-line-num">003</span> <span class="bc-opcode">TABLE_NEW       </span> <span class="bc-arg">0 0</span>
@@ -5274,7 +6995,7 @@ $lib.nib
 <span class="bc-line-num">007</span> <span class="bc-opcode">ACC_TABLE       </span> <span class="bc-arg">0 0</span>
 <span class="bc-line-num">008</span> <span class="bc-opcode">END             </span> <span class="bc-arg">0 0</span></code></pre>
 </div>
-<div id="bc_tabs_34_content_2" class="tab-content" style="display: none;">
+<div id="bc_tabs_63_content_2" class="tab-content" style="display: none;">
 <pre><code class="language-bytecode"><span class="bc-line-num">001</span> <span class="bc-opcode">ENTER_SCOPE     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; l</span>
 <span class="bc-line-num">002</span> <span class="bc-opcode">BEGIN_ACC       </span> <span class="bc-arg">0 0</span>
 <span class="bc-line-num">003</span> <span class="bc-opcode">TABLE_NEW       </span> <span class="bc-arg">0 0</span>
@@ -5315,11 +7036,11 @@ $lib.wing() $infos
 <h4>Bytecode</h4>
 <div class="tab-container">
 <div class="tab-headers">
-<button class="tab-link active" onclick="openBytecodeTab(event, 'bc_tabs_35_content_1')">main</button>
-<button class="tab-link" onclick="openBytecodeTab(event, 'bc_tabs_35_content_2')">tests/plume/toimport/lib2.plume</button>
-<button class="tab-link" onclick="openBytecodeTab(event, 'bc_tabs_35_content_3')">wing</button>
+<button class="tab-link active" onclick="openBytecodeTab(event, 'bc_tabs_64_content_1')">main</button>
+<button class="tab-link" onclick="openBytecodeTab(event, 'bc_tabs_64_content_2')">tests/plume/toimport/lib2.plume</button>
+<button class="tab-link" onclick="openBytecodeTab(event, 'bc_tabs_64_content_3')">wing</button>
 </div>
-<div id="bc_tabs_35_content_1" class="tab-content" style="display: block;">
+<div id="bc_tabs_64_content_1" class="tab-content" style="display: block;">
 <pre><code class="language-bytecode"><span class="bc-line-num">001</span> <span class="bc-opcode">ENTER_SCOPE     </span> <span class="bc-arg">0 2</span> <span class="bc-info">; l</span>
 <span class="bc-line-num">002</span> <span class="bc-opcode">BEGIN_ACC       </span> <span class="bc-arg">0 0</span> <span class="bc-info">; l</span>
 <span class="bc-line-num">003</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 1</span> <span class="bc-info">; bird</span>
@@ -5343,7 +7064,7 @@ $lib.wing() $infos
 <span class="bc-line-num">021</span> <span class="bc-opcode">ACC_TEXT        </span> <span class="bc-arg">0 0</span>
 <span class="bc-line-num">022</span> <span class="bc-opcode">END             </span> <span class="bc-arg">0 0</span></code></pre>
 </div>
-<div id="bc_tabs_35_content_2" class="tab-content" style="display: none;">
+<div id="bc_tabs_64_content_2" class="tab-content" style="display: none;">
 <pre><code class="language-bytecode"><span class="bc-line-num">001</span> <span class="bc-opcode">ENTER_SCOPE     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; l</span>
 <span class="bc-line-num">002</span> <span class="bc-opcode">BEGIN_ACC       </span> <span class="bc-arg">0 0</span>
 <span class="bc-line-num">003</span> <span class="bc-opcode">TABLE_NEW       </span> <span class="bc-arg">0 0</span>
@@ -5355,7 +7076,7 @@ $lib.wing() $infos
 <span class="bc-line-num">009</span> <span class="bc-opcode">ACC_TABLE       </span> <span class="bc-arg">0 0</span>
 <span class="bc-line-num">010</span> <span class="bc-opcode">END             </span> <span class="bc-arg">0 0</span></code></pre>
 </div>
-<div id="bc_tabs_35_content_3" class="tab-content" style="display: none;">
+<div id="bc_tabs_64_content_3" class="tab-content" style="display: none;">
 <pre><code class="language-bytecode"><span class="bc-line-num">001</span> <span class="bc-opcode">BEGIN_ACC       </span> <span class="bc-arg">0 0</span> <span class="bc-info">; [...]</span>
 <span class="bc-line-num">002</span> <span class="bc-opcode">LOAD_STATIC     </span> <span class="bc-arg">0 18</span> <span class="bc-info">; infos</span>
 <span class="bc-line-num">003</span> <span class="bc-opcode">ACC_CHECK_TEXT  </span> <span class="bc-arg">0 0</span> <span class="bc-info">; infos</span>
@@ -5389,10 +7110,10 @@ $import(tests/plume/toimport/text)
 <h4>Bytecode</h4>
 <div class="tab-container">
 <div class="tab-headers">
-<button class="tab-link active" onclick="openBytecodeTab(event, 'bc_tabs_36_content_1')">main</button>
-<button class="tab-link" onclick="openBytecodeTab(event, 'bc_tabs_36_content_2')">tests/plume/toimport/text.plume</button>
+<button class="tab-link active" onclick="openBytecodeTab(event, 'bc_tabs_65_content_1')">main</button>
+<button class="tab-link" onclick="openBytecodeTab(event, 'bc_tabs_65_content_2')">tests/plume/toimport/text.plume</button>
 </div>
-<div id="bc_tabs_36_content_1" class="tab-content" style="display: block;">
+<div id="bc_tabs_65_content_1" class="tab-content" style="display: block;">
 <pre><code class="language-bytecode"><span class="bc-line-num">001</span> <span class="bc-opcode">ENTER_SCOPE     </span> <span class="bc-arg">0 0</span> <span class="bc-info">; $</span>
 <span class="bc-line-num">002</span> <span class="bc-opcode">BEGIN_ACC       </span> <span class="bc-arg">0 0</span>
 <span class="bc-line-num">003</span> <span class="bc-opcode">TABLE_NEW       </span> <span class="bc-arg">0 0</span>
@@ -5401,7 +7122,7 @@ $import(tests/plume/toimport/text)
 <span class="bc-line-num">006</span> <span class="bc-opcode">ACC_CALL        </span> <span class="bc-arg">0 0</span> <span class="bc-info">; import(tests/plume/toimport/text)</span>
 <span class="bc-line-num">007</span> <span class="bc-opcode">END             </span> <span class="bc-arg">0 0</span></code></pre>
 </div>
-<div id="bc_tabs_36_content_2" class="tab-content" style="display: none;">
+<div id="bc_tabs_65_content_2" class="tab-content" style="display: none;">
 <pre><code class="language-bytecode"><span class="bc-line-num">001</span> <span class="bc-opcode">ENTER_SCOPE     </span> <span class="bc-arg">0 0</span> <span class="bc-info">; w</span>
 <span class="bc-line-num">002</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 2</span> <span class="bc-info">; wings</span>
 <span class="bc-line-num">003</span> <span class="bc-opcode">END             </span> <span class="bc-arg">0 0</span></code></pre>
@@ -5434,15 +7155,15 @@ nib
 <h4>Bytecode</h4>
 <div class="tab-container">
 <div class="tab-headers">
-<button class="tab-link active" onclick="openBytecodeTab(event, 'bc_tabs_37_content_1')">./tests/plume/toimport/text.plume</button>
-<button class="tab-link" onclick="openBytecodeTab(event, 'bc_tabs_37_content_2')">main</button>
+<button class="tab-link active" onclick="openBytecodeTab(event, 'bc_tabs_66_content_1')">./tests/plume/toimport/text.plume</button>
+<button class="tab-link" onclick="openBytecodeTab(event, 'bc_tabs_66_content_2')">main</button>
 </div>
-<div id="bc_tabs_37_content_1" class="tab-content" style="display: block;">
+<div id="bc_tabs_66_content_1" class="tab-content" style="display: block;">
 <pre><code class="language-bytecode"><span class="bc-line-num">001</span> <span class="bc-opcode">ENTER_SCOPE     </span> <span class="bc-arg">0 0</span> <span class="bc-info">; w</span>
 <span class="bc-line-num">002</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 5</span> <span class="bc-info">; wings</span>
 <span class="bc-line-num">003</span> <span class="bc-opcode">END             </span> <span class="bc-arg">0 0</span></code></pre>
 </div>
-<div id="bc_tabs_37_content_2" class="tab-content" style="display: none;">
+<div id="bc_tabs_66_content_2" class="tab-content" style="display: none;">
 <pre><code class="language-bytecode"><span class="bc-line-num">001</span> <span class="bc-opcode">ENTER_SCOPE     </span> <span class="bc-arg">0 0</span> <span class="bc-info">; q</span>
 <span class="bc-line-num">002</span> <span class="bc-opcode">BEGIN_ACC       </span> <span class="bc-arg">0 0</span> <span class="bc-info">; q</span>
 <span class="bc-line-num">003</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 1</span> <span class="bc-info">; quill</span>
@@ -6487,10 +8208,10 @@ end
 <h4>Bytecode</h4>
 <div class="tab-container">
 <div class="tab-headers">
-<button class="tab-link active" onclick="openBytecodeTab(event, 'bc_tabs_38_content_1')">main</button>
-<button class="tab-link" onclick="openBytecodeTab(event, 'bc_tabs_38_content_2')">wing</button>
+<button class="tab-link active" onclick="openBytecodeTab(event, 'bc_tabs_67_content_1')">main</button>
+<button class="tab-link" onclick="openBytecodeTab(event, 'bc_tabs_67_content_2')">wing</button>
 </div>
-<div id="bc_tabs_38_content_1" class="tab-content" style="display: block;">
+<div id="bc_tabs_67_content_1" class="tab-content" style="display: block;">
 <pre><code class="language-bytecode"><span class="bc-line-num">001</span> <span class="bc-opcode">ENTER_SCOPE     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; l</span>
 <span class="bc-line-num">002</span> <span class="bc-opcode">BEGIN_ACC       </span> <span class="bc-arg">0 0</span>
 <span class="bc-line-num">003</span> <span class="bc-opcode">TABLE_NEW       </span> <span class="bc-arg">0 0</span>
@@ -6509,7 +8230,7 @@ end
 <span class="bc-line-num">016</span> <span class="bc-opcode">ACC_CALL        </span> <span class="bc-arg">0 0</span> <span class="bc-info">; @t.wing[...]</span>
 <span class="bc-line-num">017</span> <span class="bc-opcode">END             </span> <span class="bc-arg">0 0</span></code></pre>
 </div>
-<div id="bc_tabs_38_content_2" class="tab-content" style="display: none;">
+<div id="bc_tabs_67_content_2" class="tab-content" style="display: none;">
 <pre><code class="language-bytecode"><span class="bc-line-num">001</span> <span class="bc-opcode">BEGIN_ACC       </span> <span class="bc-arg">0 0</span> <span class="bc-info">; [...]</span>
 <span class="bc-line-num">002</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 3</span> <span class="bc-info">; Write &quot;</span>
 <span class="bc-line-num">003</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 1</span> <span class="bc-info">; body</span>
@@ -6549,14 +8270,14 @@ $t[1]()
 <h4>Bytecode</h4>
 <div class="tab-container">
 <div class="tab-headers">
-<button class="tab-link active" onclick="openBytecodeTab(event, 'bc_tabs_39_content_1')">???</button>
-<button class="tab-link" onclick="openBytecodeTab(event, 'bc_tabs_39_content_2')">main</button>
+<button class="tab-link active" onclick="openBytecodeTab(event, 'bc_tabs_68_content_1')">???</button>
+<button class="tab-link" onclick="openBytecodeTab(event, 'bc_tabs_68_content_2')">main</button>
 </div>
-<div id="bc_tabs_39_content_1" class="tab-content" style="display: block;">
+<div id="bc_tabs_68_content_1" class="tab-content" style="display: block;">
 <pre><code class="language-bytecode"><span class="bc-line-num">001</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 2</span> <span class="bc-info">; mark</span>
 <span class="bc-line-num">002</span> <span class="bc-opcode">END             </span> <span class="bc-arg">0 0</span></code></pre>
 </div>
-<div id="bc_tabs_39_content_2" class="tab-content" style="display: none;">
+<div id="bc_tabs_68_content_2" class="tab-content" style="display: none;">
 <pre><code class="language-bytecode"><span class="bc-line-num">001</span> <span class="bc-opcode">ENTER_SCOPE     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; l</span>
 <span class="bc-line-num">002</span> <span class="bc-opcode">BEGIN_ACC       </span> <span class="bc-arg">0 0</span>
 <span class="bc-line-num">003</span> <span class="bc-opcode">TABLE_NEW       </span> <span class="bc-arg">0 0</span>
@@ -6603,10 +8324,10 @@ $t.quill()
 <h4>Bytecode</h4>
 <div class="tab-container">
 <div class="tab-headers">
-<button class="tab-link active" onclick="openBytecodeTab(event, 'bc_tabs_40_content_1')">main</button>
-<button class="tab-link" onclick="openBytecodeTab(event, 'bc_tabs_40_content_2')">quill</button>
+<button class="tab-link active" onclick="openBytecodeTab(event, 'bc_tabs_69_content_1')">main</button>
+<button class="tab-link" onclick="openBytecodeTab(event, 'bc_tabs_69_content_2')">quill</button>
 </div>
-<div id="bc_tabs_40_content_1" class="tab-content" style="display: block;">
+<div id="bc_tabs_69_content_1" class="tab-content" style="display: block;">
 <pre><code class="language-bytecode"><span class="bc-line-num">001</span> <span class="bc-opcode">ENTER_SCOPE     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; l</span>
 <span class="bc-line-num">002</span> <span class="bc-opcode">BEGIN_ACC       </span> <span class="bc-arg">0 0</span>
 <span class="bc-line-num">003</span> <span class="bc-opcode">TABLE_NEW       </span> <span class="bc-arg">0 0</span>
@@ -6624,7 +8345,7 @@ $t.quill()
 <span class="bc-line-num">015</span> <span class="bc-opcode">ACC_CALL        </span> <span class="bc-arg">0 0</span> <span class="bc-info">; t.quill()</span>
 <span class="bc-line-num">016</span> <span class="bc-opcode">END             </span> <span class="bc-arg">0 0</span></code></pre>
 </div>
-<div id="bc_tabs_40_content_2" class="tab-content" style="display: none;">
+<div id="bc_tabs_69_content_2" class="tab-content" style="display: none;">
 <pre><code class="language-bytecode"><span class="bc-line-num">001</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 3</span> <span class="bc-info">; mark</span>
 <span class="bc-line-num">002</span> <span class="bc-opcode">END             </span> <span class="bc-arg">0 0</span></code></pre>
 </div>
@@ -6661,16 +8382,16 @@ $t[1]()
 <h4>Bytecode</h4>
 <div class="tab-container">
 <div class="tab-headers">
-<button class="tab-link active" onclick="openBytecodeTab(event, 'bc_tabs_41_content_1')">???</button>
-<button class="tab-link" onclick="openBytecodeTab(event, 'bc_tabs_41_content_2')">main</button>
+<button class="tab-link active" onclick="openBytecodeTab(event, 'bc_tabs_70_content_1')">???</button>
+<button class="tab-link" onclick="openBytecodeTab(event, 'bc_tabs_70_content_2')">main</button>
 </div>
-<div id="bc_tabs_41_content_1" class="tab-content" style="display: block;">
+<div id="bc_tabs_70_content_1" class="tab-content" style="display: block;">
 <pre><code class="language-bytecode"><span class="bc-line-num">001</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 1</span> <span class="bc-info">; mark</span>
 <span class="bc-line-num">002</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 1</span> <span class="bc-info">; self</span>
 <span class="bc-line-num">003</span> <span class="bc-opcode">TABLE_INDEX     </span> <span class="bc-arg">0 0</span> <span class="bc-info">; .mark</span>
 <span class="bc-line-num">004</span> <span class="bc-opcode">END             </span> <span class="bc-arg">0 0</span></code></pre>
 </div>
-<div id="bc_tabs_41_content_2" class="tab-content" style="display: none;">
+<div id="bc_tabs_70_content_2" class="tab-content" style="display: none;">
 <pre><code class="language-bytecode"><span class="bc-line-num">001</span> <span class="bc-opcode">ENTER_SCOPE     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; l</span>
 <span class="bc-line-num">002</span> <span class="bc-opcode">BEGIN_ACC       </span> <span class="bc-arg">0 0</span>
 <span class="bc-line-num">003</span> <span class="bc-opcode">TABLE_NEW       </span> <span class="bc-arg">0 0</span>
@@ -6722,10 +8443,10 @@ $t.quill()
 <h4>Bytecode</h4>
 <div class="tab-container">
 <div class="tab-headers">
-<button class="tab-link active" onclick="openBytecodeTab(event, 'bc_tabs_42_content_1')">main</button>
-<button class="tab-link" onclick="openBytecodeTab(event, 'bc_tabs_42_content_2')">quill</button>
+<button class="tab-link active" onclick="openBytecodeTab(event, 'bc_tabs_71_content_1')">main</button>
+<button class="tab-link" onclick="openBytecodeTab(event, 'bc_tabs_71_content_2')">quill</button>
 </div>
-<div id="bc_tabs_42_content_1" class="tab-content" style="display: block;">
+<div id="bc_tabs_71_content_1" class="tab-content" style="display: block;">
 <pre><code class="language-bytecode"><span class="bc-line-num">001</span> <span class="bc-opcode">ENTER_SCOPE     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; l</span>
 <span class="bc-line-num">002</span> <span class="bc-opcode">BEGIN_ACC       </span> <span class="bc-arg">0 0</span>
 <span class="bc-line-num">003</span> <span class="bc-opcode">TABLE_NEW       </span> <span class="bc-arg">0 0</span>
@@ -6746,7 +8467,7 @@ $t.quill()
 <span class="bc-line-num">018</span> <span class="bc-opcode">ACC_CALL        </span> <span class="bc-arg">0 0</span> <span class="bc-info">; t.quill()</span>
 <span class="bc-line-num">019</span> <span class="bc-opcode">END             </span> <span class="bc-arg">0 0</span></code></pre>
 </div>
-<div id="bc_tabs_42_content_2" class="tab-content" style="display: none;">
+<div id="bc_tabs_71_content_2" class="tab-content" style="display: none;">
 <pre><code class="language-bytecode"><span class="bc-line-num">001</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 1</span> <span class="bc-info">; mark</span>
 <span class="bc-line-num">002</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 1</span> <span class="bc-info">; self</span>
 <span class="bc-line-num">003</span> <span class="bc-opcode">TABLE_INDEX     </span> <span class="bc-arg">0 0</span> <span class="bc-info">; .mark</span>
@@ -6790,11 +8511,11 @@ $obj.wings
 <h4>Bytecode</h4>
 <div class="tab-container">
 <div class="tab-headers">
-<button class="tab-link active" onclick="openBytecodeTab(event, 'bc_tabs_43_content_1')">main</button>
-<button class="tab-link" onclick="openBytecodeTab(event, 'bc_tabs_43_content_2')">method1</button>
-<button class="tab-link" onclick="openBytecodeTab(event, 'bc_tabs_43_content_3')">method2</button>
+<button class="tab-link active" onclick="openBytecodeTab(event, 'bc_tabs_72_content_1')">main</button>
+<button class="tab-link" onclick="openBytecodeTab(event, 'bc_tabs_72_content_2')">method1</button>
+<button class="tab-link" onclick="openBytecodeTab(event, 'bc_tabs_72_content_3')">method2</button>
 </div>
-<div id="bc_tabs_43_content_1" class="tab-content" style="display: block;">
+<div id="bc_tabs_72_content_1" class="tab-content" style="display: block;">
 <pre><code class="language-bytecode"><span class="bc-line-num">001</span> <span class="bc-opcode">ENTER_SCOPE     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; l</span>
 <span class="bc-line-num">002</span> <span class="bc-opcode">BEGIN_ACC       </span> <span class="bc-arg">0 0</span>
 <span class="bc-line-num">003</span> <span class="bc-opcode">TABLE_NEW       </span> <span class="bc-arg">0 0</span>
@@ -6815,13 +8536,13 @@ $obj.wings
 <span class="bc-line-num">018</span> <span class="bc-opcode">TABLE_INDEX     </span> <span class="bc-arg">0 0</span> <span class="bc-info">; .wings</span>
 <span class="bc-line-num">019</span> <span class="bc-opcode">END             </span> <span class="bc-arg">0 0</span></code></pre>
 </div>
-<div id="bc_tabs_43_content_2" class="tab-content" style="display: none;">
+<div id="bc_tabs_72_content_2" class="tab-content" style="display: none;">
 <pre><code class="language-bytecode"><span class="bc-line-num">001</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 1</span> <span class="bc-info">; wings</span>
 <span class="bc-line-num">002</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 1</span> <span class="bc-info">; self</span>
 <span class="bc-line-num">003</span> <span class="bc-opcode">TABLE_INDEX     </span> <span class="bc-arg">0 0</span> <span class="bc-info">; .wings</span>
 <span class="bc-line-num">004</span> <span class="bc-opcode">END             </span> <span class="bc-arg">0 0</span></code></pre>
 </div>
-<div id="bc_tabs_43_content_3" class="tab-content" style="display: none;">
+<div id="bc_tabs_72_content_3" class="tab-content" style="display: none;">
 <pre><code class="language-bytecode"><span class="bc-line-num">001</span> <span class="bc-opcode">BEGIN_ACC       </span> <span class="bc-arg">0 0</span>
 <span class="bc-line-num">002</span> <span class="bc-opcode">TABLE_NEW       </span> <span class="bc-arg">0 0</span>
 <span class="bc-line-num">003</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 3</span> <span class="bc-info">; method1</span>
@@ -7291,10 +9012,10 @@ $wing(...t)
 <h4>Bytecode</h4>
 <div class="tab-container">
 <div class="tab-headers">
-<button class="tab-link active" onclick="openBytecodeTab(event, 'bc_tabs_44_content_1')">main</button>
-<button class="tab-link" onclick="openBytecodeTab(event, 'bc_tabs_44_content_2')">wing</button>
+<button class="tab-link active" onclick="openBytecodeTab(event, 'bc_tabs_73_content_1')">main</button>
+<button class="tab-link" onclick="openBytecodeTab(event, 'bc_tabs_73_content_2')">wing</button>
 </div>
-<div id="bc_tabs_44_content_1" class="tab-content" style="display: block;">
+<div id="bc_tabs_73_content_1" class="tab-content" style="display: block;">
 <pre><code class="language-bytecode"><span class="bc-line-num">001</span> <span class="bc-opcode">ENTER_SCOPE     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; l</span>
 <span class="bc-line-num">002</span> <span class="bc-opcode">BEGIN_ACC       </span> <span class="bc-arg">0 0</span>
 <span class="bc-line-num">003</span> <span class="bc-opcode">TABLE_NEW       </span> <span class="bc-arg">0 0</span>
@@ -7317,7 +9038,7 @@ $wing(...t)
 <span class="bc-line-num">020</span> <span class="bc-opcode">ACC_CALL        </span> <span class="bc-arg">0 0</span> <span class="bc-info">; wing(...t)</span>
 <span class="bc-line-num">021</span> <span class="bc-opcode">END             </span> <span class="bc-arg">0 0</span></code></pre>
 </div>
-<div id="bc_tabs_44_content_2" class="tab-content" style="display: none;">
+<div id="bc_tabs_73_content_2" class="tab-content" style="display: none;">
 <pre><code class="language-bytecode"><span class="bc-line-num">001</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 4</span>
 <span class="bc-line-num">002</span> <span class="bc-opcode">JUMP_IF_NOT_EMPTY</span> <span class="bc-arg">0 5</span>
 <span class="bc-line-num">003</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 7</span> <span class="bc-info">; word</span>
@@ -8331,11 +10052,11 @@ end
 <h4>Bytecode</h4>
 <div class="tab-container">
 <div class="tab-headers">
-<button class="tab-link active" onclick="openBytecodeTab(event, 'bc_tabs_45_content_1')">Document</button>
-<button class="tab-link" onclick="openBytecodeTab(event, 'bc_tabs_45_content_2')">css</button>
-<button class="tab-link" onclick="openBytecodeTab(event, 'bc_tabs_45_content_3')">main</button>
+<button class="tab-link active" onclick="openBytecodeTab(event, 'bc_tabs_74_content_1')">Document</button>
+<button class="tab-link" onclick="openBytecodeTab(event, 'bc_tabs_74_content_2')">css</button>
+<button class="tab-link" onclick="openBytecodeTab(event, 'bc_tabs_74_content_3')">main</button>
 </div>
-<div id="bc_tabs_45_content_1" class="tab-content" style="display: block;">
+<div id="bc_tabs_74_content_1" class="tab-content" style="display: block;">
 <pre><code class="language-bytecode"><span class="bc-line-num">001</span> <span class="bc-opcode">BEGIN_ACC       </span> <span class="bc-arg">0 0</span>
 <span class="bc-line-num">002</span> <span class="bc-opcode">TABLE_NEW       </span> <span class="bc-arg">0 0</span>
 <span class="bc-line-num">003</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 5</span> <span class="bc-info">; a</span>
@@ -8346,7 +10067,7 @@ end
 <span class="bc-line-num">008</span> <span class="bc-opcode">ACC_CALL        </span> <span class="bc-arg">0 0</span> <span class="bc-info">; @css(a)[...]</span>
 <span class="bc-line-num">009</span> <span class="bc-opcode">END             </span> <span class="bc-arg">0 0</span></code></pre>
 </div>
-<div id="bc_tabs_45_content_2" class="tab-content" style="display: none;">
+<div id="bc_tabs_74_content_2" class="tab-content" style="display: none;">
 <pre><code class="language-bytecode"><span class="bc-line-num">001</span> <span class="bc-opcode">BEGIN_ACC       </span> <span class="bc-arg">0 0</span>
 <span class="bc-line-num">002</span> <span class="bc-opcode">TABLE_NEW       </span> <span class="bc-arg">0 0</span>
 <span class="bc-line-num">003</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 2</span> <span class="bc-info">; style</span>
@@ -8365,7 +10086,7 @@ end
 <span class="bc-line-num">016</span> <span class="bc-opcode">LOAD_EMPTY      </span> <span class="bc-arg">0 0</span>
 <span class="bc-line-num">017</span> <span class="bc-opcode">END             </span> <span class="bc-arg">0 0</span></code></pre>
 </div>
-<div id="bc_tabs_45_content_3" class="tab-content" style="display: none;">
+<div id="bc_tabs_74_content_3" class="tab-content" style="display: none;">
 <pre><code class="language-bytecode"><span class="bc-line-num">001</span> <span class="bc-opcode">ENTER_SCOPE     </span> <span class="bc-arg">0 0</span> <span class="bc-info">; m</span>
 <span class="bc-line-num">002</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 1</span> <span class="bc-info">; css</span>
 <span class="bc-line-num">003</span> <span class="bc-opcode">STORE_STATIC    </span> <span class="bc-arg">0 18</span> <span class="bc-info">; css</span>
@@ -8416,10 +10137,10 @@ end
 <h4>Bytecode</h4>
 <div class="tab-container">
 <div class="tab-headers">
-<button class="tab-link active" onclick="openBytecodeTab(event, 'bc_tabs_46_content_1')">List</button>
-<button class="tab-link" onclick="openBytecodeTab(event, 'bc_tabs_46_content_2')">main</button>
+<button class="tab-link active" onclick="openBytecodeTab(event, 'bc_tabs_75_content_1')">List</button>
+<button class="tab-link" onclick="openBytecodeTab(event, 'bc_tabs_75_content_2')">main</button>
 </div>
-<div id="bc_tabs_46_content_1" class="tab-content" style="display: block;">
+<div id="bc_tabs_75_content_1" class="tab-content" style="display: block;">
 <pre><code class="language-bytecode"><span class="bc-line-num">001</span> <span class="bc-opcode">BEGIN_ACC       </span> <span class="bc-arg">0 0</span> <span class="bc-info">; [...]</span>
 <span class="bc-line-num">002</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 2</span> <span class="bc-info">; 0</span>
 <span class="bc-line-num">003</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">0 3</span> <span class="bc-info">; count</span>
@@ -8447,7 +10168,7 @@ end
 <span class="bc-line-num">025</span> <span class="bc-opcode">ACC_TEXT        </span> <span class="bc-arg">0 0</span>
 <span class="bc-line-num">026</span> <span class="bc-opcode">END             </span> <span class="bc-arg">0 0</span></code></pre>
 </div>
-<div id="bc_tabs_46_content_2" class="tab-content" style="display: none;">
+<div id="bc_tabs_75_content_2" class="tab-content" style="display: none;">
 <pre><code class="language-bytecode"><span class="bc-line-num">001</span> <span class="bc-opcode">ENTER_SCOPE     </span> <span class="bc-arg">0 0</span> <span class="bc-info">; m</span>
 <span class="bc-line-num">002</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 1</span> <span class="bc-info">; List</span>
 <span class="bc-line-num">003</span> <span class="bc-opcode">STORE_STATIC    </span> <span class="bc-arg">0 18</span> <span class="bc-info">; List</span>
@@ -8490,15 +10211,15 @@ end
 <h4>Bytecode</h4>
 <div class="tab-container">
 <div class="tab-headers">
-<button class="tab-link active" onclick="openBytecodeTab(event, 'bc_tabs_47_content_1')">Document</button>
-<button class="tab-link" onclick="openBytecodeTab(event, 'bc_tabs_47_content_2')">main</button>
-<button class="tab-link" onclick="openBytecodeTab(event, 'bc_tabs_47_content_3')">tests/plume/toimport/text.plume</button>
+<button class="tab-link active" onclick="openBytecodeTab(event, 'bc_tabs_76_content_1')">Document</button>
+<button class="tab-link" onclick="openBytecodeTab(event, 'bc_tabs_76_content_2')">main</button>
+<button class="tab-link" onclick="openBytecodeTab(event, 'bc_tabs_76_content_3')">tests/plume/toimport/text.plume</button>
 </div>
-<div id="bc_tabs_47_content_1" class="tab-content" style="display: block;">
+<div id="bc_tabs_76_content_1" class="tab-content" style="display: block;">
 <pre><code class="language-bytecode"><span class="bc-line-num">001</span> <span class="bc-opcode">LOAD_EMPTY      </span> <span class="bc-arg">0 0</span>
 <span class="bc-line-num">002</span> <span class="bc-opcode">END             </span> <span class="bc-arg">0 0</span></code></pre>
 </div>
-<div id="bc_tabs_47_content_2" class="tab-content" style="display: none;">
+<div id="bc_tabs_76_content_2" class="tab-content" style="display: none;">
 <pre><code class="language-bytecode"><span class="bc-line-num">001</span> <span class="bc-opcode">ENTER_SCOPE     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; l</span>
 <span class="bc-line-num">002</span> <span class="bc-opcode">BEGIN_ACC       </span> <span class="bc-arg">0 0</span>
 <span class="bc-line-num">003</span> <span class="bc-opcode">TABLE_NEW       </span> <span class="bc-arg">0 0</span>
@@ -8511,7 +10232,7 @@ end
 <span class="bc-line-num">010</span> <span class="bc-opcode">LOAD_EMPTY      </span> <span class="bc-arg">0 0</span>
 <span class="bc-line-num">011</span> <span class="bc-opcode">END             </span> <span class="bc-arg">0 0</span></code></pre>
 </div>
-<div id="bc_tabs_47_content_3" class="tab-content" style="display: none;">
+<div id="bc_tabs_76_content_3" class="tab-content" style="display: none;">
 <pre><code class="language-bytecode"><span class="bc-line-num">001</span> <span class="bc-opcode">ENTER_SCOPE     </span> <span class="bc-arg">0 0</span> <span class="bc-info">; w</span>
 <span class="bc-line-num">002</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 3</span> <span class="bc-info">; wings</span>
 <span class="bc-line-num">003</span> <span class="bc-opcode">END             </span> <span class="bc-arg">0 0</span></code></pre>
@@ -8546,10 +10267,10 @@ $(wing(&quot;a&quot;))
 <h4>Bytecode</h4>
 <div class="tab-container">
 <div class="tab-headers">
-<button class="tab-link active" onclick="openBytecodeTab(event, 'bc_tabs_48_content_1')">main</button>
-<button class="tab-link" onclick="openBytecodeTab(event, 'bc_tabs_48_content_2')">wing</button>
+<button class="tab-link active" onclick="openBytecodeTab(event, 'bc_tabs_77_content_1')">main</button>
+<button class="tab-link" onclick="openBytecodeTab(event, 'bc_tabs_77_content_2')">wing</button>
 </div>
-<div id="bc_tabs_48_content_1" class="tab-content" style="display: block;">
+<div id="bc_tabs_77_content_1" class="tab-content" style="display: block;">
 <pre><code class="language-bytecode"><span class="bc-line-num">001</span> <span class="bc-opcode">ENTER_SCOPE     </span> <span class="bc-arg">0 0</span> <span class="bc-info">; m</span>
 <span class="bc-line-num">002</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 1</span> <span class="bc-info">; wing</span>
 <span class="bc-line-num">003</span> <span class="bc-opcode">STORE_STATIC    </span> <span class="bc-arg">0 18</span> <span class="bc-info">; wing</span>
@@ -8560,7 +10281,7 @@ $(wing(&quot;a&quot;))
 <span class="bc-line-num">008</span> <span class="bc-opcode">ACC_CALL        </span> <span class="bc-arg">0 0</span> <span class="bc-info">; wing(&quot;a&quot;)</span>
 <span class="bc-line-num">009</span> <span class="bc-opcode">END             </span> <span class="bc-arg">0 0</span></code></pre>
 </div>
-<div id="bc_tabs_48_content_2" class="tab-content" style="display: none;">
+<div id="bc_tabs_77_content_2" class="tab-content" style="display: none;">
 <pre><code class="language-bytecode"><span class="bc-line-num">001</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 1</span> <span class="bc-info">; body</span>
 <span class="bc-line-num">002</span> <span class="bc-opcode">END             </span> <span class="bc-arg">0 0</span></code></pre>
 </div>
@@ -8735,14 +10456,14 @@ end
 <h4>Bytecode</h4>
 <div class="tab-container">
 <div class="tab-headers">
-<button class="tab-link active" onclick="openBytecodeTab(event, 'bc_tabs_49_content_1')">Wing</button>
-<button class="tab-link" onclick="openBytecodeTab(event, 'bc_tabs_49_content_2')">main</button>
+<button class="tab-link active" onclick="openBytecodeTab(event, 'bc_tabs_78_content_1')">Wing</button>
+<button class="tab-link" onclick="openBytecodeTab(event, 'bc_tabs_78_content_2')">main</button>
 </div>
-<div id="bc_tabs_49_content_1" class="tab-content" style="display: block;">
+<div id="bc_tabs_78_content_1" class="tab-content" style="display: block;">
 <pre><code class="language-bytecode"><span class="bc-line-num">001</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 1</span> <span class="bc-info">; body</span>
 <span class="bc-line-num">002</span> <span class="bc-opcode">END             </span> <span class="bc-arg">0 0</span></code></pre>
 </div>
-<div id="bc_tabs_49_content_2" class="tab-content" style="display: none;">
+<div id="bc_tabs_78_content_2" class="tab-content" style="display: none;">
 <pre><code class="language-bytecode"><span class="bc-line-num">001</span> <span class="bc-opcode">ENTER_SCOPE     </span> <span class="bc-arg">0 0</span> <span class="bc-info">; m</span>
 <span class="bc-line-num">002</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 1</span> <span class="bc-info">; Wing</span>
 <span class="bc-line-num">003</span> <span class="bc-opcode">STORE_STATIC    </span> <span class="bc-arg">0 18</span> <span class="bc-info">; Wing</span>
@@ -9099,14 +10820,14 @@ $x(1)
 <h4>Bytecode</h4>
 <div class="tab-container">
 <div class="tab-headers">
-<button class="tab-link active" onclick="openBytecodeTab(event, 'bc_tabs_50_content_1')">???</button>
-<button class="tab-link" onclick="openBytecodeTab(event, 'bc_tabs_50_content_2')">main</button>
+<button class="tab-link active" onclick="openBytecodeTab(event, 'bc_tabs_79_content_1')">???</button>
+<button class="tab-link" onclick="openBytecodeTab(event, 'bc_tabs_79_content_2')">main</button>
 </div>
-<div id="bc_tabs_50_content_1" class="tab-content" style="display: block;">
+<div id="bc_tabs_79_content_1" class="tab-content" style="display: block;">
 <pre><code class="language-bytecode"><span class="bc-line-num">001</span> <span class="bc-opcode">LOAD_EMPTY      </span> <span class="bc-arg">0 0</span>
 <span class="bc-line-num">002</span> <span class="bc-opcode">END             </span> <span class="bc-arg">0 0</span></code></pre>
 </div>
-<div id="bc_tabs_50_content_2" class="tab-content" style="display: none;">
+<div id="bc_tabs_79_content_2" class="tab-content" style="display: none;">
 <pre><code class="language-bytecode"><span class="bc-line-num">001</span> <span class="bc-opcode">ENTER_SCOPE     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; l</span>
 <span class="bc-line-num">002</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 1</span>
 <span class="bc-line-num">003</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; x</span>
@@ -9277,10 +10998,10 @@ end
 <h4>Bytecode</h4>
 <div class="tab-container">
 <div class="tab-headers">
-<button class="tab-link active" onclick="openBytecodeTab(event, 'bc_tabs_51_content_1')">main</button>
-<button class="tab-link" onclick="openBytecodeTab(event, 'bc_tabs_51_content_2')">quill</button>
+<button class="tab-link active" onclick="openBytecodeTab(event, 'bc_tabs_80_content_1')">main</button>
+<button class="tab-link" onclick="openBytecodeTab(event, 'bc_tabs_80_content_2')">quill</button>
 </div>
-<div id="bc_tabs_51_content_1" class="tab-content" style="display: block;">
+<div id="bc_tabs_80_content_1" class="tab-content" style="display: block;">
 <pre><code class="language-bytecode"><span class="bc-line-num">001</span> <span class="bc-opcode">ENTER_SCOPE     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; l</span>
 <span class="bc-line-num">002</span> <span class="bc-opcode">BEGIN_ACC       </span> <span class="bc-arg">0 0</span>
 <span class="bc-line-num">003</span> <span class="bc-opcode">TABLE_NEW       </span> <span class="bc-arg">0 0</span>
@@ -9302,7 +11023,7 @@ end
 <span class="bc-line-num">019</span> <span class="bc-opcode">ACC_CALL        </span> <span class="bc-arg">0 0</span> <span class="bc-info">; @t.quill[...]</span>
 <span class="bc-line-num">020</span> <span class="bc-opcode">END             </span> <span class="bc-arg">0 0</span></code></pre>
 </div>
-<div id="bc_tabs_51_content_2" class="tab-content" style="display: none;">
+<div id="bc_tabs_80_content_2" class="tab-content" style="display: none;">
 <pre><code class="language-bytecode"><span class="bc-line-num">001</span> <span class="bc-opcode">BEGIN_ACC       </span> <span class="bc-arg">0 0</span> <span class="bc-info">; [...]</span>
 <span class="bc-line-num">002</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 1</span> <span class="bc-info">; write</span>
 <span class="bc-line-num">003</span> <span class="bc-opcode">ACC_CHECK_TEXT  </span> <span class="bc-arg">0 0</span> <span class="bc-info">; write</span>
@@ -9347,10 +11068,10 @@ $t.quill()
 <h4>Bytecode</h4>
 <div class="tab-container">
 <div class="tab-headers">
-<button class="tab-link active" onclick="openBytecodeTab(event, 'bc_tabs_52_content_1')">main</button>
-<button class="tab-link" onclick="openBytecodeTab(event, 'bc_tabs_52_content_2')">quill</button>
+<button class="tab-link active" onclick="openBytecodeTab(event, 'bc_tabs_81_content_1')">main</button>
+<button class="tab-link" onclick="openBytecodeTab(event, 'bc_tabs_81_content_2')">quill</button>
 </div>
-<div id="bc_tabs_52_content_1" class="tab-content" style="display: block;">
+<div id="bc_tabs_81_content_1" class="tab-content" style="display: block;">
 <pre><code class="language-bytecode"><span class="bc-line-num">001</span> <span class="bc-opcode">ENTER_SCOPE     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; l</span>
 <span class="bc-line-num">002</span> <span class="bc-opcode">BEGIN_ACC       </span> <span class="bc-arg">0 0</span>
 <span class="bc-line-num">003</span> <span class="bc-opcode">TABLE_NEW       </span> <span class="bc-arg">0 0</span>
@@ -9371,7 +11092,7 @@ $t.quill()
 <span class="bc-line-num">018</span> <span class="bc-opcode">ACC_CALL        </span> <span class="bc-arg">0 0</span> <span class="bc-info">; t.quill()</span>
 <span class="bc-line-num">019</span> <span class="bc-opcode">END             </span> <span class="bc-arg">0 0</span></code></pre>
 </div>
-<div id="bc_tabs_52_content_2" class="tab-content" style="display: none;">
+<div id="bc_tabs_81_content_2" class="tab-content" style="display: none;">
 <pre><code class="language-bytecode"><span class="bc-line-num">001</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 1</span> <span class="bc-info">; mark</span>
 <span class="bc-line-num">002</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 1</span> <span class="bc-info">; self</span>
 <span class="bc-line-num">003</span> <span class="bc-opcode">TABLE_INDEX     </span> <span class="bc-arg">0 0</span> <span class="bc-info">; .mark</span>
@@ -9434,10 +11155,10 @@ $(wing(false))
 <h4>Bytecode</h4>
 <div class="tab-container">
 <div class="tab-headers">
-<button class="tab-link active" onclick="openBytecodeTab(event, 'bc_tabs_53_content_1')">main</button>
-<button class="tab-link" onclick="openBytecodeTab(event, 'bc_tabs_53_content_2')">wing</button>
+<button class="tab-link active" onclick="openBytecodeTab(event, 'bc_tabs_82_content_1')">main</button>
+<button class="tab-link" onclick="openBytecodeTab(event, 'bc_tabs_82_content_2')">wing</button>
 </div>
-<div id="bc_tabs_53_content_1" class="tab-content" style="display: block;">
+<div id="bc_tabs_82_content_1" class="tab-content" style="display: block;">
 <pre><code class="language-bytecode"><span class="bc-line-num">001</span> <span class="bc-opcode">ENTER_SCOPE     </span> <span class="bc-arg">0 0</span> <span class="bc-info">; m</span>
 <span class="bc-line-num">002</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 1</span> <span class="bc-info">; wing</span>
 <span class="bc-line-num">003</span> <span class="bc-opcode">STORE_STATIC    </span> <span class="bc-arg">0 18</span> <span class="bc-info">; wing</span>
@@ -9448,7 +11169,7 @@ $(wing(false))
 <span class="bc-line-num">008</span> <span class="bc-opcode">ACC_CALL        </span> <span class="bc-arg">0 0</span> <span class="bc-info">; wing(false)</span>
 <span class="bc-line-num">009</span> <span class="bc-opcode">END             </span> <span class="bc-arg">0 0</span></code></pre>
 </div>
-<div id="bc_tabs_53_content_2" class="tab-content" style="display: none;">
+<div id="bc_tabs_82_content_2" class="tab-content" style="display: none;">
 <pre><code class="language-bytecode"><span class="bc-line-num">001</span> <span class="bc-opcode">LOAD_EMPTY      </span> <span class="bc-arg">0 0</span>
 <span class="bc-line-num">002</span> <span class="bc-opcode">END             </span> <span class="bc-arg">0 0</span></code></pre>
 </div>
@@ -9486,10 +11207,10 @@ $Wing( ?optn)
 <h4>Bytecode</h4>
 <div class="tab-container">
 <div class="tab-headers">
-<button class="tab-link active" onclick="openBytecodeTab(event, 'bc_tabs_54_content_1')">Wing</button>
-<button class="tab-link" onclick="openBytecodeTab(event, 'bc_tabs_54_content_2')">main</button>
+<button class="tab-link active" onclick="openBytecodeTab(event, 'bc_tabs_83_content_1')">Wing</button>
+<button class="tab-link" onclick="openBytecodeTab(event, 'bc_tabs_83_content_2')">main</button>
 </div>
-<div id="bc_tabs_54_content_1" class="tab-content" style="display: block;">
+<div id="bc_tabs_83_content_1" class="tab-content" style="display: block;">
 <pre><code class="language-bytecode"><span class="bc-line-num">001</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 2</span>
 <span class="bc-line-num">002</span> <span class="bc-opcode">JUMP_IF_NOT_EMPTY</span> <span class="bc-arg">0 5</span>
 <span class="bc-line-num">003</span> <span class="bc-opcode">LOAD_FALSE      </span> <span class="bc-arg">0 0</span> <span class="bc-info">; ?optn</span>
@@ -9502,7 +11223,7 @@ $Wing( ?optn)
 <span class="bc-line-num">010</span> <span class="bc-opcode">JUMP            </span> <span class="bc-arg">0 11</span>
 <span class="bc-line-num">011</span> <span class="bc-opcode">END             </span> <span class="bc-arg">0 0</span></code></pre>
 </div>
-<div id="bc_tabs_54_content_2" class="tab-content" style="display: none;">
+<div id="bc_tabs_83_content_2" class="tab-content" style="display: none;">
 <pre><code class="language-bytecode"><span class="bc-line-num">001</span> <span class="bc-opcode">ENTER_SCOPE     </span> <span class="bc-arg">0 0</span> <span class="bc-info">; m</span>
 <span class="bc-line-num">002</span> <span class="bc-opcode">BEGIN_ACC       </span> <span class="bc-arg">0 0</span> <span class="bc-info">; m</span>
 <span class="bc-line-num">003</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 1</span> <span class="bc-info">; Wing</span>
