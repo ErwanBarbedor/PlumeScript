@@ -1176,6 +1176,12 @@ end
 	    table.remove(plume.callstack)
 	        ms[msp]=callResult
 	    else
+	            if _type(x)=="string" then
+	        x=tonumber(x) or x
+	    end
+	            if _type(y)=="string" then
+	        y=tonumber(y) or y
+	    end
 	        ms[msp]=x==y
 	    end
 	            end
@@ -1269,6 +1275,12 @@ end
 	    table.remove(plume.callstack)
 	        ms[msp]=callResult
 	    else
+	            if _type(x)=="string" then
+	        x=tonumber(x) or x
+	    end
+	            if _type(y)=="string" then
+	        y=tonumber(y) or y
+	    end
 	        ms[msp]=x==y
 	    end
 	            end
@@ -1306,6 +1318,12 @@ end
 	    table.remove(plume.callstack)
 	        ms[msp]=callResult
 	    else
+	            if _type(x)=="string" then
+	        x=tonumber(x) or x
+	    end
+	            if _type(y)=="string" then
+	        y=tonumber(y) or y
+	    end
 	        ms[msp]=x==y
 	    end
 				goto DISPATCH
@@ -1336,6 +1354,12 @@ end
 	    table.remove(plume.callstack)
 	        ms[msp]=not callResult
 	    else
+	            if _type(x)=="string" then
+	        x=tonumber(x) or x
+	    end
+	            if _type(y)=="string" then
+	        y=tonumber(y) or y
+	    end
 	        ms[msp]=x ~=y
 	    end
 				goto DISPATCH
