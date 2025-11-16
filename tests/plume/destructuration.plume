@@ -1,0 +1,8 @@
+/// Test multiple let
+let a, b
+
+set b = Wing
+$b
+/// Output
+Wing
+/// End

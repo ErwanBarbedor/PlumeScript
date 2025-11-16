@@ -303,9 +303,9 @@ return function (plume)
         local statconst = (s * C("STATIC", P"static"))^-1 * (s * C("CONST", P"const"))^-1
         local idnList = idn * (os * P"," * os * idn)^0
         local let = Ct("LET", P"let" * statconst *  (
-        						  s * idn * os * C("EQ", P"=")   * lbody
+        						  s * idnList * os * C("EQ", P"=")   * lbody
         						+ s * idnList * s  * C("FROM", P"from") * s * Ct("EVAL", expr)
-                                + s * idn
+                                + s * idnList
         					)^-1)
         local compound = Ct("COMPOUND", C("ADD", P"+") + C("SUB", P"-")
                        + C("MUL", P"*") + C("DIV", P"/"))
