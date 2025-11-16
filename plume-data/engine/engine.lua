@@ -977,126 +977,230 @@ end
 end
 			::OPP_GTE::
 	do
-	    x=ms[msp-1]
-	    y=ms[msp]
-	        if _type(x)=="string" then
-	        x=tonumber(x)
-	        if not x then
-	                return false, "Cannot convert the string value to a number.", ip, chunk
-	        end
-	    elseif _type(x) ~="number" then
-	            return false, "Cannot do comparison or arithmetic with " .. _type(x).. " value.", ip, chunk
-	    end
-	        if _type(y)=="string" then
-	        y=tonumber(y)
-	        if not y then
-	                return false, "Cannot convert the string value to a number.", ip, chunk
-	        end
-	    elseif _type(y) ~="number" then
-	            return false, "Cannot do comparison or arithmetic with " .. _type(y).. " value.", ip, chunk
-	    end
-	    msp=msp-1
-	    ms[msp]=x >=y
-				goto DISPATCH
+					goto DISPATCH
 end
 			::OPP_LTE::
 	do
-	    x=ms[msp-1]
-	    y=ms[msp]
-	        if _type(x)=="string" then
-	        x=tonumber(x)
-	        if not x then
-	                return false, "Cannot convert the string value to a number.", ip, chunk
-	        end
-	    elseif _type(x) ~="number" then
-	            return false, "Cannot do comparison or arithmetic with " .. _type(x).. " value.", ip, chunk
-	    end
-	        if _type(y)=="string" then
-	        y=tonumber(y)
-	        if not y then
-	                return false, "Cannot convert the string value to a number.", ip, chunk
-	        end
-	    elseif _type(y) ~="number" then
-	            return false, "Cannot do comparison or arithmetic with " .. _type(y).. " value.", ip, chunk
-	    end
-	    msp=msp-1
-	    ms[msp]=x <=y
-				goto DISPATCH
+					goto DISPATCH
 end
 			::OPP_GT::
 	do
 	    x=ms[msp-1]
 	    y=ms[msp]
+	    local err
 	        if _type(x)=="string" then
 	        x=tonumber(x)
 	        if not x then
-	                return false, "Cannot convert the string value to a number.", ip, chunk
+	            err="Cannot convert the string value to a number."
 	        end
 	    elseif _type(x) ~="number" then
-	            return false, "Cannot do comparison or arithmetic with " .. _type(x).. " value.", ip, chunk
+	        err="Cannot do comparison or arithmetic with " .. _type(x).. " value."
 	    end
 	        if _type(y)=="string" then
 	        y=tonumber(y)
 	        if not y then
-	                return false, "Cannot convert the string value to a number.", ip, chunk
+	            err="Cannot convert the string value to a number."
 	        end
 	    elseif _type(y) ~="number" then
-	            return false, "Cannot do comparison or arithmetic with " .. _type(y).. " value.", ip, chunk
+	        err="Cannot do comparison or arithmetic with " .. _type(y).. " value."
 	    end
 	    msp=msp-1
-	    ms[msp]=x > y
+	    if err then
+	        local macro, params, meta
+	        if _type(x)=="table" and x.meta and x.meta.table.gt then
+	            meta=x.meta.table.gt
+	            params={y, x}
+	        elseif _type(y)=="table" and y.meta and y.meta.table.lt then
+	            meta=y.meta.table.lt
+	            params={x, y}
+	        end
+	        if not meta then
+	                return false, err, ip, chunk
+	        end
+	            plume.callstack=plume.callstack or {}
+	    table.insert(plume.callstack, {macro=chunk, ip=ip})
+	    local success, callResult, cip, source=plume.run(meta, params)
+	    if not success then
+	        return success, callResult, cip, (source or macro)
+	    end
+	    table.remove(plume.callstack)
+	        if invert then
+	            callResult=not callResult
+	            if callResult then
+	                ms[msp]=callResult
+	            else
+	                msp=msp+1
+	                    x=ms[msp-1]
+	    y=ms[msp]
+	    msp=msp-1
+	    local macro, params, meta
+	    if _type(x)=="table" and x.meta and x.meta.table.eq then
+	        meta=x.meta.table.eq
+	        params={y, x}
+	    elseif _type(y)=="table" and y.meta and y.meta.table.eq then
+	        meta=y.meta.table.eq
+	        params={x, y}
+	    end
+	    if meta then
+	            plume.callstack=plume.callstack or {}
+	    table.insert(plume.callstack, {macro=chunk, ip=ip})
+	    local success, callResult, cip, source=plume.run(meta, params)
+	    if not success then
+	        return success, callResult, cip, (source or macro)
+	    end
+	    table.remove(plume.callstack)
+	        ms[msp]=callResult
+	    else
+	        ms[msp]=x==y
+	    end
+	            end
+	        else
+	            ms[msp]=callResult
+	        end
+	    else
+	        ms[msp]=x > y
+	    end
 				goto DISPATCH
 end
 			::OPP_LT::
 	do
 	    x=ms[msp-1]
 	    y=ms[msp]
+	    local err
 	        if _type(x)=="string" then
 	        x=tonumber(x)
 	        if not x then
-	                return false, "Cannot convert the string value to a number.", ip, chunk
+	            err="Cannot convert the string value to a number."
 	        end
 	    elseif _type(x) ~="number" then
-	            return false, "Cannot do comparison or arithmetic with " .. _type(x).. " value.", ip, chunk
+	        err="Cannot do comparison or arithmetic with " .. _type(x).. " value."
 	    end
 	        if _type(y)=="string" then
 	        y=tonumber(y)
 	        if not y then
-	                return false, "Cannot convert the string value to a number.", ip, chunk
+	            err="Cannot convert the string value to a number."
 	        end
 	    elseif _type(y) ~="number" then
-	            return false, "Cannot do comparison or arithmetic with " .. _type(y).. " value.", ip, chunk
+	        err="Cannot do comparison or arithmetic with " .. _type(y).. " value."
 	    end
 	    msp=msp-1
-	    ms[msp]=x < y
+	    if err then
+	        local macro, params, meta, invert
+	        if _type(x)=="table" and x.meta and x.meta.table.lt then
+	            meta=x.meta.table.lt
+	            params={y, x}
+	        elseif _type(y)=="table" and y.meta and y.meta.table.gt then
+	            meta=y.meta.table.gt
+	            params={x, y}
+	        elseif _type(x)=="table" and x.meta and x.meta.table.gt then
+	            meta=x.meta.table.gt
+	            params={y, x}
+	            invert=true
+	        elseif _type(y)=="table" and y.meta and y.meta.table.lt then
+	            meta=y.meta.table.lt
+	            params={x, y}
+	            invert=true
+	        end
+	        if not meta then
+	                return false, err, ip, chunk
+	        end
+	            plume.callstack=plume.callstack or {}
+	    table.insert(plume.callstack, {macro=chunk, ip=ip})
+	    local success, callResult, cip, source=plume.run(meta, params)
+	    if not success then
+	        return success, callResult, cip, (source or macro)
+	    end
+	    table.remove(plume.callstack)
+	        if invert then
+	            callResult=not callResult
+	            if callResult then
+	                ms[msp]=callResult
+	            else
+	                msp=msp+1
+	                    x=ms[msp-1]
+	    y=ms[msp]
+	    msp=msp-1
+	    local macro, params, meta
+	    if _type(x)=="table" and x.meta and x.meta.table.eq then
+	        meta=x.meta.table.eq
+	        params={y, x}
+	    elseif _type(y)=="table" and y.meta and y.meta.table.eq then
+	        meta=y.meta.table.eq
+	        params={x, y}
+	    end
+	    if meta then
+	            plume.callstack=plume.callstack or {}
+	    table.insert(plume.callstack, {macro=chunk, ip=ip})
+	    local success, callResult, cip, source=plume.run(meta, params)
+	    if not success then
+	        return success, callResult, cip, (source or macro)
+	    end
+	    table.remove(plume.callstack)
+	        ms[msp]=callResult
+	    else
+	        ms[msp]=x==y
+	    end
+	            end
+	        else
+	            ms[msp]=callResult
+	        end
+	    else
+	        ms[msp]=x < y
+	    end
 				goto DISPATCH
 end
 			::OPP_EQ::
 	do
 	    x=ms[msp-1]
 	    y=ms[msp]
-	        if _type(x)=="string" then
-	        x=tonumber(x) or x
-	    end
-	        if _type(y)=="string" then
-	        y=tonumber(y) or y
-	    end
 	    msp=msp-1
-	    ms[msp]=x==y
+	    local macro, params, meta
+	    if _type(x)=="table" and x.meta and x.meta.table.eq then
+	        meta=x.meta.table.eq
+	        params={y, x}
+	    elseif _type(y)=="table" and y.meta and y.meta.table.eq then
+	        meta=y.meta.table.eq
+	        params={x, y}
+	    end
+	    if meta then
+	            plume.callstack=plume.callstack or {}
+	    table.insert(plume.callstack, {macro=chunk, ip=ip})
+	    local success, callResult, cip, source=plume.run(meta, params)
+	    if not success then
+	        return success, callResult, cip, (source or macro)
+	    end
+	    table.remove(plume.callstack)
+	        ms[msp]=callResult
+	    else
+	        ms[msp]=x==y
+	    end
 				goto DISPATCH
 end
 			::OPP_NEQ::
 	do
 	    x=ms[msp-1]
 	    y=ms[msp]
-	        if _type(x)=="string" then
-	        x=tonumber(x) or x
-	    end
-	        if _type(y)=="string" then
-	        y=tonumber(y) or y
-	    end
 	    msp=msp-1
-	    ms[msp]=x ~=y
+	    local macro, params, meta
+	    if _type(x)=="table" and x.meta and x.meta.table.eq then
+	        meta=x.meta.table.eq
+	        params={y, x}
+	    elseif _type(y)=="table" and y.meta and y.meta.table.eq then
+	        meta=y.meta.table.eq
+	        params={x, y}
+	    end
+	    if meta then
+	            plume.callstack=plume.callstack or {}
+	    table.insert(plume.callstack, {macro=chunk, ip=ip})
+	    local success, callResult, cip, source=plume.run(meta, params)
+	    if not success then
+	        return success, callResult, cip, (source or macro)
+	    end
+	    table.remove(plume.callstack)
+	        ms[msp]=not callResult
+	    else
+	        ms[msp]=x ~=y
+	    end
 				goto DISPATCH
 end
 			::OPP_AND::
