@@ -61,3 +61,16 @@ Traceback (most recent call first):
   File 'meta wrong parameter number 4', line 7: $t(1)
                                                  ^^^^
 /// End
+
+/// Test unknow meta
+let t = @table
+  meta mymacro: macro()
+  end
+end
+/// Error
+Runtime error: 'mymacro' isn't a valid meta-macro name.
+
+Traceback (most recent call first):
+  File 'unknow meta', line 1: let t = @table
+                                      ^^^^^^
+/// End
