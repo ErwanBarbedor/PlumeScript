@@ -316,13 +316,7 @@ return function(plume)
 			local dest = #varlist > 1
 
 			if body then
-				if from then
-					table.insert(concats, false)
-					nodeHandler(body)
-					table.remove(concats)
-				else
-					scope(accBlock())(body)
-				end
+				scope(accBlock())(body)
 				
 				for i, var in ipairs(varlist) do
 					if from then
