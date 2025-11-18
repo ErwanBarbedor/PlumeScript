@@ -18,6 +18,18 @@ a=quill
 b=mark
 /// End
 
+/// Test positionnal with set
+let t = $table(quill, mark)
+
+let a, b
+set a, b = $t
+a=$a\n
+b=$b
+/// Output
+a=quill
+b=mark
+/// End
+
 /// Test named destructuration 1
 let t = @table
 	wing: mark
@@ -49,4 +61,15 @@ let wing, paint, quill from $t
 $wing, $paint, $quill
 /// Output
 mark, song, nib
+/// End
+
+/// Test named destructuration with set
+let t = @table
+	wing: mark
+end
+let wing
+set wing from $t
+$wing
+/// Output
+mark
 /// End
