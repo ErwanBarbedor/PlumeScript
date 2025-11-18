@@ -22,6 +22,11 @@ return function(plume)
 		error(message, -1)
 	end
 
+	function plume.error.compoundWithDestructionError(node)
+		local message = "Cannot use compound operator and destructuration at the same time."
+		throwCompilationError(node, message)
+	end
+
 	function plume.error.useUnknowVariableError(node, varName)
 		local message = string.format("Cannot use variable '%s', it isn't defined in the current scope.", varName)
 		throwCompilationError(node, message)

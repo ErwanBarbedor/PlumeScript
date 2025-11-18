@@ -300,19 +300,31 @@ return function (plume)
 
         -- affectations
         local lbody    = Ct("BODY", V"firstStatement")
-        local statconst = (s * C("STATIC", P"static"))^-1 * (s * C("CONST", P"const"))^-1
-        local idnList = idn * (os * P"," * os * idn)^0
-        local let = Ct("LET", P"let" * statconst *  (
-        						  s * idnList * os * C("EQ", P"=")   * lbody
-        						+ s * idnList * s  * C("FROM", P"from") * s * lbody
-                                + s * idnList
-        					)^-1)
         local compound = Ct("COMPOUND", C("ADD", P"+") + C("SUB", P"-")
                        + C("MUL", P"*") + C("DIV", P"/"))
+        local statconst = (s * C("STATIC", P"static"))^-1 * (s * C("CONST", P"const"))^-1
 
-        local setvar = Ct("EVAL", (idn * V"evalOpperator"^1)) + idn
-        local set = Ct("SET", P"set" * s * setvar * (os * compound^-1 * P"=" * lbody))
+        --- Common identifier
+        local letsetvar = idn
 
+        --- Specific identifiers
+        local letvar     = letsetvar
+        local setvar     = Ct("SETINDEX", (idn * V"evalOpperator"^1)) + letsetvar
+
+        --- Make full rule
+        local letvarlist = Ct("VARLIST", letvar * (os * P"," * os * letvar)^0)
+        local setvarlist = Ct("VARLIST", setvar * (os * P"," * os * setvar)^0)
+        
+        local let = Ct("LET", P"let" * statconst * s * letvarlist * (
+                                  os * C("EQ", P"=") * lbody
+                                + s  * C("FROM", P"from") * s * lbody
+                            )^-1)
+
+        local set = Ct("SET", P"set" * s * setvarlist * (
+                      os * compound^-1 * P"=" * lbody
+                    + s * C("FROM", P"from") * s * lbody
+                    ))
+        
         -- table
         local listitem = Ct("LIST_ITEM", P"- " * os * V"firstStatement") 
         local hashitem = Ct("HASH_ITEM", Ct("META", P"meta"*s)^-1 * idn * P":" *  os *lbody)
