@@ -294,31 +294,103 @@ return function(plume)
 		--------------
 		-- VARIABLE --
 		--------------
-		nodeHandlerTable.LET = function(node)
-			local idns    = plume.ast.getAll(node, "IDENTIFIER")
-			local body    = plume.ast.get(node, "BODY") or plume.ast.get(node, "EVAL")
-			local const   = plume.ast.get(node, "CONST")
-			local static  = plume.ast.get(node, "STATIC")
+		local function setlet(node, let)
+			local isConst     = plume.ast.get(node, "CONST")
+			local isStatic    = plume.ast.get(node, "STATIC")
+
 			local from    = plume.ast.get(node, "FROM")
-			local eq      = plume.ast.get(node, "EQ")
+			local compound = plume.ast.get(node, "COMPOUND")
+
+			local nodevarlist = plume.ast.get(node, "VARLIST")
+			local body        = plume.ast.get(node, "BODY")
 
 			local varlist = {}
-			for _, idn in ipairs(idns) do
-				local var = registerVariable(idn.content, static, const)
-				if not var then
-					plume.error.letExistingVariableError(node, idn.content)
+			for _, var in ipairs(nodevarlist.children) do
+				local rvar
+				if var.name == "IDENTIFIER" then
+					if let then
+						rvar = registerVariable(var.content, isStatic, isConst)
+						if not rvar then
+							plume.error.letExistingVariableError(node, var.content)
+						end
+					else
+						rvar = getVariable(var.content)
+						if not rvar then
+							plume.error.setUnknowVariableError(node, var.content)
+						elseif rvar.isConst then
+							plume.error.setConstantVariableError(node, var.content)
+						end
+					end
+
+					rvar.name = var.content
+				elseif var.name == "SETINDEX" then
+					-- The last index should be detected by the parser, and not modified here.
+					-- This is a temporary workaround.
+
+					local last = var.children[#var.children]
+					if last.name == "INDEX" or last.name == "DIRECT_INDEX" then
+						var.children[#var.children] = nil
+						var.name = "EVAL"
+
+						rvar = {}
+						rvar.ref = var.children
+						rvar.getKey = function()
+							if last.name == "DIRECT_INDEX" then
+								local key = registerConstant(last.children[1].content)
+								registerOP(node, ops.LOAD_CONSTANT, 0, key)
+							else
+								childrenHandler(last) -- key
+							end
+							table.insert(concats, false) -- prevent value to be checked against text type
+							nodeHandler(var) -- table
+							table.remove(concats)
+						end
+
+						-- if compound then
+						-- 	getKey()
+						-- 	registerOP(node, ops.TABLE_INDEX, 0, 0)
+						-- end
+
+						-- accBlock()(body) -- value
+						-- if compound then
+						-- 	registerOP(node, ops["OPP_" .. compound.children[1].name], 0, 0)
+						-- end
+
+						-- getKey()
+						-- registerOP(node, ops.TABLE_SET, 0, 0)
+					else
+						plume.error.cannotSetCallError(node)
+					end
 				end
-				table.insert(varlist, var)
-				var.name = idn.content
-				var.ref = idn
+
+				rvar.ref = var
+				table.insert(varlist, rvar)
+				
 			end
 
-			local dest = #varlist > 1
-
 			if body then
-				scope(accBlock())(body)
+				local dest = #varlist > 1
+
+				if dest and compound then
+					plume.error.compoundWithDestructionError(node)
+				end
+
+				if not compound then
+					scope(accBlock())(body)
+				end
 				
 				for i, var in ipairs(varlist) do
+					if compound then
+						if var.getKey then
+							var.getKey()
+							registerOP(node, ops.TABLE_INDEX, 0, 0)
+						else
+							nodeHandler(var.ref)
+						end
+						scope(accBlock())(body)
+						registerOP(var.ref, ops["OPP_" .. compound.children[1].name], 0, 0)
+					end
+
 					if from then
 						if i < #varlist then
 							registerOP(nil, ops.DUPLICATE, 0, 0)
@@ -334,83 +406,30 @@ return function(plume)
 						registerOP(nil, ops.SWITCH, 0, 0)
 						registerOP(nil, ops.TABLE_INDEX, 0, 0)
 					end
-					if static then
-						registerOP(var.ref, ops.STORE_STATIC, 0, var.offset)
+
+					if var.getKey then
+						var.getKey()
+						registerOP(node, ops.TABLE_SET, 0, 0)
 					else
-						registerOP(var.ref, ops.STORE_LOCAL, 0, var.offset)
+						if var.isStatic then
+							registerOP(var.ref, ops.STORE_STATIC, 0, var.offset)
+						elseif not let and var.frameOffset > 0 then
+							registerOP(var.ref, ops.STORE_LEXICAL, var.frameOffset, var.offset)
+						else
+							registerOP(var.ref, ops.STORE_LOCAL, 0, var.offset)
+						end
 					end
 				end
-			elseif const then
+			elseif isConst and let then
 				plume.error.letEmptyConstantError(node)
 			end
 		end
 
+		nodeHandlerTable.LET = function(node)
+			setlet(node, true)
+		end
 		nodeHandlerTable.SET = function(node)
-			local idn      = plume.ast.get(node, "IDENTIFIER")
-			local eval     = plume.ast.get(node, "EVAL")
-			local body     = plume.ast.get(node, "BODY")
-			local compound = plume.ast.get(node, "COMPOUND")
-			
-			local varName
-			if idn then
-				local var = getVariable(idn.content)
-				if not var then
-					plume.error.setUnknowVariableError(node, idn.content)
-				elseif var.isConst then
-					plume.error.setConstantVariableError(node, idn.content)
-				end
-
-				if compound then
-					nodeHandler(idn)
-				end
-				accBlock()(body)
-				if compound then
-					registerOP(idn, ops["OPP_" .. compound.children[1].name], 0, 0)
-				end
-
-				if var.isStatic then
-					registerOP(idn, ops.STORE_STATIC, 0, var.offset)
-				elseif var.frameOffset > 0 then
-					registerOP(idn, ops.STORE_LEXICAL, var.frameOffset, var.offset)
-				else
-					registerOP(idn, ops.STORE_LOCAL, 0, var.offset)
-				end
-			else
-				-- The last index should be detected by the parser, and not modified here.
-				-- This is a temporary workaround.
-				local last = eval.children[#eval.children]
-
-				if last.name == "INDEX" or last.name == "DIRECT_INDEX" then
-					eval.children[#eval.children] = nil
-
-					local function getKey()
-						if last.name == "DIRECT_INDEX" then
-							local key = registerConstant(last.children[1].content)
-							registerOP(node, ops.LOAD_CONSTANT, 0, key)
-						else
-							childrenHandler(last) -- key
-						end
-						table.insert(concats, false) -- prevent value to be checked against text type
-						nodeHandler(eval) -- table
-						table.remove(concats)
-					end
-
-					if compound then
-						getKey()
-						registerOP(node, ops.TABLE_INDEX, 0, 0)
-					end
-
-					accBlock()(body) -- value
-					if compound then
-						registerOP(node, ops["OPP_" .. compound.children[1].name], 0, 0)
-					end
-
-					getKey()
-					registerOP(node, ops.TABLE_SET, 0, 0)
-				else
-					plume.error.cannotSetCallError(node)
-				end
-			end
+			setlet(node, false)
 		end
 
 		----------
