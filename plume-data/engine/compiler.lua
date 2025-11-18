@@ -326,7 +326,6 @@ return function(plume)
 				elseif var.name == "SETINDEX" then
 					-- The last index should be detected by the parser, and not modified here.
 					-- This is a temporary workaround.
-
 					local last = var.children[#var.children]
 					if last.name == "INDEX" or last.name == "DIRECT_INDEX" then
 						var.children[#var.children] = nil
@@ -345,19 +344,6 @@ return function(plume)
 							nodeHandler(var) -- table
 							table.remove(concats)
 						end
-
-						-- if compound then
-						-- 	getKey()
-						-- 	registerOP(node, ops.TABLE_INDEX, 0, 0)
-						-- end
-
-						-- accBlock()(body) -- value
-						-- if compound then
-						-- 	registerOP(node, ops["OPP_" .. compound.children[1].name], 0, 0)
-						-- end
-
-						-- getKey()
-						-- registerOP(node, ops.TABLE_SET, 0, 0)
 					else
 						plume.error.cannotSetCallError(node)
 					end
