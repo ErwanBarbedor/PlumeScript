@@ -531,16 +531,15 @@ end
 	            parameters[macro.variadicOffset]=capture
 	        end
 	            msfp=msfp-1
-	            plume.callstack=plume.callstack or {}
-	    table.insert(plume.callstack, {macro=chunk, ip=ip})
-	    if #plume.callstack>1000 then
+	            table.insert(chunk.callstack, {chunk=chunk, macro=macro, ip=ip})
+	    if #chunk.callstack>1000 then
 	            return false, "stack overflow", ip, chunk
 	    end
 	    local success, callResult, cip, source=plume.run(macro, parameters)
 	    if not success then
 	        return success, callResult, cip, (source or macro)
 	    end
-	    table.remove(plume.callstack)
+	    table.remove(chunk.callstack)
 	        msp=msp+1
 	        ms[msp]=callResult
 	    elseif t=="luaFunction" then
@@ -596,10 +595,12 @@ end
 	    ms[limit-1]=args
 	    msp=limit - 1
 	        msfp=msfp-1
+	        table.insert(chunk.callstack, {chunk=chunk, macro=macro, ip=ip})
 	        local success, result=pcall(macro.callable, ms[msp], chunk)
 	        if not success then
 	            return success, result, ip, chunk
 	        end
+	        table.remove(chunk.callstack)
 	        if result==nil then
 	            result=empty
 	        end
@@ -756,16 +757,15 @@ end
 	    if not meta then
 	            return false, err, ip, chunk
 	    end
-	        plume.callstack=plume.callstack or {}
-	    table.insert(plume.callstack, {macro=chunk, ip=ip})
-	    if #plume.callstack>1000 then
+	        table.insert(chunk.callstack, {chunk=chunk, macro=meta, ip=ip})
+	    if #chunk.callstack>1000 then
 	            return false, "stack overflow", ip, chunk
 	    end
 	    local success, callResult, cip, source=plume.run(meta, params)
 	    if not success then
 	        return success, callResult, cip, (source or macro)
 	    end
-	    table.remove(plume.callstack)
+	    table.remove(chunk.callstack)
 	    ms[msp]=callResult
 	    else
 	        ms[msp]=x + y
@@ -813,16 +813,15 @@ end
 	    if not meta then
 	            return false, err, ip, chunk
 	    end
-	        plume.callstack=plume.callstack or {}
-	    table.insert(plume.callstack, {macro=chunk, ip=ip})
-	    if #plume.callstack>1000 then
+	        table.insert(chunk.callstack, {chunk=chunk, macro=meta, ip=ip})
+	    if #chunk.callstack>1000 then
 	            return false, "stack overflow", ip, chunk
 	    end
 	    local success, callResult, cip, source=plume.run(meta, params)
 	    if not success then
 	        return success, callResult, cip, (source or macro)
 	    end
-	    table.remove(plume.callstack)
+	    table.remove(chunk.callstack)
 	    ms[msp]=callResult
 	    else
 	        ms[msp]=x * y
@@ -870,16 +869,15 @@ end
 	    if not meta then
 	            return false, err, ip, chunk
 	    end
-	        plume.callstack=plume.callstack or {}
-	    table.insert(plume.callstack, {macro=chunk, ip=ip})
-	    if #plume.callstack>1000 then
+	        table.insert(chunk.callstack, {chunk=chunk, macro=meta, ip=ip})
+	    if #chunk.callstack>1000 then
 	            return false, "stack overflow", ip, chunk
 	    end
 	    local success, callResult, cip, source=plume.run(meta, params)
 	    if not success then
 	        return success, callResult, cip, (source or macro)
 	    end
-	    table.remove(plume.callstack)
+	    table.remove(chunk.callstack)
 	    ms[msp]=callResult
 	    else
 	        ms[msp]=x - y
@@ -927,16 +925,15 @@ end
 	    if not meta then
 	            return false, err, ip, chunk
 	    end
-	        plume.callstack=plume.callstack or {}
-	    table.insert(plume.callstack, {macro=chunk, ip=ip})
-	    if #plume.callstack>1000 then
+	        table.insert(chunk.callstack, {chunk=chunk, macro=meta, ip=ip})
+	    if #chunk.callstack>1000 then
 	            return false, "stack overflow", ip, chunk
 	    end
 	    local success, callResult, cip, source=plume.run(meta, params)
 	    if not success then
 	        return success, callResult, cip, (source or macro)
 	    end
-	    table.remove(plume.callstack)
+	    table.remove(chunk.callstack)
 	    ms[msp]=callResult
 	    else
 	        ms[msp]=x / y
@@ -964,16 +961,15 @@ end
 	    if not meta then
 	            return false, err, ip, chunk
 	    end
-	        plume.callstack=plume.callstack or {}
-	    table.insert(plume.callstack, {macro=chunk, ip=ip})
-	    if #plume.callstack>1000 then
+	        table.insert(chunk.callstack, {chunk=chunk, macro=meta, ip=ip})
+	    if #chunk.callstack>1000 then
 	            return false, "stack overflow", ip, chunk
 	    end
 	    local success, callResult, cip, source=plume.run(meta, params)
 	    if not success then
 	        return success, callResult, cip, (source or macro)
 	    end
-	    table.remove(plume.callstack)
+	    table.remove(chunk.callstack)
 	    ms[msp]=callResult
 	    else
 	        ms[msp]=- x
@@ -1021,16 +1017,15 @@ end
 	    if not meta then
 	            return false, err, ip, chunk
 	    end
-	        plume.callstack=plume.callstack or {}
-	    table.insert(plume.callstack, {macro=chunk, ip=ip})
-	    if #plume.callstack>1000 then
+	        table.insert(chunk.callstack, {chunk=chunk, macro=meta, ip=ip})
+	    if #chunk.callstack>1000 then
 	            return false, "stack overflow", ip, chunk
 	    end
 	    local success, callResult, cip, source=plume.run(meta, params)
 	    if not success then
 	        return success, callResult, cip, (source or macro)
 	    end
-	    table.remove(plume.callstack)
+	    table.remove(chunk.callstack)
 	    ms[msp]=callResult
 	    else
 	        ms[msp]=x % y
@@ -1078,16 +1073,15 @@ end
 	    if not meta then
 	            return false, err, ip, chunk
 	    end
-	        plume.callstack=plume.callstack or {}
-	    table.insert(plume.callstack, {macro=chunk, ip=ip})
-	    if #plume.callstack>1000 then
+	        table.insert(chunk.callstack, {chunk=chunk, macro=meta, ip=ip})
+	    if #chunk.callstack>1000 then
 	            return false, "stack overflow", ip, chunk
 	    end
 	    local success, callResult, cip, source=plume.run(meta, params)
 	    if not success then
 	        return success, callResult, cip, (source or macro)
 	    end
-	    table.remove(plume.callstack)
+	    table.remove(chunk.callstack)
 	    ms[msp]=callResult
 	    else
 	        ms[msp]=x ^ y
@@ -1136,16 +1130,15 @@ end
 	        if not meta then
 	                return false, err, ip, chunk
 	        end
-	            plume.callstack=plume.callstack or {}
-	    table.insert(plume.callstack, {macro=chunk, ip=ip})
-	    if #plume.callstack>1000 then
+	            table.insert(chunk.callstack, {chunk=chunk, macro=meta, ip=ip})
+	    if #chunk.callstack>1000 then
 	            return false, "stack overflow", ip, chunk
 	    end
 	    local success, callResult, cip, source=plume.run(meta, params)
 	    if not success then
 	        return success, callResult, cip, (source or macro)
 	    end
-	    table.remove(plume.callstack)
+	    table.remove(chunk.callstack)
 	        if invert then
 	            callResult=not callResult
 	            if callResult then
@@ -1164,16 +1157,15 @@ end
 	        params={x, y}
 	    end
 	    if meta then
-	            plume.callstack=plume.callstack or {}
-	    table.insert(plume.callstack, {macro=chunk, ip=ip})
-	    if #plume.callstack>1000 then
+	            table.insert(chunk.callstack, {chunk=chunk, macro=meta, ip=ip})
+	    if #chunk.callstack>1000 then
 	            return false, "stack overflow", ip, chunk
 	    end
 	    local success, callResult, cip, source=plume.run(meta, params)
 	    if not success then
 	        return success, callResult, cip, (source or macro)
 	    end
-	    table.remove(plume.callstack)
+	    table.remove(chunk.callstack)
 	        ms[msp]=callResult
 	    else
 	            if _type(x)=="string" then
@@ -1235,16 +1227,15 @@ end
 	        if not meta then
 	                return false, err, ip, chunk
 	        end
-	            plume.callstack=plume.callstack or {}
-	    table.insert(plume.callstack, {macro=chunk, ip=ip})
-	    if #plume.callstack>1000 then
+	            table.insert(chunk.callstack, {chunk=chunk, macro=meta, ip=ip})
+	    if #chunk.callstack>1000 then
 	            return false, "stack overflow", ip, chunk
 	    end
 	    local success, callResult, cip, source=plume.run(meta, params)
 	    if not success then
 	        return success, callResult, cip, (source or macro)
 	    end
-	    table.remove(plume.callstack)
+	    table.remove(chunk.callstack)
 	        if invert then
 	            callResult=not callResult
 	            if callResult then
@@ -1263,16 +1254,15 @@ end
 	        params={x, y}
 	    end
 	    if meta then
-	            plume.callstack=plume.callstack or {}
-	    table.insert(plume.callstack, {macro=chunk, ip=ip})
-	    if #plume.callstack>1000 then
+	            table.insert(chunk.callstack, {chunk=chunk, macro=meta, ip=ip})
+	    if #chunk.callstack>1000 then
 	            return false, "stack overflow", ip, chunk
 	    end
 	    local success, callResult, cip, source=plume.run(meta, params)
 	    if not success then
 	        return success, callResult, cip, (source or macro)
 	    end
-	    table.remove(plume.callstack)
+	    table.remove(chunk.callstack)
 	        ms[msp]=callResult
 	    else
 	            if _type(x)=="string" then
@@ -1306,16 +1296,15 @@ end
 	        params={x, y}
 	    end
 	    if meta then
-	            plume.callstack=plume.callstack or {}
-	    table.insert(plume.callstack, {macro=chunk, ip=ip})
-	    if #plume.callstack>1000 then
+	            table.insert(chunk.callstack, {chunk=chunk, macro=meta, ip=ip})
+	    if #chunk.callstack>1000 then
 	            return false, "stack overflow", ip, chunk
 	    end
 	    local success, callResult, cip, source=plume.run(meta, params)
 	    if not success then
 	        return success, callResult, cip, (source or macro)
 	    end
-	    table.remove(plume.callstack)
+	    table.remove(chunk.callstack)
 	        ms[msp]=callResult
 	    else
 	            if _type(x)=="string" then
@@ -1342,16 +1331,15 @@ end
 	        params={x, y}
 	    end
 	    if meta then
-	            plume.callstack=plume.callstack or {}
-	    table.insert(plume.callstack, {macro=chunk, ip=ip})
-	    if #plume.callstack>1000 then
+	            table.insert(chunk.callstack, {chunk=chunk, macro=meta, ip=ip})
+	    if #chunk.callstack>1000 then
 	            return false, "stack overflow", ip, chunk
 	    end
 	    local success, callResult, cip, source=plume.run(meta, params)
 	    if not success then
 	        return success, callResult, cip, (source or macro)
 	    end
-	    table.remove(plume.callstack)
+	    table.remove(chunk.callstack)
 	        ms[msp]=not callResult
 	    else
 	            if _type(x)=="string" then

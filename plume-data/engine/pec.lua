@@ -35,8 +35,10 @@ return function(plume)
 
 		if state[1] then
 			pec.constants = state[1].constants
+			pec.callstack = state[1].callstack
 		else
 			pec.constants = {}
+			pec.callstack = {}
 		end
 
 		if not state[pec] then
