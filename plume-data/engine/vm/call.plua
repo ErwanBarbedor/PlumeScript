@@ -48,9 +48,8 @@
 @end
 
 @define _CALL macro parameters
-    plume.callstack = plume.callstack or {}
-    table.insert(plume.callstack, {macro=chunk, ip=ip})
-    if #plume.callstack>1000 then
+    table.insert(chunk.callstack, {chunk=chunk, macro=$macro, ip=ip})
+    if #chunk.callstack>1000 then
         @_ERROR {{"stack overflow"}}
     end
 
@@ -58,7 +57,7 @@
     if not success then
         return success, callResult, cip, (source or macro)
     end
-    table.remove(plume.callstack)
+    table.remove(chunk.callstack)
 @end
 
 @define ACC_CALL arg1 arg2
@@ -109,10 +108,12 @@
         ms[msp] = callResult
     elseif t == "luaFunction" then
         @ACC_TABLE
+        table.insert(chunk.callstack, {chunk=chunk, macro=macro, ip=ip})
         local success, result  =  pcall(macro.callable, ms[msp], chunk)
         if not success then
             return success, result, ip, chunk
         end
+        table.remove(chunk.callstack)
 
         if result == nil then
             result = empty

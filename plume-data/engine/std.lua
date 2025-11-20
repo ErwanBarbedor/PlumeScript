@@ -220,7 +220,7 @@ return function (plume)
                 if args.table.lua then
                     return dofile(filename)(plume) 
                 else
-                    local success, result = plume.executeFile(filename, chunk.state)
+                    local success, result = plume.executeFile(filename, chunk.state, true)
                     if not success then
                         error(result, 0)
                     end
