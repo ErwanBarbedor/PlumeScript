@@ -136,13 +136,22 @@ end
 ```
 
 #### `for`
-Iterates over the elements of an expression.
+Iterates over the elements of a collection. The loop variable can be a single identifier or a list of identifiers for positional unpacking.
 
 ```plume
 for varname in evaluation
     ...
 end
+
+// Positional unpacking
+for index, item in enumerationTable
+    ...
+end
 ```
+
+If multiple variables are provided (e.g., `for x, y in list`), Plume expects each item in the evaluated expression to be a table (or list). The items of that sub-table are unpacked positionally into the defined variables.
+*   Extra items in the sub-table are ignored.
+*   An error is raised if the sub-table has fewer items than the number of declared variables.
 
 #### `while`
 Executes a block of code as long as a condition is true.
@@ -268,48 +277,110 @@ end
 ```
 
 #### `let`
-Declares a new variable in the **current scope**.
-
-```
-let [static] [const] name [= value]
-let [static] [const] name1, name2, ... from expression
-```
-
-*   **`let name`**: Declares `name` with a default value of `empty`.
-*   **`let const name = value`**: Declares an immutable constant. An error is raised if no value is provided.
-*   **`let static name`**: Declares a variable visible to all scopes in the file, including macros.
-*   An error is raised if a variable with the same name already exists in the current scope.
-
-The `let` statement also supports a destructuring form to declare multiple variables from the keys of a table.
-*   The `from` keyword must be followed by an expression that evaluates to a table. Attempting to destructure any other data type will result in an error.
-*   For each name in the comma-separated list, Plume declares a new variable in the current scope and assigns it the value of the corresponding key from the source table.
-*   The `static` and `const` modifiers, when used, apply to all variables declared in the statement.
-*   An error is raised if any of the specified keys do not exist in the source table or if any of the new variable names already exist in the current scope.
+Declares new variables in the **current scope**.
 
 ```plume
-// Assume 'configTable' is a table: { host: "localhost", port: 8080 }
-let host, port from configTable
+// 1. Multiple Declaration
+let [static] [const] name1, name2, ...
 
-// The line above is equivalent to:
-// let host = $configTable.host
-// let port = $configTable.port
+// 2. Positional Destructuring
+let [static] [const] name1, name2, ... = expression
 
-// Using with 'const' to declare multiple immutable variables
-let const adminUser, adminId from getAdminData()
+// 3. Named Destructuring (from)
+let [static] [const] name1, alias: SourceKey, ... from expression
 ```
+
+**1. Multiple Declaration**
+Declares one or more variables without assigning values immediately. They are initialized to `empty`.
+```plume
+let x, y, z
+// x, y, and z are defined and set to empty
+```
+
+**2. Positional Destructuring (`=`)**
+Assigns values based on the result of an expression.
+*   If a **single variable** is declared, it receives the result of the expression directly.
+*   If **multiple variables** are declared, the expression must evaluate to a `TABLE`. Plume unpacks the list items of the table into the variables in order.
+    *   **Error:** An error is raised if the table contains fewer items than the number of variables.
+    *   **Excess:** If the table contains more items than variables, the excess items are ignored.
+
+```plume
+let coord = $(10, 20, 30)
+
+// 'z' is ignored here
+let x, y = $coord 
+
+// Error: 'coord' only has 3 items, but 4 variables are requested
+let a, b, c, d = $coord
+```
+
+**3. Named Destructuring (`from`)**
+Extracts values from a table based on specific keys. The `from` keyword must be followed by an expression that evaluates to a table.
+*   **`name`**: Declares a variable `name` and assigns it the value of `$table["name"]`.
+*   **`alias: sourceKey`**: Declares a variable `alias` and assigns it the value of `$table["sourceKey"]`.
+
+```plume
+// Assume user = { id: 450, role: "admin", name: "Plume" }
+let user = $getUser()
+
+// Extract 'id' into 'id', and 'role' into a new variable 'group'
+let id, group: role from user
+
+// Equivalent to:
+// let id = $user.id
+// let group = $user.role
+```
+
+**Common Rules:**
+*   **Modifiers:** `static` and `const` apply to all variables declared in the statement.
+*   **Validation:** An error is raised if a variable with the same name already exists in the current scope, or if a `const` variable is declared without a value (in the standard declaration form).
+
 #### `set`
-Assigns a new value to an **existing** variable.
-```
+Assigns new values to **existing** variables. `set` searches for each variable first in the current scope, then in parent scopes, and finally in the static scope.
+
+```plume
+// 1. Single Assignment
 set name = value
+
+// 2. Positional Destructuring
+set name1, name2, ... = expression
+
+// 3. Named Destructuring (from)
+set name1, alias: SourceKey, ... from expression
 ```
-*   `set` searches for `name` first in the current scope, then in parent scopes, and finally in the static scope.
-*   An error is raised if the variable is not found or is declared as `const`.
 
-### Table Expansion and Unpacking (`...`)
+**General Rules:**
+For all forms of `set`, an error is raised if any specified variable:
+*   Cannot be found in any active scope.
+*   Was declared as `const`.
 
-The `...` operator serves three distinct purposes depending on its context: expanding a table's contents into another table, unpacking a table's contents into macro arguments, or defining a variadic parameter in a macro signature.
+**1. Single Assignment / Positional Destructuring (`=`)**
+Updates variables based on the result of an expression.
+*   If a **single variable** is specified (`set x = 1`), it takes the value directly.
+*   If **multiple variables** are specified (`set x, y = $coords`), the expression must evaluate to a `TABLE`. Values are unpacked data positionally.
+    *   **Error:** An error is raised if the table contains fewer items than the number of variables to update.
+    *   **Excess:** If the table contains more items, the extras are ignored.
 
-The expression following `...` in an expansion or unpacking context must evaluate to a table. Attempting to use any other data type will result in an error.
+```plume
+// Assume x and y exist
+set x, y = $(10, 20)
+```
+
+**2. Named Destructuring (`from`)**
+Updates variables by extracting values from a table using specific keys.
+*   **`name`**: Updates variable `name` with the value of `$table["name"]`.
+*   **`alias: sourceKey`**: Updates variable `alias` with the value of `$table["sourceKey"]`.
+
+```plume
+// Assume 'host' and 'port' are existing variables
+let config = @table
+    host: 127.0.0.1
+    p: 8080
+end
+
+// Update 'host' with config["host"]
+// Update 'port' with config["p"]
+set host, port: p from config
 
 #### In Table Accumulation Blocks (Expansion)
 
