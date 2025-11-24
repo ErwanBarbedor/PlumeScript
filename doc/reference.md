@@ -315,13 +315,13 @@ let a, b, c, d = $coord
 ```
 
 **3. Named Destructuring (`from`)**
-Extracts values from a table based on specific keys. The `from` keyword must be followed by an expression that evaluates to a table. This syntax supports **renaming** and **default values**.
+Extracts values from a table based on specific keys. The `from` keyword must be followed by an expression that evaluates to a table. This syntax supports **renaming** and **default values**, promoting a robust, structured approach to data extraction.
 
 The general pattern for an item is: `SourceKey [as AliasVariable] [: DefaultValue]`.
 
 *   **`name`**: Tries to retrieve `$table["name"]`. If missing, `name` is set to `empty`.
 *   **`name: default`**: Tries to retrieve `$table["name"]`. If missing or `empty`, assigns `default` to variable `name`.
-*   **`key as alias`**: Tries to retrieve `$table["key"]` coverage and assigns it to variable `alias`.
+*   **`key as alias`**: Tries to retrieve `$table["key"]` and assigns it to variable `alias`.
 *   **`key as alias: default`**: The ultimate combo. Retrieves `$table["key"]`. If missing, uses `default`. The result is stored in variable `alias`.
 
 ```plume
@@ -348,7 +348,7 @@ let avatar as icon: default.png from user
 let id, role as group, name: Anonymous from user
 ```
 
-**Consistency Note:** The syntax `key: default` mimics the named arguments syntax used in macro definitions, creating a unified experience across the language.
+**Consistency Note:** The syntax `key: default` mimics the named arguments syntax used in macro definitions (`macro name(arg: default)`), creating a unified experience across the language.
 
 **Common Rules:**
 *   **Modifiers:** `static` and `const` apply to all variables declared in the statement.
@@ -365,11 +365,11 @@ set name = value
 set name1, name2, ... = expression
 
 // 3. Named Destructuring (from)
-set name1, alias: SourceKey, ... from expression
+set key1, sourceKey as alias, key: default, ... from expression
 ```
 
 **General Rules:**
-For all forms of `set`, an error is raised if any specified variable:
+For all forms of `set`, an error is raised if any specified target variable:
 *   Cannot be found in any active scope.
 *   Was declared as `const`.
 
@@ -396,9 +396,11 @@ let config = @table
     p: 8080
 end
 
+// We assume 'host', 'port' and 'protocol' are already declared variables.
+
 // - Update 'host' with config["host"]
-// - Update variable 'port' with config["p"]
-// - If config["protocol"] is missing, don't crash, just use "http"
+// - Update variable 'port' with config["p"] (Renaming)
+// - If config["protocol"] is missing, use "http" (Default value)
 set host, p as port, protocol: http from config
 ```
 
