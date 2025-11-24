@@ -287,7 +287,7 @@ let [static] [const] name1, name2, ...
 let [static] [const] name1, name2, ... = expression
 
 // 3. Named Destructuring (from)
-let [static] [const] name1, alias: SourceKey, ... from expression
+let [static] [const] key1, sourceKey as alias, key: default, ... from expression
 ```
 
 **1. Multiple Declaration**
@@ -315,21 +315,40 @@ let a, b, c, d = $coord
 ```
 
 **3. Named Destructuring (`from`)**
-Extracts values from a table based on specific keys. The `from` keyword must be followed by an expression that evaluates to a table.
-*   **`name`**: Declares a variable `name` and assigns it the value of `$table["name"]`.
-*   **`alias: sourceKey`**: Declares a variable `alias` and assigns it the value of `$table["sourceKey"]`.
+Extracts values from a table based on specific keys. The `from` keyword must be followed by an expression that evaluates to a table. This syntax supports **renaming** and **default values**.
+
+The general pattern for an item is: `SourceKey [as AliasVariable] [: DefaultValue]`.
+
+*   **`name`**: Tries to retrieve `$table["name"]`. If missing, `name` is set to `empty`.
+*   **`name: default`**: Tries to retrieve `$table["name"]`. If missing or `empty`, assigns `default` to variable `name`.
+*   **`key as alias`**: Tries to retrieve `$table["key"]` coverage and assigns it to variable `alias`.
+*   **`key as alias: default`**: The ultimate combo. Retrieves `$table["key"]`. If missing, uses `default`. The result is stored in variable `alias`.
 
 ```plume
-// Assume user = { id: 450, role: "admin", name: "Plume" }
+// Assume user = { id: 450, role: "admin" } (name is missing)
 let user = $getUser()
 
-// Extract 'id' into 'id', and 'role' into a new variable 'group'
-let id, group: role from user
-
-// Equivalent to:
+// 1. Simple extraction
 // let id = $user.id
-// let group = $user.role
+let id from user
+
+// 2. Renaming
+// Extracts 'role', but names the variable 'group'
+let role as group from user
+
+// 3. Default values
+// 'name' is missing in the table, so it takes the default value "Anonymous"
+let name: Anonymous from user
+
+// 4. Combined (Renaming + Default)
+// Tries to get 'avatar', rename it to 'icon', doubles back to "default.png" if missing
+let avatar as icon: default.png from user
+
+// All in one line:
+let id, role as group, name: Anonymous from user
 ```
+
+**Consistency Note:** The syntax `key: default` mimics the named arguments syntax used in macro definitions, creating a unified experience across the language.
 
 **Common Rules:**
 *   **Modifiers:** `static` and `const` apply to all variables declared in the statement.
@@ -366,21 +385,22 @@ Updates variables based on the result of an expression.
 set x, y = $(10, 20)
 ```
 
-**2. Named Destructuring (`from`)**
-Updates variables by extracting values from a table using specific keys.
-*   **`name`**: Updates variable `name` with the value of `$table["name"]`.
-*   **`alias: sourceKey`**: Updates variable `alias` with the value of `$table["sourceKey"]`.
+**3. Named Destructuring (`from`)**
+Updates variables by extracting values from a table using specific keys. The syntax matches `let`, allowing usage of `as` for renaming source keys to target variables, and `:` for default values if the source key is missing.
 
 ```plume
-// Assume 'host' and 'port' are existing variables
+// Assume 'host' exists, and 'port' is a variable used for the connection
 let config = @table
     host: 127.0.0.1
+    // 'p' is defined in config, but not 'port'
     p: 8080
 end
 
-// Update 'host' with config["host"]
-// Update 'port' with config["p"]
-set host, port: p from config
+// - Update 'host' with config["host"]
+// - Update variable 'port' with config["p"]
+// - If config["protocol"] is missing, don't crash, just use "http"
+set host, p as port, protocol: http from config
+```
 
 #### In Table Accumulation Blocks (Expansion)
 
