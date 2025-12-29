@@ -305,7 +305,7 @@ Assigns values based on the result of an expression.
     *   **Excess:** If the table contains more items than variables, the excess items are ignored.
 
 ```plume
-let coord = $(10, 20, 30)
+let coord = $table(10, 20, 30)
 
 // 'z' is ignored here
 let x, y = $coord 
