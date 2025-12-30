@@ -534,7 +534,8 @@ use path
 ```
 
 **Implementation Details:**
-*   **Compilation-time Directive:** `use` is not a macro but a compiler directive. It is executed during the compilation phase to resolve symbols. Consequently, `path` must be a literal string; it **cannot** be a dynamic expression evaluated at runtime.
+*   **Compilation-time Directive:** `use` is a compiler directive, not a function. It is executed during the compilation phase to resolve symbols. Consequently, `path` must be a literal string; it **cannot** be a dynamic expression evaluated at runtime.
+*   **Namespace Impact:** Because `use` injects all keys from the target module into the local namespace, it can lead to "namespace pollution." It should be used sparingly.
 *   **Scope:** All keys from the table returned by the file at `path` are made available in the current file as if they were declared locally.
 
 ```plume
@@ -545,6 +546,35 @@ pi: 3.14
 use math
 // pi is now directly accessible
 The value is $pi
+```
+### Choosing Between `import` and `use`
+
+While both mechanisms allow code reuse, they serve different purposes:
+
+| Feature | `import` | `use` |
+| :--- | :--- | :--- |
+| **Execution** | Runtime | Compilation time |
+| **Flexibility** | High (dynamic paths, parameters) | Low (literal paths only) |
+| **Namespace** | Clean (returns a value) | Polluted (injects all keys) |
+| **Type** | Function | Compiler Directive |
+
+**When to use `import` (Recommended):**
+This should be your default reflex. It is safer, supports parameters, and allows you to control exactly how the imported data is accessed (e.g., `let math = $import(math)`).
+
+**When to use `use`:**
+Only use this when you need to import a large number of symbols that are central to the current file's logic, and where prefixing every call would be detrimental to readability. A typical use case is a **Domain Specific Language (DSL)**, such as a module providing all HTML tags as macros:
+
+```plume
+// This avoids writing $tags.div, $tags.span, etc.
+use html
+
+@div
+    style: @table
+        background: red
+    end
+
+    - $span(Hello World)
+end
 ```
 
 ### Escaping
@@ -592,7 +622,12 @@ Plume provides a set of built-in macros to handle common tasks such as I/O, tabl
 ### Module System and Imports
 
 #### `import(path, ...params)`
-The `import` function executes a Plume file and returns its final accumulated value. It also allows passing values to variables declared with `let param` in the target file.
+The `import` function is the **default mechanism** for modularity in Plume. It executes a Plume file at runtime and returns its final accumulated value. 
+
+**Key Features:**
+*   **Runtime Evaluation:** Unlike `use`, `import` is called during execution. This means the `path` can be a dynamic expression (e.g., `$import(("./configs/" .. env .. ".plume"))`).
+*   **Parameter Passing:** It allows passing values to variables declared with `let param` in the target file.
+*   **Encapsulation:** The returned value (usually a table) is contained within the variable it is assigned to, keeping the local namespace clean.
 
 **Path Resolution Logic:**
 The `import` statement follows a specific lookup order to locate files:
