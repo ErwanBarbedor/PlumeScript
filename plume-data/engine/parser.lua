@@ -87,6 +87,11 @@ return function (plume)
                       + P"\\n" * Cc("TEXT", "\n")
                       + P"\\"*C("TEXT", P(1))
 
+        ---------------------------
+        -- compilation directive --
+        ---------------------------
+        local use = P"use" * s * C("USE", NOT(s + "\n")^1)
+
         ----------
         -- eval --
         ----------
@@ -355,7 +360,7 @@ return function (plume)
                                 ,
             statement    = lt * V"firstStatement",
 
-            command =  _if + _while + _for + _break + continue + macro + block + let + set + leave + listitem + hashitem + expand,
+            command =  _if + _while + _for + _break + continue + macro + block + let + set + leave + listitem + hashitem + expand + use,
 
             text =   (escaped + eval + V"comment" + V"rawtext")^1,
             textns = (escaped + eval + V"comment" + V"rawtextns")^1,

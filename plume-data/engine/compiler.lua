@@ -59,7 +59,7 @@ return function(plume)
 			return constants[key]
 		end
 
-		local function registerVariable(name, isStatic, isConst, staticValue)
+		local function registerVariable(name, isStatic, isConst, staticValue, source)
 			local scope
 			if isStatic then
 				scope = static
@@ -73,7 +73,7 @@ return function(plume)
 			end
 			
 			table.insert(scope, {scope[name]})
-			scope[name] = {offset=#scope, isStatic = isStatic, isConst = isConst}
+			scope[name] = {offset = #scope, isStatic = isStatic, isConst = isConst, source = source}
 
 			return scope[name]
 		end
@@ -818,6 +818,37 @@ return function(plume)
 
 		nodeHandlerTable.LEAVE = function(node)
 			registerGoto(node, "macro_end")
+		end
+
+		----------------
+		-- DIRECTIVES --
+		----------------
+		nodeHandlerTable.USE = function(node)
+			local path = node.content
+			local filename, searchPaths = plume.getFilenameFromPath(path, false, chunk)
+
+			if not filename then
+	            plume.error.cannotOpenFile(node, path, searchPaths)
+			end
+
+			local success, result = plume.executeFile(filename, chunk.state, false)
+            if not success then
+                plume.error.cannotExecuteFile(node, path, result)
+            end
+
+            local t = type(result) == "table" and result.type or type(result)
+            if t ~= "table" then
+            	plume.error.fileMustReturnATable(node, path, t)
+            end
+
+            for _, key in ipairs(result.keys) do
+            	local var = registerVariable(key, true, true, result.table[key], path)
+				if not var then
+					plume.error.useExistingStaticVariableError(node, key, path)
+				end
+            end
+
+            return result
 		end
 
 		loadSTD()

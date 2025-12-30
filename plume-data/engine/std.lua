@@ -170,7 +170,14 @@ return function (plume)
         -- Else, search from root file and dir from PLUME_PATH (separated by comma)
         -- For a given path, search for path.plume and path/init.plume
         import = function(args, chunk)
-            local filename, searchPaths = plume.getFilenameFromPath(args.table[1], args.table.lua, chunk)
+            local filename, searchPaths = plume.getFilenameFromPath(
+                args.table[1],
+                ---------------------------------
+                -- WILL BE REMOVED IN 1.0 (#230)
+                ---------------------------------
+                args.table.lua,
+                ---------------------------------
+                chunk)
             
             if filename then
                 ---------------------------------

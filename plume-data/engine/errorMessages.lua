@@ -57,6 +57,11 @@ return function(plume)
 		throwCompilationError(node, message)
 	end
 
+	function plume.error.useExistingStaticVariableError(node, varName, use)
+		local message = string.format("Cannot define static variable '%s' from lib '%s', it already exists in the current file scope.", varName, use)
+		throwCompilationError(node, message)
+	end
+
 	function plume.error.cannotUseDefaultValueWithoutFrom(node)
 		local message = "Cannot use a default value outside of a from statement."
 		throwCompilationError(node, message)
@@ -136,5 +141,20 @@ return function(plume)
 	function plume.error.mixedBlockError(node, expected, found)
 		local message = string.format("Mixed block: the expected type of the block is %s, but it contains an element %s.", expected, found)
 		throwSyntaxError(node, message)
+	end
+
+	function plume.error.cannotOpenFile(node, path, searchPaths)
+		local message = string.format("Cannot open '%s'.\nPaths tried:\n\t%s", path, table.concat(searchPaths, '\n\t'))
+		throwCompilationError(node, message)
+	end
+
+	function plume.error.cannotExecuteFile(node, path, error)
+		local message = string.format("Error when executing '%s':\n%s", path, error)
+		throwCompilationError(node, message)
+	end
+
+	function plume.error.fileMustReturnATable(node, path, t)
+		local message = string.format("To be used, '%s' must return a table. Currently, it returns a %s.", path, t)
+		throwCompilationError(node, message)
 	end
 end
