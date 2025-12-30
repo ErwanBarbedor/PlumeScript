@@ -301,7 +301,7 @@ return function (plume)
         local lbody    = Ct("BODY", V"firstStatement")
         local compound = Ct("COMPOUND", C("ADD", P"+") + C("SUB", P"-")
                        + C("MUL", P"*") + C("DIV", P"/"))
-        local statconst = (s * C("STATIC", P"static"))^-1 * (s * C("CONST", P"const"))^-1
+        local statconst = (s * C("STATIC", P"static"))^-1 * (s * C("CONST", P"const"))^-1 * (s * C("PARAM", P"param"))^-1
 
         --- Common identifier
         local _letsetdefaut = P":" * os * Ct("VALUE", (V"textns" - s + P"(" * V"textnp" * ")")^-1)

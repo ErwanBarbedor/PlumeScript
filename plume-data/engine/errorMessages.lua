@@ -57,6 +57,16 @@ return function(plume)
 		throwCompilationError(node, message)
 	end
 
+	function plume.error.cannotUseParamAndConst(node)
+		local message = "Cannot use 'const' and 'param' together (parameter variable are by default constant)."
+		throwCompilationError(node, message)
+	end
+
+	function plume.error.cannotUseParamAndStatic(node)
+		local message = "Cannot use 'static' and 'param' together (parameter variable are by default static)."
+		throwCompilationError(node, message)
+	end
+
 	function plume.error.useExistingStaticVariableError(node, varName, use)
 		local message = string.format("Cannot define static variable '%s' from lib '%s', it already exists in the current file scope.", varName, use)
 		throwCompilationError(node, message)

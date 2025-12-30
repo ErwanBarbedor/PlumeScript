@@ -33,7 +33,7 @@ require 'plume-data/engine/finalizer'     (plume)
 require 'plume-data/engine/pec'           (plume)
 require 'plume-data/engine/env'           (plume)
 
-function plume.execute(code, filename, chunk, secondary)
+function plume.execute(code, filename, chunk, secondary, args)
 	local success, result, ip
 	local errorSource = chunk
 	success, result = pcall(plume.compileFile, code, filename, chunk)
@@ -43,7 +43,7 @@ function plume.execute(code, filename, chunk, secondary)
 	end
 
 	if success then
-		success, result, ip, errorSource = plume.run(chunk)
+		success, result, ip, errorSource = plume.run(chunk, args)
 	else
 		return false, result
 	end
@@ -58,7 +58,7 @@ function plume.execute(code, filename, chunk, secondary)
 	end
 end
 
-function plume.executeFile(filename, state, secondary)
+function plume.executeFile(filename, state, secondary, args)
 	local chunk = plume.newPlumeExecutableChunk(true, state)
 	chunk.name = filename
 
@@ -70,7 +70,7 @@ function plume.executeFile(filename, state, secondary)
 		local code = f:read("*a")
 	f:close()
 
-	return plume.execute(code, filename, chunk, secondary)
+	return plume.execute(code, filename, chunk, secondary, args)
 end
 
 plume.hook = nil -- A function call at each step of the vm
