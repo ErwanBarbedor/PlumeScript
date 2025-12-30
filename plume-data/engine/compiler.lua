@@ -294,7 +294,7 @@ return function(plume)
 		--------------
 		-- VARIABLE --
 		--------------
-		local function affectation(node, nodevarlist, body, isLet, isConst, isStatic, isFrom, compound)
+		local function affectation(node, nodevarlist, body, isLet, isConst, isStatic, isFrom, compound, isBodyStacked)
 			local varlist = {}
 			for _, var in ipairs(nodevarlist.children) do
 				local rvar
@@ -364,14 +364,14 @@ return function(plume)
 				rvar.ref = var
 				table.insert(varlist, rvar)
 			end
-			if body then
+			if body or isBodyStacked then
 				local dest = #varlist > 1
 
 				if dest and compound then
 					plume.error.compoundWithDestructionError(node)
 				end
 
-				if not compound then
+				if not compound and not isBodyStacked then
 					scope(accBlock())(body)
 				end
 				
@@ -634,10 +634,15 @@ return function(plume)
 				registerGoto(nil, "for_end_"..uid, "FOR_ITER", 1)
 
 				scope(function(body)
-					if #varlist.children == 1 then
-						local var = registerVariable(varlist.children[1].content)
-						registerOP(identifier, ops.STORE_LOCAL, 0, var.offset)
-					end
+					affectation(node, varlist,
+						nil,-- body
+						true, -- isLet
+						false, -- isConst
+						false, --isStatic
+						false,-- isFrom 
+						nil,-- compound
+						true -- isBodyStacked
+					)
 					
 					table.insert(loops, {begin_label="for_loop_end_"..uid, end_label="for_end_"..uid})
 					childrenHandler(body)
