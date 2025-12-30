@@ -562,7 +562,7 @@ While both mechanisms allow code reuse, they serve different purposes:
 | **Execution** | Runtime | Compilation time |
 | **Flexibility** | High (dynamic paths, parameters) | Low (literal paths only) |
 | **Namespace** | Clean (returns a value) | Polluted (injects all keys) |
-| **Type** | Function | Compiler Directive |
+| **Type** | macro | Compiler Directive |
 
 **When to use `import` (Recommended):**
 This should be your default reflex. It is safer, supports parameters, and allows you to control exactly how the imported data is accessed (e.g., `let math = $import(math)`).
