@@ -562,7 +562,7 @@ While both mechanisms allow code reuse, they serve different purposes:
 | **Execution** | Runtime | Compilation time |
 | **Flexibility** | High (dynamic paths, parameters) | Low (literal paths only) |
 | **Namespace** | Clean (returns a value) | Polluted (injects all keys) |
-| **Type** | macro | Compiler Directive |
+| **Type** | Macro | Compiler Directive |
 
 **When to use `import` (Recommended):**
 This should be your default reflex. It is safer, supports parameters, and allows you to control exactly how the imported data is accessed (e.g., `let math = $import(math)`).
@@ -596,7 +596,7 @@ Any character can be escaped with a backslash (`\`) to be treated as a literal. 
 The Plume parser ignores the following whitespace by default:
 
 *   Leading spaces and tabs at the beginning of a line.
-*   The newline character at the end of a line.
+*   Spaces and the newline character at the end of a line.
 *   Spaces surrounding operators or argument separators (`,`) in an evaluation context.
 
 To explicitly insert whitespace characters, use the escape sequences `\s`, `\t`, and `\n`.
@@ -607,7 +607,7 @@ Plume provides a set of built-in macros to handle common tasks such as I/O, tabl
 
 ### Basic Functions
 
-*   `print(...items)`: A wrapper for the underlying `print` function.
+*   `print(...items)`: A wrapper for the underlying lua `print` function.
 *   `type(x)`: Returns the type of `x` as a string: `"empty"`, `"table"`, `"number"`, or `"string"`.
 *   `tostring(x)`: Converts the value `x` to its string representation.
 *   `len(table)`: Returns the number of items in a table.
