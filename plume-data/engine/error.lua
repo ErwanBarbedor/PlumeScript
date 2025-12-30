@@ -191,16 +191,19 @@ return function(plume)
 			plume.error.formatLine(lineInfos, (not runtime.isFile) and runtime.name)
 		)
 
-		if plume.callstack then
-			for i=#plume.callstack, 1, -1 do
-				local chunk = plume.callstack[i]
-				if chunk.macro.type == "macro" then
-					local node = plume.error.getNode(chunk.macro, chunk.ip)
-					if node then
-						local lineInfos = plume.error.getLineInfos(node)
-						local formatedLine = plume.error.formatLine(lineInfos, (not chunk.macro.isFile) and chunk.macro.name)
-						table.insert(errorCallstack, formatedLine)
-					end
+		if runtime.callstack then
+			for i=#runtime.callstack, 1, -1 do
+				local source = runtime.callstack[i]
+				local node
+				if source.macro.type == "macro" then
+					node = plume.error.getNode(source.chunk, source.ip)
+				elseif source.macro.type == "luaFunction" and i>1 then
+					node = plume.error.getNode(source.chunk, source.ip)
+				end
+				if node then
+					local lineInfos = plume.error.getLineInfos(node)
+					local formatedLine = plume.error.formatLine(lineInfos, (not source.chunk.isFile) and source.chunk.name)
+					table.insert(errorCallstack, formatedLine)
 				end
 			end
 		end

@@ -221,13 +221,7 @@ return function (plume)
         local _elseif = Ct("ELSEIF", lt*P"elseif" * condition * body)
         local _if     = Ct("IF", P"if" * condition * body * _elseif^0 * _else^-1 * _end)
 
-        -- loops
-        local forInd = idn + E(plume.error.missingLoopIndentifierError)
-        local _while = Ct("WHILE", P"while" * condition * body * _end)
-        local _for   = Ct("FOR", P"for" * s * forInd * iterator * body * _end)
-
-        local _break   = C("BREAK", P"break")
-        local continue = C("CONTINUE", P"continue")
+        
 
         -- macro & calls
         local function sugarFlagParam(p)
@@ -300,18 +294,44 @@ return function (plume)
 
         -- affectations
         local lbody    = Ct("BODY", V"firstStatement")
-        local statconst = (s * C("STATIC", P"static"))^-1 * (s * C("CONST", P"const"))^-1
-        local idnList = idn * (os * P"," * os * idn)^0
-        local let = Ct("LET", P"let" * statconst *  (
-        						  s * idn * os * C("EQ", P"=")   * lbody
-        						+ s * idnList * s  * C("FROM", P"from") * s * Ct("EVAL", expr)
-                                + s * idn
-        					)^-1)
         local compound = Ct("COMPOUND", C("ADD", P"+") + C("SUB", P"-")
                        + C("MUL", P"*") + C("DIV", P"/"))
+        local statconst = (s * C("STATIC", P"static"))^-1 * (s * C("CONST", P"const"))^-1
 
-        local setvar = Ct("EVAL", (idn * V"evalOpperator"^1)) + idn
-        local set = Ct("SET", P"set" * s * setvar * (os * compound^-1 * P"=" * lbody))
+        --- Common identifier
+        local _letsetdefaut = P":" * os * Ct("VALUE", (V"textns" - s + P"(" * V"textnp" * ")")^-1)
+        local letsetvar = (
+            Ct("ALIAS_DEFAULT", idn * os * P"as" * os * idn * os * _letsetdefaut)
+            + Ct("ALIAS", idn * os * P"as" * os * idn)
+            + Ct("DEFAULT", idn * os * _letsetdefaut)
+            + idn
+        )
+
+        --- Specific identifiers
+        local letvar     = letsetvar
+        local setvar     = Ct("SETINDEX", (idn * V"evalOpperator"^1)) + letsetvar
+
+        --- Make full rule
+        local letvarlist = Ct("VARLIST", letvar * (os * P"," * os * letvar)^0)
+        local setvarlist = Ct("VARLIST", setvar * (os * P"," * os * setvar)^0)
+        
+        local let = Ct("LET", P"let" * statconst * s * letvarlist * (
+                                  os * C("EQ", P"=") * lbody
+                                + s  * C("FROM", P"from") * s * lbody
+                            )^-1)
+
+        local set = Ct("SET", P"set" * s * setvarlist * (
+                      os * compound^-1 * P"=" * lbody
+                    + s * C("FROM", P"from") * s * lbody
+                    ))
+        
+        --- loops
+        local forInd = letvarlist + E(plume.error.missingLoopIndentifierError)
+        local _while = Ct("WHILE", P"while" * condition * body * _end)
+        local _for   = Ct("FOR", P"for" * s * forInd * iterator * body * _end)
+
+        local _break   = C("BREAK", P"break")
+        local continue = C("CONTINUE", P"continue")
 
         -- table
         local listitem = Ct("LIST_ITEM", P"- " * os * V"firstStatement") 
@@ -338,10 +358,14 @@ return function (plume)
             command =  _if + _while + _for + _break + continue + macro + block + let + set + leave + listitem + hashitem + expand,
 
             text =   (escaped + eval + V"comment" + V"rawtext")^1,
+            textns = (escaped + eval + V"comment" + V"rawtextns")^1,
+            textnp = (escaped + eval + V"comment" + V"rawtextnp")^1,
             textic = (escaped + eval + V"comment" + V"rawtextic")^1,
 
             comment   = P"//" * C("COMMENT", NOT(S"\n")^0),
             rawtext   = C("TEXT", NOT(S"$\n\\" + P"//")^1),
+            rawtextns = C("TEXT", NOT(S"$\n\\" + P"//" + s)^1),
+            rawtextnp = C("TEXT", NOT(S"$\n)\\"+ P"//")^1),
             rawtextic = C("TEXT", NOT(S"$\n,)\\"+ P"//")^1),
 
             invalid = E(plume.error.emptySetError, P"set"),

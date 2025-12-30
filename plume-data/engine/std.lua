@@ -167,12 +167,24 @@ return function (plume)
                 if not value then
                     return plume.obj.empty
                 else
-                    local result = plume.obj.table(0, 2)
-                    result.table.index = iterator.table[1]
-                    result.table.value = value
+                    ---------------------------------
+                    -- WILL BE REMOVED IN 1.0 (#230)
+                    ---------------------------------
+                    if args.table.legacy then
+                        local result = plume.obj.table(0, 2)
+                        result.table.index = iterator.table[1]
+                        result.table.value = value
 
-                    result.keys = {"index", "value"}
-                    return result
+                        result.keys = {"index", "value"}
+                        return result
+                    ---------------------------------
+                    else
+                        local result = plume.obj.table(2, 0)
+                        result.table[1] = iterator.table[1]
+                        result.table[2] = value
+
+                        return result
+                    end
                 end
             end)
 
@@ -194,12 +206,23 @@ return function (plume)
                 if not key then
                     return plume.obj.empty
                 else
-                    local result = plume.obj.table(0, 2)
-                    result.table.key = key
-                    result.table.value = t.table[key]
+                    ---------------------------------
+                    -- WILL BE REMOVED IN 1.0 (#230)
+                    ---------------------------------
+                    if args.table.legacy then
+                        local result = plume.obj.table(0, 2)
+                        result.table.key = key
+                        result.table.value = t.table[key]
 
-                    result.keys = {"key", "value"}
-                    return result
+                        result.keys = {"key", "value"}
+                        return result
+                    ---------------------------------
+                    else
+                        local result = plume.obj.table(2, 0)
+                        result.table[1] = key
+                        result.table[2] = t.table[key]
+                        return result
+                    end
                 end
             end)
 
@@ -220,7 +243,7 @@ return function (plume)
                 if args.table.lua then
                     return dofile(filename)(plume) 
                 else
-                    local success, result = plume.executeFile(filename, chunk.state)
+                    local success, result = plume.executeFile(filename, chunk.state, true)
                     if not success then
                         error(result, 0)
                     end

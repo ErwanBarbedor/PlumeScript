@@ -280,3 +280,14 @@ $(notwing)
 let trues = 1
 /// Output
 /// End
+
+/// Test #214
+macro quill(song: 0)
+    let mark = $(5%5)
+    $(mark==0)
+end
+
+$quill()
+/// Output
+true
+/// End
