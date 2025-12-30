@@ -307,22 +307,30 @@ return function(plume)
 			local varlist = {}
 			for _, var in ipairs(nodevarlist.children) do
 				local rvar
-				if var.name == "IDENTIFIER" then
-					if let then
-						rvar = registerVariable(var.content, isStatic, isConst)
-						if not rvar then
-							plume.error.letExistingVariableError(node, var.content)
-						end
+				if var.name == "IDENTIFIER" or var.name == "ALIAS" then
+					local key, name
+					if var.name == "IDENTIFIER" then
+						key = var.content
+						name = var.content
 					else
-						rvar = getVariable(var.content)
-						if not rvar then
-							plume.error.setUnknowVariableError(node, var.content)
-						elseif rvar.isConst then
-							plume.error.setConstantVariableError(node, var.content)
-						end
+						key = var.children[1].content
+						name = var.children[2].content
 					end
 
-					rvar.name = var.content
+					if let then
+						rvar = registerVariable(name, isStatic, isConst)
+						if not rvar then
+							plume.error.letExistingVariableError(node, name)
+						end
+					else
+						rvar = getVariable(name)
+						if not rvar then
+							plume.error.setUnknowVariableError(node, name)
+						elseif rvar.isConst then
+							plume.error.setConstantVariableError(node, name)
+						end
+					end
+					rvar.key = key
 				elseif var.name == "SETINDEX" then
 					-- The last index should be detected by the parser, and not modified here.
 					-- This is a temporary workaround.
@@ -381,7 +389,7 @@ return function(plume)
 						if i < #varlist then
 							registerOP(nil, ops.DUPLICATE, 0, 0)
 						end
-						registerOP(var.ref, ops.LOAD_CONSTANT, 0, registerConstant(var.name))
+						registerOP(var.ref, ops.LOAD_CONSTANT, 0, registerConstant(var.key))
 						registerOP(nil, ops.SWITCH, 0, 0)
 						registerOP(nil, ops.TABLE_INDEX, 0, 0)
 					elseif dest then

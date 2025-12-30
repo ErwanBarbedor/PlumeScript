@@ -305,7 +305,7 @@ return function (plume)
         local statconst = (s * C("STATIC", P"static"))^-1 * (s * C("CONST", P"const"))^-1
 
         --- Common identifier
-        local letsetvar = idn
+        local letsetvar = Ct("ALIAS", idn * os * P"as" * os * idn) + idn
 
         --- Specific identifiers
         local letvar     = letsetvar
