@@ -24,6 +24,7 @@
     key = tonumber(key) or key
     if key==empty then
         if arg1 == 1 then
+            msp = msp-2
             @LOAD_EMPTY
             goto DISPATCH
         else
@@ -34,6 +35,7 @@
     local t = _type(_table)
     if t ~= "table" then
         if arg1 == 1 then
+            msp = msp-2
             @LOAD_EMPTY
             goto DISPATCH
         else
@@ -43,6 +45,7 @@
     local value = _table.table[key]
     if not value then
         if arg1 == 1 then
+            msp = msp-2
             @LOAD_EMPTY
             goto DISPATCH
         else
