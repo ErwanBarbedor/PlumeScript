@@ -558,14 +558,14 @@ Plume provides a set of built-in macros to handle common tasks such as I/O, tabl
 
 ### Module System and Imports
 
-#### `import(path, ?lua)`
-The `import` function executes a Plume (or Lua, if the `?lua` flag is set) file and returns its final accumulated value. 
+#### `import(path)`
+The `import` function executes a Plume file and returns its final accumulated value. 
 
 **Path Resolution Logic:**
 The `import` statement follows a specific lookup order to locate files:
 1.  **Relative Search:** If `path` starts with `./` or `../`, Plume searches for the file relative to the directory of the currently executing file.
 2.  **Breadth Search:** Otherwise, it searches from the root file's directory and then through the directories listed in `plume_path`.
-3.  **File Patterns:** For any given directory, Plume looks for `[path].plume` and `[path]/init.plume` (or `.lua` extensions if the `?lua` flag is present).
+3.  **File Patterns:** For any given directory, Plume looks for `[path].plume` and `[path]/init.plume`
 
 **Environment and Path Management:**
 *   The initial `plume_path` is populated from the `PLUME_PATH` environment variable (paths are separated by commas).
@@ -584,6 +584,7 @@ Unlike `import`, the following functions do not use the `plume_path` resolution 
 Plume provides a `lua` static variable that acts as a bridge to the underlying Lua environment. This variable contains wrappers for essential Lua functions and libraries, allowing for advanced operations not covered by the Plume standard library.
 
 The `lua` table includes:
+*   **Module Loading**: `lua.require(path)` (used to load Lua modules, use same Path resolution as `import`).
 *   **System functions**: `lua.error`, `lua.assert`.
 *   **Libraries**:
     *   `lua.string.*` (string manipulation)

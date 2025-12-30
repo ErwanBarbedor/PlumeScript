@@ -112,7 +112,7 @@ blue quill bird
 /// End
 
 /// Test lua import
-let double = $import(tests/plume/toimport/lib, ?lua)
+let double = $lua.require(tests/plume/toimport/lib)
 
 $double(3)
 /// Output

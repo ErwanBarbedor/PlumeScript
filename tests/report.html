@@ -98,7 +98,7 @@
 <body>
 <div class="container">
     
-<h1>Global: <span style="font-weight: normal;">258 passed out of 258 tests</span></h1>
+<h1>Global: <span style="font-weight: normal;">259 passed out of 259 tests</span></h1>
 <div class="progress-bar"><div class="progress-success" style="width: 100.00%"></div><div class="progress-fail" style="width: 0.00%"></div></div>
 <h2>arithmetic: <span style="font-weight: normal;">30 passed out of 30 tests</span></h2>
 <div class="progress-bar"><div class="progress-success" style="width: 100.00%"></div><div class="progress-fail" style="width: 0.00%"></div></div>
@@ -4060,7 +4060,7 @@ File &#39;use unknow variable&#39;, line 1: let x = $y
 </code></pre>
 </div>
 </details>
-<h2>legacy: <span style="font-weight: normal;">2 passed out of 2 tests</span></h2>
+<h2>legacy: <span style="font-weight: normal;">3 passed out of 3 tests</span></h2>
 <div class="progress-bar"><div class="progress-success" style="width: 100.00%"></div><div class="progress-fail" style="width: 0.00%"></div></div>
 <details>
 <summary>
@@ -4221,6 +4221,47 @@ end
 Item &quot;first&quot; is _(quill)_.
 Item &quot;second&quot; is _(wing)_.
 Item &quot;bonus&quot; is _(bird)_.
+</code></pre>
+</div>
+</details>
+<details>
+<summary>
+<span class="status-icon status-pass">✓</span> lua import
+</summary>
+<div class="test-content">
+<div class="code-grid">
+<div>
+<h4>Code</h4>
+<pre><code class="language-plume">
+let double = $import(tests/plume/toimport/lib, ?lua)
+
+$double(3)
+
+</code></pre>
+</div>
+<div>
+<h4>Bytecode</h4>
+<pre><code class="language-bytecode"><span class="bc-line-num">001</span> <span class="bc-opcode">ENTER_SCOPE     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; l</span>
+<span class="bc-line-num">002</span> <span class="bc-opcode">BEGIN_ACC       </span> <span class="bc-arg">0 0</span>
+<span class="bc-line-num">003</span> <span class="bc-opcode">TABLE_NEW       </span> <span class="bc-arg">0 0</span>
+<span class="bc-line-num">004</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 1</span> <span class="bc-info">; tests/plume/toimport/lib</span>
+<span class="bc-line-num">005</span> <span class="bc-opcode">LOAD_TRUE       </span> <span class="bc-arg">0 0</span> <span class="bc-info">; ?lua</span>
+<span class="bc-line-num">006</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 2</span> <span class="bc-info">; ?lua</span>
+<span class="bc-line-num">007</span> <span class="bc-opcode">TABLE_SET_ACC   </span> <span class="bc-arg">0 0</span> <span class="bc-info">; ?lua</span>
+<span class="bc-line-num">008</span> <span class="bc-opcode">LOAD_STATIC     </span> <span class="bc-arg">0 4</span> <span class="bc-info">; import</span>
+<span class="bc-line-num">009</span> <span class="bc-opcode">ACC_CALL        </span> <span class="bc-arg">0 0</span> <span class="bc-info">; import(tests/plume/toimport/lib, ?lua)</span>
+<span class="bc-line-num">010</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; double</span>
+<span class="bc-line-num">011</span> <span class="bc-opcode">BEGIN_ACC       </span> <span class="bc-arg">0 0</span>
+<span class="bc-line-num">012</span> <span class="bc-opcode">TABLE_NEW       </span> <span class="bc-arg">0 0</span>
+<span class="bc-line-num">013</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 3</span> <span class="bc-info">; 3</span>
+<span class="bc-line-num">014</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 1</span> <span class="bc-info">; double</span>
+<span class="bc-line-num">015</span> <span class="bc-opcode">ACC_CALL        </span> <span class="bc-arg">0 0</span> <span class="bc-info">; double(3)</span>
+<span class="bc-line-num">016</span> <span class="bc-opcode">END             </span> <span class="bc-arg">0 0</span></code></pre>
+</div>
+</div>
+<h4>Output</h4>
+<pre><code>
+6
 </code></pre>
 </div>
 </details>
@@ -8362,7 +8403,7 @@ $len($t)
 <div>
 <h4>Code</h4>
 <pre><code class="language-plume">
-let double = $import(tests/plume/toimport/lib, ?lua)
+let double = $lua.require(tests/plume/toimport/lib)
 
 $double(3)
 
@@ -8374,18 +8415,17 @@ $double(3)
 <span class="bc-line-num">002</span> <span class="bc-opcode">BEGIN_ACC       </span> <span class="bc-arg">0 0</span>
 <span class="bc-line-num">003</span> <span class="bc-opcode">TABLE_NEW       </span> <span class="bc-arg">0 0</span>
 <span class="bc-line-num">004</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 1</span> <span class="bc-info">; tests/plume/toimport/lib</span>
-<span class="bc-line-num">005</span> <span class="bc-opcode">LOAD_TRUE       </span> <span class="bc-arg">0 0</span> <span class="bc-info">; ?lua</span>
-<span class="bc-line-num">006</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 2</span> <span class="bc-info">; ?lua</span>
-<span class="bc-line-num">007</span> <span class="bc-opcode">TABLE_SET_ACC   </span> <span class="bc-arg">0 0</span> <span class="bc-info">; ?lua</span>
-<span class="bc-line-num">008</span> <span class="bc-opcode">LOAD_STATIC     </span> <span class="bc-arg">0 4</span> <span class="bc-info">; import</span>
-<span class="bc-line-num">009</span> <span class="bc-opcode">ACC_CALL        </span> <span class="bc-arg">0 0</span> <span class="bc-info">; import(tests/plume/toimport/lib, ?lua)</span>
-<span class="bc-line-num">010</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; double</span>
-<span class="bc-line-num">011</span> <span class="bc-opcode">BEGIN_ACC       </span> <span class="bc-arg">0 0</span>
-<span class="bc-line-num">012</span> <span class="bc-opcode">TABLE_NEW       </span> <span class="bc-arg">0 0</span>
-<span class="bc-line-num">013</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 3</span> <span class="bc-info">; 3</span>
-<span class="bc-line-num">014</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 1</span> <span class="bc-info">; double</span>
-<span class="bc-line-num">015</span> <span class="bc-opcode">ACC_CALL        </span> <span class="bc-arg">0 0</span> <span class="bc-info">; double(3)</span>
-<span class="bc-line-num">016</span> <span class="bc-opcode">END             </span> <span class="bc-arg">0 0</span></code></pre>
+<span class="bc-line-num">005</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 2</span> <span class="bc-info">; require</span>
+<span class="bc-line-num">006</span> <span class="bc-opcode">LOAD_STATIC     </span> <span class="bc-arg">0 8</span> <span class="bc-info">; lua</span>
+<span class="bc-line-num">007</span> <span class="bc-opcode">TABLE_INDEX_ACC_SELF</span> <span class="bc-arg">0 0</span> <span class="bc-info">; .require</span>
+<span class="bc-line-num">008</span> <span class="bc-opcode">ACC_CALL        </span> <span class="bc-arg">0 0</span> <span class="bc-info">; lua.require(tests/plume/toimport/lib)</span>
+<span class="bc-line-num">009</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; double</span>
+<span class="bc-line-num">010</span> <span class="bc-opcode">BEGIN_ACC       </span> <span class="bc-arg">0 0</span>
+<span class="bc-line-num">011</span> <span class="bc-opcode">TABLE_NEW       </span> <span class="bc-arg">0 0</span>
+<span class="bc-line-num">012</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 3</span> <span class="bc-info">; 3</span>
+<span class="bc-line-num">013</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 1</span> <span class="bc-info">; double</span>
+<span class="bc-line-num">014</span> <span class="bc-opcode">ACC_CALL        </span> <span class="bc-arg">0 0</span> <span class="bc-info">; double(3)</span>
+<span class="bc-line-num">015</span> <span class="bc-opcode">END             </span> <span class="bc-arg">0 0</span></code></pre>
 </div>
 </div>
 <h4>Output</h4>
