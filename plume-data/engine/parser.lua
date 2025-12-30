@@ -221,13 +221,7 @@ return function (plume)
         local _elseif = Ct("ELSEIF", lt*P"elseif" * condition * body)
         local _if     = Ct("IF", P"if" * condition * body * _elseif^0 * _else^-1 * _end)
 
-        -- loops
-        local forInd = idn + E(plume.error.missingLoopIndentifierError)
-        local _while = Ct("WHILE", P"while" * condition * body * _end)
-        local _for   = Ct("FOR", P"for" * s * forInd * iterator * body * _end)
-
-        local _break   = C("BREAK", P"break")
-        local continue = C("CONTINUE", P"continue")
+        
 
         -- macro & calls
         local function sugarFlagParam(p)
@@ -331,6 +325,14 @@ return function (plume)
                     + s * C("FROM", P"from") * s * lbody
                     ))
         
+        --- loops
+        local forInd = letvarlist + E(plume.error.missingLoopIndentifierError)
+        local _while = Ct("WHILE", P"while" * condition * body * _end)
+        local _for   = Ct("FOR", P"for" * s * forInd * iterator * body * _end)
+
+        local _break   = C("BREAK", P"break")
+        local continue = C("CONTINUE", P"continue")
+
         -- table
         local listitem = Ct("LIST_ITEM", P"- " * os * V"firstStatement") 
         local hashitem = Ct("HASH_ITEM", Ct("META", P"meta"*s)^-1 * idn * P":" *  os *lbody)
