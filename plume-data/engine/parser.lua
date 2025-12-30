@@ -305,7 +305,13 @@ return function (plume)
         local statconst = (s * C("STATIC", P"static"))^-1 * (s * C("CONST", P"const"))^-1
 
         --- Common identifier
-        local letsetvar = Ct("ALIAS", idn * os * P"as" * os * idn) + idn
+        local _letsetdefaut = P":" * os * Ct("VALUE", (V"textns" - s + P"(" * V"textnp" * ")")^-1)
+        local letsetvar = (
+            Ct("ALIAS_DEFAULT", idn * os * P"as" * os * idn * os * _letsetdefaut)
+            + Ct("ALIAS", idn * os * P"as" * os * idn)
+            + Ct("DEFAULT", idn * os * _letsetdefaut)
+            + idn
+        )
 
         --- Specific identifiers
         local letvar     = letsetvar
@@ -350,10 +356,14 @@ return function (plume)
             command =  _if + _while + _for + _break + continue + macro + block + let + set + leave + listitem + hashitem + expand,
 
             text =   (escaped + eval + V"comment" + V"rawtext")^1,
+            textns = (escaped + eval + V"comment" + V"rawtextns")^1,
+            textnp = (escaped + eval + V"comment" + V"rawtextnp")^1,
             textic = (escaped + eval + V"comment" + V"rawtextic")^1,
 
             comment   = P"//" * C("COMMENT", NOT(S"\n")^0),
             rawtext   = C("TEXT", NOT(S"$\n\\" + P"//")^1),
+            rawtextns = C("TEXT", NOT(S"$\n\\" + P"//" + s)^1),
+            rawtextnp = C("TEXT", NOT(S"$\n)\\"+ P"//")^1),
             rawtextic = C("TEXT", NOT(S"$\n,)\\"+ P"//")^1),
 
             invalid = E(plume.error.emptySetError, P"set"),

@@ -87,6 +87,46 @@ $paint, $quill
 mark, nib
 /// End
 
+/// Test named destructuration with default value 1
+let t = @table
+	paint: song
+end
+let wing: 5 from $t
+$wing
+/// Output
+5
+/// End
+
+/// Test named destructuration with default value 2
+let t = @table
+	wing: song
+end
+let wing: 5 from $t
+$wing
+/// Output
+song
+/// End
+
+/// Test named destructuration with default value and alias 1
+let t = @table
+	quill: song
+end
+let wing as paint: 5 from $t
+$paint
+/// Output
+5
+/// End
+
+/// Test named destructuration with default value and alias 2
+let t = @table
+	wing: song
+end
+let wing as paint: 5 from $t
+$paint
+/// Output
+song
+/// End
+
 /// Test named destructuration with set
 let t = @table
 	wing: mark
@@ -96,4 +136,20 @@ set wing from $t
 $wing
 /// Output
 mark
+/// End
+
+/// Test Forbiden default value 1
+let wing: 5
+/// Error
+Compilation error: Cannot use a default value outside of a from statement.
+File 'Forbiden default value 1', line 1: let wing: 5
+                                             ^^^^^^^
+/// End
+
+/// Test Forbiden default value 2
+let wing: 5 = 8
+/// Error
+Compilation error: Cannot use a default value outside of a from statement.
+File 'Forbiden default value 2', line 1: let wing: 5 = 8
+                                             ^^^^^^^
 /// End

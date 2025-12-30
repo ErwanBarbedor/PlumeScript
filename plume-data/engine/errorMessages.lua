@@ -57,6 +57,11 @@ return function(plume)
 		throwCompilationError(node, message)
 	end
 
+	function plume.error.cannotUseDefaultValueWithoutFrom(node)
+		local message = "Cannot use a default value outside of a from statement."
+		throwCompilationError(node, message)
+	end
+
 	function plume.error.cannotSetCallError(node)
 		local message = "Cannot set the result of a call."
 		throwCompilationError(node, message)

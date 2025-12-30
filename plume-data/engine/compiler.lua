@@ -307,14 +307,26 @@ return function(plume)
 			local varlist = {}
 			for _, var in ipairs(nodevarlist.children) do
 				local rvar
-				if var.name == "IDENTIFIER" or var.name == "ALIAS" then
-					local key, name
+				if var.name == "IDENTIFIER" or var.name == "ALIAS" or var.name == "DEFAULT" or var.name == "ALIAS_DEFAULT" then
+					local key, name, default
 					if var.name == "IDENTIFIER" then
 						key = var.content
 						name = var.content
+					elseif var.name == "DEFAULT" then
+						key = var.children[1].content
+						name = key
+						default = var.children[2]
+					elseif var.name == "ALIAS" then
+						key = var.children[1].content
+						name = var.children[2].content
 					else
 						key = var.children[1].content
 						name = var.children[2].content
+						default = var.children[3]
+					end
+
+					if default and not from then
+						plume.error.cannotUseDefaultValueWithoutFrom(var)
 					end
 
 					if let then
@@ -331,6 +343,7 @@ return function(plume)
 						end
 					end
 					rvar.key = key
+					rvar.default = default
 				elseif var.name == "SETINDEX" then
 					-- The last index should be detected by the parser, and not modified here.
 					-- This is a temporary workaround.
@@ -391,7 +404,16 @@ return function(plume)
 						end
 						registerOP(var.ref, ops.LOAD_CONSTANT, 0, registerConstant(var.key))
 						registerOP(nil, ops.SWITCH, 0, 0)
-						registerOP(nil, ops.TABLE_INDEX, 0, 0)
+						if var.default then
+							registerOP(nil, ops.TABLE_INDEX, 1, 0) -- 1 -> safemode
+							local uid = getUID()
+							registerGoto(node, "default_end_"..uid, "JUMP_IF_PEEK")
+							registerOP(nil, ops.STORE_VOID, 0, 0)
+							scope(accBlock())(var.default)
+							registerLabel(node, "default_end_"..uid)
+						else
+							registerOP(nil, ops.TABLE_INDEX, 0, 0)
+						end
 					elseif dest then
 						if i < #varlist then
 							registerOP(nil, ops.DUPLICATE, 0, 0)
