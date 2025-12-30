@@ -631,7 +631,7 @@ Plume provides a set of built-in macros to handle common tasks such as I/O, tabl
 The `import` function is the **default mechanism** for modularity in Plume. It executes a Plume file at runtime and returns its final accumulated value. 
 
 **Key Features:**
-*   **Runtime Evaluation:** Unlike `use`, `import` is called during execution. This means the `path` can be a dynamic expression (e.g., `$import(("./configs/" .. env .. ".plume"))`).
+*   **Runtime Evaluation:** Unlike `use`, `import` is called during execution. This means the `path` can be a dynamic expression (e.g., `$import(./configs/$(env).plume)`).
 *   **Parameter Passing:** It allows passing values to variables declared with `let param` in the target file.
 *   **Encapsulation:** The returned value (usually a table) is contained within the variable it is assigned to, keeping the local namespace clean.
 
