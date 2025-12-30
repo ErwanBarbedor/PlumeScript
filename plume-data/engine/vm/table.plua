@@ -18,24 +18,39 @@
 @define TABLE_INDEX arg1 arg2
     --- Unstack 2, in order: table, key
     --- Stack 1, table[key]
-    --- arg1: -
+    --- arg1: safe?
     --- arg2: -
     local key = ms[msp-1]
     key = tonumber(key) or key
     if key==empty then
-        @_ERROR {{"Cannot use empty as key."}}
+        if arg1 == 1 then
+            @LOAD_EMPTY
+            goto DISPATCH
+        else
+            @_ERROR {{"Cannot use empty as key."}}
+        end
     end
     local _table = ms[msp]
     local t = _type(_table)
     if t ~= "table" then
-        @_ERROR{{"Try to index a '" ..t .."' value."}}
+        if arg1 == 1 then
+            @LOAD_EMPTY
+            goto DISPATCH
+        else
+            @_ERROR{{"Try to index a '" ..t .."' value."}}
+        end
     end
     local value = _table.table[key]
     if not value then
-        if tonumber(key) then
-            @_ERROR {{"Invalid index '" .. key .."'."}}
+        if arg1 == 1 then
+            @LOAD_EMPTY
+            goto DISPATCH
         else
-            @_ERROR {{"Unregistered key '" .. key .."'."}}
+            if tonumber(key) then
+                @_ERROR {{"Invalid index '" .. key .."'."}}
+            else
+                @_ERROR {{"Unregistered key '" .. key .."'."}}
+            end
         end
     end
     ms[msp-1] = value

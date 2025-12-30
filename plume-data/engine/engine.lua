@@ -235,19 +235,37 @@ end
 	    local key=ms[msp-1]
 	    key=tonumber(key) or key
 	    if key==empty then
-	            return false, "Cannot use empty as key.", ip, chunk
+	        if arg1==1 then
+	                msp=msp+1
+	    ms[msp]=empty
+	            goto DISPATCH
+	        else
+	                return false, "Cannot use empty as key.", ip, chunk
+	        end
 	    end
 	    local _table=ms[msp]
 	    local t=_type(_table)
 	    if t ~="table" then
-	            return false, "Try to index a '" ..t .."' value.", ip, chunk
+	        if arg1==1 then
+	                msp=msp+1
+	    ms[msp]=empty
+	            goto DISPATCH
+	        else
+	                return false, "Try to index a '" ..t .."' value.", ip, chunk
+	        end
 	    end
 	    local value=_table.table[key]
 	    if not value then
-	        if tonumber(key) then
-	                return false, "Invalid index '" .. key .."'.", ip, chunk
+	        if arg1==1 then
+	                msp=msp+1
+	    ms[msp]=empty
+	            goto DISPATCH
 	        else
-	                return false, "Unregistered key '" .. key .."'.", ip, chunk
+	            if tonumber(key) then
+	                    return false, "Invalid index '" .. key .."'.", ip, chunk
+	            else
+	                    return false, "Unregistered key '" .. key .."'.", ip, chunk
+	            end
 	        end
 	    end
 	    ms[msp-1]=value
@@ -262,19 +280,37 @@ end
 	        local key=ms[msp-1]
 	    key=tonumber(key) or key
 	    if key==empty then
-	            return false, "Cannot use empty as key.", ip, chunk
+	        if arg1==1 then
+	                msp=msp+1
+	    ms[msp]=empty
+	            goto DISPATCH
+	        else
+	                return false, "Cannot use empty as key.", ip, chunk
+	        end
 	    end
 	    local _table=ms[msp]
 	    local t=_type(_table)
 	    if t ~="table" then
-	            return false, "Try to index a '" ..t .."' value.", ip, chunk
+	        if arg1==1 then
+	                msp=msp+1
+	    ms[msp]=empty
+	            goto DISPATCH
+	        else
+	                return false, "Try to index a '" ..t .."' value.", ip, chunk
+	        end
 	    end
 	    local value=_table.table[key]
 	    if not value then
-	        if tonumber(key) then
-	                return false, "Invalid index '" .. key .."'.", ip, chunk
+	        if arg1==1 then
+	                msp=msp+1
+	    ms[msp]=empty
+	            goto DISPATCH
 	        else
-	                return false, "Unregistered key '" .. key .."'.", ip, chunk
+	            if tonumber(key) then
+	                    return false, "Invalid index '" .. key .."'.", ip, chunk
+	            else
+	                    return false, "Unregistered key '" .. key .."'.", ip, chunk
+	            end
 	        end
 	    end
 	    ms[msp-1]=value
