@@ -57,8 +57,8 @@ end
 /// Test enumerate
 let t = $table(quill, wing, bird)
 @join(sep:\n)
-  for item in enumerate(t)
-    - Item $item.index is $item.value.
+  for index, value in enumerate(t)
+    - Item $index is $value.
   end
 end
 /// Output
@@ -70,8 +70,8 @@ Item 3 is bird.
 /// Test items
 let t = $table(first: quill, second: wing, bonus: bird)
 @join(sep:\n)
-  for item in items(t)
-    - Item "$item.key" is _($item.value)_.
+  for key, value in items(t)
+    - Item "$key" is _($value)_.
   end
 end
 /// Output

@@ -85,8 +85,8 @@ set write = macro (...args)
   Positionnals args: $join(...args, sep:\,\s)\n
   Named args:\s
   @join(sep:\,\s)
-    for item in items(args)
-      - $item.key\=$item.value
+    for key, value in items(args)
+      - $key\=$value
     end
   end
 end

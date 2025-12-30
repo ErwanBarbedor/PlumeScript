@@ -104,36 +104,3 @@ $t[1]
 write
 mark
 /// End
-
-/// Test destructuration 1
-let t = @table
-	wing: mark
-end
-let wing from t
-$wing
-/// Output
-mark
-/// End
-
-/// Test destructuration 2
-let t = @table
-	wing: mark
-	paint: song
-end
-let wing, paint from t
-$wing, $paint
-/// Output
-mark, song
-/// End
-
-/// Test destructuration 3
-let t = @table
-	wing: mark
-	paint: song
-	quill: nib
-end
-let wing, paint, quill from t
-$wing, $paint, $quill
-/// Output
-mark, song, nib
-/// End

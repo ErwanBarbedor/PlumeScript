@@ -1,0 +1,169 @@
+/// Test multiple let
+let a, b
+
+set b = Wing
+$b
+/// Output
+Wing
+/// End
+
+/// Test positionnal
+let t = $table(quill, mark)
+
+let a, b = $t
+a=$a\n
+b=$b
+/// Output
+a=quill
+b=mark
+/// End
+
+/// Test positionnal with set
+let t = $table(quill, mark)
+
+let a, b
+set a, b = $t
+a=$a\n
+b=$b
+/// Output
+a=quill
+b=mark
+/// End
+
+/// Test named destructuration 1
+let t = @table
+	wing: mark
+end
+let wing from $t
+$wing
+/// Output
+mark
+/// End
+
+/// Test named destructuration 2
+let t = @table
+	wing: mark
+	paint: song
+end
+let wing, paint from $t
+$wing, $paint
+/// Output
+mark, song
+/// End
+
+/// Test named destructuration 3
+let t = @table
+	wing: mark
+	paint: song
+	quill: nib
+end
+let wing, paint, quill from $t
+$wing, $paint, $quill
+/// Output
+mark, song, nib
+/// End
+
+/// Test named destructuration with alias 1
+let t = @table
+	wing: mark
+	paint: song
+	quill: nib
+end
+let wing as paint from $t
+$paint
+/// Output
+mark
+/// End
+
+/// Test named destructuration with alias 2
+let t = @table
+	wing: mark
+	paint: song
+	quill: nib
+end
+let wing as paint, quill from $t
+$paint, $quill
+/// Output
+mark, nib
+/// End
+
+/// Test named destructuration with default value 1
+let t = @table
+	paint: song
+end
+let wing: 5 from $t
+$wing
+/// Output
+5
+/// End
+
+/// Test named destructuration with default value 2
+let t = @table
+	wing: song
+end
+let wing: 5 from $t
+$wing
+/// Output
+song
+/// End
+
+/// Test named destructuration with default value and alias 1
+let t = @table
+	quill: song
+end
+let wing as paint: 5 from $t
+$paint
+/// Output
+5
+/// End
+
+/// Test named destructuration with default value and alias 2
+let t = @table
+	wing: song
+end
+let wing as paint: 5 from $t
+$paint
+/// Output
+song
+/// End
+
+/// Test named destructuration with set
+let t = @table
+	wing: mark
+end
+let wing
+set wing from $t
+$wing
+/// Output
+mark
+/// End
+
+/// Test for destructuration with set
+let t = @table
+	- $table(x, 1)
+	- $table(y, 2)
+end
+
+for a, b in t
+	$a = $b\n
+end
+/// Output
+x = 1
+y = 2
+/// End
+
+/// Test Forbiden default value 1
+let wing: 5
+/// Error
+Compilation error: Cannot use a default value outside of a from statement.
+File 'Forbiden default value 1', line 1: let wing: 5
+                                             ^^^^^^^
+/// End
+
+/// Test Forbiden default value 2
+let wing: 5 = 8
+/// Error
+Compilation error: Cannot use a default value outside of a from statement.
+File 'Forbiden default value 2', line 1: let wing: 5 = 8
+                                             ^^^^^^^
+/// End

@@ -1,0 +1,25 @@
+/// Test enumerate
+let t = $table(quill, wing, bird)
+@join(sep:\n)
+  for item in enumerate(t, legacy: true)
+    - Item $item.index is $item.value.
+  end
+end
+/// Output
+Item 1 is quill.
+Item 2 is wing.
+Item 3 is bird.
+/// End
+
+/// Test items
+let t = $table(first: quill, second: wing, bonus: bird)
+@join(sep:\n)
+  for item in items(t, legacy: true)
+    - Item "$item.key" is _($item.value)_.
+  end
+end
+/// Output
+Item "first" is _(quill)_.
+Item "second" is _(wing)_.
+Item "bonus" is _(bird)_.
+/// End
