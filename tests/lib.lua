@@ -150,6 +150,7 @@ function lib.executeTests(allTests, plumeEngine)
                 -- Set hook to run every 1,000,000 instructions
                 debug.sethook(timeout_hook, "", 1000000)
                 plumeEngine.callstack = {}
+                plumeEngine.env.plume_path = ""
                 local chunk = plumeEngine.newPlumeExecutableChunk(true)
                 chunk.name = "main"
                 local x, y, z = pcall(
