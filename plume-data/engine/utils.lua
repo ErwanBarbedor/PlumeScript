@@ -251,4 +251,74 @@ return function (plume)
 			end
 		end)
 	end
+
+	local function formatDir(s)
+        local result = s:gsub('\\', '/')
+        if result ~= "" and not result:match('/$') then
+            result = result .. "/"
+        end
+        return result
+    end
+    local function formatDirFromFilename(s)
+        local result = formatDir(s:gsub('/[^/]+$', ''))
+        if result ~= "" and not result:match('/$') then
+            result = result .. "/"
+        end
+        return result
+    end
+
+    local pathTemplates = {
+        "%base%%path%.%ext%",
+        "%base%%path%/init.%ext%",
+    }
+    
+    function plume.getFilenameFromPath(path, lua, chunk)
+        path = path:gsub('\\', '/')
+        
+        local root
+        if path:match('^%.+/') or path == "." then
+            root = formatDirFromFilename(chunk.name)
+        else
+            root = formatDirFromFilename(chunk.state[1].name)
+        end
+
+        local ext
+        if lua then
+            ext = "lua"
+        else
+            ext = "plume"
+        end
+
+        local basedirs = {}
+        local env = plume.env.plume_path
+        if env then
+            for dir in env:gmatch('[^;]+') do
+                dir = formatDir(dir)
+                table.insert(basedirs, dir)
+            end
+        end
+        table.insert(basedirs, root)
+        table.insert(basedirs, "")
+
+        local searchPaths = {}
+        for _, base in ipairs(basedirs) do
+            for _, template in ipairs(pathTemplates) do
+                template = template:gsub('%%base%%', base)
+                template = template:gsub('%%path%%', path)
+                template = template:gsub('%%ext%%', ext)
+
+                table.insert(searchPaths, template)
+            end
+        end
+
+        for _, search in ipairs(searchPaths) do
+            local f = io.open(search)
+            if f then
+                f:close()
+                return search
+            end
+        end
+        
+        return nil, searchPaths
+    end
 end
