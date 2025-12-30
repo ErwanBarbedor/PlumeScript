@@ -294,16 +294,7 @@ return function(plume)
 		--------------
 		-- VARIABLE --
 		--------------
-		local function setlet(node, let)
-			local isConst     = plume.ast.get(node, "CONST")
-			local isStatic    = plume.ast.get(node, "STATIC")
-
-			local from    = plume.ast.get(node, "FROM")
-			local compound = plume.ast.get(node, "COMPOUND")
-
-			local nodevarlist = plume.ast.get(node, "VARLIST")
-			local body        = plume.ast.get(node, "BODY")
-
+		local function affectation(node, nodevarlist, body, isLet, isConst, isStatic, isFrom, compound)
 			local varlist = {}
 			for _, var in ipairs(nodevarlist.children) do
 				local rvar
@@ -325,11 +316,11 @@ return function(plume)
 						default = var.children[3]
 					end
 
-					if default and not from then
+					if default and not isFrom then
 						plume.error.cannotUseDefaultValueWithoutFrom(var)
 					end
 
-					if let then
+					if isLet then
 						rvar = registerVariable(name, isStatic, isConst)
 						if not rvar then
 							plume.error.letExistingVariableError(node, name)
@@ -372,9 +363,7 @@ return function(plume)
 
 				rvar.ref = var
 				table.insert(varlist, rvar)
-				
 			end
-
 			if body then
 				local dest = #varlist > 1
 
@@ -398,7 +387,7 @@ return function(plume)
 						registerOP(var.ref, ops["OPP_" .. compound.children[1].name], 0, 0)
 					end
 
-					if from then
+					if isFrom then
 						if i < #varlist then
 							registerOP(nil, ops.DUPLICATE, 0, 0)
 						end
@@ -429,23 +418,36 @@ return function(plume)
 					else
 						if var.isStatic then
 							registerOP(var.ref, ops.STORE_STATIC, 0, var.offset)
-						elseif not let and var.frameOffset > 0 then
+						elseif not isLet and var.frameOffset > 0 then
 							registerOP(var.ref, ops.STORE_LEXICAL, var.frameOffset, var.offset)
 						else
 							registerOP(var.ref, ops.STORE_LOCAL, 0, var.offset)
 						end
 					end
 				end
-			elseif isConst and let then
+			elseif isConst and isLet then
 				plume.error.letEmptyConstantError(node)
 			end
 		end
 
+		local function SETLET(node, isLet)
+			local isConst     = plume.ast.get(node, "CONST")
+			local isStatic    = plume.ast.get(node, "STATIC")
+
+			local isFrom    = plume.ast.get(node, "FROM")
+			local compound = plume.ast.get(node, "COMPOUND")
+
+			local nodevarlist = plume.ast.get(node, "VARLIST")
+			local body        = plume.ast.get(node, "BODY")
+
+			affectation(node, nodevarlist, body, isLet, isConst, isStatic, isFrom, compound)
+		end
+
 		nodeHandlerTable.LET = function(node)
-			setlet(node, true)
+			SETLET(node, true)
 		end
 		nodeHandlerTable.SET = function(node)
-			setlet(node, false)
+			SETLET(node, false)
 		end
 
 		----------
@@ -609,7 +611,7 @@ return function(plume)
 		end
 
 		nodeHandlerTable.FOR = function(node)
-			local identifier = plume.ast.get(node, "IDENTIFIER")
+			local varlist = plume.ast.get(node, "VARLIST")
 			local iterator   = plume.ast.get(node, "ITERATOR")
 			local body       = plume.ast.get(node, "BODY")
 			local uid = getUID()
@@ -632,8 +634,10 @@ return function(plume)
 				registerGoto(nil, "for_end_"..uid, "FOR_ITER", 1)
 
 				scope(function(body)
-					local var = registerVariable(identifier.content)
-					registerOP(identifier, ops.STORE_LOCAL, 0, var.offset)
+					if #varlist.children == 1 then
+						local var = registerVariable(varlist.children[1].content)
+						registerOP(identifier, ops.STORE_LOCAL, 0, var.offset)
+					end
 					
 					table.insert(loops, {begin_label="for_loop_end_"..uid, end_label="for_end_"..uid})
 					childrenHandler(body)
