@@ -236,6 +236,7 @@ end
 	    key=tonumber(key) or key
 	    if key==empty then
 	        if arg1==1 then
+	            msp=msp-2
 	                msp=msp+1
 	    ms[msp]=empty
 	            goto DISPATCH
@@ -247,6 +248,7 @@ end
 	    local t=_type(_table)
 	    if t ~="table" then
 	        if arg1==1 then
+	            msp=msp-2
 	                msp=msp+1
 	    ms[msp]=empty
 	            goto DISPATCH
@@ -257,6 +259,7 @@ end
 	    local value=_table.table[key]
 	    if not value then
 	        if arg1==1 then
+	            msp=msp-2
 	                msp=msp+1
 	    ms[msp]=empty
 	            goto DISPATCH
@@ -281,6 +284,7 @@ end
 	    key=tonumber(key) or key
 	    if key==empty then
 	        if arg1==1 then
+	            msp=msp-2
 	                msp=msp+1
 	    ms[msp]=empty
 	            goto DISPATCH
@@ -292,6 +296,7 @@ end
 	    local t=_type(_table)
 	    if t ~="table" then
 	        if arg1==1 then
+	            msp=msp-2
 	                msp=msp+1
 	    ms[msp]=empty
 	            goto DISPATCH
@@ -302,6 +307,7 @@ end
 	    local value=_table.table[key]
 	    if not value then
 	        if arg1==1 then
+	            msp=msp-2
 	                msp=msp+1
 	    ms[msp]=empty
 	            goto DISPATCH
