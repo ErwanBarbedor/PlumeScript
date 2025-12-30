@@ -63,6 +63,30 @@ $wing, $paint, $quill
 mark, song, nib
 /// End
 
+/// Test named destructuration with alias 1
+let t = @table
+	wing: mark
+	paint: song
+	quill: nib
+end
+let wing as paint from $t
+$paint
+/// Output
+mark
+/// End
+
+/// Test named destructuration with alias 2
+let t = @table
+	wing: mark
+	paint: song
+	quill: nib
+end
+let wing as paint, quill from $t
+$paint, $quill
+/// Output
+mark, nib
+/// End
+
 /// Test named destructuration with set
 let t = @table
 	wing: mark
