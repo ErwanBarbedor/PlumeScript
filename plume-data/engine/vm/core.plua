@@ -79,18 +79,28 @@ return function (plume)
         --------------------
         -- When is called -- 
         --------------------
-        if parameters then
-            for i=1, chunk.localsCount do
-                if parameters[i] == nil then
-                    vs[i] = empty
-                else
-                    vs[i] = parameters[i]
-                end
-            end
 
-            vsp = chunk.localsCount
-            vsfp = 1
-            table.insert(vsf, 1)
+        if parameters then
+            if chunk.isFile then
+                for k, v in pairs(parameters) do
+                    local offset = chunk.namedParamOffset[k]
+                    if offset then
+                        chunk.static[offset] = v
+                    end
+                end
+            else -- macro
+                for i=1, chunk.localsCount do
+                    if parameters[i] == nil then
+                        vs[i] = empty
+                    else
+                        vs[i] = parameters[i]
+                    end
+                end
+
+                vsp = chunk.localsCount
+                vsfp = 1
+                table.insert(vsf, 1)
+            end
         end
             
         --==============--

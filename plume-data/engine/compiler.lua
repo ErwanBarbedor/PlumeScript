@@ -59,7 +59,7 @@ return function(plume)
 			return constants[key]
 		end
 
-		local function registerVariable(name, isStatic, isConst, staticValue, source)
+		local function registerVariable(name, isStatic, isConst, isParam, staticValue, source)
 			local scope
 			if isStatic then
 				scope = static
@@ -75,6 +75,11 @@ return function(plume)
 			table.insert(scope, {scope[name]})
 			scope[name] = {offset = #scope, isStatic = isStatic, isConst = isConst, source = source}
 
+			if isParam then
+				chunk.namedParamCount = chunk.namedParamCount+1
+				chunk.namedParamOffset[name] = #scope
+			end
+
 			return scope[name]
 		end
 
@@ -87,7 +92,7 @@ return function(plume)
 			table.sort(keys)
 
 			for _, key in ipairs(keys) do
-				registerVariable(key, true, false, plume.std[key])
+				registerVariable(key, true, false, false, plume.std[key])
 			end
 		end
 
@@ -294,7 +299,7 @@ return function(plume)
 		--------------
 		-- VARIABLE --
 		--------------
-		local function affectation(node, nodevarlist, body, isLet, isConst, isStatic, isFrom, compound, isBodyStacked)
+		local function affectation(node, nodevarlist, body, isLet, isConst, isStatic, isParam, isFrom, compound, isBodyStacked)
 			local varlist = {}
 			for _, var in ipairs(nodevarlist.children) do
 				local rvar
@@ -321,7 +326,7 @@ return function(plume)
 					end
 
 					if isLet then
-						rvar = registerVariable(name, isStatic, isConst)
+						rvar = registerVariable(name, isStatic, isConst, isParam)
 						if not rvar then
 							plume.error.letExistingVariableError(node, name)
 						end
@@ -376,6 +381,13 @@ return function(plume)
 				end
 				
 				for i, var in ipairs(varlist) do
+					local uid = getUID()
+					if isParam then
+						registerOP(node, ops.LOAD_STATIC, 0, var.offset)
+						registerGoto(node, "param_end_"..uid, "JUMP_IF_PEEK")
+						registerOP(nil, ops.STORE_VOID, 0, 0)
+					end
+
 					if compound then
 						if var.getKey then
 							var.getKey()
@@ -424,8 +436,16 @@ return function(plume)
 							registerOP(var.ref, ops.STORE_LOCAL, 0, var.offset)
 						end
 					end
+
+					if isParam then
+						registerGoto(node, "param_end_skip_store"..uid)
+						registerLabel(node, "param_end_"..uid)
+						registerOP(nil, ops.STORE_VOID, 0, 0)
+						registerOP(nil, ops.STORE_VOID, 0, 0)
+						registerLabel(node, "param_end_skip_store"..uid)
+					end
 				end
-			elseif isConst and isLet then
+			elseif isConst and isLet and not isParam then
 				plume.error.letEmptyConstantError(node)
 			end
 		end
@@ -433,6 +453,18 @@ return function(plume)
 		local function SETLET(node, isLet)
 			local isConst     = plume.ast.get(node, "CONST")
 			local isStatic    = plume.ast.get(node, "STATIC")
+			local isParam     = plume.ast.get(node, "PARAM")
+
+			if isParam then
+				if isConst then
+					plume.error.cannotUseParamAndConst(node)
+				end
+				if isStatic then
+					plume.error.cannotUseParamAndStatic(node)
+				end
+				isConst = true
+				isStatic = true
+			end
 
 			local isFrom    = plume.ast.get(node, "FROM")
 			local compound = plume.ast.get(node, "COMPOUND")
@@ -440,7 +472,7 @@ return function(plume)
 			local nodevarlist = plume.ast.get(node, "VARLIST")
 			local body        = plume.ast.get(node, "BODY")
 
-			affectation(node, nodevarlist, body, isLet, isConst, isStatic, isFrom, compound)
+			affectation(node, nodevarlist, body, isLet, isConst, isStatic, isParam, isFrom, compound)
 		end
 
 		nodeHandlerTable.LET = function(node)
@@ -635,13 +667,14 @@ return function(plume)
 
 				scope(function(body)
 					affectation(node, varlist,
-						nil,-- body
-						true, -- isLet
+						nil,   -- body
+						true,  -- isLet
 						false, -- isConst
-						false, --isStatic
-						false,-- isFrom 
-						nil,-- compound
-						true -- isBodyStacked
+						false, -- isStatic
+						false, -- isParam
+						false, -- isFrom 
+						nil,   -- compound
+						true   -- isBodyStacked
 					)
 					
 					table.insert(loops, {begin_label="for_loop_end_"..uid, end_label="for_end_"..uid})
@@ -842,7 +875,7 @@ return function(plume)
             end
 
             for _, key in ipairs(result.keys) do
-            	local var = registerVariable(key, true, true, result.table[key], path)
+            	local var = registerVariable(key, true, true, false, result.table[key], path)
 				if not var then
 					plume.error.useExistingStaticVariableError(node, key, path)
 				end

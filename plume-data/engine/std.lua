@@ -187,7 +187,8 @@ return function (plume)
                     return dofile(filename)(plume) 
                 ---------------------------------
                 else
-                    local success, result = plume.executeFile(filename, chunk.state, true)
+                    table.remove(args.table)
+                    local success, result = plume.executeFile(filename, chunk.state, true, args.table)
                     if not success then
                         error(result, 0)
                     end
