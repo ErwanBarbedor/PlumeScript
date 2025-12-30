@@ -578,3 +578,22 @@ Unlike `import`, the following functions do not use the `plume_path` resolution 
 
 *   `read(path)`: Reads the content of the file at `path` and returns it as a string.
 *   `write(path, ...items)`: Writes the concatenated string representation of `items` to the file at `path`.
+
+### Lua Integration (New Section)
+
+Plume provides a `lua` static variable that acts as a bridge to the underlying Lua environment. This variable contains wrappers for essential Lua functions and libraries, allowing for advanced operations not covered by the Plume standard library.
+
+The `lua` table includes:
+*   **System functions**: `lua.error`, `lua.assert`.
+*   **Libraries**:
+    *   `lua.string.*` (string manipulation)
+    *   `lua.math.*` (mathematical constants and functions)
+    *   `lua.os.*` (operating system facilities)
+    *   `lua.io.*` (input and output)
+
+**Important Note on Type Stability:**
+The automatic type conversion between Plume and Lua is currently considered **unstable**. This applies particularly to:
+*   **Tables**: Mapping between Plume tables and Lua tables.
+*   **Functionality**: Mapping between Plume macros and Lua functions.
+
+As a result, some features or data transfers may be entirely non-functional or unusable in the current version.
