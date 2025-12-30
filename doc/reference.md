@@ -653,7 +653,7 @@ Unlike `import`, the following functions do not use the `plume_path` resolution 
 *   `read(path)`: Reads the content of the file at `path` and returns it as a string.
 *   `write(path, ...items)`: Writes the concatenated string representation of `items` to the file at `path`.
 
-### Lua Integration (New Section)
+### Lua Integration
 
 Plume provides a `lua` static variable that acts as a bridge to the underlying Lua environment. This variable contains wrappers for essential Lua functions and libraries, allowing for advanced operations not covered by the Plume standard library.
 
