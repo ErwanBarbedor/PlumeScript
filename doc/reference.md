@@ -15,7 +15,7 @@ This is a valid Plume program.
 To distinguish control flow and logic from text, Plume recognizes a set of **statements**. A line is treated as a statement if it begins (after any leading whitespace) with one of the following keywords:
 
 *   `if`, `elseif`, `else`, `for`, `while`, `macro`, `end`, `do`, `leave`, `break`, `continue`
-*   `let`, `set`
+*   `let`, `set`, `use`
 *   `-` (initiates a table item)
 *   `key:` (initiates a named table item, where `key` is any valid identifier)
 *   `...` (expand a table)
@@ -288,6 +288,9 @@ let [static] [const] name1, name2, ... = expression
 
 // 3. Named Destructuring (from)
 let [static] [const] key1, sourceKey as alias, key: default, ... from expression
+
+// 4. Parameter Declaration
+let param name [= value]
 ```
 
 **1. Multiple Declaration**
@@ -348,7 +351,14 @@ let avatar as icon: default.png from user
 let id, role as group, name: Anonymous from user
 ```
 
-**Consistency Note:** The syntax `key: default` mimics the named arguments syntax used in macro definitions (`macro name(arg: default)`), creating a unified experience across the language.
+**4. Parameters declaration**
+Variables can be declared as module parameters using the `param` keyword. A `param` variable is automatically `static` and `const`.
+
+```plume
+let param varname [= defaultValue]
+```
+These variables are intended to be populated by the caller during an `import`. If no value is provided during the import and no `defaultValue` is specified, the variable defaults to `empty`.
+
 
 **Common Rules:**
 *   **Modifiers:** `static` and `const` apply to all variables declared in the statement.
@@ -514,6 +524,29 @@ end
 
 Using `do` allows for imperative-style procedure calls within Plume's expression-oriented architecture, providing a clear and safe way to manage side-effects.
 
+### Context Injection (`use`)
+
+The `use` directive allows injecting the keys of a table returned by a module directly into the current file’s scope as `static const` variables.
+
+**Syntax:**
+```plume
+use path
+```
+
+**Implementation Details:**
+*   **Compilation-time Directive:** `use` is not a macro but a compiler directive. It is executed during the compilation phase to resolve symbols. Consequently, `path` must be a literal string; it **cannot** be a dynamic expression evaluated at runtime.
+*   **Scope:** All keys from the table returned by the file at `path` are made available in the current file as if they were declared locally.
+
+```plume
+// math.plume
+pi: 3.14
+
+// main.plume
+use math
+// pi is now directly accessible
+The value is $pi
+```
+
 ### Escaping
 
 Any character can be escaped with a backslash (`\`) to be treated as a literal. Special escape sequences exist for whitespace:
@@ -558,8 +591,8 @@ Plume provides a set of built-in macros to handle common tasks such as I/O, tabl
 
 ### Module System and Imports
 
-#### `import(path)`
-The `import` function executes a Plume file and returns its final accumulated value. 
+#### `import(path, ...params)`
+The `import` function executes a Plume file and returns its final accumulated value. It also allows passing values to variables declared with `let param` in the target file.
 
 **Path Resolution Logic:**
 The `import` statement follows a specific lookup order to locate files:
