@@ -414,6 +414,12 @@ end
 set host, p as port, protocol: http from config
 ```
 
+### Table Expansion and Unpacking (`...`)
+
+Plume provides a `...` operator to expand or unpack a table's contents into another structure. This is applicable in two contexts: table accumulation blocks and macro calls.
+
+The expression following `...` must evaluate to a table. Attempting to expand any other data type (number, string, etc.) will result in an error.
+
 #### In Table Accumulation Blocks (Expansion)
 
 When used inside a `TABLE` accumulation block, the `...` operator inserts all items (list and named) from the specified table into the table being constructed.
