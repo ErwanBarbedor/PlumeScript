@@ -531,3 +531,50 @@ The Plume parser ignores the following whitespace by default:
 *   Spaces surrounding operators or argument separators (`,`) in an evaluation context.
 
 To explicitly insert whitespace characters, use the escape sequences `\s`, `\t`, and `\n`.
+
+## Standard Library
+
+Plume provides a set of built-in macros to handle common tasks such as I/O, table manipulation, and iteration.
+
+### Basic Functions
+
+*   `print(...items)`: A wrapper for the underlying `print` function.
+*   `type(x)`: Returns the type of `x` as a string: `"empty"`, `"table"`, `"number"`, or `"string"`.
+*   `tostring(x)`: Converts the value `x` to its string representation.
+*   `len(table)`: Returns the number of items in a table.
+
+### Table Manipulation
+
+*   `table(...items)`: Explicitly creates and returns a table containing the provided items.
+*   `append(table, item)`: Adds `item` to the end of the specified `table`.
+*   `remove(table)`: Removes and returns the last item from the `table`.
+*   `join(sep: "", ...items)`: Returns a string produced by concatenating `items`, optionally separated by `sep`.
+
+### Iterators
+
+*   `seq(start, stop)` or `seq(stop)`: Returns an inclusive iterator from `start` to `stop`. If only one argument is provided, `start` defaults to `1`.
+*   `enumerate(table)`: Returns an iterator yielding pairs of `(index, value)` for each list item in the table.
+*   `items(table)`: Returns an iterator yielding `(key, value)` pairs for all non-numeric entries in the table.
+
+### Module System and Imports
+
+#### `import(path, ?lua)`
+The `import` function executes a Plume (or Lua, if the `?lua` flag is set) file and returns its final accumulated value. 
+
+**Path Resolution Logic:**
+The `import` statement follows a specific lookup order to locate files:
+1.  **Relative Search:** If `path` starts with `./` or `../`, Plume searches for the file relative to the directory of the currently executing file.
+2.  **Breadth Search:** Otherwise, it searches from the root file's directory and then through the directories listed in `plume_path`.
+3.  **File Patterns:** For any given directory, Plume looks for `[path].plume` and `[path]/init.plume` (or `.lua` extensions if the `?lua` flag is present).
+
+**Environment and Path Management:**
+*   The initial `plume_path` is populated from the `PLUME_PATH` environment variable (paths are separated by commas).
+*   `setPlumePath(path)`: Replaces the current `plume_path` with a new value.
+*   `addToPlumePath(path)`: Appends a new directory to the existing `plume_path`.
+
+### File System I/O
+
+Unlike `import`, the following functions do not use the `plume_path` resolution logic and expect direct file system paths.
+
+*   `read(path)`: Reads the content of the file at `path` and returns it as a string.
+*   `write(path, ...items)`: Writes the concatenated string representation of `items` to the file at `path`.
