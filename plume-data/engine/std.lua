@@ -240,8 +240,12 @@ return function (plume)
             local filename, searchPaths = getFilenameFromPath(args.table[1], args.table.lua, chunk)
             
             if filename then
+                ---------------------------------
+                -- WILL BE REMOVED IN 1.0 (#230)
+                ---------------------------------
                 if args.table.lua then
                     return dofile(filename)(plume) 
+                ---------------------------------
                 else
                     local success, result = plume.executeFile(filename, chunk.state, true)
                     if not success then
@@ -341,4 +345,14 @@ return function (plume)
     for name in ("string math os io"):gmatch("%S+") do
         plume.std.lua.table[name] = importLuaTable(name, _G[name])
     end
+
+    plume.std.lua.table.require =  plume.obj.luaFunction("require", function(args, chunk)
+        local filename, searchPaths = getFilenameFromPath(args.table[1], true, chunk)
+        if filename then
+            return dofile(filename)(plume) 
+        else
+            msg = "Error: cannot open '" .. args.table[1] .. "'.\nPaths tried:\n\t" .. table.concat(searchPaths, '\n\t')
+            error(msg, 0)
+        end
+    end)
 end
