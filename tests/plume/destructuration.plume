@@ -107,6 +107,14 @@ $wing
 song
 /// End
 
+/// Test named destructuration with default value 3
+let t = $table()
+let wing: (5 5) from $t
+$wing
+/// Output
+5 5
+/// End
+
 /// Test named destructuration with default value and alias 1
 let t = @table
 	quill: song

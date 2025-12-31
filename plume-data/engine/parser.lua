@@ -304,7 +304,7 @@ return function (plume)
         local statconst = (s * C("STATIC", P"static"))^-1 * (s * C("CONST", P"const"))^-1 * (s * C("PARAM", P"param"))^-1
 
         --- Common identifier
-        local _letsetdefaut = P":" * os * Ct("VALUE", (V"textns" - s + P"(" * V"textnp" * ")")^-1)
+        local _letsetdefaut = P":" * os * Ct("VALUE", (P"(" * V"textnp" * ")" + V"textns")^-1)
         local letsetvar = (
             Ct("ALIAS_DEFAULT", idn * os * P"as" * os * idn * os * _letsetdefaut)
             + Ct("ALIAS", idn * os * P"as" * os * idn)
