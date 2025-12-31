@@ -83,6 +83,19 @@ return function(plume)
 			return scope[name]
 		end
 
+		local function getNameSource(name, isStatic)
+			local scope
+			if isStatic then
+				scope = static
+			else
+				scope = scopes[#scopes]
+			end
+
+			if scope[name] then
+				return scope[name].source
+			end
+		end
+
 		-- All lua std function are stored as static variables
 		local function loadSTD()
 			local keys = {}
@@ -325,17 +338,23 @@ return function(plume)
 						plume.error.cannotUseDefaultValueWithoutFrom(var)
 					end
 
+					local source = getNameSource(name, isStatic)
+
 					if isLet then
 						rvar = registerVariable(name, isStatic, isConst, isParam)
 						if not rvar then
-							plume.error.letExistingVariableError(node, name)
+							if isStatic then
+								plume.error.letExistingStaticVariableError(node, name, source)
+							else
+								plume.error.letExistingVariableError(node, name, source)
+							end
 						end
 					else
 						rvar = getVariable(name)
 						if not rvar then
 							plume.error.setUnknowVariableError(node, name)
 						elseif rvar.isConst then
-							plume.error.setConstantVariableError(node, name)
+							plume.error.setConstantVariableError(node, name, source)
 						end
 					end
 					rvar.key = key
@@ -796,7 +815,7 @@ return function(plume)
 					true -- static
 				)
 				if not variable then
-					plume.error.letExistingStaticVariableError(node, macroName)
+					plume.error.letExistingStaticVariableError(node, macroName, getNameSource(macroName))
 				end
 				
 				registerOP(macroIdentifier, ops.STORE_STATIC, 0, variable.offset)
