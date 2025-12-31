@@ -53,16 +53,25 @@ return function (plume)
         local instr, op, arg1, arg2=0, 0, 0, 0
         local hook=plume.hook
         if parameters then
-            for i=1, chunk.localsCount do
-                if parameters[i]==nil then
-                    vs[i]=empty
-                else
-                    vs[i]=parameters[i]
+            if chunk.isFile then
+                for k, v in pairs(parameters) do
+                    local offset=chunk.namedParamOffset[k]
+                    if offset then
+                        chunk.static[offset]=v
+                    end
                 end
+            else
+                for i=1, chunk.localsCount do
+                    if parameters[i]==nil then
+                        vs[i]=empty
+                    else
+                        vs[i]=parameters[i]
+                    end
+                end
+                vsp=chunk.localsCount
+                vsfp=1
+                table.insert(vsf, 1)
             end
-            vsp=chunk.localsCount
-            vsfp=1
-            table.insert(vsf, 1)
         end
         ::DISPATCH::
                 	if hook then

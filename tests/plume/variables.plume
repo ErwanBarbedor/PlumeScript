@@ -86,10 +86,69 @@ end
 0
 /// End
 
+/// Test use 1
+use tests/plume/toimport/lib
+$nib
+/// Output
+quill
+/// End
+
 /// Test wrong indentifier
 let if = 5
 /// Error
 Syntax error: Cannot use 'if' as identifier.
 File 'wrong indentifier', line 1: let if = 5
                                       ^^
+/// End
+
+/// Test unknow use
+use idontexists
+/// Error
+Compilation error: Cannot open 'idontexists'.
+Paths tried:
+	main/idontexists.plume
+	main/idontexists/init.plume
+	idontexists.plume
+	idontexists/init.plume
+File 'unknow use', line 1: use idontexists
+                               ^^^^^^^^^^^
+/// End
+
+/// Test use crash
+use tests/plume/toimport/badlib
+/// Error
+Compilation error: Error when executing 'tests/plume/toimport/badlib':
+Runtime error: Cannot convert the string value to a number.
+
+Traceback (most recent call first):
+  File 'tests/plume/toimport/badlib.plume', line 2: set x += a
+                                                        ^
+File 'use crash', line 1: use tests/plume/toimport/badlib
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/// End
+
+/// Test use not a table
+use tests/plume/toimport/text
+/// Error
+Compilation error: To be used, 'tests/plume/toimport/text' must return a table. Currently, it returns a string.
+File 'use not a table', line 1: use tests/plume/toimport/text
+                                    ^^^^^^^^^^^^^^^^^^^^^^^^^
+/// End
+
+/// Test already exists 1
+let static nib
+use tests/plume/toimport/lib
+/// Error
+Compilation error: Cannot define static variable 'nib' from lib 'tests/plume/toimport/lib', it already exists in the current file scope.
+File 'already exists 1', line 2: use tests/plume/toimport/lib
+                                     ^^^^^^^^^^^^^^^^^^^^^^^^
+/// End
+
+/// Test already exists 2
+use tests/plume/toimport/lib
+let static nib
+/// Error
+Compilation error: Cannot define static variable 'nib', it already exists in the current file scope (imported from 'tests/plume/toimport/lib').
+File 'already exists 2', line 2: let static nib
+                                 ^^^^^^^^^^^^^^
 /// End

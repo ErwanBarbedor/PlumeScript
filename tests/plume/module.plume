@@ -1,0 +1,19 @@
+/// Test params 1
+$import(tests/plume/toimport/param)
+/// Output
+10
+/// End
+
+/// Test params 2
+$import(tests/plume/toimport/param, x: 5)
+/// Output
+5
+/// End
+
+/// Test static param
+let static param x = 4
+/// Error
+Compilation error: Cannot use 'static' and 'param' together (parameter variable are by default static).
+File 'static param', line 1: let static param x = 4
+                             ^^^^^^^^^^^^^^^^^^^^^^
+/// End

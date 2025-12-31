@@ -14,74 +14,7 @@ If not, see <https://www.gnu.org/licenses/>.
 ]]
 
 return function (plume)
-    local pathTemplates = {
-        "%base%%path%.%ext%",
-        "%base%%path%/init.%ext%",
-    }
-    local function formatDir(s)
-        local result = s:gsub('\\', '/')
-        if result ~= "" and not result:match('/$') then
-            result = result .. "/"
-        end
-        return result
-    end
-    local function formatDirFromFilename(s)
-        local result = formatDir(s:gsub('/[^/]+$', ''))
-        if result ~= "" and not result:match('/$') then
-            result = result .. "/"
-        end
-        return result
-    end
-
-    local function getFilenameFromPath(path, lua, chunk)
-        path = path:gsub('\\', '/')
-        
-        local root
-        if path:match('^%.+/') or path == "." then
-            root = formatDirFromFilename(chunk.name)
-        else
-            root = formatDirFromFilename(chunk.state[1].name)
-        end
-
-        local ext
-        if lua then
-            ext = "lua"
-        else
-            ext = "plume"
-        end
-
-        local basedirs = {}
-        local env = plume.env.plume_path
-        if env then
-            for dir in env:gmatch('[^;]+') do
-                dir = formatDir(dir)
-                table.insert(basedirs, dir)
-            end
-        end
-        table.insert(basedirs, root)
-        table.insert(basedirs, "")
-
-        local searchPaths = {}
-        for _, base in ipairs(basedirs) do
-            for _, template in ipairs(pathTemplates) do
-                template = template:gsub('%%base%%', base)
-                template = template:gsub('%%path%%', path)
-                template = template:gsub('%%ext%%', ext)
-
-                table.insert(searchPaths, template)
-            end
-        end
-
-        for _, search in ipairs(searchPaths) do
-            local f = io.open(search)
-            if f then
-                f:close()
-                return search
-            end
-        end
-        
-        return nil, searchPaths
-    end
+    
 
     local std = {
         print = function(arg)
@@ -237,13 +170,25 @@ return function (plume)
         -- Else, search from root file and dir from PLUME_PATH (separated by comma)
         -- For a given path, search for path.plume and path/init.plume
         import = function(args, chunk)
-            local filename, searchPaths = getFilenameFromPath(args.table[1], args.table.lua, chunk)
+            local filename, searchPaths = plume.getFilenameFromPath(
+                args.table[1],
+                ---------------------------------
+                -- WILL BE REMOVED IN 1.0 (#230)
+                ---------------------------------
+                args.table.lua,
+                ---------------------------------
+                chunk)
             
             if filename then
+                ---------------------------------
+                -- WILL BE REMOVED IN 1.0 (#230)
+                ---------------------------------
                 if args.table.lua then
                     return dofile(filename)(plume) 
+                ---------------------------------
                 else
-                    local success, result = plume.executeFile(filename, chunk.state, true)
+                    table.remove(args.table)
+                    local success, result = plume.executeFile(filename, chunk.state, true, args.table)
                     if not success then
                         error(result, 0)
                     end
@@ -341,4 +286,14 @@ return function (plume)
     for name in ("string math os io"):gmatch("%S+") do
         plume.std.lua.table[name] = importLuaTable(name, _G[name])
     end
+
+    plume.std.lua.table.require =  plume.obj.luaFunction("require", function(args, chunk)
+        local filename, searchPaths = plume.getFilenameFromPath(args.table[1], true, chunk)
+        if filename then
+            return dofile(filename)(plume) 
+        else
+            msg = "Error: cannot open '" .. args.table[1] .. "'.\nPaths tried:\n\t" .. table.concat(searchPaths, '\n\t')
+            error(msg, 0)
+        end
+    end)
 end

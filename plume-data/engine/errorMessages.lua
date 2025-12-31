@@ -37,8 +37,13 @@ return function(plume)
 		throwCompilationError(node, message)
 	end
 
-	function plume.error.setConstantVariableError(node, varName)
-		local message = string.format("Cannot set variable '%s', it is a constant.", varName)
+	function plume.error.setConstantVariableError(node, varName, source)
+		if source then
+			source = string.format(" (imported from '%s')", source)
+		else
+			source = ""
+		end
+		local message = string.format("Cannot set variable '%s'%s, it is a constant.", varName, source)
 		throwCompilationError(node, message)
 	end
 
@@ -47,13 +52,38 @@ return function(plume)
 		throwCompilationError(node, message)
 	end
 
-	function plume.error.letExistingVariableError(node, varName)
-		local message = string.format("Cannot define variable '%s', it already exists in the current scope.", varName)
+	function plume.error.letExistingVariableError(node, varName, source)
+		if source then
+			source = string.format(" (imported from '%s')", source)
+		else
+			source = ""
+		end
+		local message = string.format("Cannot define variable '%s', it already exists in the current scope%s.", varName, source)
 		throwCompilationError(node, message)
 	end
 
-	function plume.error.letExistingStaticVariableError(node, varName)
-		local message = string.format("Cannot define static variable '%s', it already exists in the current file scope.", varName)
+	function plume.error.letExistingStaticVariableError(node, varName, source)
+		if source then
+			source = string.format(" (imported from '%s')", source)
+		else
+			source = ""
+		end
+		local message = string.format("Cannot define static variable '%s', it already exists in the current file scope%s.", varName, source)
+		throwCompilationError(node, message)
+	end
+
+	function plume.error.cannotUseParamAndConst(node)
+		local message = "Cannot use 'const' and 'param' together (parameter variable are by default constant)."
+		throwCompilationError(node, message)
+	end
+
+	function plume.error.cannotUseParamAndStatic(node)
+		local message = "Cannot use 'static' and 'param' together (parameter variable are by default static)."
+		throwCompilationError(node, message)
+	end
+
+	function plume.error.useExistingStaticVariableError(node, varName, use)
+		local message = string.format("Cannot define static variable '%s' from lib '%s', it already exists in the current file scope.", varName, use)
 		throwCompilationError(node, message)
 	end
 
@@ -136,5 +166,20 @@ return function(plume)
 	function plume.error.mixedBlockError(node, expected, found)
 		local message = string.format("Mixed block: the expected type of the block is %s, but it contains an element %s.", expected, found)
 		throwSyntaxError(node, message)
+	end
+
+	function plume.error.cannotOpenFile(node, path, searchPaths)
+		local message = string.format("Cannot open '%s'.\nPaths tried:\n\t%s", path, table.concat(searchPaths, '\n\t'))
+		throwCompilationError(node, message)
+	end
+
+	function plume.error.cannotExecuteFile(node, path, error)
+		local message = string.format("Error when executing '%s':\n%s", path, error)
+		throwCompilationError(node, message)
+	end
+
+	function plume.error.fileMustReturnATable(node, path, t)
+		local message = string.format("To be used, '%s' must return a table. Currently, it returns a %s.", path, t)
+		throwCompilationError(node, message)
 	end
 end
