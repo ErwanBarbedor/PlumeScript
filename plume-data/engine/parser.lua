@@ -87,6 +87,11 @@ return function (plume)
                       + P"\\n" * Cc("TEXT", "\n")
                       + P"\\"*C("TEXT", P(1))
 
+        ---------------------------
+        -- compilation directive --
+        ---------------------------
+        local use = P"use" * s * C("USE", NOT(s + "\n")^1)
+
         ----------
         -- eval --
         ----------
@@ -296,10 +301,10 @@ return function (plume)
         local lbody    = Ct("BODY", V"firstStatement")
         local compound = Ct("COMPOUND", C("ADD", P"+") + C("SUB", P"-")
                        + C("MUL", P"*") + C("DIV", P"/"))
-        local statconst = (s * C("STATIC", P"static"))^-1 * (s * C("CONST", P"const"))^-1
+        local statconst = (s * C("STATIC", P"static"))^-1 * (s * C("CONST", P"const"))^-1 * (s * C("PARAM", P"param"))^-1
 
         --- Common identifier
-        local _letsetdefaut = P":" * os * Ct("VALUE", (V"textns" - s + P"(" * V"textnp" * ")")^-1)
+        local _letsetdefaut = P":" * os * Ct("VALUE", (P"(" * V"textnp" * ")" + V"textns")^-1)
         local letsetvar = (
             Ct("ALIAS_DEFAULT", idn * os * P"as" * os * idn * os * _letsetdefaut)
             + Ct("ALIAS", idn * os * P"as" * os * idn)
@@ -355,7 +360,7 @@ return function (plume)
                                 ,
             statement    = lt * V"firstStatement",
 
-            command =  _if + _while + _for + _break + continue + macro + block + let + set + leave + listitem + hashitem + expand,
+            command =  _if + _while + _for + _break + continue + macro + block + let + set + leave + listitem + hashitem + expand + use,
 
             text =   (escaped + eval + V"comment" + V"rawtext")^1,
             textns = (escaped + eval + V"comment" + V"rawtextns")^1,

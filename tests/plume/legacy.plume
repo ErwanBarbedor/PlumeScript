@@ -23,3 +23,11 @@ Item "first" is _(quill)_.
 Item "second" is _(wing)_.
 Item "bonus" is _(bird)_.
 /// End
+
+/// Test lua import
+let double = $import(tests/plume/toimport/lib, ?lua)
+
+$double(3)
+/// Output
+6
+/// End

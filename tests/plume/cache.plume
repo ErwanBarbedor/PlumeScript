@@ -1,0 +1,22 @@
+/// Test double import
+do $import(tests/plume/toimport/lib)
+do $import(tests/plume/toimport/lib)
+/// Output
+
+/// End
+
+/// Test double import with macros 1
+$import(tests/plume/toimport/lib2).wing()\n
+$import(tests/plume/toimport/lib2).wing()
+/// Output
+blue quill
+blue quill
+/// End
+
+/// Test double import with macros 2
+$import(tests/plume/toimport/lib2, info2: big).wing()\n
+$import(tests/plume/toimport/lib2).wing()
+/// Output
+blue bigquill
+blue quill
+/// End

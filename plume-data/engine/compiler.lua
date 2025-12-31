@@ -14,6 +14,7 @@ If not, see <https://www.gnu.org/licenses/>.
 ]]
 
 return function(plume)
+	
 	function plume.compileFile(code, filename, chunk)
 		local static  = {}
 		local scopes  = {}
@@ -59,7 +60,7 @@ return function(plume)
 			return constants[key]
 		end
 
-		local function registerVariable(name, isStatic, isConst, staticValue)
+		local function registerVariable(name, isStatic, isConst, isParam, staticValue, source)
 			local scope
 			if isStatic then
 				scope = static
@@ -73,9 +74,27 @@ return function(plume)
 			end
 			
 			table.insert(scope, {scope[name]})
-			scope[name] = {offset=#scope, isStatic = isStatic, isConst = isConst}
+			scope[name] = {offset = #scope, isStatic = isStatic, isConst = isConst, source = source}
+
+			if isParam then
+				chunk.namedParamCount = chunk.namedParamCount+1
+				chunk.namedParamOffset[name] = #scope
+			end
 
 			return scope[name]
+		end
+
+		local function getNameSource(name, isStatic)
+			local scope
+			if isStatic then
+				scope = static
+			else
+				scope = scopes[#scopes]
+			end
+
+			if scope[name] then
+				return scope[name].source
+			end
 		end
 
 		-- All lua std function are stored as static variables
@@ -87,7 +106,7 @@ return function(plume)
 			table.sort(keys)
 
 			for _, key in ipairs(keys) do
-				registerVariable(key, true, false, plume.std[key])
+				registerVariable(key, true, false, false, plume.std[key])
 			end
 		end
 
@@ -294,7 +313,7 @@ return function(plume)
 		--------------
 		-- VARIABLE --
 		--------------
-		local function affectation(node, nodevarlist, body, isLet, isConst, isStatic, isFrom, compound, isBodyStacked)
+		local function affectation(node, nodevarlist, body, isLet, isConst, isStatic, isParam, isFrom, compound, isBodyStacked)
 			local varlist = {}
 			for _, var in ipairs(nodevarlist.children) do
 				local rvar
@@ -320,17 +339,23 @@ return function(plume)
 						plume.error.cannotUseDefaultValueWithoutFrom(var)
 					end
 
+					local source = getNameSource(name, isStatic)
+
 					if isLet then
-						rvar = registerVariable(name, isStatic, isConst)
+						rvar = registerVariable(name, isStatic, isConst, isParam)
 						if not rvar then
-							plume.error.letExistingVariableError(node, name)
+							if isStatic then
+								plume.error.letExistingStaticVariableError(node, name, source)
+							else
+								plume.error.letExistingVariableError(node, name, source)
+							end
 						end
 					else
 						rvar = getVariable(name)
 						if not rvar then
 							plume.error.setUnknowVariableError(node, name)
 						elseif rvar.isConst then
-							plume.error.setConstantVariableError(node, name)
+							plume.error.setConstantVariableError(node, name, source)
 						end
 					end
 					rvar.key = key
@@ -376,6 +401,13 @@ return function(plume)
 				end
 				
 				for i, var in ipairs(varlist) do
+					local uid = getUID()
+					if isParam then
+						registerOP(node, ops.LOAD_STATIC, 0, var.offset)
+						registerGoto(node, "param_end_"..uid, "JUMP_IF_PEEK")
+						registerOP(nil, ops.STORE_VOID, 0, 0)
+					end
+
 					if compound then
 						if var.getKey then
 							var.getKey()
@@ -424,8 +456,16 @@ return function(plume)
 							registerOP(var.ref, ops.STORE_LOCAL, 0, var.offset)
 						end
 					end
+
+					if isParam then
+						registerGoto(node, "param_end_skip_store"..uid)
+						registerLabel(node, "param_end_"..uid)
+						registerOP(nil, ops.STORE_VOID, 0, 0)
+						registerOP(nil, ops.STORE_VOID, 0, 0)
+						registerLabel(node, "param_end_skip_store"..uid)
+					end
 				end
-			elseif isConst and isLet then
+			elseif isConst and isLet and not isParam then
 				plume.error.letEmptyConstantError(node)
 			end
 		end
@@ -433,6 +473,18 @@ return function(plume)
 		local function SETLET(node, isLet)
 			local isConst     = plume.ast.get(node, "CONST")
 			local isStatic    = plume.ast.get(node, "STATIC")
+			local isParam     = plume.ast.get(node, "PARAM")
+
+			if isParam then
+				if isConst then
+					plume.error.cannotUseParamAndConst(node)
+				end
+				if isStatic then
+					plume.error.cannotUseParamAndStatic(node)
+				end
+				isConst = true
+				isStatic = true
+			end
 
 			local isFrom    = plume.ast.get(node, "FROM")
 			local compound = plume.ast.get(node, "COMPOUND")
@@ -440,7 +492,7 @@ return function(plume)
 			local nodevarlist = plume.ast.get(node, "VARLIST")
 			local body        = plume.ast.get(node, "BODY")
 
-			affectation(node, nodevarlist, body, isLet, isConst, isStatic, isFrom, compound)
+			affectation(node, nodevarlist, body, isLet, isConst, isStatic, isParam, isFrom, compound)
 		end
 
 		nodeHandlerTable.LET = function(node)
@@ -635,13 +687,14 @@ return function(plume)
 
 				scope(function(body)
 					affectation(node, varlist,
-						nil,-- body
-						true, -- isLet
+						nil,   -- body
+						true,  -- isLet
 						false, -- isConst
-						false, --isStatic
-						false,-- isFrom 
-						nil,-- compound
-						true -- isBodyStacked
+						false, -- isStatic
+						false, -- isParam
+						false, -- isFrom 
+						nil,   -- compound
+						true   -- isBodyStacked
 					)
 					
 					table.insert(loops, {begin_label="for_loop_end_"..uid, end_label="for_end_"..uid})
@@ -763,7 +816,7 @@ return function(plume)
 					true -- static
 				)
 				if not variable then
-					plume.error.letExistingStaticVariableError(node, macroName)
+					plume.error.letExistingStaticVariableError(node, macroName, getNameSource(macroName))
 				end
 				
 				registerOP(macroIdentifier, ops.STORE_STATIC, 0, variable.offset)
@@ -820,10 +873,47 @@ return function(plume)
 			registerGoto(node, "macro_end")
 		end
 
-		loadSTD()
+		----------------
+		-- DIRECTIVES --
+		----------------
+		nodeHandlerTable.USE = function(node)
+			local path = node.content
+			local filename, searchPaths = plume.getFilenameFromPath(path, false, chunk)
 
-		local ast = plume.parse(code, filename)
-		nodeHandler(ast)
+			if not filename then
+	            plume.error.cannotOpenFile(node, path, searchPaths)
+			end
+
+			local success, result = plume.executeFile(filename, chunk.state, false)
+            if not success then
+                plume.error.cannotExecuteFile(node, path, result)
+            end
+
+            local t = type(result) == "table" and result.type or type(result)
+            if t ~= "table" then
+            	plume.error.fileMustReturnATable(node, path, t)
+            end
+
+            for _, key in ipairs(result.keys) do
+            	local var = registerVariable(key, true, true, false, result.table[key], path)
+				if not var then
+					plume.error.useExistingStaticVariableError(node, key, path)
+				end
+            end
+
+            return result
+		end
+
+		-- Cache system disabled
+		-- if not plume.copyExecutableChunckFromCache(filename, chunk) then
+			loadSTD()
+
+			local ast = plume.parse(code, filename)
+			nodeHandler(ast)
+			plume.finalize(chunk)
+
+			-- plume.saveExecutableChunckToCache(filename, chunk)
+		-- end
 
 		return true
 	end

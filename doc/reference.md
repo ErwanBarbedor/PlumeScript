@@ -15,7 +15,7 @@ This is a valid Plume program.
 To distinguish control flow and logic from text, Plume recognizes a set of **statements**. A line is treated as a statement if it begins (after any leading whitespace) with one of the following keywords:
 
 *   `if`, `elseif`, `else`, `for`, `while`, `macro`, `end`, `do`, `leave`, `break`, `continue`
-*   `let`, `set`
+*   `let`, `set`, `use`
 *   `-` (initiates a table item)
 *   `key:` (initiates a named table item, where `key` is any valid identifier)
 *   `...` (expand a table)
@@ -288,6 +288,9 @@ let [static] [const] name1, name2, ... = expression
 
 // 3. Named Destructuring (from)
 let [static] [const] key1, sourceKey as alias, key: default, ... from expression
+
+// 4. Parameter Declaration
+let param name [= value]
 ```
 
 **1. Multiple Declaration**
@@ -320,7 +323,7 @@ Extracts values from a table based on specific keys. The `from` keyword must be 
 The general pattern for an item is: `SourceKey [as AliasVariable] [: DefaultValue]`.
 
 *   **`name`**: Tries to retrieve `$table["name"]`. If missing, `name` is set to `empty`.
-*   **`name: default`**: Tries to retrieve `$table["name"]`. If missing or `empty`, assigns `default` to variable `name`.
+*   **`name: default`**: Tries to retrieve `$table["name"]`. If missing or `empty`, assigns `default` to variable `name`. **Note:** If the `default` value contains spaces, it must be enclosed in parentheses, e.g., `name: (Default Value)`.
 *   **`key as alias`**: Tries to retrieve `$table["key"]` and assigns it to variable `alias`.
 *   **`key as alias: default`**: The ultimate combo. Retrieves `$table["key"]`. If missing, uses `default`. The result is stored in variable `alias`.
 
@@ -330,25 +333,35 @@ let user = $getUser()
 
 // 1. Simple extraction
 // let id = $user.id
-let id from user
+let id from $user
 
 // 2. Renaming
 // Extracts 'role', but names the variable 'group'
-let role as group from user
+let role as group from $user
 
 // 3. Default values
 // 'name' is missing in the table, so it takes the default value "Anonymous"
-let name: Anonymous from user
+let name: Anonymous from $user
 
-// 4. Combined (Renaming + Default)
+// 4. If the default value contains spaces, parentheses are required
+let status: (Not Available) from $user
+
+// 5. Combined (Renaming + Default)
 // Tries to get 'avatar', rename it to 'icon', doubles back to "default.png" if missing
-let avatar as icon: default.png from user
+let avatar as icon: default.png from $user
 
 // All in one line:
-let id, role as group, name: Anonymous from user
+let id, role as group, name: Anonymous from $user
 ```
 
-**Consistency Note:** The syntax `key: default` mimics the named arguments syntax used in macro definitions (`macro name(arg: default)`), creating a unified experience across the language.
+**4. Parameters declaration**
+Variables can be declared as module parameters using the `param` keyword. A `param` variable is automatically `static` and `const`.
+
+```plume
+let param varname [= defaultValue]
+```
+These variables are intended to be populated by the caller during an `import`. If no value is provided during the import and no `defaultValue` is specified, the variable defaults to `empty`.
+
 
 **Common Rules:**
 *   **Modifiers:** `static` and `const` apply to all variables declared in the statement.
@@ -385,7 +398,7 @@ Updates variables based on the result of an expression.
 set x, y = $(10, 20)
 ```
 
-**3. Named Destructuring (`from`)**
+**2. Named Destructuring (`from`)**
 Updates variables by extracting values from a table using specific keys. The syntax matches `let`, allowing usage of `as` for renaming source keys to target variables, and `:` for default values if the source key is missing.
 
 ```plume
@@ -403,6 +416,12 @@ end
 // - If config["protocol"] is missing, use "http" (Default value)
 set host, p as port, protocol: http from config
 ```
+
+### Table Expansion and Unpacking (`...`)
+
+Plume provides a `...` operator to expand or unpack a table's contents into another structure. This is applicable in two contexts: table accumulation blocks and macro calls.
+
+The expression following `...` must evaluate to a table. Attempting to expand any other data type (number, string, etc.) will result in an error.
 
 #### In Table Accumulation Blocks (Expansion)
 
@@ -514,6 +533,76 @@ end
 
 Using `do` allows for imperative-style procedure calls within Plume's expression-oriented architecture, providing a clear and safe way to manage side-effects.
 
+### Context Injection (`use`)
+
+The `use` directive allows injecting the keys of a table returned by a module directly into the current file’s scope as `static const` variables.
+
+**Syntax:**
+```plume
+use path
+```
+
+**Implementation Details:**
+*   **Compilation-time Directive:** `use` is a compiler directive, not a function. It is executed during the compilation phase to resolve symbols. Consequently, `path` must be a literal string; it **cannot** be a dynamic expression evaluated at runtime.
+*   **Namespace Impact:** Because `use` injects all keys from the target module into the local namespace, it can lead to "namespace pollution." It should be used sparingly.
+*   **Scope:** All keys from the table returned by the file at `path` are made available in the current file as if they were declared locally.
+
+```plume
+// math.plume
+pi: 3.14
+
+// main.plume
+use math
+// pi is now directly accessible
+The value is $pi
+```
+### Choosing Between `import` and `use`
+
+While both mechanisms allow code reuse, they serve different purposes:
+
+| Feature | `import` | `use` |
+| :--- | :--- | :--- |
+| **Execution** | Runtime | Compilation time |
+| **Flexibility** | High (dynamic paths, parameters) | Low (literal paths only) |
+| **Scope** | User choice | static const |
+| **Namespace** | Clean (returns a value) | Polluted (injects all keys) |
+| **Type** | Macro | Compiler Directive |
+
+**When to use `import` (Recommended):**
+This should be your default reflex. It is safer, supports parameters, and allows you to control exactly how the imported data is accessed (e.g., `let math = $import(math)`).
+
+**When to use `use`:**
+Only use this when you need to import a large number of symbols that are central to the current file's logic, and where prefixing every call would be detrimental to readability. A typical use case is a **Domain Specific Language (DSL)**, such as a module providing all HTML tags as macros:
+
+```plume
+// This avoids writing $tags.div, $tags.span, etc.
+use html
+
+@div
+    style: @table
+        background: red
+    end
+
+    - $span(Hello World)
+end
+```
+**Note:** since div is static const, it cannot be overwritten.
+This is intentional behavior. If you want to monkey-patch a library, you must create a new file:
+
+```
+
+// mylib.plume
+let lib = $import(lib)
+set lib.div = macro(body)
+    [...]
+end
+
+...lib
+
+// job.plume
+use mylib
+```
+
 ### Escaping
 
 Any character can be escaped with a backslash (`\`) to be treated as a literal. Special escape sequences exist for whitespace:
@@ -527,7 +616,84 @@ Any character can be escaped with a backslash (`\`) to be treated as a literal. 
 The Plume parser ignores the following whitespace by default:
 
 *   Leading spaces and tabs at the beginning of a line.
-*   The newline character at the end of a line.
+*   Spaces and the newline character at the end of a line.
 *   Spaces surrounding operators or argument separators (`,`) in an evaluation context.
 
 To explicitly insert whitespace characters, use the escape sequences `\s`, `\t`, and `\n`.
+
+## Standard Library
+
+Plume provides a set of built-in macros to handle common tasks such as I/O, table manipulation, and iteration.
+
+### Basic Functions
+
+*   `print(...items)`: A wrapper for the underlying lua `print` function.
+*   `type(x)`: Returns the type of `x` as a string: `"empty"`, `"table"`, `"number"`, or `"string"`.
+*   `tostring(x)`: Converts the value `x` to its string representation.
+*   `len(table)`: Returns the number of items in a table.
+
+### Table Manipulation
+
+*   `table(...items)`: Explicitly creates and returns a table containing the provided items.
+*   `append(table, item)`: Adds `item` to the end of the specified `table`.
+*   `remove(table)`: Removes and returns the last item from the `table`.
+*   `join(sep: "", ...items)`: Returns a string produced by concatenating `items`, optionally separated by `sep`.
+
+### Iterators
+
+*   `seq(start, stop)` or `seq(stop)`: Returns an inclusive iterator from `start` to `stop`. If only one argument is provided, `start` defaults to `1`.
+*   `enumerate(table)`: Returns an iterator yielding pairs of `(index, value)` for each list item in the table.
+*   `items(table)`: Returns an iterator yielding `(key, value)` pairs for all non-numeric entries in the table.
+
+### Module System and Imports
+
+#### `import(path, ...params)`
+The `import` function is the **default mechanism** for modularity in Plume. It executes a Plume file at runtime and returns its final accumulated value. 
+
+**Key Features:**
+*   **Runtime Evaluation:** Unlike `use`, `import` is called during execution. This means the `path` can be a dynamic expression (e.g., `$import(./configs/$(env).plume)`).
+*   **Parameter Passing:** It allows passing values to variables declared with `let param` in the target file.
+*   **Encapsulation:** The returned value (usually a table) is contained within the variable it is assigned to, keeping the local namespace clean.
+
+**Path Resolution Logic:**
+The `import` statement follows a specific lookup order to locate files:
+1.  **Relative Search:** If `path` starts with `./` or `../`, Plume searches for the file relative to the directory of the currently executing file.
+2.  **Breadth Search:** Otherwise, it searches from the root file's directory and then through the directories listed in `plume_path`.
+3.  **File Patterns:** For any given directory, Plume looks for `[path].plume` and `[path]/init.plume`
+
+**Environment and Path Management:**
+*   The initial `plume_path` is populated from the `PLUME_PATH` environment variable (paths are separated by commas).
+*   `setPlumePath(path)`: Replaces the current `plume_path` with a new value.
+*   `addToPlumePath(path)`: Appends a new directory to the existing `plume_path`.
+
+#### Module Lifecycle and Performance
+Plume balances performance and safety through its loading strategy:
+1.  **Parsing/Compilation:** Occurs only once per file path. The resulting bytecode is cached.
+2.  **Execution (Chunking):** Occurs every time `import` or `use` is invoked. A new environment is initialized for each call.
+
+### File System I/O
+
+Unlike `import`, the following functions do not use the `plume_path` resolution logic and expect direct file system paths.
+
+*   `read(path)`: Reads the content of the file at `path` and returns it as a string.
+*   `write(path, ...items)`: Writes the concatenated string representation of `items` to the file at `path`.
+
+### Lua Integration
+
+Plume provides a `lua` static variable that acts as a bridge to the underlying Lua environment. This variable contains wrappers for essential Lua functions and libraries, allowing for advanced operations not covered by the Plume standard library.
+
+The `lua` table includes:
+*   **Module Loading**: `lua.require(path)` (used to load Lua modules, use same Path resolution as `import`).
+*   **System functions**: `lua.error`, `lua.assert`.
+*   **Libraries**:
+    *   `lua.string.*` (string manipulation)
+    *   `lua.math.*` (mathematical constants and functions)
+    *   `lua.os.*` (operating system facilities)
+    *   `lua.io.*` (input and output)
+
+**Important Note on Type Stability:**
+The automatic type conversion between Plume and Lua is currently considered **unstable**. This applies particularly to:
+*   **Tables**: Mapping between Plume tables and Lua tables.
+*   **Functionality**: Mapping between Plume macros and Lua functions.
+
+As a result, some features or data transfers may be entirely non-functional or unusable in the current version.

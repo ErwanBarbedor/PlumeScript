@@ -14,6 +14,8 @@ If not, see <https://www.gnu.org/licenses/>.
 ]]
 
 return function(plume)
+	plume.cache = {}
+
 	function plume.newPlumeExecutableChunk(isFile, state)
 		state = state or {}
 		local pec = {
@@ -24,6 +26,7 @@ return function(plume)
 			linkedInstructions   = {},
 			bytecode             = {},
 			static               = {},
+			constants            = {},
 			mapping              = {},
 			positionalParamCount = 0,
 			namedParamCount      = 0,
@@ -46,5 +49,40 @@ return function(plume)
 		end
 		state[pec] = true
 		return pec
+	end
+
+	function plume.copyExecutableChunckFromCache(filename, chunk)
+		local source = plume.cache[filename]
+		if not source then
+			return
+		end
+
+		chunk.instructions         = source.instructions
+		chunk.linkedInstructions   = source.linkedInstructions
+		chunk.bytecode             = source.bytecode
+		chunk.static               = source.static
+		chunk.constants            = source.constants
+		chunk.mapping              = source.mapping
+		chunk.positionalParamCount = source.positionalParamCount
+		chunk.namedParamOffset     = source.namedParamOffset
+		chunk.localsCount          = source.localsCount
+		chunk.variadicOffset       = source.variadicOffset
+
+		return true
+	end
+
+	function plume.saveExecutableChunckToCache(filename, chunk)
+		plume.cache[filename] = {
+			instructions         = chunk.instructions,
+			linkedInstructions   = chunk.linkedInstructions,
+			bytecode             = chunk.bytecode,
+			static               = chunk.static, -- Source of errors
+			constants            = chunk.constants,
+			mapping              = chunk.mapping,
+			positionalParamCount = chunk.positionalParamCount,
+			namedParamOffset     = chunk.namedParamOffset,
+			localsCount          = chunk.localsCount,
+			variadicOffset       = chunk.variadicOffset
+		}
 	end
 end
