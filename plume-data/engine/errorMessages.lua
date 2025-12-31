@@ -37,8 +37,13 @@ return function(plume)
 		throwCompilationError(node, message)
 	end
 
-	function plume.error.setConstantVariableError(node, varName)
-		local message = string.format("Cannot set variable '%s', it is a constant.", varName)
+	function plume.error.setConstantVariableError(node, varName, source)
+		if source then
+			source = string.format(" (imported from '%s')", source)
+		else
+			source = ""
+		end
+		local message = string.format("Cannot set variable '%s'%s, it is a constant.", varName, source)
 		throwCompilationError(node, message)
 	end
 
@@ -47,13 +52,23 @@ return function(plume)
 		throwCompilationError(node, message)
 	end
 
-	function plume.error.letExistingVariableError(node, varName)
-		local message = string.format("Cannot define variable '%s', it already exists in the current scope.", varName)
+	function plume.error.letExistingVariableError(node, varName, source)
+		if source then
+			source = string.format(" (imported from '%s')", source)
+		else
+			source = ""
+		end
+		local message = string.format("Cannot define variable '%s', it already exists in the current scope%s.", varName, source)
 		throwCompilationError(node, message)
 	end
 
-	function plume.error.letExistingStaticVariableError(node, varName)
-		local message = string.format("Cannot define static variable '%s', it already exists in the current file scope.", varName)
+	function plume.error.letExistingStaticVariableError(node, varName, source)
+		if source then
+			source = string.format(" (imported from '%s')", source)
+		else
+			source = ""
+		end
+		local message = string.format("Cannot define static variable '%s', it already exists in the current file scope%s.", varName, source)
 		throwCompilationError(node, message)
 	end
 
