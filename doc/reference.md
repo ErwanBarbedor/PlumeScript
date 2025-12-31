@@ -323,7 +323,7 @@ Extracts values from a table based on specific keys. The `from` keyword must be 
 The general pattern for an item is: `SourceKey [as AliasVariable] [: DefaultValue]`.
 
 *   **`name`**: Tries to retrieve `$table["name"]`. If missing, `name` is set to `empty`.
-*   **`name: default`**: Tries to retrieve `$table["name"]`. If missing or `empty`, assigns `default` to variable `name`.
+*   **`name: default`**: Tries to retrieve `$table["name"]`. If missing or `empty`, assigns `default` to variable `name`. **Note:** If the `default` value contains spaces, it must be enclosed in parentheses, e.g., `name: (Default Value)`.
 *   **`key as alias`**: Tries to retrieve `$table["key"]` and assigns it to variable `alias`.
 *   **`key as alias: default`**: The ultimate combo. Retrieves `$table["key"]`. If missing, uses `default`. The result is stored in variable `alias`.
 
@@ -333,22 +333,25 @@ let user = $getUser()
 
 // 1. Simple extraction
 // let id = $user.id
-let id from user
+let id from $user
 
 // 2. Renaming
 // Extracts 'role', but names the variable 'group'
-let role as group from user
+let role as group from $user
 
 // 3. Default values
 // 'name' is missing in the table, so it takes the default value "Anonymous"
-let name: Anonymous from user
+let name: Anonymous from $user
 
-// 4. Combined (Renaming + Default)
+// 4. If the default value contains spaces, parentheses are required
+let status: (Not Available) from $user
+
+// 5. Combined (Renaming + Default)
 // Tries to get 'avatar', rename it to 'icon', doubles back to "default.png" if missing
-let avatar as icon: default.png from user
+let avatar as icon: default.png from $user
 
 // All in one line:
-let id, role as group, name: Anonymous from user
+let id, role as group, name: Anonymous from $user
 ```
 
 **4. Parameters declaration**
@@ -395,7 +398,7 @@ Updates variables based on the result of an expression.
 set x, y = $(10, 20)
 ```
 
-**3. Named Destructuring (`from`)**
+**2. Named Destructuring (`from`)**
 Updates variables by extracting values from a table using specific keys. The syntax matches `let`, allowing usage of `as` for renaming source keys to target variables, and `:` for default values if the source key is missing.
 
 ```plume
