@@ -14,6 +14,7 @@ If not, see <https://www.gnu.org/licenses/>.
 ]]
 
 return function(plume)
+	
 	function plume.compileFile(code, filename, chunk)
 		local static  = {}
 		local scopes  = {}
@@ -903,10 +904,16 @@ return function(plume)
             return result
 		end
 
-		loadSTD()
+		-- Cache system disabled
+		-- if not plume.copyExecutableChunckFromCache(filename, chunk) then
+			loadSTD()
 
-		local ast = plume.parse(code, filename)
-		nodeHandler(ast)
+			local ast = plume.parse(code, filename)
+			nodeHandler(ast)
+			plume.finalize(chunk)
+
+			-- plume.saveExecutableChunckToCache(filename, chunk)
+		-- end
 
 		return true
 	end

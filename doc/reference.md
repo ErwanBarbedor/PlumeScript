@@ -666,6 +666,11 @@ The `import` statement follows a specific lookup order to locate files:
 *   `setPlumePath(path)`: Replaces the current `plume_path` with a new value.
 *   `addToPlumePath(path)`: Appends a new directory to the existing `plume_path`.
 
+#### Module Lifecycle and Performance
+Plume balances performance and safety through its loading strategy:
+1.  **Parsing/Compilation:** Occurs only once per file path. The resulting bytecode is cached.
+2.  **Execution (Chunking):** Occurs every time `import` or `use` is invoked. A new environment is initialized for each call.
+
 ### File System I/O
 
 Unlike `import`, the following functions do not use the `plume_path` resolution logic and expect direct file system paths.
