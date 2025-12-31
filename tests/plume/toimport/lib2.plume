@@ -1,4 +1,5 @@
 let static infos = blue
+let param info2
 wing: macro()
-	$infos quill
+	$infos $(info2)quill
 end

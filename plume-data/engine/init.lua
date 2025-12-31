@@ -37,10 +37,6 @@ function plume.execute(code, filename, chunk, secondary, args)
 	local success, result, ip
 	local errorSource = chunk
 	success, result = pcall(plume.compileFile, code, filename, chunk)
-	
-	if success then
-		success, result = pcall(plume.finalize, chunk)
-	end
 
 	if success then
 		success, result, ip, errorSource = plume.run(chunk, args)
