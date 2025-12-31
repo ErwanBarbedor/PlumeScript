@@ -564,6 +564,7 @@ While both mechanisms allow code reuse, they serve different purposes:
 | :--- | :--- | :--- |
 | **Execution** | Runtime | Compilation time |
 | **Flexibility** | High (dynamic paths, parameters) | Low (literal paths only) |
+| **Scope** | User choice | static const |
 | **Namespace** | Clean (returns a value) | Polluted (injects all keys) |
 | **Type** | Macro | Compiler Directive |
 
@@ -584,6 +585,22 @@ use html
 
     - $span(Hello World)
 end
+```
+**Note:** since div is static const, it cannot be overwritten.
+This is intentional behavior. If you want to monkey-patch a library, you must create a new file:
+
+```
+
+// mylib.plume
+let lib = $import(lib)
+set lib.div = macro(body)
+    [...]
+end
+
+...lib
+
+// job.plume
+use mylib
 ```
 
 ### Escaping
