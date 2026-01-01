@@ -15,10 +15,33 @@ If not, see <https://www.gnu.org/licenses/>.
 
 return function (plume)
     
+    local function callPlumeMacro(macro, args, chunk)
+        table.insert(chunk.callstack, {chunk=chunk, macro=macro})
+        if #chunk.callstack>1000 then
+            error("stack overflow", 0)
+        end
+
+        local success, callResult, cip, source  = plume.run(macro, args)
+        if not success then
+            error("Error running the macro.", 0)
+        end
+        table.remove(chunk.callstack)
+
+        return callResult
+    end
 
     local std = {
-        print = function(arg)
-            print(table.unpack(arg.table))
+        print = function(args, chunk)
+            local result = {}
+            for _, x in ipairs(args.table) do
+                if x == plume.obj.empty then
+                elseif type(x) == "table" and x.type == "table" and x.meta.table.tostring then
+                    table.insert(result, callPlumeMacro(x.meta.table.tostring, {x}, chunk))
+                else
+                    table.insert(result, tostring(x))
+                end
+            end
+            print(table.unpack(result))
         end,
 
         type = function(args)
@@ -48,10 +71,12 @@ return function (plume)
         end,
 
         -- temporary name
-        tostring = function(args)
+        tostring = function(args, chunk)
             local result = {}
             for _, x in ipairs(args.table) do
                 if x == plume.obj.empty then
+                elseif type(x) == "table" and x.type == "table" and x.meta.table.tostring then
+                    table.insert(result, callPlumeMacro(x.meta.table.tostring, {x}, chunk))
                 else
                     table.insert(result, tostring(x))
                 end
