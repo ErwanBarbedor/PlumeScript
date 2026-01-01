@@ -258,3 +258,15 @@ $(t<6)
 /// Output
 true
 /// End
+
+/// Test tostring
+let t = @table
+  meta tostring: macro(x)
+    I'm a table
+  end
+end
+
+t says "$t".
+/// Output
+t says "I'm a table".
+/// End
