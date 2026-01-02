@@ -154,6 +154,8 @@ If multiple variables are provided (e.g., `for x, y in list`), Plume expects eac
 *   Extra items in the sub-table are ignored.
 *   An error is raised if the sub-table has fewer items than the number of declared variables.
 
+See the **Iterators** section for how iterables works.
+
 #### `while`
 Executes a block of code as long as a condition is true.
 
@@ -627,7 +629,7 @@ Only a specific set of identifiers can be used as metafields:
 
 *   **Binary Operators:** `add`, `sub`, `mul`, `div`, `mod`, `pow`, `eq`, `lt`, `gt`.
 *   **Unary Operator:** `minus`.
-*   **Accessors & Logic:** `getindex`, `setindex`, `call`, `iter`.
+*   **Accessors & Logic:** `getindex`, `setindex`, `call`, `iter`, `next`.
 
 ##### Arithmetic Resolution (Left, Right, and Common)
 
@@ -665,7 +667,32 @@ $t.nib // Returns: Modified: 5
 ##### Advanced Hooks
 
 *   **`call`**: Allows a table to be invoked like a macro: `$myTable(args)`.
-*   **`iter`**: Defines custom behavior when the table is used in a `for` loop.
+
+##### Iterators
+
+An iterator in Plume is a table that contain a `next` meta-field, which is a macro. When used in a `for` loop, this macro is called repeatedly until it returns the `empty` constant, signaling the end of the iteration.
+
+```plume
+// Example of a custom iterator
+set seq = macro(a, b)
+  state: $a
+  stop: $b
+  meta next: macro()
+    if self.state <= self.stop
+      $self.state
+      set self.state += 1
+    end
+  end
+end
+
+for i in seq(1, 5)
+  $i
+end
+// Output:12345
+```
+
+If the table does not contain a next meta field, it calls the iter meta field, defined by default, which will create an iterator that traverses the table.
+
 
 ### Escaping
 
