@@ -80,7 +80,7 @@
             local params = ms[msp]
             self = macro
 
-            t = "macro"
+            t = macro.meta.table.call.type
             macro = macro.meta.table.call
         end
     end

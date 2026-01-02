@@ -137,7 +137,7 @@ let t = @table
   quill: blue
 end
 $len($t)\n
-$append($t, paint)
+$table.append($t, paint)
 $len($t)
 /// Output
 2
@@ -151,7 +151,7 @@ let t = @table
   quill: blue
 end
 $len($t)\n
-$remove($t)\n
+$table.remove($t)\n
 $len($t)
 /// Output
 2
