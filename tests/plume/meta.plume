@@ -261,7 +261,7 @@ true
 
 /// Test tostring 1
 let t = @table
-  meta tostring: macro(x)
+  meta tostring: macro()
     I'm a table
   end
 end
@@ -273,7 +273,7 @@ t says "I'm a table".
 
 /// Test tostring 2
 let t = @table
-  meta tostring: macro(x)
+  meta tostring: macro()
     I'm a table
   end
 end
@@ -281,4 +281,16 @@ end
 $(tostring(t))
 /// Output
 I'm a table
+/// End
+
+/// Test tonumber 1
+let t = @table
+  meta tonumber: macro()
+    5
+  end
+end
+
+$(t+1)
+/// Output
+6
 /// End

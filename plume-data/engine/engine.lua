@@ -446,7 +446,7 @@ end
 			if ms[limit-1][i+1].namedParamCount > 1 then
 				    return false, "Meta-macro '" .. ms[limit-1][i] .. "' dont support named parameters.", ip, chunk
 			end
-		elseif ms[limit-1][i] ~="call"  and ms[limit-1][i] ~="tostring" then
+		elseif ms[limit-1][i] ~="call" and ms[limit-1][i] ~="tostring" and ms[limit-1][i] ~="tonumber" then
 			    return false, "'" .. ms[limit-1][i] .. "' isn't a valid meta-macro name.", ip, chunk
 		end
 	    args.meta.table[ms[limit-1][i]]=ms[limit-1][i+1]
@@ -556,7 +556,7 @@ end
 			if v.namedParamCount > 1 then
 				    return false, "Meta-macro '" .. k .. "' dont support named parameters.", ip, chunk
 			end
-		elseif k ~="call"  and k ~="tostring" then
+		elseif k ~="call" and k ~="tostring" and k ~="tonumber" then
 			    return false, "'" .. k .. "' isn't a valid meta-macro name.", ip, chunk
 		end
 	    capture.meta.table[k]=v
@@ -630,7 +630,7 @@ end
 			if ms[limit-1][i+1].namedParamCount > 1 then
 				    return false, "Meta-macro '" .. ms[limit-1][i] .. "' dont support named parameters.", ip, chunk
 			end
-		elseif ms[limit-1][i] ~="call"  and ms[limit-1][i] ~="tostring" then
+		elseif ms[limit-1][i] ~="call" and ms[limit-1][i] ~="tostring" and ms[limit-1][i] ~="tonumber" then
 			    return false, "'" .. ms[limit-1][i] .. "' isn't a valid meta-macro name.", ip, chunk
 		end
 	    args.meta.table[ms[limit-1][i]]=ms[limit-1][i+1]
@@ -793,7 +793,22 @@ end
 	            err="Cannot convert the string value to a number."
 	        end
 	    elseif _type(x) ~="number" then
-	        err="Cannot do comparison or arithmetic with " .. _type(x).. " value."
+	        if _type(x)=="table" and x.meta.table.tonumber then
+	            local meta=x.meta.table.tonumber
+	            local params={x}
+	                table.insert(chunk.callstack, {chunk=chunk, macro=meta, ip=ip})
+	    if #chunk.callstack>1000 then
+	            return false, "stack overflow", ip, chunk
+	    end
+	    local success, callResult, cip, source=plume.run(meta, params)
+	    if not success then
+	        return success, callResult, cip, (source or macro)
+	    end
+	    table.remove(chunk.callstack)
+	            x=callResult
+	        else
+	            err="Cannot do comparison or arithmetic with " .. _type(x).. " value."
+	        end
 	    end
 	        if _type(y)=="string" then
 	        y=tonumber(y)
@@ -801,7 +816,22 @@ end
 	            err="Cannot convert the string value to a number."
 	        end
 	    elseif _type(y) ~="number" then
-	        err="Cannot do comparison or arithmetic with " .. _type(y).. " value."
+	        if _type(y)=="table" and y.meta.table.tonumber then
+	            local meta=y.meta.table.tonumber
+	            local params={y}
+	                table.insert(chunk.callstack, {chunk=chunk, macro=meta, ip=ip})
+	    if #chunk.callstack>1000 then
+	            return false, "stack overflow", ip, chunk
+	    end
+	    local success, callResult, cip, source=plume.run(meta, params)
+	    if not success then
+	        return success, callResult, cip, (source or macro)
+	    end
+	    table.remove(chunk.callstack)
+	            y=callResult
+	        else
+	            err="Cannot do comparison or arithmetic with " .. _type(y).. " value."
+	        end
 	    end
 	    msp=msp-1
 	    if err then
@@ -849,7 +879,22 @@ end
 	            err="Cannot convert the string value to a number."
 	        end
 	    elseif _type(x) ~="number" then
-	        err="Cannot do comparison or arithmetic with " .. _type(x).. " value."
+	        if _type(x)=="table" and x.meta.table.tonumber then
+	            local meta=x.meta.table.tonumber
+	            local params={x}
+	                table.insert(chunk.callstack, {chunk=chunk, macro=meta, ip=ip})
+	    if #chunk.callstack>1000 then
+	            return false, "stack overflow", ip, chunk
+	    end
+	    local success, callResult, cip, source=plume.run(meta, params)
+	    if not success then
+	        return success, callResult, cip, (source or macro)
+	    end
+	    table.remove(chunk.callstack)
+	            x=callResult
+	        else
+	            err="Cannot do comparison or arithmetic with " .. _type(x).. " value."
+	        end
 	    end
 	        if _type(y)=="string" then
 	        y=tonumber(y)
@@ -857,7 +902,22 @@ end
 	            err="Cannot convert the string value to a number."
 	        end
 	    elseif _type(y) ~="number" then
-	        err="Cannot do comparison or arithmetic with " .. _type(y).. " value."
+	        if _type(y)=="table" and y.meta.table.tonumber then
+	            local meta=y.meta.table.tonumber
+	            local params={y}
+	                table.insert(chunk.callstack, {chunk=chunk, macro=meta, ip=ip})
+	    if #chunk.callstack>1000 then
+	            return false, "stack overflow", ip, chunk
+	    end
+	    local success, callResult, cip, source=plume.run(meta, params)
+	    if not success then
+	        return success, callResult, cip, (source or macro)
+	    end
+	    table.remove(chunk.callstack)
+	            y=callResult
+	        else
+	            err="Cannot do comparison or arithmetic with " .. _type(y).. " value."
+	        end
 	    end
 	    msp=msp-1
 	    if err then
@@ -905,7 +965,22 @@ end
 	            err="Cannot convert the string value to a number."
 	        end
 	    elseif _type(x) ~="number" then
-	        err="Cannot do comparison or arithmetic with " .. _type(x).. " value."
+	        if _type(x)=="table" and x.meta.table.tonumber then
+	            local meta=x.meta.table.tonumber
+	            local params={x}
+	                table.insert(chunk.callstack, {chunk=chunk, macro=meta, ip=ip})
+	    if #chunk.callstack>1000 then
+	            return false, "stack overflow", ip, chunk
+	    end
+	    local success, callResult, cip, source=plume.run(meta, params)
+	    if not success then
+	        return success, callResult, cip, (source or macro)
+	    end
+	    table.remove(chunk.callstack)
+	            x=callResult
+	        else
+	            err="Cannot do comparison or arithmetic with " .. _type(x).. " value."
+	        end
 	    end
 	        if _type(y)=="string" then
 	        y=tonumber(y)
@@ -913,7 +988,22 @@ end
 	            err="Cannot convert the string value to a number."
 	        end
 	    elseif _type(y) ~="number" then
-	        err="Cannot do comparison or arithmetic with " .. _type(y).. " value."
+	        if _type(y)=="table" and y.meta.table.tonumber then
+	            local meta=y.meta.table.tonumber
+	            local params={y}
+	                table.insert(chunk.callstack, {chunk=chunk, macro=meta, ip=ip})
+	    if #chunk.callstack>1000 then
+	            return false, "stack overflow", ip, chunk
+	    end
+	    local success, callResult, cip, source=plume.run(meta, params)
+	    if not success then
+	        return success, callResult, cip, (source or macro)
+	    end
+	    table.remove(chunk.callstack)
+	            y=callResult
+	        else
+	            err="Cannot do comparison or arithmetic with " .. _type(y).. " value."
+	        end
 	    end
 	    msp=msp-1
 	    if err then
@@ -961,7 +1051,22 @@ end
 	            err="Cannot convert the string value to a number."
 	        end
 	    elseif _type(x) ~="number" then
-	        err="Cannot do comparison or arithmetic with " .. _type(x).. " value."
+	        if _type(x)=="table" and x.meta.table.tonumber then
+	            local meta=x.meta.table.tonumber
+	            local params={x}
+	                table.insert(chunk.callstack, {chunk=chunk, macro=meta, ip=ip})
+	    if #chunk.callstack>1000 then
+	            return false, "stack overflow", ip, chunk
+	    end
+	    local success, callResult, cip, source=plume.run(meta, params)
+	    if not success then
+	        return success, callResult, cip, (source or macro)
+	    end
+	    table.remove(chunk.callstack)
+	            x=callResult
+	        else
+	            err="Cannot do comparison or arithmetic with " .. _type(x).. " value."
+	        end
 	    end
 	        if _type(y)=="string" then
 	        y=tonumber(y)
@@ -969,7 +1074,22 @@ end
 	            err="Cannot convert the string value to a number."
 	        end
 	    elseif _type(y) ~="number" then
-	        err="Cannot do comparison or arithmetic with " .. _type(y).. " value."
+	        if _type(y)=="table" and y.meta.table.tonumber then
+	            local meta=y.meta.table.tonumber
+	            local params={y}
+	                table.insert(chunk.callstack, {chunk=chunk, macro=meta, ip=ip})
+	    if #chunk.callstack>1000 then
+	            return false, "stack overflow", ip, chunk
+	    end
+	    local success, callResult, cip, source=plume.run(meta, params)
+	    if not success then
+	        return success, callResult, cip, (source or macro)
+	    end
+	    table.remove(chunk.callstack)
+	            y=callResult
+	        else
+	            err="Cannot do comparison or arithmetic with " .. _type(y).. " value."
+	        end
 	    end
 	    msp=msp-1
 	    if err then
@@ -1016,7 +1136,22 @@ end
 	            err="Cannot convert the string value to a number."
 	        end
 	    elseif _type(x) ~="number" then
-	        err="Cannot do comparison or arithmetic with " .. _type(x).. " value."
+	        if _type(x)=="table" and x.meta.table.tonumber then
+	            local meta=x.meta.table.tonumber
+	            local params={x}
+	                table.insert(chunk.callstack, {chunk=chunk, macro=meta, ip=ip})
+	    if #chunk.callstack>1000 then
+	            return false, "stack overflow", ip, chunk
+	    end
+	    local success, callResult, cip, source=plume.run(meta, params)
+	    if not success then
+	        return success, callResult, cip, (source or macro)
+	    end
+	    table.remove(chunk.callstack)
+	            x=callResult
+	        else
+	            err="Cannot do comparison or arithmetic with " .. _type(x).. " value."
+	        end
 	    end
 	    if err then
 	            local meta
@@ -1053,7 +1188,22 @@ end
 	            err="Cannot convert the string value to a number."
 	        end
 	    elseif _type(x) ~="number" then
-	        err="Cannot do comparison or arithmetic with " .. _type(x).. " value."
+	        if _type(x)=="table" and x.meta.table.tonumber then
+	            local meta=x.meta.table.tonumber
+	            local params={x}
+	                table.insert(chunk.callstack, {chunk=chunk, macro=meta, ip=ip})
+	    if #chunk.callstack>1000 then
+	            return false, "stack overflow", ip, chunk
+	    end
+	    local success, callResult, cip, source=plume.run(meta, params)
+	    if not success then
+	        return success, callResult, cip, (source or macro)
+	    end
+	    table.remove(chunk.callstack)
+	            x=callResult
+	        else
+	            err="Cannot do comparison or arithmetic with " .. _type(x).. " value."
+	        end
 	    end
 	        if _type(y)=="string" then
 	        y=tonumber(y)
@@ -1061,7 +1211,22 @@ end
 	            err="Cannot convert the string value to a number."
 	        end
 	    elseif _type(y) ~="number" then
-	        err="Cannot do comparison or arithmetic with " .. _type(y).. " value."
+	        if _type(y)=="table" and y.meta.table.tonumber then
+	            local meta=y.meta.table.tonumber
+	            local params={y}
+	                table.insert(chunk.callstack, {chunk=chunk, macro=meta, ip=ip})
+	    if #chunk.callstack>1000 then
+	            return false, "stack overflow", ip, chunk
+	    end
+	    local success, callResult, cip, source=plume.run(meta, params)
+	    if not success then
+	        return success, callResult, cip, (source or macro)
+	    end
+	    table.remove(chunk.callstack)
+	            y=callResult
+	        else
+	            err="Cannot do comparison or arithmetic with " .. _type(y).. " value."
+	        end
 	    end
 	    msp=msp-1
 	    if err then
@@ -1109,7 +1274,22 @@ end
 	            err="Cannot convert the string value to a number."
 	        end
 	    elseif _type(x) ~="number" then
-	        err="Cannot do comparison or arithmetic with " .. _type(x).. " value."
+	        if _type(x)=="table" and x.meta.table.tonumber then
+	            local meta=x.meta.table.tonumber
+	            local params={x}
+	                table.insert(chunk.callstack, {chunk=chunk, macro=meta, ip=ip})
+	    if #chunk.callstack>1000 then
+	            return false, "stack overflow", ip, chunk
+	    end
+	    local success, callResult, cip, source=plume.run(meta, params)
+	    if not success then
+	        return success, callResult, cip, (source or macro)
+	    end
+	    table.remove(chunk.callstack)
+	            x=callResult
+	        else
+	            err="Cannot do comparison or arithmetic with " .. _type(x).. " value."
+	        end
 	    end
 	        if _type(y)=="string" then
 	        y=tonumber(y)
@@ -1117,7 +1297,22 @@ end
 	            err="Cannot convert the string value to a number."
 	        end
 	    elseif _type(y) ~="number" then
-	        err="Cannot do comparison or arithmetic with " .. _type(y).. " value."
+	        if _type(y)=="table" and y.meta.table.tonumber then
+	            local meta=y.meta.table.tonumber
+	            local params={y}
+	                table.insert(chunk.callstack, {chunk=chunk, macro=meta, ip=ip})
+	    if #chunk.callstack>1000 then
+	            return false, "stack overflow", ip, chunk
+	    end
+	    local success, callResult, cip, source=plume.run(meta, params)
+	    if not success then
+	        return success, callResult, cip, (source or macro)
+	    end
+	    table.remove(chunk.callstack)
+	            y=callResult
+	        else
+	            err="Cannot do comparison or arithmetic with " .. _type(y).. " value."
+	        end
 	    end
 	    msp=msp-1
 	    if err then
@@ -1173,7 +1368,22 @@ end
 	            err="Cannot convert the string value to a number."
 	        end
 	    elseif _type(x) ~="number" then
-	        err="Cannot do comparison or arithmetic with " .. _type(x).. " value."
+	        if _type(x)=="table" and x.meta.table.tonumber then
+	            local meta=x.meta.table.tonumber
+	            local params={x}
+	                table.insert(chunk.callstack, {chunk=chunk, macro=meta, ip=ip})
+	    if #chunk.callstack>1000 then
+	            return false, "stack overflow", ip, chunk
+	    end
+	    local success, callResult, cip, source=plume.run(meta, params)
+	    if not success then
+	        return success, callResult, cip, (source or macro)
+	    end
+	    table.remove(chunk.callstack)
+	            x=callResult
+	        else
+	            err="Cannot do comparison or arithmetic with " .. _type(x).. " value."
+	        end
 	    end
 	        if _type(y)=="string" then
 	        y=tonumber(y)
@@ -1181,7 +1391,22 @@ end
 	            err="Cannot convert the string value to a number."
 	        end
 	    elseif _type(y) ~="number" then
-	        err="Cannot do comparison or arithmetic with " .. _type(y).. " value."
+	        if _type(y)=="table" and y.meta.table.tonumber then
+	            local meta=y.meta.table.tonumber
+	            local params={y}
+	                table.insert(chunk.callstack, {chunk=chunk, macro=meta, ip=ip})
+	    if #chunk.callstack>1000 then
+	            return false, "stack overflow", ip, chunk
+	    end
+	    local success, callResult, cip, source=plume.run(meta, params)
+	    if not success then
+	        return success, callResult, cip, (source or macro)
+	    end
+	    table.remove(chunk.callstack)
+	            y=callResult
+	        else
+	            err="Cannot do comparison or arithmetic with " .. _type(y).. " value."
+	        end
 	    end
 	    msp=msp-1
 	    if err then
@@ -1262,7 +1487,22 @@ end
 	            err="Cannot convert the string value to a number."
 	        end
 	    elseif _type(x) ~="number" then
-	        err="Cannot do comparison or arithmetic with " .. _type(x).. " value."
+	        if _type(x)=="table" and x.meta.table.tonumber then
+	            local meta=x.meta.table.tonumber
+	            local params={x}
+	                table.insert(chunk.callstack, {chunk=chunk, macro=meta, ip=ip})
+	    if #chunk.callstack>1000 then
+	            return false, "stack overflow", ip, chunk
+	    end
+	    local success, callResult, cip, source=plume.run(meta, params)
+	    if not success then
+	        return success, callResult, cip, (source or macro)
+	    end
+	    table.remove(chunk.callstack)
+	            x=callResult
+	        else
+	            err="Cannot do comparison or arithmetic with " .. _type(x).. " value."
+	        end
 	    end
 	        if _type(y)=="string" then
 	        y=tonumber(y)
@@ -1270,7 +1510,22 @@ end
 	            err="Cannot convert the string value to a number."
 	        end
 	    elseif _type(y) ~="number" then
-	        err="Cannot do comparison or arithmetic with " .. _type(y).. " value."
+	        if _type(y)=="table" and y.meta.table.tonumber then
+	            local meta=y.meta.table.tonumber
+	            local params={y}
+	                table.insert(chunk.callstack, {chunk=chunk, macro=meta, ip=ip})
+	    if #chunk.callstack>1000 then
+	            return false, "stack overflow", ip, chunk
+	    end
+	    local success, callResult, cip, source=plume.run(meta, params)
+	    if not success then
+	        return success, callResult, cip, (source or macro)
+	    end
+	    table.remove(chunk.callstack)
+	            y=callResult
+	        else
+	            err="Cannot do comparison or arithmetic with " .. _type(y).. " value."
+	        end
 	    end
 	    msp=msp-1
 	    if err then
