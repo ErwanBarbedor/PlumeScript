@@ -7,7 +7,7 @@
     elseif _type($x) ~= "number" then
         if _type($x) == "table" and $x.meta.table.tonumber then
             local meta = ms[msp].meta.table.tonumber
-            local params = {$x}
+            local params = {}
             @_CALL meta params
             $x = callResult
         else
@@ -67,7 +67,7 @@
     elseif _type($x) ~= "number" then
         if _type($x) == "table" and $x.meta.table.tonumber then
             local meta = $x.meta.table.tonumber
-            local params = {$x}
+            local params = {}
             @_CALL meta params
             $x = callResult
         else

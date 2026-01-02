@@ -306,3 +306,45 @@ $tonumber($t)
 /// Output
 5
 /// End
+
+/// Test getindex 1
+let t = @table
+  meta getindex: macro(name)
+    WING
+  end
+end
+
+$t.quill\n
+$t.nib
+/// Output
+WING
+WING
+/// End
+
+/// Test getindex 2
+let t = @table
+  meta getindex: macro(name)
+    $name
+  end
+end
+
+$t.quill\n
+$t.nib
+/// Output
+quill
+nib
+/// End
+
+/// Test setindex 1
+let static side = 0
+let t = @table
+  meta setindex: macro(name, value)
+    set side = 1
+  end
+end
+$side
+set t.quill = 5
+$side
+/// Output
+01
+/// End
