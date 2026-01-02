@@ -109,6 +109,7 @@ File 'continue outside loop', line 1: continue
                                       ^^^^^^^^
 /// End
 
+
 /// Test continue cutted from loops by macro
 for i in seq(1, 10)
   let m = macro()
@@ -119,4 +120,23 @@ end
 Compilation error: Cannot use break keyword outside a loop.
 File 'continue cutted from loops by macro', line 3: continue
                                                     ^^^^^^^^
+/// End
+
+/// Test iterator
+set seq = macro(a, b)
+  state: $a
+  stop: $b
+  meta next: macro()
+    if self.state <= self.stop
+      $self.state
+      set self.state += 1
+    end
+  end
+end
+
+for i in seq(1, 5)
+  $i
+end
+/// Output
+12345
 /// End
