@@ -20,6 +20,9 @@
         ms[msp] = iter.callable()
     elseif iter.type == "table" then
         ms[msp] = iter
+    elseif iter.type == "macro" then
+        @_CALL iter {obj}
+        ms[msp] = callResult
     end
 @end
 

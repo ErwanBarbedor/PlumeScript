@@ -491,7 +491,7 @@ end
 			if ms[limit-1][i+1].namedParamCount > 1 then
 				    return false, "Meta-macro '" .. ms[limit-1][i] .. "' dont support named parameters.", ip, chunk
 			end
-		elseif ms[limit-1][i] ~="call" and ms[limit-1][i] ~="tostring" and ms[limit-1][i] ~="tonumber" and ms[limit-1][i] ~="getindex" and ms[limit-1][i] ~="setindex" and ms[limit-1][i] ~="next" then
+		elseif ms[limit-1][i] ~="call" and ms[limit-1][i] ~="tostring" and ms[limit-1][i] ~="tonumber" and ms[limit-1][i] ~="getindex" and ms[limit-1][i] ~="setindex" and ms[limit-1][i] ~="next" and ms[limit-1][i] ~="iter" then
 			    return false, "'" .. ms[limit-1][i] .. "' isn't a valid meta-macro name.", ip, chunk
 		end
 	    args.meta.table[ms[limit-1][i]]=ms[limit-1][i+1]
@@ -602,7 +602,7 @@ end
 			if v.namedParamCount > 1 then
 				    return false, "Meta-macro '" .. k .. "' dont support named parameters.", ip, chunk
 			end
-		elseif k ~="call" and k ~="tostring" and k ~="tonumber" and k ~="getindex" and k ~="setindex" and k ~="next" then
+		elseif k ~="call" and k ~="tostring" and k ~="tonumber" and k ~="getindex" and k ~="setindex" and k ~="next" and k ~="iter" then
 			    return false, "'" .. k .. "' isn't a valid meta-macro name.", ip, chunk
 		end
 	    capture.meta.table[k]=v
@@ -677,7 +677,7 @@ end
 			if ms[limit-1][i+1].namedParamCount > 1 then
 				    return false, "Meta-macro '" .. ms[limit-1][i] .. "' dont support named parameters.", ip, chunk
 			end
-		elseif ms[limit-1][i] ~="call" and ms[limit-1][i] ~="tostring" and ms[limit-1][i] ~="tonumber" and ms[limit-1][i] ~="getindex" and ms[limit-1][i] ~="setindex" and ms[limit-1][i] ~="next" then
+		elseif ms[limit-1][i] ~="call" and ms[limit-1][i] ~="tostring" and ms[limit-1][i] ~="tonumber" and ms[limit-1][i] ~="getindex" and ms[limit-1][i] ~="setindex" and ms[limit-1][i] ~="next" and ms[limit-1][i] ~="iter" then
 			    return false, "'" .. ms[limit-1][i] .. "' isn't a valid meta-macro name.", ip, chunk
 		end
 	    args.meta.table[ms[limit-1][i]]=ms[limit-1][i+1]
@@ -819,6 +819,17 @@ end
 	        ms[msp]=iter.callable()
 	    elseif iter.type=="table" then
 	        ms[msp]=iter
+	    elseif iter.type=="macro" then
+	            table.insert(chunk.callstack, {chunk=chunk, macro=iter, ip=ip})
+	    if #chunk.callstack>1000 then
+	            return false, "stack overflow", ip, chunk
+	    end
+	    local success, callResult, cip, source=plume.run(iter, {obj})
+	    if not success then
+	        return success, callResult, cip, (source or macro)
+	    end
+	    table.remove(chunk.callstack)
+	        ms[msp]=callResult
 	    end
 				goto DISPATCH
 end

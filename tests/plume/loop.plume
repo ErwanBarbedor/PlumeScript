@@ -122,7 +122,7 @@ File 'continue cutted from loops by macro', line 3: continue
                                                     ^^^^^^^^
 /// End
 
-/// Test iterator
+/// Test iterator (next)
 set seq = macro(a, b)
   state: $a
   stop: $b
@@ -135,6 +135,28 @@ set seq = macro(a, b)
 end
 
 for i in seq(1, 5)
+  $i
+end
+/// Output
+12345
+/// End
+
+
+/// Test iterator (iter)
+let first5 = @table
+  meta iter: macro()
+    parent: $self
+    state: 1
+    meta next: macro()
+      if self.state <= 5
+        $self.state
+        set self.state += 1
+      end
+    end
+  end
+end
+
+for i in first5
   $i
 end
 /// Output
