@@ -84,6 +84,20 @@ return function (plume)
             return table.concat(result)
         end,
 
+        tonumber = function(args, chunk)
+            local x = args.table[1]
+            if x == plume.obj.empty then
+                error("Cannot convert empty into number", 0)
+            elseif type(x) == "number" then
+                return x
+            elseif type(x) == "table" and x.type == "table" and x.meta.table.tonumber then
+                return callPlumeMacro(x.meta.table.tonumber, {x}, chunk)
+            else
+               error(string.format("Cannot convert %s into number", type(x)), 0)
+            end
+            return table.concat(result)
+        end,
+
         seq = function(args)
             local start = args.table[1]
             local stop  = args.table[2]

@@ -294,3 +294,15 @@ $(t+1)
 /// Output
 6
 /// End
+
+/// Test tonumber 2
+let t = @table
+  meta tonumber: macro()
+    5
+  end
+end
+
+$tonumber($t)
+/// Output
+5
+/// End
