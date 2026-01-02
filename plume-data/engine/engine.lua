@@ -233,9 +233,28 @@ end
 end
 			::TABLE_SET::
 	do
+	    local t=ms[msp]
 	    local key=ms[msp-1]
+	    local value=ms[msp-2]
+	    if not t.table[key] then
+	        table.insert(t.keys, key)
+	        if t.meta.table.setindex then
+	            local meta=t.meta.table.setindex
+	            local params={key, value}
+	                table.insert(chunk.callstack, {chunk=chunk, macro=meta, ip=ip})
+	    if #chunk.callstack>1000 then
+	            return false, "stack overflow", ip, chunk
+	    end
+	    local success, callResult, cip, source=plume.run(meta, params)
+	    if not success then
+	        return success, callResult, cip, (source or macro)
+	    end
+	    table.remove(chunk.callstack)
+	            value=callResult
+	        end
+	    end
 	    key=tonumber(key) or key
-	    ms[msp].table[key]=ms[msp-2]
+	    t.table[key]=value
 	    msp=msp-3
 				goto DISPATCH
 end
@@ -272,6 +291,19 @@ end
 	                msp=msp+1
 	    ms[msp]=empty
 	            goto DISPATCH
+	        elseif _table.meta.table.getindex then
+	            local meta=_table.meta.table.getindex
+	            local params={key}
+	                table.insert(chunk.callstack, {chunk=chunk, macro=meta, ip=ip})
+	    if #chunk.callstack>1000 then
+	            return false, "stack overflow", ip, chunk
+	    end
+	    local success, callResult, cip, source=plume.run(meta, params)
+	    if not success then
+	        return success, callResult, cip, (source or macro)
+	    end
+	    table.remove(chunk.callstack)
+	            value=callResult
 	        else
 	            if tonumber(key) then
 	                    return false, "Invalid index '" .. key .."'.", ip, chunk
@@ -320,6 +352,19 @@ end
 	                msp=msp+1
 	    ms[msp]=empty
 	            goto DISPATCH
+	        elseif _table.meta.table.getindex then
+	            local meta=_table.meta.table.getindex
+	            local params={key}
+	                table.insert(chunk.callstack, {chunk=chunk, macro=meta, ip=ip})
+	    if #chunk.callstack>1000 then
+	            return false, "stack overflow", ip, chunk
+	    end
+	    local success, callResult, cip, source=plume.run(meta, params)
+	    if not success then
+	        return success, callResult, cip, (source or macro)
+	    end
+	    table.remove(chunk.callstack)
+	            value=callResult
 	        else
 	            if tonumber(key) then
 	                    return false, "Invalid index '" .. key .."'.", ip, chunk
@@ -446,17 +491,18 @@ end
 			if ms[limit-1][i+1].namedParamCount > 1 then
 				    return false, "Meta-macro '" .. ms[limit-1][i] .. "' dont support named parameters.", ip, chunk
 			end
-		elseif ms[limit-1][i] ~="call" and ms[limit-1][i] ~="tostring" and ms[limit-1][i] ~="tonumber" then
+		elseif ms[limit-1][i] ~="call" and ms[limit-1][i] ~="tostring" and ms[limit-1][i] ~="tonumber" and ms[limit-1][i] ~="getindex" and ms[limit-1][i] ~="setindex" then
 			    return false, "'" .. ms[limit-1][i] .. "' isn't a valid meta-macro name.", ip, chunk
 		end
 	    args.meta.table[ms[limit-1][i]]=ms[limit-1][i+1]
 	        else
 	                local key=ms[limit-1][i]
+	    local value=ms[limit-1][i+1]
 	    key=tonumber(key) or key
-	    if not args.table[ms[limit-1][i]] then
+	    if not args.table[key] then
 	        table.insert(args.keys, ms[limit-1][i])
 	    end
-	    args.table[ms[limit-1][i]]=ms[limit-1][i+1]
+	    args.table[key]=value
 	        end
 	    end
 	    ms[limit-1]=args
@@ -556,7 +602,7 @@ end
 			if v.namedParamCount > 1 then
 				    return false, "Meta-macro '" .. k .. "' dont support named parameters.", ip, chunk
 			end
-		elseif k ~="call" and k ~="tostring" and k ~="tonumber" then
+		elseif k ~="call" and k ~="tostring" and k ~="tonumber" and k ~="getindex" and k ~="setindex" then
 			    return false, "'" .. k .. "' isn't a valid meta-macro name.", ip, chunk
 		end
 	    capture.meta.table[k]=v
@@ -564,11 +610,12 @@ end
 	            parameters[j]=v
 	        elseif macro.variadicOffset>0 then
 	                local key=k
+	    local value=v
 	    key=tonumber(key) or key
-	    if not capture.table[k] then
+	    if not capture.table[key] then
 	        table.insert(capture.keys, k)
 	    end
-	    capture.table[k]=v
+	    capture.table[key]=value
 	        else
 	            local name=macro.name or "???"
 	                return false, "Unknow named parameter '" .. k .."' for macro '" .. name .."'.", ip, chunk
@@ -630,17 +677,18 @@ end
 			if ms[limit-1][i+1].namedParamCount > 1 then
 				    return false, "Meta-macro '" .. ms[limit-1][i] .. "' dont support named parameters.", ip, chunk
 			end
-		elseif ms[limit-1][i] ~="call" and ms[limit-1][i] ~="tostring" and ms[limit-1][i] ~="tonumber" then
+		elseif ms[limit-1][i] ~="call" and ms[limit-1][i] ~="tostring" and ms[limit-1][i] ~="tonumber" and ms[limit-1][i] ~="getindex" and ms[limit-1][i] ~="setindex" then
 			    return false, "'" .. ms[limit-1][i] .. "' isn't a valid meta-macro name.", ip, chunk
 		end
 	    args.meta.table[ms[limit-1][i]]=ms[limit-1][i+1]
 	        else
 	                local key=ms[limit-1][i]
+	    local value=ms[limit-1][i+1]
 	    key=tonumber(key) or key
-	    if not args.table[ms[limit-1][i]] then
+	    if not args.table[key] then
 	        table.insert(args.keys, ms[limit-1][i])
 	    end
-	    args.table[ms[limit-1][i]]=ms[limit-1][i+1]
+	    args.table[key]=value
 	        end
 	    end
 	    ms[limit-1]=args
@@ -678,7 +726,7 @@ end
 	    if t ~="number" and t ~="string" and ms[msp] ~=empty then
 	        if t=="table" and ms[msp].meta.table.tostring then
 	            local meta=ms[msp].meta.table.tostring
-	            local params={ms[msp]}
+	            local params={}
 	                table.insert(chunk.callstack, {chunk=chunk, macro=meta, ip=ip})
 	    if #chunk.callstack>1000 then
 	            return false, "stack overflow", ip, chunk
@@ -795,7 +843,7 @@ end
 	    elseif _type(x) ~="number" then
 	        if _type(x)=="table" and x.meta.table.tonumber then
 	            local meta=x.meta.table.tonumber
-	            local params={x}
+	            local params={}
 	                table.insert(chunk.callstack, {chunk=chunk, macro=meta, ip=ip})
 	    if #chunk.callstack>1000 then
 	            return false, "stack overflow", ip, chunk
@@ -818,7 +866,7 @@ end
 	    elseif _type(y) ~="number" then
 	        if _type(y)=="table" and y.meta.table.tonumber then
 	            local meta=y.meta.table.tonumber
-	            local params={y}
+	            local params={}
 	                table.insert(chunk.callstack, {chunk=chunk, macro=meta, ip=ip})
 	    if #chunk.callstack>1000 then
 	            return false, "stack overflow", ip, chunk
@@ -881,7 +929,7 @@ end
 	    elseif _type(x) ~="number" then
 	        if _type(x)=="table" and x.meta.table.tonumber then
 	            local meta=x.meta.table.tonumber
-	            local params={x}
+	            local params={}
 	                table.insert(chunk.callstack, {chunk=chunk, macro=meta, ip=ip})
 	    if #chunk.callstack>1000 then
 	            return false, "stack overflow", ip, chunk
@@ -904,7 +952,7 @@ end
 	    elseif _type(y) ~="number" then
 	        if _type(y)=="table" and y.meta.table.tonumber then
 	            local meta=y.meta.table.tonumber
-	            local params={y}
+	            local params={}
 	                table.insert(chunk.callstack, {chunk=chunk, macro=meta, ip=ip})
 	    if #chunk.callstack>1000 then
 	            return false, "stack overflow", ip, chunk
@@ -967,7 +1015,7 @@ end
 	    elseif _type(x) ~="number" then
 	        if _type(x)=="table" and x.meta.table.tonumber then
 	            local meta=x.meta.table.tonumber
-	            local params={x}
+	            local params={}
 	                table.insert(chunk.callstack, {chunk=chunk, macro=meta, ip=ip})
 	    if #chunk.callstack>1000 then
 	            return false, "stack overflow", ip, chunk
@@ -990,7 +1038,7 @@ end
 	    elseif _type(y) ~="number" then
 	        if _type(y)=="table" and y.meta.table.tonumber then
 	            local meta=y.meta.table.tonumber
-	            local params={y}
+	            local params={}
 	                table.insert(chunk.callstack, {chunk=chunk, macro=meta, ip=ip})
 	    if #chunk.callstack>1000 then
 	            return false, "stack overflow", ip, chunk
@@ -1053,7 +1101,7 @@ end
 	    elseif _type(x) ~="number" then
 	        if _type(x)=="table" and x.meta.table.tonumber then
 	            local meta=x.meta.table.tonumber
-	            local params={x}
+	            local params={}
 	                table.insert(chunk.callstack, {chunk=chunk, macro=meta, ip=ip})
 	    if #chunk.callstack>1000 then
 	            return false, "stack overflow", ip, chunk
@@ -1076,7 +1124,7 @@ end
 	    elseif _type(y) ~="number" then
 	        if _type(y)=="table" and y.meta.table.tonumber then
 	            local meta=y.meta.table.tonumber
-	            local params={y}
+	            local params={}
 	                table.insert(chunk.callstack, {chunk=chunk, macro=meta, ip=ip})
 	    if #chunk.callstack>1000 then
 	            return false, "stack overflow", ip, chunk
@@ -1138,7 +1186,7 @@ end
 	    elseif _type(x) ~="number" then
 	        if _type(x)=="table" and x.meta.table.tonumber then
 	            local meta=x.meta.table.tonumber
-	            local params={x}
+	            local params={}
 	                table.insert(chunk.callstack, {chunk=chunk, macro=meta, ip=ip})
 	    if #chunk.callstack>1000 then
 	            return false, "stack overflow", ip, chunk
@@ -1190,7 +1238,7 @@ end
 	    elseif _type(x) ~="number" then
 	        if _type(x)=="table" and x.meta.table.tonumber then
 	            local meta=x.meta.table.tonumber
-	            local params={x}
+	            local params={}
 	                table.insert(chunk.callstack, {chunk=chunk, macro=meta, ip=ip})
 	    if #chunk.callstack>1000 then
 	            return false, "stack overflow", ip, chunk
@@ -1213,7 +1261,7 @@ end
 	    elseif _type(y) ~="number" then
 	        if _type(y)=="table" and y.meta.table.tonumber then
 	            local meta=y.meta.table.tonumber
-	            local params={y}
+	            local params={}
 	                table.insert(chunk.callstack, {chunk=chunk, macro=meta, ip=ip})
 	    if #chunk.callstack>1000 then
 	            return false, "stack overflow", ip, chunk
@@ -1276,7 +1324,7 @@ end
 	    elseif _type(x) ~="number" then
 	        if _type(x)=="table" and x.meta.table.tonumber then
 	            local meta=x.meta.table.tonumber
-	            local params={x}
+	            local params={}
 	                table.insert(chunk.callstack, {chunk=chunk, macro=meta, ip=ip})
 	    if #chunk.callstack>1000 then
 	            return false, "stack overflow", ip, chunk
@@ -1299,7 +1347,7 @@ end
 	    elseif _type(y) ~="number" then
 	        if _type(y)=="table" and y.meta.table.tonumber then
 	            local meta=y.meta.table.tonumber
-	            local params={y}
+	            local params={}
 	                table.insert(chunk.callstack, {chunk=chunk, macro=meta, ip=ip})
 	    if #chunk.callstack>1000 then
 	            return false, "stack overflow", ip, chunk
@@ -1370,7 +1418,7 @@ end
 	    elseif _type(x) ~="number" then
 	        if _type(x)=="table" and x.meta.table.tonumber then
 	            local meta=x.meta.table.tonumber
-	            local params={x}
+	            local params={}
 	                table.insert(chunk.callstack, {chunk=chunk, macro=meta, ip=ip})
 	    if #chunk.callstack>1000 then
 	            return false, "stack overflow", ip, chunk
@@ -1393,7 +1441,7 @@ end
 	    elseif _type(y) ~="number" then
 	        if _type(y)=="table" and y.meta.table.tonumber then
 	            local meta=y.meta.table.tonumber
-	            local params={y}
+	            local params={}
 	                table.insert(chunk.callstack, {chunk=chunk, macro=meta, ip=ip})
 	    if #chunk.callstack>1000 then
 	            return false, "stack overflow", ip, chunk
@@ -1489,7 +1537,7 @@ end
 	    elseif _type(x) ~="number" then
 	        if _type(x)=="table" and x.meta.table.tonumber then
 	            local meta=x.meta.table.tonumber
-	            local params={x}
+	            local params={}
 	                table.insert(chunk.callstack, {chunk=chunk, macro=meta, ip=ip})
 	    if #chunk.callstack>1000 then
 	            return false, "stack overflow", ip, chunk
@@ -1512,7 +1560,7 @@ end
 	    elseif _type(y) ~="number" then
 	        if _type(y)=="table" and y.meta.table.tonumber then
 	            local meta=y.meta.table.tonumber
-	            local params={y}
+	            local params={}
 	                table.insert(chunk.callstack, {chunk=chunk, macro=meta, ip=ip})
 	    if #chunk.callstack>1000 then
 	            return false, "stack overflow", ip, chunk

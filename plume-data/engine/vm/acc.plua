@@ -76,7 +76,7 @@
     if t ~= "number" and t ~= "string" and ms[msp] ~= empty then
         if t == "table" and ms[msp].meta.table.tostring then
             local meta = ms[msp].meta.table.tostring
-            local params = {ms[msp]}
+            local params = {}
             @_CALL meta params
             ms[msp] = callResult
         else
