@@ -30,6 +30,17 @@ return function (plume)
         return callResult
     end
 
+    local function append (args)
+        local t = args.table[1]
+        local value = args.table[2]
+        table.insert(t.table, value)
+    end
+
+    local function remove (args)
+        local t = args.table[1]
+        return table.remove(t.table)
+    end
+
     local std = {
         print = function(args, chunk)
             local result = {}
@@ -58,9 +69,12 @@ return function (plume)
             end
         end,
 
-        table = function(args)
-            return args
-        end,
+        ---------------------------------
+        -- WILL BE REMOVED IN 1.0 (#230)
+        ---------------------------------
+        remove = remove,
+        append = append,
+        ---------------------------------
 
         join = function(args)
             local sep = args.table.sep
@@ -277,17 +291,6 @@ return function (plume)
             return #t.table
         end,
 
-        append = function(args)
-            local t = args.table[1]
-            local value = args.table[2]
-            table.insert(t.table, value)
-        end,
-
-        remove = function(args)
-            local t = args.table[1]
-            return table.remove(t.table)
-        end,
-
         rawset = function(args)
             local obj   = args.table[1]
             local key   = args.table[2]
@@ -304,6 +307,16 @@ return function (plume)
     for name, f in pairs(std) do
         plume.std[name] = plume.obj.luaFunction(name, f)
     end
+
+    local _table = plume.obj.table (0, 2)
+    _table.table.keys = {"append", "remove"}
+    _table.table.remove = plume.std.remove
+    _table.table.append = plume.std.append
+    _table.meta.table.call = plume.obj.luaFunction("call", function(args)
+        return args
+    end)
+
+    plume.std.table = _table
 
     local function importLuaFunction(name, f)
         return plume.obj.luaFunction(name, function(args)
@@ -346,4 +359,6 @@ return function (plume)
             error(msg, 0)
         end
     end)
+
+    
 end

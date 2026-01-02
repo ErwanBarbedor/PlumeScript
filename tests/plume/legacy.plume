@@ -31,3 +31,32 @@ $double(3)
 /// Output
 6
 /// End
+
+/// Test table append
+let t = @table
+  - Wing
+  - Nib
+  quill: blue
+end
+$len($t)\n
+$append($t, paint)
+$len($t)
+/// Output
+2
+3
+/// End
+
+/// Test table remove
+let t = @table
+  - Wing
+  - Nib
+  quill: blue
+end
+$len($t)\n
+$remove($t)\n
+$len($t)
+/// Output
+2
+Nib
+1
+/// End

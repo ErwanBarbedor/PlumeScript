@@ -540,7 +540,7 @@ end
 	        if macro.meta and macro.meta.table.call then
 	            local params=ms[msp]
 	            self=macro
-	            t="macro"
+	            t=macro.meta.table.call.type
 	            macro=macro.meta.table.call
 	        end
 	    end
