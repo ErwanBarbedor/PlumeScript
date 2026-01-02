@@ -348,3 +348,18 @@ $side
 /// Output
 01
 /// End
+
+/// Test setindex 2
+let static side = 0
+let t = @table
+  meta setindex: macro(name, value)
+    set side = 1
+  end
+end
+$side
+$rawset($t, quill, 5)
+$side
+$t.quill
+/// Output
+005
+/// End

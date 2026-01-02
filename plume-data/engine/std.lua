@@ -286,6 +286,17 @@ return function (plume)
         remove = function(args)
             local t = args.table[1]
             return table.remove(t.table)
+        end,
+
+        rawset = function(args)
+            local obj   = args.table[1]
+            local key   = args.table[2]
+            local value = args.table[3]
+
+            if not obj.table[key] then
+                table.insert(obj.keys, key)
+            end
+            obj.table[key] = value
         end
     }
 
