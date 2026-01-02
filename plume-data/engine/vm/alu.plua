@@ -5,7 +5,14 @@
             @_ERROR {{"Cannot convert the string value to a number."}}
         end
     elseif _type($x) ~= "number" then
-        @_ERROR {{"Cannot do comparison or arithmetic with " .. _type($x).. " value."}}
+        if _type($x) == "table" and $x.meta.table.tonumber then
+            local meta = ms[msp].meta.table.tonumber
+            local params = {$x}
+            @_CALL meta params
+            $x = callResult
+        else
+            @_ERROR {{"Cannot do comparison or arithmetic with " .. _type($x).. " value."}}
+        end
     end
 @end
 
@@ -58,7 +65,14 @@
             err = "Cannot convert the string value to a number."
         end
     elseif _type($x) ~= "number" then
-        err = "Cannot do comparison or arithmetic with " .. _type($x).. " value."
+        if _type($x) == "table" and $x.meta.table.tonumber then
+            local meta = $x.meta.table.tonumber
+            local params = {$x}
+            @_CALL meta params
+            $x = callResult
+        else
+            err = "Cannot do comparison or arithmetic with " .. _type($x).. " value."
+        end
     end
 @end
 
