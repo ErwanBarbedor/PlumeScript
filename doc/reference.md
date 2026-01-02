@@ -16,6 +16,7 @@ To distinguish control flow and logic from text, Plume recognizes a set of **sta
 
 *   `if`, `elseif`, `else`, `for`, `while`, `macro`, `end`, `do`, `leave`, `break`, `continue`
 *   `let`, `set`, `use`
+*   `meta` (defines a metatable field within a table block)
 *   `-` (initiates a table item)
 *   `key:` (initiates a named table item, where `key` is any valid identifier)
 *   `...` (expand a table)
@@ -602,6 +603,69 @@ end
 // job.plume
 use mylib
 ```
+
+### Metatables
+
+#### Metatables and Operator Overloading
+
+Plume allows tables to define special behaviors called "metafields". By prefixing a key with the `meta` keyword during table definition, you can intercept language operations such as arithmetic, indexing, or iteration.
+
+```plume
+let t = @table
+    meta addr: macro(x)
+        $(x + 1)
+    end
+end
+
+// This will call the 'addr' meta-method
+$(t + 1)
+```
+
+##### Available Metafields
+
+Only a specific set of identifiers can be used as metafields:
+
+*   **Binary Operators:** `add`, `sub`, `mul`, `div`, `mod`, `pow`, `eq`, `lt`, `gt`.
+*   **Unary Operator:** `minus`.
+*   **Accessors & Logic:** `getindex`, `setindex`, `call`, `iter`.
+
+##### Arithmetic Resolution (Left, Right, and Common)
+
+For binary arithmetic operators (excluding comparison operators), Plume supports three variants for fine-grained dispatching: **Right** (`-r`), **Left** (`-l`), and **Common** (no suffix).
+
+When evaluating an expression like `A + B`, Plume follows this resolution order:
+1.  **A.addr(B)**
+2.  **B.addl(A)**
+3.  **A.add(A, B)**
+4.  **B.add(A, B)**
+
+*Note: In `addr` and `addl`, the macro must use the `self` variable to access the table itself. In the common `add` variant, both operands are passed as explicit arguments.*
+
+##### Custom Indexing: `getindex` and `setindex`
+
+The indexing metafields are triggered only when accessing or modifying a key that **does not already exist** in the table.
+
+*   **`getindex(key)`**: Acts as a standard getter. It is called when a missing key is accessed. The value returned by the macro becomes the result of the access.
+*   **`setindex(key, value)`**: Acts as a **value transformer**. When assigning to a missing key (`t.key = val`), Plume assigns the result of the `setindex` call to that key. 
+
+**Example of `setindex` transformation:**
+```plume
+let t = @table
+    meta setindex: macro(name, value)
+        // Wraps any new assigned value in a prefix
+        Modified: $value
+    end
+end
+
+set t.nib = 5
+// External set 't.nib = 5' became 't.nib = $t.setindex("nib", 5)'
+$t.nib // Returns: Modified: 5
+```
+
+##### Advanced Hooks
+
+*   **`call`**: Allows a table to be invoked like a macro: `$myTable(args)`.
+*   **`iter`**: Defines custom behavior when the table is used in a `for` loop.
 
 ### Escaping
 
