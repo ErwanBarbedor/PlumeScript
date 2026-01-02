@@ -40,7 +40,7 @@ return function(plume)
 					iter = plume.obj.luaFunction("iter", function(args)
 						local iterator = plume.obj.table(1, 1)
 						iterator.table[1] = 0
-						iterator.table.next = plume.obj.luaFunction("next", function()
+						iterator.meta.table.next = plume.obj.luaFunction("next", function()
 							iterator.table[1] = iterator.table[1]+1
 							local value = t.table[iterator.table[1]]
 							if value then

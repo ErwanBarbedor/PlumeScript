@@ -112,7 +112,7 @@ return function (plume)
 
             local iterator = plume.obj.table(1, 2)
             iterator.table[1] = start-1
-            iterator.table.next = plume.obj.luaFunction("next", function()
+            iterator.meta.table.next = plume.obj.luaFunction("next", function()
                 iterator.table[1]  = iterator.table[1] + 1
                 if iterator.table[1] > stop then
                     return plume.obj.empty
@@ -133,7 +133,7 @@ return function (plume)
 
             local iterator = plume.obj.table(1, 2)
             iterator.table[1] = 0
-            iterator.table.next = plume.obj.luaFunction("next", function()
+            iterator.meta.table.next = plume.obj.luaFunction("next", function()
                 iterator.table[1]  = iterator.table[1] +1
                 local value = t.table[iterator.table[1]]
                 if not value then
@@ -172,7 +172,7 @@ return function (plume)
 
             local iterator = plume.obj.table(1, 2)
             iterator.table[1] = 0
-            iterator.table.next = plume.obj.luaFunction("next", function()
+            iterator.meta.table.next = plume.obj.luaFunction("next", function()
                 iterator.table[1]  = iterator.table[1] +1
                 local key = t.keys[iterator.table[1]]
                 if not key then

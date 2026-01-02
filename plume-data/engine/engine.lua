@@ -491,7 +491,7 @@ end
 			if ms[limit-1][i+1].namedParamCount > 1 then
 				    return false, "Meta-macro '" .. ms[limit-1][i] .. "' dont support named parameters.", ip, chunk
 			end
-		elseif ms[limit-1][i] ~="call" and ms[limit-1][i] ~="tostring" and ms[limit-1][i] ~="tonumber" and ms[limit-1][i] ~="getindex" and ms[limit-1][i] ~="setindex" then
+		elseif ms[limit-1][i] ~="call" and ms[limit-1][i] ~="tostring" and ms[limit-1][i] ~="tonumber" and ms[limit-1][i] ~="getindex" and ms[limit-1][i] ~="setindex" and ms[limit-1][i] ~="next" then
 			    return false, "'" .. ms[limit-1][i] .. "' isn't a valid meta-macro name.", ip, chunk
 		end
 	    args.meta.table[ms[limit-1][i]]=ms[limit-1][i+1]
@@ -602,7 +602,7 @@ end
 			if v.namedParamCount > 1 then
 				    return false, "Meta-macro '" .. k .. "' dont support named parameters.", ip, chunk
 			end
-		elseif k ~="call" and k ~="tostring" and k ~="tonumber" and k ~="getindex" and k ~="setindex" then
+		elseif k ~="call" and k ~="tostring" and k ~="tonumber" and k ~="getindex" and k ~="setindex" and k ~="next" then
 			    return false, "'" .. k .. "' isn't a valid meta-macro name.", ip, chunk
 		end
 	    capture.meta.table[k]=v
@@ -677,7 +677,7 @@ end
 			if ms[limit-1][i+1].namedParamCount > 1 then
 				    return false, "Meta-macro '" .. ms[limit-1][i] .. "' dont support named parameters.", ip, chunk
 			end
-		elseif ms[limit-1][i] ~="call" and ms[limit-1][i] ~="tostring" and ms[limit-1][i] ~="tonumber" and ms[limit-1][i] ~="getindex" and ms[limit-1][i] ~="setindex" then
+		elseif ms[limit-1][i] ~="call" and ms[limit-1][i] ~="tostring" and ms[limit-1][i] ~="tonumber" and ms[limit-1][i] ~="getindex" and ms[limit-1][i] ~="setindex" and ms[limit-1][i] ~="next" then
 			    return false, "'" .. ms[limit-1][i] .. "' isn't a valid meta-macro name.", ip, chunk
 		end
 	    args.meta.table[ms[limit-1][i]]=ms[limit-1][i+1]
@@ -809,19 +809,38 @@ end
 	    if tobj ~="table" then
 	            return false, "Try to iterate over a non-table '" .. tobj .. "' value.", ip, chunk
 	    end
-	    local iter=obj.meta.table.iter
+	    local iter
+	    if obj.meta.table.next then
+	        iter=obj
+	    else
+	        iter=obj.meta.table.iter
+	    end
 	    if iter.type=="luaFunction" then
 	        ms[msp]=iter.callable()
-	    elseif iter.type=="macro" then
-	        jump=iter.offset
-	        cp=cp + 1
-	        calls[cp]=ip+1
+	    elseif iter.type=="table" then
+	        ms[msp]=iter
 	    end
 				goto DISPATCH
 end
 			::FOR_ITER::
 	do
-	    local result=ms[msp].table.next.callable()
+	    local obj=ms[msp]
+	    local iter=obj.meta.table.next
+	    local result
+	    if iter.type=="luaFunction" then
+	        result=iter.callable()
+	    else
+	            table.insert(chunk.callstack, {chunk=chunk, macro=iter, ip=ip})
+	    if #chunk.callstack>1000 then
+	            return false, "stack overflow", ip, chunk
+	    end
+	    local success, callResult, cip, source=plume.run(iter, {obj})
+	    if not success then
+	        return success, callResult, cip, (source or macro)
+	    end
+	    table.remove(chunk.callstack)
+	        result=callResult
+	    end
 	    if result==empty then
 	        msp=msp-1
 	            jump=arg2
