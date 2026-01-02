@@ -701,6 +701,7 @@ Plume provides a set of built-in macros to handle common tasks such as I/O, tabl
 *   `table(...items)`: Explicitly creates and returns a table containing the provided items.
 *   `append(table, item)`: Adds `item` to the end of the specified `table`.
 *   `remove(table)`: Removes and returns the last item from the `table`.
+*   `rawset(table, key, value)`: Sets the value of `key` in `table` to `value` without triggering any `setindex` metafield.
 *   `join(sep: "", ...items)`: Returns a string produced by concatenating `items`, optionally separated by `sep`.
 
 ### Iterators
