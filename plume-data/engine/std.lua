@@ -15,10 +15,44 @@ If not, see <https://www.gnu.org/licenses/>.
 
 return function (plume)
     
+    local function callPlumeMacro(macro, args, chunk)
+        table.insert(chunk.callstack, {chunk=chunk, macro=macro})
+        if #chunk.callstack>1000 then
+            error("stack overflow", 0)
+        end
+
+        local success, callResult, cip, source  = plume.run(macro, args)
+        if not success then
+            error("Error running the macro.", 0)
+        end
+        table.remove(chunk.callstack)
+
+        return callResult
+    end
+
+    local function append (args)
+        local t = args.table[1]
+        local value = args.table[2]
+        table.insert(t.table, value)
+    end
+
+    local function remove (args)
+        local t = args.table[1]
+        return table.remove(t.table)
+    end
 
     local std = {
-        print = function(arg)
-            print(table.unpack(arg.table))
+        print = function(args, chunk)
+            local result = {}
+            for _, x in ipairs(args.table) do
+                if x == plume.obj.empty then
+                elseif type(x) == "table" and x.type == "table" and x.meta.table.tostring then
+                    table.insert(result, callPlumeMacro(x.meta.table.tostring, {x}, chunk))
+                else
+                    table.insert(result, tostring(x))
+                end
+            end
+            print(table.unpack(result))
         end,
 
         type = function(args)
@@ -35,9 +69,12 @@ return function (plume)
             end
         end,
 
-        table = function(args)
-            return args
-        end,
+        ---------------------------------
+        -- WILL BE REMOVED IN 1.0 (#230)
+        ---------------------------------
+        remove = remove,
+        append = append,
+        ---------------------------------
 
         join = function(args)
             local sep = args.table.sep
@@ -48,13 +85,29 @@ return function (plume)
         end,
 
         -- temporary name
-        tostring = function(args)
+        tostring = function(args, chunk)
             local result = {}
             for _, x in ipairs(args.table) do
                 if x == plume.obj.empty then
+                elseif type(x) == "table" and x.type == "table" and x.meta.table.tostring then
+                    table.insert(result, callPlumeMacro(x.meta.table.tostring, {x}, chunk))
                 else
                     table.insert(result, tostring(x))
                 end
+            end
+            return table.concat(result)
+        end,
+
+        tonumber = function(args, chunk)
+            local x = args.table[1]
+            if x == plume.obj.empty then
+                error("Cannot convert empty into number", 0)
+            elseif type(x) == "number" then
+                return x
+            elseif type(x) == "table" and x.type == "table" and x.meta.table.tonumber then
+                return callPlumeMacro(x.meta.table.tonumber, {x}, chunk)
+            else
+               error(string.format("Cannot convert %s into number", type(x)), 0)
             end
             return table.concat(result)
         end,
@@ -73,7 +126,7 @@ return function (plume)
 
             local iterator = plume.obj.table(1, 2)
             iterator.table[1] = start-1
-            iterator.table.next = plume.obj.luaFunction("next", function()
+            iterator.meta.table.next = plume.obj.luaFunction("next", function()
                 iterator.table[1]  = iterator.table[1] + 1
                 if iterator.table[1] > stop then
                     return plume.obj.empty
@@ -94,7 +147,7 @@ return function (plume)
 
             local iterator = plume.obj.table(1, 2)
             iterator.table[1] = 0
-            iterator.table.next = plume.obj.luaFunction("next", function()
+            iterator.meta.table.next = plume.obj.luaFunction("next", function()
                 iterator.table[1]  = iterator.table[1] +1
                 local value = t.table[iterator.table[1]]
                 if not value then
@@ -133,7 +186,7 @@ return function (plume)
 
             local iterator = plume.obj.table(1, 2)
             iterator.table[1] = 0
-            iterator.table.next = plume.obj.luaFunction("next", function()
+            iterator.meta.table.next = plume.obj.luaFunction("next", function()
                 iterator.table[1]  = iterator.table[1] +1
                 local key = t.keys[iterator.table[1]]
                 if not key then
@@ -238,15 +291,15 @@ return function (plume)
             return #t.table
         end,
 
-        append = function(args)
-            local t = args.table[1]
-            local value = args.table[2]
-            table.insert(t.table, value)
-        end,
+        rawset = function(args)
+            local obj   = args.table[1]
+            local key   = args.table[2]
+            local value = args.table[3]
 
-        remove = function(args)
-            local t = args.table[1]
-            return table.remove(t.table)
+            if not obj.table[key] then
+                table.insert(obj.keys, key)
+            end
+            obj.table[key] = value
         end
     }
 
@@ -254,6 +307,16 @@ return function (plume)
     for name, f in pairs(std) do
         plume.std[name] = plume.obj.luaFunction(name, f)
     end
+
+    local _table = plume.obj.table (0, 2)
+    _table.table.keys = {"append", "remove"}
+    _table.table.remove = plume.std.remove
+    _table.table.append = plume.std.append
+    _table.meta.table.call = plume.obj.luaFunction("call", function(args)
+        return args
+    end)
+
+    plume.std.table = _table
 
     local function importLuaFunction(name, f)
         return plume.obj.luaFunction(name, function(args)
@@ -296,4 +359,6 @@ return function (plume)
             error(msg, 0)
         end
     end)
+
+    
 end

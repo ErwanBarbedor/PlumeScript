@@ -258,3 +258,108 @@ $(t<6)
 /// Output
 true
 /// End
+
+/// Test tostring 1
+let t = @table
+  meta tostring: macro()
+    I'm a table
+  end
+end
+
+t says "$t".
+/// Output
+t says "I'm a table".
+/// End
+
+/// Test tostring 2
+let t = @table
+  meta tostring: macro()
+    I'm a table
+  end
+end
+
+$(tostring(t))
+/// Output
+I'm a table
+/// End
+
+/// Test tonumber 1
+let t = @table
+  meta tonumber: macro()
+    5
+  end
+end
+
+$(t+1)
+/// Output
+6
+/// End
+
+/// Test tonumber 2
+let t = @table
+  meta tonumber: macro()
+    5
+  end
+end
+
+$tonumber($t)
+/// Output
+5
+/// End
+
+/// Test getindex 1
+let t = @table
+  meta getindex: macro(name)
+    WING
+  end
+end
+
+$t.quill\n
+$t.nib
+/// Output
+WING
+WING
+/// End
+
+/// Test getindex 2
+let t = @table
+  meta getindex: macro(name)
+    $name
+  end
+end
+
+$t.quill\n
+$t.nib
+/// Output
+quill
+nib
+/// End
+
+/// Test setindex 1
+let static side = 0
+let t = @table
+  meta setindex: macro(name, value)
+    set side = 1
+  end
+end
+$side
+set t.quill = 5
+$side
+/// Output
+01
+/// End
+
+/// Test setindex 2
+let static side = 0
+let t = @table
+  meta setindex: macro(name, value)
+    set side = 1
+  end
+end
+$side
+$rawset($t, quill, 5)
+$side
+$t.quill
+/// Output
+005
+/// End

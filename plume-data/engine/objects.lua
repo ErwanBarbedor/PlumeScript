@@ -28,31 +28,28 @@ return function(plume)
 		}
 	end
 
-	local defaultMeta
+	plume.defaultMeta = {}
+	plume.defaultMeta.iter = plume.obj.luaFunction("iter", function(args)
+		local iterator = plume.obj.table(1, 1)
+		iterator.table[1] = 0
+		iterator.meta.table.next = plume.obj.luaFunction("next", function()
+			iterator.table[1] = iterator.table[1]+1
+			local value = args[1].table[iterator.table[1]]
+			if value then
+				return value
+			else
+				return plume.obj.empty
+			end
+		end)
+		return iterator
+	end)
 	function plume.obj.table (listSlots, hashSlots)
 		local t
 		t = {
 			type = "table", --type
 			table = table.new(listSlots, hashSlots),
 			keys = table.new(hashSlots, 0),
-			meta = {-- meta table
-				table = {
-					iter = plume.obj.luaFunction("iter", function(args)
-						local iterator = plume.obj.table(1, 1)
-						iterator.table[1] = 0
-						iterator.table.next = plume.obj.luaFunction("next", function()
-							iterator.table[1] = iterator.table[1]+1
-							local value = t.table[iterator.table[1]]
-							if value then
-								return value
-							else
-								return plume.obj.empty
-							end
-						end)
-						return iterator
-					end)
-				}
-			} 
+			meta = {table={}}
 		}
 		return t
 	end
