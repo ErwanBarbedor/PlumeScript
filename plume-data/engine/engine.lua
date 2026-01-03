@@ -20,9 +20,22 @@ If not, see <https://www.gnu.org/licenses/>.
 -- engine-opt is an automatically inlined and optimized version of this program.
 
 -- Add all needed functions are loaded as globals
-require "plume-data/vm/_load_all"
-
 return function (plume)
+	require "plume-data/engine/vm/acc"
+	require "plume-data/engine/vm/alu"
+	require "plume-data/engine/vm/call"
+	require "plume-data/engine/vm/core"
+	require "plume-data/engine/vm/iter"
+	require "plume-data/engine/vm/jump"
+	require "plume-data/engine/vm/lib"
+	require "plume-data/engine/vm/load"
+	require "plume-data/engine/vm/meta"
+	require "plume-data/engine/vm/others"
+	require "plume-data/engine/vm/scope"
+	require "plume-data/engine/vm/store"
+	require "plume-data/engine/vm/table"
+	require "plume-data/engine/vm/utils"
+
 	function plume.run (chunk, arguments)
 		-- Creates stacks, handle arguments
 		local vm = _VM_INIT(chunk, arguments)
