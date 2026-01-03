@@ -13,6 +13,7 @@ You should have received a copy of the GNU General Public License along with Plu
 If not, see <https://www.gnu.org/licenses/>.
 ]]
 
+--- To rewrite
 function STORE_LOCAL (vm, arg1, arg2)
     --- Unstack 1 to vs
     --- Final offset: current frame + frame offset

@@ -13,11 +13,12 @@ You should have received a copy of the GNU General Public License along with Plu
 If not, see <https://www.gnu.org/licenses/>.
 ]]
 
+--- To rewrite
 function _ERROR (msg)
     return false, msg, ip, chunk
 end
 
-function _STAR (T)
+function _START ()
     if hook then
         if ip>0 then
             hook(
@@ -39,7 +40,7 @@ function _STAR (T)
     tic = tic+1
 end
 
-function _DECODIN (G)
+function _DECODING ()
     instr = bytecode[ip]
     op    = bit.band(bit.rshift(instr, OP_SHIFT), MASK_OP)
     arg1  = bit.band(bit.rshift(instr, ARG1_SHIFT), MASK_ARG1)
