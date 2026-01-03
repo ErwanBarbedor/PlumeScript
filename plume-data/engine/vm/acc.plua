@@ -74,6 +74,13 @@
     --- Check if stack top can be concatened
     local t = _type(ms[msp])
     if t ~= "number" and t ~= "string" and ms[msp] ~= empty then
-        @_ERROR {{"Cannot concat a '" ..t .. "' value."}}
+        if t == "table" and ms[msp].meta.table.tostring then
+            local meta = ms[msp].meta.table.tostring
+            local params = {}
+            @_CALL meta params
+            ms[msp] = callResult
+        else
+            @_ERROR {{"Cannot concat a '" ..t .. "' value."}}
+        end
     end
 @end
