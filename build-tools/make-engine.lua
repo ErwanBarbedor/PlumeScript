@@ -18,6 +18,7 @@ If not, see <https://www.gnu.org/licenses/>.
 
 local plume = {}
 require"plume-data/engine/utils"(plume)
+local lfs = require "lfs"
 
 local header = [=[--[[This file is part of Plume
 
@@ -41,9 +42,20 @@ If not, see <https://www.gnu.org/licenses/>.
 -- engine-opt is an automatically inlined and optimized version of this program.
 
 -- Add all needed functions are loaded as globals
-require "plume-data/vm/_load_all"
-
 return function (plume)
+]=]
+
+local import = {}
+for file in lfs.dir("plume-data/engine/vm") do
+	if file:match('%.lua$') then
+		file = file:gsub('%.lua$', '')
+		table.insert(import, string.format("\trequire \"plume-data/engine/vm/%s\"\n", file))
+	end
+end
+import = table.concat(import)
+
+local init = [[
+
 	function plume.run (chunk, arguments)
 		-- Creates stacks, handle arguments
 		local vm = _VM_INIT(chunk, arguments)
@@ -59,7 +71,7 @@ return function (plume)
 
 			op, arg1, arg2 = _VM_DECODE_CURRENT_INSTRUCTION(vm)
 
-]=]
+]]
 
 local dispatch, labels = {}, {}
 local count = 1
@@ -85,7 +97,7 @@ labels = table.concat(labels)
 local footer = "\t\tgoto DISPATCH\n\t\t::END::\n\tend\nend"
 
 
-local result = {header, dispatch, labels, footer}
+local result = {header, import, init, dispatch, labels, footer}
 
 
 io.open("plume-data/engine/engine.lua", "w"):write(table.concat( result, ""))
