@@ -20,6 +20,18 @@ function LOAD_CONSTANT (vm, arg1, arg2)
     _STACK_PUSH(vm.mainStack, vm.constants[arg2])
 end
 
+function LOAD_LEXICAL (vm, arg1, arg2)
+    --- Stack 1 from vs.
+    --- Final offset: the nth last frame + vs offset
+    --- arg1: frame offset
+    --- arg2: vs offset
+    _STACK_PUSH(
+        vm.mainStack,
+        _STACK_GET_FRAMED(vm.variableStack, arg2-1, -arg1)
+    )
+end
+
+
 -- Variables
 function LOAD_LOCAL (vm, arg1, arg2)
     --- Stack 1 from vs.
@@ -75,12 +87,4 @@ end
 
 
 
-function LOAD_LEXICAL (vm, arg1, arg2)
-    --- Stack 1 from vs.
-    --- Final offset: the nth last frame + vs offset
-    --- arg1: frame offset
-    --- arg2: vs offset
-    msp = msp+1
-    ms[msp] = vs[vsf[vsfp-arg1]+arg2-1]
-end
 

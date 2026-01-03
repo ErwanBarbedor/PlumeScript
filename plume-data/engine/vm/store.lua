@@ -22,6 +22,7 @@ function STORE_LOCAL (vm, arg1, arg2)
     _STACK_SET_FRAMED(
         vm.variableStack,
         arg2 - 1,
+        0,
         _STACK_POP(vm.mainStack)
     )
 end
@@ -35,15 +36,21 @@ function STORE_STATIC (vm, arg1, arg2)
     vm.static[arg2] = _STACK_POP(vm.mainStack)
 end
 
---- To rewrite
 function STORE_LEXICAL (vm, arg1, arg2)
     --- Unstack 1 to vs
     --- Offset: the anth last frame + frame offset
     --- arg1: frame offset
     --- arg2: frame offset
-    vs[vsf[vsfp-arg1]+arg2-1] = ms[msp]
-    msp = msp-1
+    _STACK_SET_FRAMED(
+        vm.variableStack,
+        arg2-1,
+        -arg1,
+        _STACK_POP(vm.mainStack)
+    )
 end
+
+--- To rewrite
+
 
 
 
