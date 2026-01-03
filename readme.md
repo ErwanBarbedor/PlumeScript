@@ -114,5 +114,5 @@ end
 *   `Plume🪶 v0.20 - v0.47`: second implementation (move away from LaTeX syntax, transpilation to Lua).
 *   From `Plume🪶 v0.50`: third implementation (major syntax changes, custom VM)
 *   **Actual: `Plume🪶 v0.65`**
-*   Until `Plume🪶 v0.69`: core implementation.
+*   Until `Plume🪶 v0.70`: core implementation.
 *   Then `Plume🪶 v1.0.0.beta.x`: tests in real world, last-minute changes, bugfixs.
