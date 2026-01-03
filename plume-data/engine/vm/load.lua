@@ -48,6 +48,21 @@ function LOAD_STATIC (vm, arg1, arg2)
     )
 end
 
+function LOAD_TRUE (vm, arg1, arg2)
+    --- Stack 1 constant true
+    --- arg1: -
+    --- arg2: -
+    _STACK_PUSH(vm.mainStack, true)
+end
+
+function LOAD_FALSE (vm, arg1, arg2)
+    --- Stack 1 constant false
+    --- arg1: -
+    --- arg2: -
+    _STACK_PUSH(vm.mainStack, false)
+end
+
+
 --- To rewrite
 function LOAD_EMPTY (vm, arg1, arg2)
     --- Stack 1 constant empty
@@ -57,21 +72,6 @@ function LOAD_EMPTY (vm, arg1, arg2)
     ms[msp] = empty
 end
 
-function LOAD_TRUE (vm, arg1, arg2)
-    --- Stack 1 constant true
-    --- arg1: -
-    --- arg2: -
-    msp = msp+1
-    ms[msp] = true
-end
-
-function LOAD_FALSE (vm, arg1, arg2)
-    --- Stack 1 constant false
-    --- arg1: -
-    --- arg2: -
-    msp = msp+1
-    ms[msp] = false
-end
 
 
 
