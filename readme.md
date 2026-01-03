@@ -105,3 +105,14 @@ end
 [Reference](doc/reference.md) (not necessarily very pedagogical) and, for the curious, [documentation of the VM](doc/vm.md).
 
 [Lot of examples](https://html-preview.github.io/?url=https://github.com/ErwanBarbedor/PlumeScript/blob/main/tests/report.html) in the tests suite, with bytecode.
+
+### Project History
+`Plume🪶` was born out of my need for a language suited to creating my course documents. Before arriving at the current version, it went through... a lot of experimentation.
+
+*   2018-2024: Various attempts, including LaTeX-focused Python preprocessors and LaTeX transpilation.
+*   `Plume🪶 v0.1 - v0.13`: first implementation (scratchy home interpreter with AST manipulations).
+*   `Plume🪶 v0.20 - v0.47`: second implementation (move away from LaTeX syntax, transpilation to Lua).
+*   From `Plume🪶 v0.50`: third implementation (major syntax changes, custom VM)
+*   **Actual: `Plume🪶 v0.64`**
+*   Until `Plume🪶 v0.68`: core implementation.
+*   Then `Plume🪶 v1.0.0.beta.x`: tests in real world, last-minute changes, bugfixs.
