@@ -19,6 +19,23 @@ function LOAD_CONSTANT (vm, arg1, arg2)
     --- arg2: constant offset
     _STACK_PUSH(vm.mainStack, vm.constants[arg2])
 end
+
+-- Variables
+function LOAD_LOCAL (vm, arg1, arg2)
+    --- Stack 1 from vs.
+    --- Final offset: current frame + vs offset
+    --- arg1: -
+    --- arg2: vs offset
+    
+    _STACK_PUSH(
+        vm.mainStack,
+        _STACK_GET_FRAMED(
+            vm.variableStack,
+            arg2 - 1
+        )
+    )
+end
+
 --- To rewrite
 function LOAD_EMPTY (vm, arg1, arg2)
     --- Stack 1 constant empty
@@ -45,15 +62,6 @@ function LOAD_FALSE (vm, arg1, arg2)
 end
 
 
--- Variables
-function LOAD_LOCAL (vm, arg1, arg2)
-    --- Stack 1 from vs.
-    --- Final offset: current frame + vs offset
-    --- arg1: -
-    --- arg2: vs offset
-    msp = msp+1
-    ms[msp] = vs[vsf[vsfp] + arg2-1]
-end
 
 function LOAD_LEXICAL (vm, arg1, arg2)
     --- Stack 1 from vs.
