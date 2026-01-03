@@ -27,18 +27,18 @@ return function (plume)
 	require "plume-data/engine/vm/core"
 	require "plume-data/engine/vm/iter"
 	require "plume-data/engine/vm/jump"
-	require "plume-data/engine/vm/lib"
 	require "plume-data/engine/vm/load"
 	require "plume-data/engine/vm/meta"
 	require "plume-data/engine/vm/others"
 	require "plume-data/engine/vm/scope"
+	require "plume-data/engine/vm/stack"
 	require "plume-data/engine/vm/store"
 	require "plume-data/engine/vm/table"
 	require "plume-data/engine/vm/utils"
 
 	function plume.run (chunk, arguments)
 		-- Creates stacks, handle arguments
-		local vm = _VM_INIT(chunk, arguments)
+		local vm = _VM_INIT(plume, chunk, arguments)
 		
 		local op, arg1, arg2
 		::DISPATCH::
@@ -74,161 +74,211 @@ return function (plume)
 			elseif op == 21 then goto TABLE_EXPAND
 			elseif op == 22 then goto ENTER_SCOPE
 			elseif op == 23 then goto LEAVE_SCOPE
-			elseif op == 24 then goto ENTER_FILE
-			elseif op == 25 then goto LEAVE_FILE
-			elseif op == 26 then goto BEGIN_ACC
-			elseif op == 27 then goto ACC_TABLE
-			elseif op == 28 then goto ACC_TEXT
-			elseif op == 29 then goto ACC_EMPTY
-			elseif op == 30 then goto ACC_CALL
-			elseif op == 31 then goto RETURN
-			elseif op == 32 then goto ACC_CHECK_TEXT
-			elseif op == 33 then goto JUMP_IF
-			elseif op == 34 then goto JUMP_IF_NOT
-			elseif op == 35 then goto JUMP_IF_NOT_EMPTY
-			elseif op == 36 then goto JUMP
-			elseif op == 37 then goto JUMP_IF_PEEK
-			elseif op == 38 then goto JUMP_IF_NOT_PEEK
-			elseif op == 39 then goto GET_ITER
-			elseif op == 40 then goto FOR_ITER
-			elseif op == 41 then goto OPP_ADD
-			elseif op == 42 then goto OPP_MUL
-			elseif op == 43 then goto OPP_SUB
-			elseif op == 44 then goto OPP_DIV
-			elseif op == 45 then goto OPP_NEG
-			elseif op == 46 then goto OPP_MOD
-			elseif op == 47 then goto OPP_POW
-			elseif op == 48 then goto OPP_GTE
-			elseif op == 49 then goto OPP_LTE
-			elseif op == 50 then goto OPP_GT
-			elseif op == 51 then goto OPP_LT
-			elseif op == 52 then goto OPP_EQ
-			elseif op == 53 then goto OPP_NEQ
-			elseif op == 54 then goto OPP_AND
-			elseif op == 55 then goto OPP_NOT
-			elseif op == 56 then goto OPP_OR
-			elseif op == 57 then goto DUPLICATE
-			elseif op == 58 then goto SWITCH
-			elseif op == 59 then goto END
+			elseif op == 24 then goto BEGIN_ACC
+			elseif op == 25 then goto ACC_TABLE
+			elseif op == 26 then goto ACC_TEXT
+			elseif op == 27 then goto ACC_EMPTY
+			elseif op == 28 then goto ACC_CALL
+			elseif op == 29 then goto RETURN
+			elseif op == 30 then goto ACC_CHECK_TEXT
+			elseif op == 31 then goto JUMP_IF
+			elseif op == 32 then goto JUMP_IF_NOT
+			elseif op == 33 then goto JUMP_IF_NOT_EMPTY
+			elseif op == 34 then goto JUMP
+			elseif op == 35 then goto JUMP_IF_PEEK
+			elseif op == 36 then goto JUMP_IF_NOT_PEEK
+			elseif op == 37 then goto GET_ITER
+			elseif op == 38 then goto FOR_ITER
+			elseif op == 39 then goto OPP_ADD
+			elseif op == 40 then goto OPP_MUL
+			elseif op == 41 then goto OPP_SUB
+			elseif op == 42 then goto OPP_DIV
+			elseif op == 43 then goto OPP_NEG
+			elseif op == 44 then goto OPP_MOD
+			elseif op == 45 then goto OPP_POW
+			elseif op == 46 then goto OPP_GTE
+			elseif op == 47 then goto OPP_LTE
+			elseif op == 48 then goto OPP_GT
+			elseif op == 49 then goto OPP_LT
+			elseif op == 50 then goto OPP_EQ
+			elseif op == 51 then goto OPP_NEQ
+			elseif op == 52 then goto OPP_AND
+			elseif op == 53 then goto OPP_NOT
+			elseif op == 54 then goto OPP_OR
+			elseif op == 55 then goto DUPLICATE
+			elseif op == 56 then goto SWITCH
+			elseif op == 57 then goto END
 			end
 
 			::LOAD_CONSTANT::
 				LOAD_CONSTANT(vm, arg1, arg2)
+				goto DISPATCH
 			::LOAD_TRUE::
 				LOAD_TRUE(vm, arg1, arg2)
+				goto DISPATCH
 			::LOAD_FALSE::
 				LOAD_FALSE(vm, arg1, arg2)
+				goto DISPATCH
 			::LOAD_EMPTY::
 				LOAD_EMPTY(vm, arg1, arg2)
+				goto DISPATCH
 			::LOAD_LOCAL::
 				LOAD_LOCAL(vm, arg1, arg2)
+				goto DISPATCH
 			::LOAD_LEXICAL::
 				LOAD_LEXICAL(vm, arg1, arg2)
+				goto DISPATCH
 			::LOAD_STATIC::
 				LOAD_STATIC(vm, arg1, arg2)
+				goto DISPATCH
 			::STORE_LOCAL::
 				STORE_LOCAL(vm, arg1, arg2)
+				goto DISPATCH
 			::STORE_LEXICAL::
 				STORE_LEXICAL(vm, arg1, arg2)
+				goto DISPATCH
 			::STORE_STATIC::
 				STORE_STATIC(vm, arg1, arg2)
+				goto DISPATCH
 			::STORE_VOID::
 				STORE_VOID(vm, arg1, arg2)
+				goto DISPATCH
 			::TABLE_NEW::
 				TABLE_NEW(vm, arg1, arg2)
+				goto DISPATCH
 			::TABLE_ADD::
 				TABLE_ADD(vm, arg1, arg2)
+				goto DISPATCH
 			::TABLE_SET::
 				TABLE_SET(vm, arg1, arg2)
+				goto DISPATCH
 			::TABLE_INDEX::
 				TABLE_INDEX(vm, arg1, arg2)
+				goto DISPATCH
 			::TABLE_INDEX_ACC_SELF::
 				TABLE_INDEX_ACC_SELF(vm, arg1, arg2)
+				goto DISPATCH
 			::TABLE_SET_META::
 				TABLE_SET_META(vm, arg1, arg2)
+				goto DISPATCH
 			::TABLE_INDEX_META::
 				TABLE_INDEX_META(vm, arg1, arg2)
+				goto DISPATCH
 			::TABLE_SET_ACC::
 				TABLE_SET_ACC(vm, arg1, arg2)
+				goto DISPATCH
 			::TABLE_SET_ACC_META::
 				TABLE_SET_ACC_META(vm, arg1, arg2)
+				goto DISPATCH
 			::TABLE_EXPAND::
 				TABLE_EXPAND(vm, arg1, arg2)
+				goto DISPATCH
 			::ENTER_SCOPE::
 				ENTER_SCOPE(vm, arg1, arg2)
+				goto DISPATCH
 			::LEAVE_SCOPE::
 				LEAVE_SCOPE(vm, arg1, arg2)
-			::ENTER_FILE::
-				ENTER_FILE(vm, arg1, arg2)
-			::LEAVE_FILE::
-				LEAVE_FILE(vm, arg1, arg2)
+				goto DISPATCH
 			::BEGIN_ACC::
 				BEGIN_ACC(vm, arg1, arg2)
+				goto DISPATCH
 			::ACC_TABLE::
 				ACC_TABLE(vm, arg1, arg2)
+				goto DISPATCH
 			::ACC_TEXT::
 				ACC_TEXT(vm, arg1, arg2)
+				goto DISPATCH
 			::ACC_EMPTY::
 				ACC_EMPTY(vm, arg1, arg2)
+				goto DISPATCH
 			::ACC_CALL::
 				ACC_CALL(vm, arg1, arg2)
+				goto DISPATCH
 			::RETURN::
 				RETURN(vm, arg1, arg2)
+				goto DISPATCH
 			::ACC_CHECK_TEXT::
 				ACC_CHECK_TEXT(vm, arg1, arg2)
+				goto DISPATCH
 			::JUMP_IF::
 				JUMP_IF(vm, arg1, arg2)
+				goto DISPATCH
 			::JUMP_IF_NOT::
 				JUMP_IF_NOT(vm, arg1, arg2)
+				goto DISPATCH
 			::JUMP_IF_NOT_EMPTY::
 				JUMP_IF_NOT_EMPTY(vm, arg1, arg2)
+				goto DISPATCH
 			::JUMP::
 				JUMP(vm, arg1, arg2)
+				goto DISPATCH
 			::JUMP_IF_PEEK::
 				JUMP_IF_PEEK(vm, arg1, arg2)
+				goto DISPATCH
 			::JUMP_IF_NOT_PEEK::
 				JUMP_IF_NOT_PEEK(vm, arg1, arg2)
+				goto DISPATCH
 			::GET_ITER::
 				GET_ITER(vm, arg1, arg2)
+				goto DISPATCH
 			::FOR_ITER::
 				FOR_ITER(vm, arg1, arg2)
+				goto DISPATCH
 			::OPP_ADD::
 				OPP_ADD(vm, arg1, arg2)
+				goto DISPATCH
 			::OPP_MUL::
 				OPP_MUL(vm, arg1, arg2)
+				goto DISPATCH
 			::OPP_SUB::
 				OPP_SUB(vm, arg1, arg2)
+				goto DISPATCH
 			::OPP_DIV::
 				OPP_DIV(vm, arg1, arg2)
+				goto DISPATCH
 			::OPP_NEG::
 				OPP_NEG(vm, arg1, arg2)
+				goto DISPATCH
 			::OPP_MOD::
 				OPP_MOD(vm, arg1, arg2)
+				goto DISPATCH
 			::OPP_POW::
 				OPP_POW(vm, arg1, arg2)
+				goto DISPATCH
 			::OPP_GTE::
 				OPP_GTE(vm, arg1, arg2)
+				goto DISPATCH
 			::OPP_LTE::
 				OPP_LTE(vm, arg1, arg2)
+				goto DISPATCH
 			::OPP_GT::
 				OPP_GT(vm, arg1, arg2)
+				goto DISPATCH
 			::OPP_LT::
 				OPP_LT(vm, arg1, arg2)
+				goto DISPATCH
 			::OPP_EQ::
 				OPP_EQ(vm, arg1, arg2)
+				goto DISPATCH
 			::OPP_NEQ::
 				OPP_NEQ(vm, arg1, arg2)
+				goto DISPATCH
 			::OPP_AND::
 				OPP_AND(vm, arg1, arg2)
+				goto DISPATCH
 			::OPP_NOT::
 				OPP_NOT(vm, arg1, arg2)
+				goto DISPATCH
 			::OPP_OR::
 				OPP_OR(vm, arg1, arg2)
+				goto DISPATCH
 			::DUPLICATE::
 				DUPLICATE(vm, arg1, arg2)
+				goto DISPATCH
 			::SWITCH::
 				SWITCH(vm, arg1, arg2)
-		goto DISPATCH
+				goto DISPATCH
 		::END::
+		return true, _STACK_GET(vm.mainStack)
 	end
 end
