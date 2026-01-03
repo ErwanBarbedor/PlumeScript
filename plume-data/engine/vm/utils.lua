@@ -39,10 +39,3 @@ function _START ()
     end
     tic = tic+1
 end
-
-function _DECODING ()
-    instr = bytecode[ip]
-    op    = bit.band(bit.rshift(instr, OP_SHIFT), MASK_OP)
-    arg1  = bit.band(bit.rshift(instr, ARG1_SHIFT), MASK_ARG1)
-    arg2  = bit.band(instr, MASK_ARG2)
-end
