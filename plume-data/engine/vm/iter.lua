@@ -13,6 +13,7 @@ You should have received a copy of the GNU General Public License along with Plu
 If not, see <https://www.gnu.org/licenses/>.
 ]]
 
+--- To rewrite
 function GET_ITER ()
     --- Unstack 1 iterable object
     --- Stack 1 iterator object

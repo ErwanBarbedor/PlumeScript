@@ -13,6 +13,8 @@ You should have received a copy of the GNU General Public License along with Plu
 If not, see <https://www.gnu.org/licenses/>.
 ]]
 
+
+--- To rewrite
 function BEGIN_ACC(vm, arg1, arg2)
     --- Stack 1 to main stack frame, the current msp
     --- arg1: -

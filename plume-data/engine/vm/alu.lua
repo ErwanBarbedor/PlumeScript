@@ -13,6 +13,7 @@ You should have received a copy of the GNU General Public License along with Plu
 If not, see <https://www.gnu.org/licenses/>.
 ]]
 
+--- To rewrite
 function _CHECK_NUMBER (x)
     if _type(x) == "string" then
         x = tonumber(x)

@@ -13,6 +13,7 @@ You should have received a copy of the GNU General Public License along with Plu
 If not, see <https://www.gnu.org/licenses/>.
 ]]
 
+--- To rewrite
 function SWITCH (vm, arg1, arg2)
     --- Unstack 2, stack 2 in reverse order
     --- arg1: -

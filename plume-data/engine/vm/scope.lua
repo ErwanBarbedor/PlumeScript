@@ -13,6 +13,7 @@ You should have received a copy of the GNU General Public License along with Plu
 If not, see <https://www.gnu.org/licenses/>.
 ]]
 
+--- To rewrite
 function ENTER_SCOPE (vm, arg1, arg2)
     --- Reserve slots for locals variables and save scope begin offset
     --- Stack 1 to frame

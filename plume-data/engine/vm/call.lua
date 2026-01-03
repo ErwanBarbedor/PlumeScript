@@ -13,6 +13,7 @@ You should have received a copy of the GNU General Public License along with Plu
 If not, see <https://www.gnu.org/licenses/>.
 ]]
 
+--- To rewrite
 function _UNSTACK_POS ()
     local argcount = msp-msf[msfp]
     if argcount ~= macro.positionalParamCount and macro.variadicOffset==0 then
