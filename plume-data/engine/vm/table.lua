@@ -13,14 +13,15 @@ You should have received a copy of the GNU General Public License along with Plu
 If not, see <https://www.gnu.org/licenses/>.
 ]]
 
---- To rewrite
 function TABLE_NEW (vm, arg1, arg2)
     --- Stack 1 table
     --- arg1: -
     --- arg2: -
-    msp = msp + 1
-    ms[msp] = table.new(0, arg1)
+    _STACK_PUSH(vm.mainStack, table.new(0, arg1))
 end
+
+--- To rewrite
+
 
 function TABLE_ADD (vm, arg1, arg2)
 end
