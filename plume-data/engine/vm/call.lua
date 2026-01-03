@@ -13,69 +13,6 @@ You should have received a copy of the GNU General Public License along with Plu
 If not, see <https://www.gnu.org/licenses/>.
 ]]
 
---- To rewrite
-function _UNSTACK_POS ()
-    local argcount = msp-msf[msfp]
-    if argcount ~= macro.positionalParamCount and macro.variadicOffset==0 then
-        local name
-
-        -- Last OP_CODE before call is loading the macro
-        -- by it's name
-        if chunk.mapping[ip-1] then
-            name = chunk.mapping[ip-1].content
-        end
-
-        if not name then
-            name = macro.name or "???"
-        end
-
-        _ERROR ("Wrong number of positionnal arguments for macro '" .. name .. "', " ..   argcount .. " instead of " .. macro.positionalParamCount .. ".")
-    end
-
-    for i=1, macro.positionalParamCount do
-        parameters[i] = ms[msp+i-argcount]
-    end
-
-    for i=macro.positionalParamCount+1, argcount do
-        table.insert(capture.table, ms[msp+i-argcount])
-    end
-
-    msp = msf[msfp]
-end
-
-function _UNSTACK_NAMED ()
-    for i=1, #ms[msf[msfp]], 3 do
-        local k=ms[msf[msfp]][i]
-        local v=ms[msf[msfp]][i+1]
-        local m=ms[msf[msfp]][i+2]
-        local j = macro.namedParamOffset[k]
-        if m then
-            _TABLE_META_SET (capture, k, v)
-        elseif j then
-            parameters[j] = v
-        elseif macro.variadicOffset>0 then
-            _TABLE_SET (capture, k, v)
-        else
-            local name = macro.name or "???"
-            _ERROR("Unknow named parameter '" .. k .."' for macro '" .. name .."'.")
-        end
-    end    
-    msp = msp-1
-end
-
-function _CALL (macro, parameters)
-    table.insert(chunk.callstack, {chunk=chunk, macro=macro, ip=ip})
-    if #chunk.callstack>1000 then
-        _ERROR ("stack overflow")
-    end
-
-    local success, callResult, cip, source  = plume.run(macro, parameters)
-    if not success then
-        return success, callResult, cip, (source or macro)
-    end
-    table.remove(chunk.callstack)
-end
-
 function ACC_CALL (vm, arg1, arg2)
     --- Unstack 1 (the macro)
     --- Unstack until frame begin + 1 (all positionals arguments)
@@ -86,14 +23,13 @@ function ACC_CALL (vm, arg1, arg2)
     --- Stack current ip to calls
     --- arg1: -
     --- arg2: -
-    local macro = ms[msp]
-    msp = msp - 1
-    local t = _type(macro)
+    local macro = _STACK_POP(vm.mainStack)
+    local t = _GET_TYPE(vm, macro)
     local self
 
     if t == "table" then
         if macro.meta and macro.meta.table.call then
-            local params = ms[msp]
+            local params = _STACK_GET(vm.mainStack)
             self = macro
 
             t = macro.meta.table.call.type
@@ -103,27 +39,30 @@ function ACC_CALL (vm, arg1, arg2)
 
     if t == "macro" then
         local capture
-        local parameters = {}
+        local arguments = {}
         if macro.variadicOffset>0 then -- variadic
             capture = ptable(0, 0) -- can be optimized
         end
-        _UNSTACK_POS()
-        _UNSTACK_NAMED()
+        _UNSTACK_POS(vm, macro, arguments, capture)
+        _UNSTACK_NAMED(vm, macro, arguments, capture)
 
         -- Add self to params
         if self then  
-            table.insert(parameters, self)
+            table.insert(arguments, self)
         end
 
         if macro.variadicOffset>0 then -- variadic
-            parameters[macro.variadicOffset] = capture
+            arguments[macro.variadicOffset] = capture
         end
-        _END_ACC()
-        _CALL (macro, parameters)
-        msp = msp+1
-        ms[msp] = callResult
+        _END_ACC(vm)
+
+        _STACK_PUSH(
+            vm.mainStack,
+            _CALL (vm, macro, arguments)
+        )
+
     elseif t == "luaFunction" then
-        ACC_TABLE()
+        ACC_TABLE(vm)
         table.insert(chunk.callstack, {chunk=chunk, macro=macro, ip=ip})
         local success, result  =  pcall(macro.callable, ms[msp], chunk)
         if not success then
@@ -134,11 +73,80 @@ function ACC_CALL (vm, arg1, arg2)
         if result == nil then
             result = empty
         end
-        ms[msp] = result
+        _STACK_POP(vm.mainStack)
+        _STACK_PUSH(vm.mainStack, result)
     else
         _ERROR ("Try to call a '" .. t .. "' value")
     end
 end
+
+function _UNSTACK_POS (vm, macro, arguments, capture)
+    local argcount = _STACK_POS(vm.mainStack) - _STACK_GET(vm.mainStack.frames)
+    if argcount ~= macro.positionalParamCount and macro.variadicOffset==0 then
+        local name
+
+        -- Last OP_CODE before call is loading the macro
+        -- by it's name
+        if chunk.mapping[vm.ip-1] then
+            name = chunk.mapping[vm.ip-1].content
+        end
+
+        if not name then
+            name = macro.name or "???"
+        end
+
+        _ERROR ("Wrong number of positionnal arguments for macro '" .. name .. "', " ..   argcount .. " instead of " .. macro.positionalParamCount .. ".")
+    end
+
+    for i=1, macro.positionalParamCount do
+        arguments[i] = _STACK_GET_OFFSET(vm.mainStack, i-argcount)
+    end
+
+    for i=macro.positionalParamCount+1, argcount do
+        table.insert(capture.table, _STACK_GET_OFFSET(vm.mainStack, i-argcount))
+    end
+
+    _STACK_MOVE_FRAMED(vm.mainStack)
+end
+
+function _UNSTACK_NAMED (vm, macro, arguments, capture)
+    local stack_bottom = _STACK_GET_FRAMED(vm.mainStack)
+
+    for i=1, #stack_bottom, 3 do
+        local k=stack_bottom[i]
+        local v=stack_bottom[i+1]
+        local m=stack_bottom[i+2]
+        local j = macro.namedParamOffset[k]
+        -- if m then
+        --     _TABLE_META_SET (capture, k, v)
+        -- elseif j then
+        --     parameters[j] = v
+        -- elseif macro.variadicOffset>0 then
+        --     _TABLE_SET (capture, k, v)
+        -- else
+        --     local name = macro.name or "???"
+        --     _ERROR("Unknow named parameter '" .. k .."' for macro '" .. name .."'.")
+        -- end
+    end
+    _STACK_POP(vm.mainStack)
+end
+
+function _CALL (vm, macro, arguments)
+    table.insert(vm.chunk.callstack, {chunk=vm.chunk, macro=macro, ip=vm.ip})
+    if #vm.chunk.callstack>1000 then
+        _ERROR ("stack overflow")
+    end
+
+    local success, callResult, cip, source  = vm.plume.run(macro, arguments)
+    if not success then
+        return success, callResult, cip, (source or macro)
+    end
+    table.remove(vm.chunk.callstack)
+
+    return callResult
+end
+
+--- To rewrite
 
 function RETURN (vm, arg1, arg2)
     --- Unstack 1 from calls

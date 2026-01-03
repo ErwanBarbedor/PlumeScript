@@ -45,6 +45,7 @@ function _VM_INIT (plume, chunk, arguments)
 end
 
 function _VM_INIT_VARS(vm, chunk)
+    vm.chunk = chunk
     vm.bytecode  = chunk.bytecode
     vm.constants = chunk.constants
     vm.static    = chunk.static
@@ -74,7 +75,7 @@ end
 function _VM_INIT_ARGUMENTS(vm, chunk, arguments)
     if arguments then
         if chunk.isFile then
-            for k, v in pairs(parameters) do
+            for k, v in pairs(arguments) do
                 local offset = chunk.namedParamOffset[k]
                 if offset then
                     chunk.static[offset] = v
@@ -83,10 +84,10 @@ function _VM_INIT_ARGUMENTS(vm, chunk, arguments)
         -- macro
         else 
             for i=1, chunk.localsCount do
-                if parameters[i] == nil then
+                if arguments[i] == nil then
                     _STACK_SET(vm.variableStack, i, empty)
                 else
-                    _STACK_SET(vm.variableStack, i, parameters[i])
+                    _STACK_SET(vm.variableStack, i, arguments[i])
                 end
             end
 
