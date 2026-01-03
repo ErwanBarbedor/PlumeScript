@@ -13,7 +13,7 @@ You should have received a copy of the GNU General Public License along with Plu
 If not, see <https://www.gnu.org/licenses/>.
 ]]
 
-_FORWARD = function (stack)
+function _FORWARD (stack)
 	msp = msp+1
-	stack
+	stack()
 end

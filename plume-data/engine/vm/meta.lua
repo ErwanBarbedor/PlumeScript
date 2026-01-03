@@ -13,7 +13,7 @@ You should have received a copy of the GNU General Public License along with Plu
 If not, see <https://www.gnu.org/licenses/>.
 ]]
 
-_META_CHECK = function (name macro)
+function _META_CHECK (name, macro)
 	local comopps = "add mul div sub mod pow"
 	local binopps = "eq lt gt"
 	local unopps = "minus"
@@ -39,12 +39,12 @@ _META_CHECK = function (name macro)
 
 	if expectedParamCount then
 		if macro.positionalParamCount ~= expectedParamCount then
-			_ERROR {{"Wrong number of positionnal parameters for meta-macro '" .. name .. "', " .. macro.positionalParamCount .. " instead of " .. expectedParamCount .. "."}}
+			_ERROR ("Wrong number of positionnal parameters for meta-macro '" .. name .. "', " .. macro.positionalParamCount .. " instead of " .. expectedParamCount .. ".")
 		end
 		if macro.namedParamCount > 1 then -- 1 for self
-			_ERROR {{"Meta-macro '" .. name .. "' dont support named parameters."}}
+			_ERROR ("Meta-macro '" .. name .. "' dont support named parameters.")
 		end
 	elseif name ~= "call" and name ~= "tostring" and name ~= "tonumber" and name ~= "getindex" and name ~= "setindex" and name ~= "next" and name ~= "iter" then
-		_ERROR {{"'" .. name .. "' isn't a valid meta-macro name."}}
+		_ERROR ("'" .. name .. "' isn't a valid meta-macro name.")
 	end
 end

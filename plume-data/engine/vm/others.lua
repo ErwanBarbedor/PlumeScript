@@ -13,7 +13,7 @@ You should have received a copy of the GNU General Public License along with Plu
 If not, see <https://www.gnu.org/licenses/>.
 ]]
 
-SWITCH = function (vm, arg1, arg2)
+function SWITCH (vm, arg1, arg2)
     --- Unstack 2, stack 2 in reverse order
     --- arg1: -
     --- arg2: -
@@ -22,7 +22,7 @@ SWITCH = function (vm, arg1, arg2)
     ms[msp-1] = temp
 end
 
-DUPLICATE = function (vm, arg1, arg2)
+function DUPLICATE (vm, arg1, arg2)
     --- Stack 1, current top
     --- arg1: -
     --- arg2: -
@@ -30,7 +30,7 @@ DUPLICATE = function (vm, arg1, arg2)
     ms[msp] = ms[msp-1]
 end
 
-NULL = function (vm, arg1, arg2)
+function NULL (vm, arg1, arg2)
     --- Do nothing
     --- arg1: -
     --- arg2: -

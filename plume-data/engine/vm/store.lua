@@ -13,7 +13,7 @@ You should have received a copy of the GNU General Public License along with Plu
 If not, see <https://www.gnu.org/licenses/>.
 ]]
 
-STORE_LOCAL = function (vm, arg1, arg2)
+function STORE_LOCAL (vm, arg1, arg2)
     --- Unstack 1 to vs
     --- Final offset: current frame + frame offset
     --- arg1: -
@@ -22,7 +22,7 @@ STORE_LOCAL = function (vm, arg1, arg2)
     msp = msp-1
 end
 
-STORE_LEXICAL = function (vm, arg1, arg2)
+function STORE_LEXICAL (vm, arg1, arg2)
     --- Unstack 1 to vs
     --- Offset: the anth last frame + frame offset
     --- arg1: frame offset
@@ -31,7 +31,7 @@ STORE_LEXICAL = function (vm, arg1, arg2)
     msp = msp-1
 end
 
-STORE_STATIC = function (vm, arg1, arg2)
+function STORE_STATIC (vm, arg1, arg2)
     --- Unstack 1 static memory
     --- memory[mp] is a pointer to the current
     --- file intern memory
@@ -41,7 +41,7 @@ STORE_STATIC = function (vm, arg1, arg2)
     msp = msp-1
 end
 
- STORE_VOID = function (vm, arg1, arg2)
+ function STORE_VOID (vm, arg1, arg2)
     --- Unstack 1
     --- arg1: -
     --- arg2: frame offset
