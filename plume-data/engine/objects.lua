@@ -49,24 +49,7 @@ return function(plume)
 			type = "table", --type
 			table = table.new(listSlots, hashSlots),
 			keys = table.new(hashSlots, 0),
-			meta = {-- meta table
-				table = {
-					-- iter = plume.obj.luaFunction("iter", function(args)
-					-- 	local iterator = plume.obj.table(1, 1)
-					-- 	iterator.table[1] = 0
-					-- 	iterator.meta.table.next = plume.obj.luaFunction("next", function()
-					-- 		iterator.table[1] = iterator.table[1]+1
-					-- 		local value = t.table[iterator.table[1]]
-					-- 		if value then
-					-- 			return value
-					-- 		else
-					-- 			return plume.obj.empty
-					-- 		end
-					-- 	end)
-					-- 	return iterator
-					-- end)
-				}
-			} 
+			meta = {table={}}
 		}
 		return t
 	end
