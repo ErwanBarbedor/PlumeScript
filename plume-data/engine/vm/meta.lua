@@ -1,0 +1,35 @@
+_META_CHECK = function (name macro)
+	local comopps = "add mul div sub mod pow"
+	local binopps = "eq lt gt"
+	local unopps = "minus"
+
+	local expectedParamCount
+	for opp in comopps:gmatch('%S+') do
+		if name == opp then
+			expectedParamCount = 2
+		elseif name:match("^" .. opp .. "[rl]") then
+			expectedParamCount = 1
+		end
+	end
+	for opp in binopps:gmatch('%S+') do
+		if name == opp then
+			expectedParamCount = 1
+		end
+	end
+	for opp in unopps:gmatch('%S+') do
+		if name == opp then
+			expectedParamCount = 0
+		end
+	end
+
+	if expectedParamCount then
+		if macro.positionalParamCount ~= expectedParamCount then
+			_ERROR {{"Wrong number of positionnal parameters for meta-macro '" .. name .. "', " .. macro.positionalParamCount .. " instead of " .. expectedParamCount .. "."}}
+		end
+		if macro.namedParamCount > 1 then -- 1 for self
+			_ERROR {{"Meta-macro '" .. name .. "' dont support named parameters."}}
+		end
+	elseif name ~= "call" and name ~= "tostring" and name ~= "tonumber" and name ~= "getindex" and name ~= "setindex" and name ~= "next" and name ~= "iter" then
+		_ERROR {{"'" .. name .. "' isn't a valid meta-macro name."}}
+	end
+end
