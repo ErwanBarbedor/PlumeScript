@@ -36,6 +36,18 @@ function LOAD_LOCAL (vm, arg1, arg2)
     )
 end
 
+function LOAD_STATIC (vm, arg1, arg2)
+    --- Stack 1 from static memory
+    --- memory[mp] is a pointer to the current
+    --- file intern memory
+    --- arg1: -
+    --- arg2: vs offset
+    _STACK_PUSH(
+        vm.mainStack,
+        vm.static[arg2]
+    )
+end
+
 --- To rewrite
 function LOAD_EMPTY (vm, arg1, arg2)
     --- Stack 1 constant empty
@@ -72,12 +84,3 @@ function LOAD_LEXICAL (vm, arg1, arg2)
     ms[msp] = vs[vsf[vsfp-arg1]+arg2-1]
 end
 
-function LOAD_STATIC (vm, arg1, arg2)
-    --- Stack 1 from static memory
-    --- memory[mp] is a pointer to the current
-    --- file intern memory
-    --- arg1: -
-    --- arg2: vs offset
-    msp = msp+1
-    ms[msp] = static[arg2]
-end
