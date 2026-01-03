@@ -1,0 +1,22 @@
+SWITCH = function (vm, arg1, arg2)
+    --- Unstack 2, stack 2 in reverse order
+    --- arg1: -
+    --- arg2: -
+    local temp = ms[msp]
+    ms[msp] = ms[msp-1]
+    ms[msp-1] = temp
+end
+
+DUPLICATE = function (vm, arg1, arg2)
+    --- Stack 1, current top
+    --- arg1: -
+    --- arg2: -
+    msp = msp+1
+    ms[msp] = ms[msp-1]
+end
+
+NULL = function (vm, arg1, arg2)
+    --- Do nothing
+    --- arg1: -
+    --- arg2: -
+end
