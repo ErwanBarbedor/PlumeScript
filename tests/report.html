@@ -98,8 +98,8 @@
 <body>
 <div class="container">
     
-<h1>Global: <span style="font-weight: normal;">44 passed and <span class="fail-count">240</span> failed out of 284 tests</span></h1>
-<div class="progress-bar"><div class="progress-success" style="width: 15.49%"></div><div class="progress-fail" style="width: 84.51%"></div></div>
+<h1>Global: <span style="font-weight: normal;">55 passed and <span class="fail-count">229</span> failed out of 284 tests</span></h1>
+<div class="progress-bar"><div class="progress-success" style="width: 19.37%"></div><div class="progress-fail" style="width: 80.63%"></div></div>
 <h2>arithmetic: <span style="font-weight: normal;"><span class="fail-count">30</span> failed out of 30 tests</span></h2>
 <div class="progress-bar"><div class="progress-success" style="width: 0.00%"></div><div class="progress-fail" style="width: 100.00%"></div></div>
 <details open>
@@ -220,7 +220,7 @@ $(7==empty)
 <h4>Expected</h4>
 <h4>Obtained</h4>
 <div><div class="result-type-header result-type-mismatch">Output</div><pre><code><span class="diff-expected">false</span></code></pre></div>
-<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/load.lua:27: attempt to perform arithmetic on global &#39;msp&#39; (a nil value)</span></code></pre></div>
+<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/load.lua:44: attempt to perform arithmetic on global &#39;msp&#39; (a nil value)</span></code></pre></div>
 </div>
 </div>
 </details>
@@ -253,7 +253,7 @@ $(x==&quot;Wings&quot;)
 <h4>Expected</h4>
 <h4>Obtained</h4>
 <div><div class="result-type-header result-type-mismatch">Output</div><pre><code><span class="diff-expected">true</span></code></pre></div>
-<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/store.lua:22: attempt to index global &#39;vsf&#39; (a nil value)</span></code></pre></div>
+<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/alu.lua:272: attempt to perform arithmetic on global &#39;msp&#39; (a nil value)</span></code></pre></div>
 </div>
 </div>
 </details>
@@ -443,7 +443,7 @@ $(x&lt;y)
 <h4>Expected</h4>
 <h4>Obtained</h4>
 <div><div class="result-type-header result-type-mismatch">Output</div><pre><code><span class="diff-expected">true</span></code></pre></div>
-<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/store.lua:22: attempt to index global &#39;vsf&#39; (a nil value)</span></code></pre></div>
+<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/alu.lua:221: attempt to perform arithmetic on global &#39;msp&#39; (a nil value)</span></code></pre></div>
 </div>
 </div>
 </details>
@@ -583,7 +583,7 @@ $x
 <h4>Expected</h4>
 <h4>Obtained</h4>
 <div><div class="result-type-header result-type-mismatch">Output</div><pre><code><span class="diff-expected">6</span></code></pre></div>
-<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/store.lua:22: attempt to index global &#39;vsf&#39; (a nil value)</span></code></pre></div>
+<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/alu.lua:122: attempt to perform arithmetic on global &#39;msp&#39; (a nil value)</span></code></pre></div>
 </div>
 </div>
 </details>
@@ -631,7 +631,7 @@ $t[1]
 <h4>Expected</h4>
 <h4>Obtained</h4>
 <div><div class="result-type-header result-type-mismatch">Output</div><pre><code><span class="diff-expected">35</span></code></pre></div>
-<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/acc.lua:22: attempt to perform arithmetic on global &#39;msfp&#39; (a nil value)</span></code></pre></div>
+<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/table.lua:21: attempt to perform arithmetic on global &#39;msp&#39; (a nil value)</span></code></pre></div>
 </div>
 </div>
 </details>
@@ -681,7 +681,7 @@ $t.value
 <h4>Expected</h4>
 <h4>Obtained</h4>
 <div><div class="result-type-header result-type-mismatch">Output</div><pre><code><span class="diff-expected">3</span></code></pre></div>
-<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/acc.lua:22: attempt to perform arithmetic on global &#39;msfp&#39; (a nil value)</span></code></pre></div>
+<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/table.lua:21: attempt to perform arithmetic on global &#39;msp&#39; (a nil value)</span></code></pre></div>
 </div>
 </div>
 </details>
@@ -843,7 +843,7 @@ $x
 <h4>Expected</h4>
 <h4>Obtained</h4>
 <div><div class="result-type-header result-type-mismatch">Output</div><pre><code><span class="diff-expected">0</span></code></pre></div>
-<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/store.lua:41: attempt to index global &#39;ms&#39; (a nil value)</span></code></pre></div>
+<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/store.lua:45: attempt to index global &#39;ms&#39; (a nil value)</span></code></pre></div>
 </div>
 </div>
 </details>
@@ -904,7 +904,7 @@ $x
 <h4>Expected</h4>
 <h4>Obtained</h4>
 <div><div class="result-type-header result-type-mismatch">Output</div><pre><code><span class="diff-expected">1</span></code></pre></div>
-<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/store.lua:41: attempt to index global &#39;ms&#39; (a nil value)</span></code></pre></div>
+<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/store.lua:45: attempt to index global &#39;ms&#39; (a nil value)</span></code></pre></div>
 </div>
 </div>
 </details>
@@ -965,7 +965,7 @@ $x
 <h4>Expected</h4>
 <h4>Obtained</h4>
 <div><div class="result-type-header result-type-mismatch">Output</div><pre><code><span class="diff-expected">1</span></code></pre></div>
-<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/store.lua:41: attempt to index global &#39;ms&#39; (a nil value)</span></code></pre></div>
+<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/store.lua:45: attempt to index global &#39;ms&#39; (a nil value)</span></code></pre></div>
 </div>
 </div>
 </details>
@@ -1026,7 +1026,7 @@ $x
 <h4>Expected</h4>
 <h4>Obtained</h4>
 <div><div class="result-type-header result-type-mismatch">Output</div><pre><code><span class="diff-expected">0</span></code></pre></div>
-<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/store.lua:41: attempt to index global &#39;ms&#39; (a nil value)</span></code></pre></div>
+<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/store.lua:45: attempt to index global &#39;ms&#39; (a nil value)</span></code></pre></div>
 </div>
 </div>
 </details>
@@ -1295,7 +1295,7 @@ $(t+1)
 <h4>Expected</h4>
 <h4>Obtained</h4>
 <div><div class="result-type-header result-type-mismatch">Output</div><pre><code><span class="diff-expected">2</span></code></pre></div>
-<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/acc.lua:22: attempt to perform arithmetic on global &#39;msfp&#39; (a nil value)</span></code></pre></div>
+<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/table.lua:21: attempt to perform arithmetic on global &#39;msp&#39; (a nil value)</span></code></pre></div>
 </div>
 </div>
 </details>
@@ -1352,7 +1352,7 @@ $(1+t)
 <h4>Expected</h4>
 <h4>Obtained</h4>
 <div><div class="result-type-header result-type-mismatch">Output</div><pre><code><span class="diff-expected">2</span></code></pre></div>
-<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/acc.lua:22: attempt to perform arithmetic on global &#39;msfp&#39; (a nil value)</span></code></pre></div>
+<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/table.lua:21: attempt to perform arithmetic on global &#39;msp&#39; (a nil value)</span></code></pre></div>
 </div>
 </div>
 </details>
@@ -1409,7 +1409,7 @@ $(1+t)
 <h4>Expected</h4>
 <h4>Obtained</h4>
 <div><div class="result-type-header result-type-mismatch">Output</div><pre><code><span class="diff-expected">2</span></code></pre></div>
-<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/acc.lua:22: attempt to perform arithmetic on global &#39;msfp&#39; (a nil value)</span></code></pre></div>
+<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/table.lua:21: attempt to perform arithmetic on global &#39;msp&#39; (a nil value)</span></code></pre></div>
 </div>
 </div>
 </details>
@@ -1466,7 +1466,7 @@ $(t+1)
 <h4>Expected</h4>
 <h4>Obtained</h4>
 <div><div class="result-type-header result-type-mismatch">Output</div><pre><code><span class="diff-expected">2</span></code></pre></div>
-<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/acc.lua:22: attempt to perform arithmetic on global &#39;msfp&#39; (a nil value)</span></code></pre></div>
+<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/table.lua:21: attempt to perform arithmetic on global &#39;msp&#39; (a nil value)</span></code></pre></div>
 </div>
 </div>
 </details>
@@ -1523,7 +1523,7 @@ $t()
 <h4>Expected</h4>
 <h4>Obtained</h4>
 <div><div class="result-type-header result-type-mismatch">Output</div><pre><code><span class="diff-expected">I&#39;m a called table</span></code></pre></div>
-<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/acc.lua:22: attempt to perform arithmetic on global &#39;msfp&#39; (a nil value)</span></code></pre></div>
+<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/table.lua:21: attempt to perform arithmetic on global &#39;msp&#39; (a nil value)</span></code></pre></div>
 </div>
 </div>
 </details>
@@ -1590,7 +1590,7 @@ $t()
 <h4>Expected</h4>
 <h4>Obtained</h4>
 <div><div class="result-type-header result-type-mismatch">Output</div><pre><code><span class="diff-expected">My value is 5</span></code></pre></div>
-<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/acc.lua:22: attempt to perform arithmetic on global &#39;msfp&#39; (a nil value)</span></code></pre></div>
+<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/table.lua:21: attempt to perform arithmetic on global &#39;msp&#39; (a nil value)</span></code></pre></div>
 </div>
 </div>
 </details>
@@ -1647,7 +1647,7 @@ $(t/2)
 <h4>Expected</h4>
 <h4>Obtained</h4>
 <div><div class="result-type-header result-type-mismatch">Output</div><pre><code><span class="diff-expected">3</span></code></pre></div>
-<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/acc.lua:22: attempt to perform arithmetic on global &#39;msfp&#39; (a nil value)</span></code></pre></div>
+<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/table.lua:21: attempt to perform arithmetic on global &#39;msp&#39; (a nil value)</span></code></pre></div>
 </div>
 </div>
 </details>
@@ -1703,7 +1703,7 @@ $(t==6)
 <h4>Expected</h4>
 <h4>Obtained</h4>
 <div><div class="result-type-header result-type-mismatch">Output</div><pre><code><span class="diff-expected">true</span></code></pre></div>
-<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/acc.lua:22: attempt to perform arithmetic on global &#39;msfp&#39; (a nil value)</span></code></pre></div>
+<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/table.lua:21: attempt to perform arithmetic on global &#39;msp&#39; (a nil value)</span></code></pre></div>
 </div>
 </div>
 </details>
@@ -1769,7 +1769,7 @@ $t.nib
 <h4>Obtained</h4>
 <div><div class="result-type-header result-type-mismatch">Output</div><pre><code><span class="diff-expected">WING
 WING</span></code></pre></div>
-<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/acc.lua:22: attempt to perform arithmetic on global &#39;msfp&#39; (a nil value)</span></code></pre></div>
+<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/table.lua:21: attempt to perform arithmetic on global &#39;msp&#39; (a nil value)</span></code></pre></div>
 </div>
 </div>
 </details>
@@ -1835,7 +1835,7 @@ $t.nib
 <h4>Obtained</h4>
 <div><div class="result-type-header result-type-mismatch">Output</div><pre><code><span class="diff-expected">quill
 nib</span></code></pre></div>
-<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/acc.lua:22: attempt to perform arithmetic on global &#39;msfp&#39; (a nil value)</span></code></pre></div>
+<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/table.lua:21: attempt to perform arithmetic on global &#39;msp&#39; (a nil value)</span></code></pre></div>
 </div>
 </div>
 </details>
@@ -1891,7 +1891,7 @@ $(t&gt;6)
 <h4>Expected</h4>
 <h4>Obtained</h4>
 <div><div class="result-type-header result-type-mismatch">Output</div><pre><code><span class="diff-expected">true</span></code></pre></div>
-<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/acc.lua:22: attempt to perform arithmetic on global &#39;msfp&#39; (a nil value)</span></code></pre></div>
+<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/table.lua:21: attempt to perform arithmetic on global &#39;msp&#39; (a nil value)</span></code></pre></div>
 </div>
 </div>
 </details>
@@ -1952,7 +1952,7 @@ $(t&lt;=6)
 <h4>Expected</h4>
 <h4>Obtained</h4>
 <div><div class="result-type-header result-type-mismatch">Output</div><pre><code><span class="diff-expected">false</span></code></pre></div>
-<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/acc.lua:22: attempt to perform arithmetic on global &#39;msfp&#39; (a nil value)</span></code></pre></div>
+<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/table.lua:21: attempt to perform arithmetic on global &#39;msp&#39; (a nil value)</span></code></pre></div>
 </div>
 </div>
 </details>
@@ -2008,7 +2008,7 @@ $(6&lt;t)
 <h4>Expected</h4>
 <h4>Obtained</h4>
 <div><div class="result-type-header result-type-mismatch">Output</div><pre><code><span class="diff-expected">true</span></code></pre></div>
-<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/acc.lua:22: attempt to perform arithmetic on global &#39;msfp&#39; (a nil value)</span></code></pre></div>
+<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/table.lua:21: attempt to perform arithmetic on global &#39;msp&#39; (a nil value)</span></code></pre></div>
 </div>
 </div>
 </details>
@@ -2069,7 +2069,7 @@ $(t&gt;=6)
 <h4>Expected</h4>
 <h4>Obtained</h4>
 <div><div class="result-type-header result-type-mismatch">Output</div><pre><code><span class="diff-expected">false</span></code></pre></div>
-<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/acc.lua:22: attempt to perform arithmetic on global &#39;msfp&#39; (a nil value)</span></code></pre></div>
+<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/table.lua:21: attempt to perform arithmetic on global &#39;msp&#39; (a nil value)</span></code></pre></div>
 </div>
 </div>
 </details>
@@ -2141,7 +2141,7 @@ $(t&gt;=6)
 <h4>Expected</h4>
 <h4>Obtained</h4>
 <div><div class="result-type-header result-type-mismatch">Output</div><pre><code><span class="diff-expected">true</span></code></pre></div>
-<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/acc.lua:22: attempt to perform arithmetic on global &#39;msfp&#39; (a nil value)</span></code></pre></div>
+<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/table.lua:21: attempt to perform arithmetic on global &#39;msp&#39; (a nil value)</span></code></pre></div>
 </div>
 </div>
 </details>
@@ -2217,7 +2217,7 @@ $(t&lt;6)
 <h4>Expected</h4>
 <h4>Obtained</h4>
 <div><div class="result-type-header result-type-mismatch">Output</div><pre><code><span class="diff-expected">true</span></code></pre></div>
-<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/acc.lua:22: attempt to perform arithmetic on global &#39;msfp&#39; (a nil value)</span></code></pre></div>
+<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/table.lua:21: attempt to perform arithmetic on global &#39;msp&#39; (a nil value)</span></code></pre></div>
 </div>
 </div>
 </details>
@@ -2273,7 +2273,7 @@ $(t&lt;6)
 <h4>Expected</h4>
 <h4>Obtained</h4>
 <div><div class="result-type-header result-type-mismatch">Output</div><pre><code><span class="diff-expected">true</span></code></pre></div>
-<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/acc.lua:22: attempt to perform arithmetic on global &#39;msfp&#39; (a nil value)</span></code></pre></div>
+<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/table.lua:21: attempt to perform arithmetic on global &#39;msp&#39; (a nil value)</span></code></pre></div>
 </div>
 </div>
 </details>
@@ -2328,7 +2328,7 @@ $(-t)
 <h4>Expected</h4>
 <h4>Obtained</h4>
 <div><div class="result-type-header result-type-mismatch">Output</div><pre><code><span class="diff-expected">-1</span></code></pre></div>
-<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/acc.lua:22: attempt to perform arithmetic on global &#39;msfp&#39; (a nil value)</span></code></pre></div>
+<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/table.lua:21: attempt to perform arithmetic on global &#39;msp&#39; (a nil value)</span></code></pre></div>
 </div>
 </div>
 </details>
@@ -2385,7 +2385,7 @@ $(t%2)
 <h4>Expected</h4>
 <h4>Obtained</h4>
 <div><div class="result-type-header result-type-mismatch">Output</div><pre><code><span class="diff-expected">3</span></code></pre></div>
-<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/acc.lua:22: attempt to perform arithmetic on global &#39;msfp&#39; (a nil value)</span></code></pre></div>
+<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/table.lua:21: attempt to perform arithmetic on global &#39;msp&#39; (a nil value)</span></code></pre></div>
 </div>
 </div>
 </details>
@@ -2442,7 +2442,7 @@ $(t*2)
 <h4>Expected</h4>
 <h4>Obtained</h4>
 <div><div class="result-type-header result-type-mismatch">Output</div><pre><code><span class="diff-expected">3</span></code></pre></div>
-<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/acc.lua:22: attempt to perform arithmetic on global &#39;msfp&#39; (a nil value)</span></code></pre></div>
+<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/table.lua:21: attempt to perform arithmetic on global &#39;msp&#39; (a nil value)</span></code></pre></div>
 </div>
 </div>
 </details>
@@ -2498,7 +2498,7 @@ $(t!=6)
 <h4>Expected</h4>
 <h4>Obtained</h4>
 <div><div class="result-type-header result-type-mismatch">Output</div><pre><code><span class="diff-expected">false</span></code></pre></div>
-<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/acc.lua:22: attempt to perform arithmetic on global &#39;msfp&#39; (a nil value)</span></code></pre></div>
+<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/table.lua:21: attempt to perform arithmetic on global &#39;msp&#39; (a nil value)</span></code></pre></div>
 </div>
 </div>
 </details>
@@ -2555,7 +2555,7 @@ $(t^2)
 <h4>Expected</h4>
 <h4>Obtained</h4>
 <div><div class="result-type-header result-type-mismatch">Output</div><pre><code><span class="diff-expected">3</span></code></pre></div>
-<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/acc.lua:22: attempt to perform arithmetic on global &#39;msfp&#39; (a nil value)</span></code></pre></div>
+<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/table.lua:21: attempt to perform arithmetic on global &#39;msp&#39; (a nil value)</span></code></pre></div>
 </div>
 </div>
 </details>
@@ -2618,7 +2618,7 @@ $(t+1)
 <h4>Expected</h4>
 <h4>Obtained</h4>
 <div><div class="result-type-header result-type-mismatch">Output</div><pre><code><span class="diff-expected">11</span></code></pre></div>
-<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/acc.lua:22: attempt to perform arithmetic on global &#39;msfp&#39; (a nil value)</span></code></pre></div>
+<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/table.lua:21: attempt to perform arithmetic on global &#39;msp&#39; (a nil value)</span></code></pre></div>
 </div>
 </div>
 </details>
@@ -2687,7 +2687,7 @@ $side
 <h4>Expected</h4>
 <h4>Obtained</h4>
 <div><div class="result-type-header result-type-mismatch">Output</div><pre><code><span class="diff-expected">01</span></code></pre></div>
-<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/acc.lua:22: attempt to perform arithmetic on global &#39;msfp&#39; (a nil value)</span></code></pre></div>
+<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/store.lua:45: attempt to index global &#39;ms&#39; (a nil value)</span></code></pre></div>
 </div>
 </div>
 </details>
@@ -2765,7 +2765,7 @@ $t.quill
 <h4>Expected</h4>
 <h4>Obtained</h4>
 <div><div class="result-type-header result-type-mismatch">Output</div><pre><code><span class="diff-expected">005</span></code></pre></div>
-<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/acc.lua:22: attempt to perform arithmetic on global &#39;msfp&#39; (a nil value)</span></code></pre></div>
+<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/store.lua:45: attempt to index global &#39;ms&#39; (a nil value)</span></code></pre></div>
 </div>
 </div>
 </details>
@@ -2822,7 +2822,7 @@ $(t-2)
 <h4>Expected</h4>
 <h4>Obtained</h4>
 <div><div class="result-type-header result-type-mismatch">Output</div><pre><code><span class="diff-expected">3</span></code></pre></div>
-<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/acc.lua:22: attempt to perform arithmetic on global &#39;msfp&#39; (a nil value)</span></code></pre></div>
+<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/table.lua:21: attempt to perform arithmetic on global &#39;msp&#39; (a nil value)</span></code></pre></div>
 </div>
 </div>
 </details>
@@ -2878,7 +2878,7 @@ $(t+1)
 <h4>Expected</h4>
 <h4>Obtained</h4>
 <div><div class="result-type-header result-type-mismatch">Output</div><pre><code><span class="diff-expected">6</span></code></pre></div>
-<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/acc.lua:22: attempt to perform arithmetic on global &#39;msfp&#39; (a nil value)</span></code></pre></div>
+<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/table.lua:21: attempt to perform arithmetic on global &#39;msp&#39; (a nil value)</span></code></pre></div>
 </div>
 </div>
 </details>
@@ -2936,7 +2936,7 @@ $tonumber($t)
 <h4>Expected</h4>
 <h4>Obtained</h4>
 <div><div class="result-type-header result-type-mismatch">Output</div><pre><code><span class="diff-expected">5</span></code></pre></div>
-<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/acc.lua:22: attempt to perform arithmetic on global &#39;msfp&#39; (a nil value)</span></code></pre></div>
+<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/table.lua:21: attempt to perform arithmetic on global &#39;msp&#39; (a nil value)</span></code></pre></div>
 </div>
 </div>
 </details>
@@ -2995,7 +2995,7 @@ t says &quot;$t&quot;.
 <h4>Expected</h4>
 <h4>Obtained</h4>
 <div><div class="result-type-header result-type-mismatch">Output</div><pre><code><span class="diff-expected">t says &quot;I&#39;m a table&quot;.</span></code></pre></div>
-<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/acc.lua:22: attempt to perform arithmetic on global &#39;msfp&#39; (a nil value)</span></code></pre></div>
+<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/table.lua:21: attempt to perform arithmetic on global &#39;msp&#39; (a nil value)</span></code></pre></div>
 </div>
 </div>
 </details>
@@ -3053,12 +3053,12 @@ $(tostring(t))
 <h4>Expected</h4>
 <h4>Obtained</h4>
 <div><div class="result-type-header result-type-mismatch">Output</div><pre><code><span class="diff-expected">I&#39;m a table</span></code></pre></div>
-<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/acc.lua:22: attempt to perform arithmetic on global &#39;msfp&#39; (a nil value)</span></code></pre></div>
+<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/table.lua:21: attempt to perform arithmetic on global &#39;msp&#39; (a nil value)</span></code></pre></div>
 </div>
 </div>
 </details>
-<h2>z_issues: <span style="font-weight: normal;">2 passed and <span class="fail-count">25</span> failed out of 27 tests</span></h2>
-<div class="progress-bar"><div class="progress-success" style="width: 7.41%"></div><div class="progress-fail" style="width: 92.59%"></div></div>
+<h2>z_issues: <span style="font-weight: normal;">3 passed and <span class="fail-count">24</span> failed out of 27 tests</span></h2>
+<div class="progress-bar"><div class="progress-success" style="width: 11.11%"></div><div class="progress-fail" style="width: 88.89%"></div></div>
 <details open>
 <summary>
 <span class="status-icon status-fail">✗</span> #105
@@ -3109,7 +3109,7 @@ end
 <h4>Expected</h4>
 <h4>Obtained</h4>
 <div><div class="result-type-header result-type-mismatch">Output</div><pre><code><span class="diff-expected">234567891011</span></code></pre></div>
-<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/acc.lua:22: attempt to perform arithmetic on global &#39;msfp&#39; (a nil value)</span></code></pre></div>
+<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/table.lua:21: attempt to perform arithmetic on global &#39;msp&#39; (a nil value)</span></code></pre></div>
 </div>
 </div>
 </details>
@@ -3197,7 +3197,7 @@ end
 <h4>Expected</h4>
 <h4>Obtained</h4>
 <div><div class="result-type-header result-type-mismatch">Output</div><pre><code></code></pre></div>
-<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/store.lua:41: attempt to index global &#39;ms&#39; (a nil value)</span></code></pre></div>
+<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/store.lua:45: attempt to index global &#39;ms&#39; (a nil value)</span></code></pre></div>
 </div>
 </div>
 </details>
@@ -3283,7 +3283,7 @@ end
 <div><div class="result-type-header result-type-mismatch">Output</div><pre><code><span class="diff-expected">1)mark
 2)paint
 3)sing</span></code></pre></div>
-<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/store.lua:41: attempt to index global &#39;ms&#39; (a nil value)</span></code></pre></div>
+<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/store.lua:45: attempt to index global &#39;ms&#39; (a nil value)</span></code></pre></div>
 </div>
 </div>
 </details>
@@ -3333,7 +3333,7 @@ end
 <h4>Expected</h4>
 <h4>Obtained</h4>
 <div><div class="result-type-header result-type-mismatch">Output</div><pre><code></code></pre></div>
-<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/acc.lua:22: attempt to perform arithmetic on global &#39;msfp&#39; (a nil value)</span></code></pre></div>
+<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/table.lua:21: attempt to perform arithmetic on global &#39;msp&#39; (a nil value)</span></code></pre></div>
 </div>
 </div>
 </details>
@@ -3383,7 +3383,7 @@ $(wing(&quot;a&quot;))
 <h4>Expected</h4>
 <h4>Obtained</h4>
 <div><div class="result-type-header result-type-mismatch">Output</div><pre><code><span class="diff-expected">a</span></code></pre></div>
-<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/store.lua:41: attempt to index global &#39;ms&#39; (a nil value)</span></code></pre></div>
+<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/store.lua:45: attempt to index global &#39;ms&#39; (a nil value)</span></code></pre></div>
 </div>
 </div>
 </details>
@@ -3468,7 +3468,7 @@ end
 <h4>Expected</h4>
 <h4>Obtained</h4>
 <div><div class="result-type-header result-type-mismatch">Output</div><pre><code><span class="diff-expected">11112222</span></code></pre></div>
-<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/acc.lua:22: attempt to perform arithmetic on global &#39;msfp&#39; (a nil value)</span></code></pre></div>
+<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/table.lua:21: attempt to perform arithmetic on global &#39;msp&#39; (a nil value)</span></code></pre></div>
 </div>
 </div>
 </details>
@@ -3522,7 +3522,7 @@ $nex
 <h4>Expected</h4>
 <h4>Obtained</h4>
 <div><div class="result-type-header result-type-mismatch">Output</div><pre><code><span class="diff-expected">2</span></code></pre></div>
-<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/store.lua:22: attempt to index global &#39;vsf&#39; (a nil value)</span></code></pre></div>
+<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/table.lua:21: attempt to perform arithmetic on global &#39;msp&#39; (a nil value)</span></code></pre></div>
 </div>
 </div>
 </details>
@@ -3601,7 +3601,7 @@ end
 <h4>Expected</h4>
 <h4>Obtained</h4>
 <div><div class="result-type-header result-type-mismatch">Output</div><pre><code><span class="diff-expected">0</span></code></pre></div>
-<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/store.lua:41: attempt to index global &#39;ms&#39; (a nil value)</span></code></pre></div>
+<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/store.lua:45: attempt to index global &#39;ms&#39; (a nil value)</span></code></pre></div>
 </div>
 </div>
 </details>
@@ -3650,7 +3650,7 @@ end
 <h4>Expected</h4>
 <h4>Obtained</h4>
 <div><div class="result-type-header result-type-mismatch">Output</div><pre><code><span class="diff-expected">1</span></code></pre></div>
-<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/acc.lua:22: attempt to perform arithmetic on global &#39;msfp&#39; (a nil value)</span></code></pre></div>
+<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/table.lua:21: attempt to perform arithmetic on global &#39;msp&#39; (a nil value)</span></code></pre></div>
 </div>
 </div>
 </details>
@@ -3702,7 +3702,7 @@ end
 <h4>Expected</h4>
 <h4>Obtained</h4>
 <div><div class="result-type-header result-type-mismatch">Output</div><pre><code><span class="diff-expected">1</span></code></pre></div>
-<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/acc.lua:22: attempt to perform arithmetic on global &#39;msfp&#39; (a nil value)</span></code></pre></div>
+<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/table.lua:21: attempt to perform arithmetic on global &#39;msp&#39; (a nil value)</span></code></pre></div>
 </div>
 </div>
 </details>
@@ -3743,7 +3743,7 @@ $t[index]
 <h4>Expected</h4>
 <h4>Obtained</h4>
 <div><div class="result-type-header result-type-mismatch">Output</div><pre><code><span class="diff-expected">wing</span></code></pre></div>
-<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/acc.lua:22: attempt to perform arithmetic on global &#39;msfp&#39; (a nil value)</span></code></pre></div>
+<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/table.lua:21: attempt to perform arithmetic on global &#39;msp&#39; (a nil value)</span></code></pre></div>
 </div>
 </div>
 </details>
@@ -3795,7 +3795,7 @@ $c
 <h4>Expected</h4>
 <h4>Obtained</h4>
 <div><div class="result-type-header result-type-mismatch">Output</div><pre><code><span class="diff-expected">wing nib</span></code></pre></div>
-<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/store.lua:22: attempt to index global &#39;vsf&#39; (a nil value)</span></code></pre></div>
+<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/load.lua:52: attempt to perform arithmetic on global &#39;msp&#39; (a nil value)</span></code></pre></div>
 </div>
 </div>
 </details>
@@ -3847,7 +3847,7 @@ end
 <h4>Expected</h4>
 <h4>Obtained</h4>
 <div><div class="result-type-header result-type-mismatch">Output</div><pre><code><span class="diff-expected">12</span></code></pre></div>
-<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/acc.lua:22: attempt to perform arithmetic on global &#39;msfp&#39; (a nil value)</span></code></pre></div>
+<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/table.lua:21: attempt to perform arithmetic on global &#39;msp&#39; (a nil value)</span></code></pre></div>
 </div>
 </div>
 </details>
@@ -3900,7 +3900,7 @@ $x(1)
 Traceback (most recent call first):
   File &#39;#148&#39;, line 4: $x(1)
                         ^^^^</span></code></pre></div>
-<div><div class="result-type-header">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/store.lua:22: attempt to index global &#39;vsf&#39; (a nil value)</span></code></pre></div>
+<div><div class="result-type-header">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/table.lua:21: attempt to perform arithmetic on global &#39;msp&#39; (a nil value)</span></code></pre></div>
 </div>
 </div>
 </details>
@@ -3930,7 +3930,7 @@ let blank = $(&quot;&quot;)
 <h4>Expected</h4>
 <h4>Obtained</h4>
 <div><div class="result-type-header result-type-mismatch">Output</div><pre><code></code></pre></div>
-<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/store.lua:22: attempt to index global &#39;vsf&#39; (a nil value)</span></code></pre></div>
+<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/load.lua:44: attempt to perform arithmetic on global &#39;msp&#39; (a nil value)</span></code></pre></div>
 </div>
 </div>
 </details>
@@ -3982,7 +3982,7 @@ set t[1].wing = red
 <h4>Expected</h4>
 <h4>Obtained</h4>
 <div><div class="result-type-header result-type-mismatch">Output</div><pre><code></code></pre></div>
-<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/acc.lua:22: attempt to perform arithmetic on global &#39;msfp&#39; (a nil value)</span></code></pre></div>
+<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/table.lua:21: attempt to perform arithmetic on global &#39;msp&#39; (a nil value)</span></code></pre></div>
 </div>
 </div>
 </details>
@@ -4027,7 +4027,7 @@ end
 <h4>Expected</h4>
 <h4>Obtained</h4>
 <div><div class="result-type-header result-type-mismatch">Output</div><pre><code></code></pre></div>
-<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/acc.lua:22: attempt to perform arithmetic on global &#39;msfp&#39; (a nil value)</span></code></pre></div>
+<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/table.lua:21: attempt to perform arithmetic on global &#39;msp&#39; (a nil value)</span></code></pre></div>
 </div>
 </div>
 </details>
@@ -4101,7 +4101,7 @@ end
 <h4>Expected</h4>
 <h4>Obtained</h4>
 <div><div class="result-type-header result-type-mismatch">Output</div><pre><code><span class="diff-expected">write song</span></code></pre></div>
-<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/acc.lua:22: attempt to perform arithmetic on global &#39;msfp&#39; (a nil value)</span></code></pre></div>
+<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/table.lua:21: attempt to perform arithmetic on global &#39;msp&#39; (a nil value)</span></code></pre></div>
 </div>
 </div>
 </details>
@@ -4166,7 +4166,7 @@ $t.quill()
 <h4>Expected</h4>
 <h4>Obtained</h4>
 <div><div class="result-type-header result-type-mismatch">Output</div><pre><code><span class="diff-expected">song</span></code></pre></div>
-<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/acc.lua:22: attempt to perform arithmetic on global &#39;msfp&#39; (a nil value)</span></code></pre></div>
+<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/table.lua:21: attempt to perform arithmetic on global &#39;msp&#39; (a nil value)</span></code></pre></div>
 </div>
 </div>
 </details>
@@ -4196,7 +4196,7 @@ do nothing
 <h4>Expected</h4>
 <h4>Obtained</h4>
 <div><div class="result-type-header result-type-mismatch">Output</div><pre><code></code></pre></div>
-<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/store.lua:49: attempt to perform arithmetic on global &#39;msp&#39; (a nil value)</span></code></pre></div>
+<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/store.lua:53: attempt to perform arithmetic on global &#39;msp&#39; (a nil value)</span></code></pre></div>
 </div>
 </div>
 </details>
@@ -4245,7 +4245,7 @@ $(wing(false))
 <h4>Expected</h4>
 <h4>Obtained</h4>
 <div><div class="result-type-header result-type-mismatch">Output</div><pre><code></code></pre></div>
-<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/store.lua:41: attempt to index global &#39;ms&#39; (a nil value)</span></code></pre></div>
+<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/store.lua:45: attempt to index global &#39;ms&#39; (a nil value)</span></code></pre></div>
 </div>
 </div>
 </details>
@@ -4321,38 +4321,7 @@ $Wing( ?optn)
 <h4>Expected</h4>
 <h4>Obtained</h4>
 <div><div class="result-type-header result-type-mismatch">Output</div><pre><code><span class="diff-expected">true true</span></code></pre></div>
-<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/acc.lua:22: attempt to perform arithmetic on global &#39;msfp&#39; (a nil value)</span></code></pre></div>
-</div>
-</div>
-</details>
-<details open>
-<summary>
-<span class="status-icon status-fail">✗</span> #189
-</summary>
-<div class="test-content">
-<div class="code-grid">
-<div>
-<h4>Code</h4>
-<pre><code class="language-plume">
-let notwing = 1
-$(notwing)
-
-</code></pre>
-</div>
-<div>
-<h4>Bytecode</h4>
-<pre><code class="language-bytecode"><span class="bc-line-num">001</span> <span class="bc-opcode">ENTER_SCOPE     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; l</span>
-<span class="bc-line-num">002</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 1</span> <span class="bc-info">; 1</span>
-<span class="bc-line-num">003</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; notwing</span>
-<span class="bc-line-num">004</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 1</span> <span class="bc-info">; notwing</span>
-<span class="bc-line-num">005</span> <span class="bc-opcode">END             </span> <span class="bc-arg">0 0</span></code></pre>
-</div>
-</div>
-<div class="comparison-grid">
-<h4>Expected</h4>
-<h4>Obtained</h4>
-<div><div class="result-type-header result-type-mismatch">Output</div><pre><code><span class="diff-expected">1</span></code></pre></div>
-<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/store.lua:22: attempt to index global &#39;vsf&#39; (a nil value)</span></code></pre></div>
+<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/store.lua:45: attempt to index global &#39;ms&#39; (a nil value)</span></code></pre></div>
 </div>
 </div>
 </details>
@@ -4382,7 +4351,7 @@ let trues = 1
 <h4>Expected</h4>
 <h4>Obtained</h4>
 <div><div class="result-type-header result-type-mismatch">Output</div><pre><code></code></pre></div>
-<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/store.lua:22: attempt to index global &#39;vsf&#39; (a nil value)</span></code></pre></div>
+<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/load.lua:44: attempt to perform arithmetic on global &#39;msp&#39; (a nil value)</span></code></pre></div>
 </div>
 </div>
 </details>
@@ -4442,7 +4411,7 @@ $quill()
 <h4>Expected</h4>
 <h4>Obtained</h4>
 <div><div class="result-type-header result-type-mismatch">Output</div><pre><code><span class="diff-expected">true</span></code></pre></div>
-<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/store.lua:41: attempt to index global &#39;ms&#39; (a nil value)</span></code></pre></div>
+<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/store.lua:45: attempt to index global &#39;ms&#39; (a nil value)</span></code></pre></div>
 </div>
 </div>
 </details>
@@ -4504,6 +4473,35 @@ File &#39;#141&#39;, line 3: $(x+a)
 </code></pre>
 </div>
 </details>
+<details>
+<summary>
+<span class="status-icon status-pass">✓</span> #189
+</summary>
+<div class="test-content">
+<div class="code-grid">
+<div>
+<h4>Code</h4>
+<pre><code class="language-plume">
+let notwing = 1
+$(notwing)
+
+</code></pre>
+</div>
+<div>
+<h4>Bytecode</h4>
+<pre><code class="language-bytecode"><span class="bc-line-num">001</span> <span class="bc-opcode">ENTER_SCOPE     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; l</span>
+<span class="bc-line-num">002</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 1</span> <span class="bc-info">; 1</span>
+<span class="bc-line-num">003</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; notwing</span>
+<span class="bc-line-num">004</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 1</span> <span class="bc-info">; notwing</span>
+<span class="bc-line-num">005</span> <span class="bc-opcode">END             </span> <span class="bc-arg">0 0</span></code></pre>
+</div>
+</div>
+<h4>Output</h4>
+<pre><code>
+1
+</code></pre>
+</div>
+</details>
 <h2>std: <span style="font-weight: normal;"><span class="fail-count">17</span> failed out of 17 tests</span></h2>
 <div class="progress-bar"><div class="progress-success" style="width: 0.00%"></div><div class="progress-fail" style="width: 100.00%"></div></div>
 <details open>
@@ -4561,7 +4559,7 @@ $join($t)
 Traceback (most recent call first):
   File &#39;Error&#39;, line 6: $join($t)
                          ^^^^^^^^</span></code></pre></div>
-<div><div class="result-type-header">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/acc.lua:22: attempt to perform arithmetic on global &#39;msfp&#39; (a nil value)</span></code></pre></div>
+<div><div class="result-type-header">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/table.lua:21: attempt to perform arithmetic on global &#39;msp&#39; (a nil value)</span></code></pre></div>
 </div>
 </div>
 </details>
@@ -4642,7 +4640,7 @@ end
 <div><div class="result-type-header result-type-mismatch">Output</div><pre><code><span class="diff-expected">Item 1 is quill.
 Item 2 is wing.
 Item 3 is bird.</span></code></pre></div>
-<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/acc.lua:22: attempt to perform arithmetic on global &#39;msfp&#39; (a nil value)</span></code></pre></div>
+<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/table.lua:21: attempt to perform arithmetic on global &#39;msp&#39; (a nil value)</span></code></pre></div>
 </div>
 </div>
 </details>
@@ -4679,7 +4677,7 @@ $lib.nib
 <h4>Expected</h4>
 <h4>Obtained</h4>
 <div><div class="result-type-header result-type-mismatch">Output</div><pre><code><span class="diff-expected">quill</span></code></pre></div>
-<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/acc.lua:22: attempt to perform arithmetic on global &#39;msfp&#39; (a nil value)</span></code></pre></div>
+<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/table.lua:21: attempt to perform arithmetic on global &#39;msp&#39; (a nil value)</span></code></pre></div>
 </div>
 </div>
 </details>
@@ -4728,7 +4726,7 @@ $lib.wing() $infos
 <h4>Expected</h4>
 <h4>Obtained</h4>
 <div><div class="result-type-header result-type-mismatch">Output</div><pre><code><span class="diff-expected">blue quill bird</span></code></pre></div>
-<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/acc.lua:22: attempt to perform arithmetic on global &#39;msfp&#39; (a nil value)</span></code></pre></div>
+<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/store.lua:45: attempt to index global &#39;ms&#39; (a nil value)</span></code></pre></div>
 </div>
 </div>
 </details>
@@ -4760,7 +4758,7 @@ $import(tests/plume/toimport/text)
 <h4>Expected</h4>
 <h4>Obtained</h4>
 <div><div class="result-type-header result-type-mismatch">Output</div><pre><code><span class="diff-expected">wings</span></code></pre></div>
-<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/acc.lua:22: attempt to perform arithmetic on global &#39;msfp&#39; (a nil value)</span></code></pre></div>
+<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/table.lua:21: attempt to perform arithmetic on global &#39;msp&#39; (a nil value)</span></code></pre></div>
 </div>
 </div>
 </details>
@@ -4803,7 +4801,7 @@ nib
 <div><div class="result-type-header result-type-mismatch">Output</div><pre><code><span class="diff-expected">quill
 wings
 nib</span></code></pre></div>
-<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/acc.lua:22: attempt to perform arithmetic on global &#39;msfp&#39; (a nil value)</span></code></pre></div>
+<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/table.lua:21: attempt to perform arithmetic on global &#39;msp&#39; (a nil value)</span></code></pre></div>
 </div>
 </div>
 </details>
@@ -4890,7 +4888,7 @@ end
 <div><div class="result-type-header result-type-mismatch">Output</div><pre><code><span class="diff-expected">Item &quot;first&quot; is _(quill)_.
 Item &quot;second&quot; is _(wing)_.
 Item &quot;bonus&quot; is _(bird)_.</span></code></pre></div>
-<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/acc.lua:22: attempt to perform arithmetic on global &#39;msfp&#39; (a nil value)</span></code></pre></div>
+<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/table.lua:21: attempt to perform arithmetic on global &#39;msp&#39; (a nil value)</span></code></pre></div>
 </div>
 </div>
 </details>
@@ -4928,7 +4926,7 @@ end
 <h4>Expected</h4>
 <h4>Obtained</h4>
 <div><div class="result-type-header result-type-mismatch">Output</div><pre><code><span class="diff-expected">quillmark</span></code></pre></div>
-<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/acc.lua:22: attempt to perform arithmetic on global &#39;msfp&#39; (a nil value)</span></code></pre></div>
+<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/table.lua:21: attempt to perform arithmetic on global &#39;msp&#39; (a nil value)</span></code></pre></div>
 </div>
 </div>
 </details>
@@ -4968,7 +4966,7 @@ end
 <h4>Obtained</h4>
 <div><div class="result-type-header result-type-mismatch">Output</div><pre><code><span class="diff-expected">quill
 mark</span></code></pre></div>
-<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/acc.lua:22: attempt to perform arithmetic on global &#39;msfp&#39; (a nil value)</span></code></pre></div>
+<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/table.lua:21: attempt to perform arithmetic on global &#39;msp&#39; (a nil value)</span></code></pre></div>
 </div>
 </div>
 </details>
@@ -5015,7 +5013,7 @@ $len($t)
 <h4>Expected</h4>
 <h4>Obtained</h4>
 <div><div class="result-type-header result-type-mismatch">Output</div><pre><code><span class="diff-expected">2</span></code></pre></div>
-<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/acc.lua:22: attempt to perform arithmetic on global &#39;msfp&#39; (a nil value)</span></code></pre></div>
+<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/table.lua:21: attempt to perform arithmetic on global &#39;msp&#39; (a nil value)</span></code></pre></div>
 </div>
 </div>
 </details>
@@ -5057,7 +5055,7 @@ $double(3)
 <h4>Expected</h4>
 <h4>Obtained</h4>
 <div><div class="result-type-header result-type-mismatch">Output</div><pre><code><span class="diff-expected">6</span></code></pre></div>
-<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/acc.lua:22: attempt to perform arithmetic on global &#39;msfp&#39; (a nil value)</span></code></pre></div>
+<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/table.lua:21: attempt to perform arithmetic on global &#39;msp&#39; (a nil value)</span></code></pre></div>
 </div>
 </div>
 </details>
@@ -5106,7 +5104,7 @@ end
 <h4>Expected</h4>
 <h4>Obtained</h4>
 <div><div class="result-type-header result-type-mismatch">Output</div><pre><code><span class="diff-expected">12345</span></code></pre></div>
-<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/acc.lua:22: attempt to perform arithmetic on global &#39;msfp&#39; (a nil value)</span></code></pre></div>
+<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/table.lua:21: attempt to perform arithmetic on global &#39;msp&#39; (a nil value)</span></code></pre></div>
 </div>
 </div>
 </details>
@@ -5154,7 +5152,7 @@ end
 <h4>Expected</h4>
 <h4>Obtained</h4>
 <div><div class="result-type-header result-type-mismatch">Output</div><pre><code><span class="diff-expected">123</span></code></pre></div>
-<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/acc.lua:22: attempt to perform arithmetic on global &#39;msfp&#39; (a nil value)</span></code></pre></div>
+<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/table.lua:21: attempt to perform arithmetic on global &#39;msp&#39; (a nil value)</span></code></pre></div>
 </div>
 </div>
 </details>
@@ -5207,7 +5205,7 @@ $t[2], $t.quill
 <h4>Expected</h4>
 <h4>Obtained</h4>
 <div><div class="result-type-header result-type-mismatch">Output</div><pre><code><span class="diff-expected">mark, ink</span></code></pre></div>
-<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/acc.lua:22: attempt to perform arithmetic on global &#39;msfp&#39; (a nil value)</span></code></pre></div>
+<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/table.lua:21: attempt to perform arithmetic on global &#39;msp&#39; (a nil value)</span></code></pre></div>
 </div>
 </div>
 </details>
@@ -5276,7 +5274,7 @@ $len($t)
 <h4>Obtained</h4>
 <div><div class="result-type-header result-type-mismatch">Output</div><pre><code><span class="diff-expected">2
 3</span></code></pre></div>
-<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/acc.lua:22: attempt to perform arithmetic on global &#39;msfp&#39; (a nil value)</span></code></pre></div>
+<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/table.lua:21: attempt to perform arithmetic on global &#39;msp&#39; (a nil value)</span></code></pre></div>
 </div>
 </div>
 </details>
@@ -5346,7 +5344,7 @@ $len($t)
 <div><div class="result-type-header result-type-mismatch">Output</div><pre><code><span class="diff-expected">2
 Nib
 1</span></code></pre></div>
-<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/acc.lua:22: attempt to perform arithmetic on global &#39;msfp&#39; (a nil value)</span></code></pre></div>
+<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/table.lua:21: attempt to perform arithmetic on global &#39;msp&#39; (a nil value)</span></code></pre></div>
 </div>
 </div>
 </details>
@@ -5404,12 +5402,12 @@ $type($(1+1))
 <div><div class="result-type-header result-type-mismatch">Output</div><pre><code><span class="diff-expected">table
 string
 number</span></code></pre></div>
-<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/acc.lua:22: attempt to perform arithmetic on global &#39;msfp&#39; (a nil value)</span></code></pre></div>
+<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/table.lua:21: attempt to perform arithmetic on global &#39;msp&#39; (a nil value)</span></code></pre></div>
 </div>
 </div>
 </details>
-<h2>destructuration: <span style="font-weight: normal;">2 passed and <span class="fail-count">15</span> failed out of 17 tests</span></h2>
-<div class="progress-bar"><div class="progress-success" style="width: 11.76%"></div><div class="progress-fail" style="width: 88.24%"></div></div>
+<h2>destructuration: <span style="font-weight: normal;">3 passed and <span class="fail-count">14</span> failed out of 17 tests</span></h2>
+<div class="progress-bar"><div class="progress-success" style="width: 17.65%"></div><div class="progress-fail" style="width: 82.35%"></div></div>
 <details open>
 <summary>
 <span class="status-icon status-fail">✗</span> for destructuration with set
@@ -5485,40 +5483,7 @@ end
 <h4>Obtained</h4>
 <div><div class="result-type-header result-type-mismatch">Output</div><pre><code><span class="diff-expected">x = 1
 y = 2</span></code></pre></div>
-<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/acc.lua:22: attempt to perform arithmetic on global &#39;msfp&#39; (a nil value)</span></code></pre></div>
-</div>
-</div>
-</details>
-<details open>
-<summary>
-<span class="status-icon status-fail">✗</span> multiple let
-</summary>
-<div class="test-content">
-<div class="code-grid">
-<div>
-<h4>Code</h4>
-<pre><code class="language-plume">
-let a, b
-
-set b = Wing
-$b
-
-</code></pre>
-</div>
-<div>
-<h4>Bytecode</h4>
-<pre><code class="language-bytecode"><span class="bc-line-num">001</span> <span class="bc-opcode">ENTER_SCOPE     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; l</span>
-<span class="bc-line-num">002</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 1</span> <span class="bc-info">; Wing</span>
-<span class="bc-line-num">003</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">0 2</span> <span class="bc-info">; b</span>
-<span class="bc-line-num">004</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 2</span> <span class="bc-info">; b</span>
-<span class="bc-line-num">005</span> <span class="bc-opcode">END             </span> <span class="bc-arg">0 0</span></code></pre>
-</div>
-</div>
-<div class="comparison-grid">
-<h4>Expected</h4>
-<h4>Obtained</h4>
-<div><div class="result-type-header result-type-mismatch">Output</div><pre><code><span class="diff-expected">Wing</span></code></pre></div>
-<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/store.lua:22: attempt to index global &#39;vsf&#39; (a nil value)</span></code></pre></div>
+<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/table.lua:21: attempt to perform arithmetic on global &#39;msp&#39; (a nil value)</span></code></pre></div>
 </div>
 </div>
 </details>
@@ -5563,7 +5528,7 @@ $wing
 <h4>Expected</h4>
 <h4>Obtained</h4>
 <div><div class="result-type-header result-type-mismatch">Output</div><pre><code><span class="diff-expected">mark</span></code></pre></div>
-<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/acc.lua:22: attempt to perform arithmetic on global &#39;msfp&#39; (a nil value)</span></code></pre></div>
+<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/table.lua:21: attempt to perform arithmetic on global &#39;msp&#39; (a nil value)</span></code></pre></div>
 </div>
 </div>
 </details>
@@ -5623,7 +5588,7 @@ $wing, $paint
 <h4>Expected</h4>
 <h4>Obtained</h4>
 <div><div class="result-type-header result-type-mismatch">Output</div><pre><code><span class="diff-expected">mark, song</span></code></pre></div>
-<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/acc.lua:22: attempt to perform arithmetic on global &#39;msfp&#39; (a nil value)</span></code></pre></div>
+<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/table.lua:21: attempt to perform arithmetic on global &#39;msp&#39; (a nil value)</span></code></pre></div>
 </div>
 </div>
 </details>
@@ -5695,7 +5660,7 @@ $wing, $paint, $quill
 <h4>Expected</h4>
 <h4>Obtained</h4>
 <div><div class="result-type-header result-type-mismatch">Output</div><pre><code><span class="diff-expected">mark, song, nib</span></code></pre></div>
-<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/acc.lua:22: attempt to perform arithmetic on global &#39;msfp&#39; (a nil value)</span></code></pre></div>
+<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/table.lua:21: attempt to perform arithmetic on global &#39;msp&#39; (a nil value)</span></code></pre></div>
 </div>
 </div>
 </details>
@@ -5748,7 +5713,7 @@ $paint
 <h4>Expected</h4>
 <h4>Obtained</h4>
 <div><div class="result-type-header result-type-mismatch">Output</div><pre><code><span class="diff-expected">mark</span></code></pre></div>
-<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/acc.lua:22: attempt to perform arithmetic on global &#39;msfp&#39; (a nil value)</span></code></pre></div>
+<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/table.lua:21: attempt to perform arithmetic on global &#39;msp&#39; (a nil value)</span></code></pre></div>
 </div>
 </div>
 </details>
@@ -5812,7 +5777,7 @@ $paint, $quill
 <h4>Expected</h4>
 <h4>Obtained</h4>
 <div><div class="result-type-header result-type-mismatch">Output</div><pre><code><span class="diff-expected">mark, nib</span></code></pre></div>
-<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/acc.lua:22: attempt to perform arithmetic on global &#39;msfp&#39; (a nil value)</span></code></pre></div>
+<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/table.lua:21: attempt to perform arithmetic on global &#39;msp&#39; (a nil value)</span></code></pre></div>
 </div>
 </div>
 </details>
@@ -5860,7 +5825,7 @@ $wing
 <h4>Expected</h4>
 <h4>Obtained</h4>
 <div><div class="result-type-header result-type-mismatch">Output</div><pre><code><span class="diff-expected">5</span></code></pre></div>
-<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/acc.lua:22: attempt to perform arithmetic on global &#39;msfp&#39; (a nil value)</span></code></pre></div>
+<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/table.lua:21: attempt to perform arithmetic on global &#39;msp&#39; (a nil value)</span></code></pre></div>
 </div>
 </div>
 </details>
@@ -5908,7 +5873,7 @@ $wing
 <h4>Expected</h4>
 <h4>Obtained</h4>
 <div><div class="result-type-header result-type-mismatch">Output</div><pre><code><span class="diff-expected">song</span></code></pre></div>
-<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/acc.lua:22: attempt to perform arithmetic on global &#39;msfp&#39; (a nil value)</span></code></pre></div>
+<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/table.lua:21: attempt to perform arithmetic on global &#39;msp&#39; (a nil value)</span></code></pre></div>
 </div>
 </div>
 </details>
@@ -5951,7 +5916,7 @@ $wing
 <h4>Expected</h4>
 <h4>Obtained</h4>
 <div><div class="result-type-header result-type-mismatch">Output</div><pre><code><span class="diff-expected">5 5</span></code></pre></div>
-<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/acc.lua:22: attempt to perform arithmetic on global &#39;msfp&#39; (a nil value)</span></code></pre></div>
+<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/table.lua:21: attempt to perform arithmetic on global &#39;msp&#39; (a nil value)</span></code></pre></div>
 </div>
 </div>
 </details>
@@ -5999,7 +5964,7 @@ $paint
 <h4>Expected</h4>
 <h4>Obtained</h4>
 <div><div class="result-type-header result-type-mismatch">Output</div><pre><code><span class="diff-expected">5</span></code></pre></div>
-<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/acc.lua:22: attempt to perform arithmetic on global &#39;msfp&#39; (a nil value)</span></code></pre></div>
+<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/table.lua:21: attempt to perform arithmetic on global &#39;msp&#39; (a nil value)</span></code></pre></div>
 </div>
 </div>
 </details>
@@ -6047,7 +6012,7 @@ $paint
 <h4>Expected</h4>
 <h4>Obtained</h4>
 <div><div class="result-type-header result-type-mismatch">Output</div><pre><code><span class="diff-expected">song</span></code></pre></div>
-<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/acc.lua:22: attempt to perform arithmetic on global &#39;msfp&#39; (a nil value)</span></code></pre></div>
+<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/table.lua:21: attempt to perform arithmetic on global &#39;msp&#39; (a nil value)</span></code></pre></div>
 </div>
 </div>
 </details>
@@ -6093,7 +6058,7 @@ $wing
 <h4>Expected</h4>
 <h4>Obtained</h4>
 <div><div class="result-type-header result-type-mismatch">Output</div><pre><code><span class="diff-expected">mark</span></code></pre></div>
-<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/acc.lua:22: attempt to perform arithmetic on global &#39;msfp&#39; (a nil value)</span></code></pre></div>
+<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/table.lua:21: attempt to perform arithmetic on global &#39;msp&#39; (a nil value)</span></code></pre></div>
 </div>
 </div>
 </details>
@@ -6151,7 +6116,7 @@ b=$b
 <h4>Obtained</h4>
 <div><div class="result-type-header result-type-mismatch">Output</div><pre><code><span class="diff-expected">a=quill
 b=mark</span></code></pre></div>
-<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/acc.lua:22: attempt to perform arithmetic on global &#39;msfp&#39; (a nil value)</span></code></pre></div>
+<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/table.lua:21: attempt to perform arithmetic on global &#39;msp&#39; (a nil value)</span></code></pre></div>
 </div>
 </div>
 </details>
@@ -6210,7 +6175,7 @@ b=$b
 <h4>Obtained</h4>
 <div><div class="result-type-header result-type-mismatch">Output</div><pre><code><span class="diff-expected">a=quill
 b=mark</span></code></pre></div>
-<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/acc.lua:22: attempt to perform arithmetic on global &#39;msfp&#39; (a nil value)</span></code></pre></div>
+<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/table.lua:21: attempt to perform arithmetic on global &#39;msp&#39; (a nil value)</span></code></pre></div>
 </div>
 </div>
 </details>
@@ -6266,6 +6231,37 @@ File &#39;Forbiden default value 2&#39;, line 1: let wing: 5 = 8
 </code></pre>
 </div>
 </details>
+<details>
+<summary>
+<span class="status-icon status-pass">✓</span> multiple let
+</summary>
+<div class="test-content">
+<div class="code-grid">
+<div>
+<h4>Code</h4>
+<pre><code class="language-plume">
+let a, b
+
+set b = Wing
+$b
+
+</code></pre>
+</div>
+<div>
+<h4>Bytecode</h4>
+<pre><code class="language-bytecode"><span class="bc-line-num">001</span> <span class="bc-opcode">ENTER_SCOPE     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; l</span>
+<span class="bc-line-num">002</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 1</span> <span class="bc-info">; Wing</span>
+<span class="bc-line-num">003</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">0 2</span> <span class="bc-info">; b</span>
+<span class="bc-line-num">004</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 2</span> <span class="bc-info">; b</span>
+<span class="bc-line-num">005</span> <span class="bc-opcode">END             </span> <span class="bc-arg">0 0</span></code></pre>
+</div>
+</div>
+<h4>Output</h4>
+<pre><code>
+Wing
+</code></pre>
+</div>
+</details>
 <h2>errors: <span style="font-weight: normal;">12 passed and <span class="fail-count">13</span> failed out of 25 tests</span></h2>
 <div class="progress-bar"><div class="progress-success" style="width: 48.00%"></div><div class="progress-fail" style="width: 52.00%"></div></div>
 <details open>
@@ -6301,7 +6297,7 @@ $(x+1)
 Traceback (most recent call first):
   File &#39;Add string&#39;, line 2: $(x+1)
                                ^^^</span></code></pre></div>
-<div><div class="result-type-header">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/store.lua:22: attempt to index global &#39;vsf&#39; (a nil value)</span></code></pre></div>
+<div><div class="result-type-header">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/alu.lua:122: attempt to perform arithmetic on global &#39;msp&#39; (a nil value)</span></code></pre></div>
 </div>
 </div>
 </details>
@@ -6341,7 +6337,7 @@ $(x+1)
 Traceback (most recent call first):
   File &#39;Add table&#39;, line 2: $(x+1)
                               ^^^</span></code></pre></div>
-<div><div class="result-type-header">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/acc.lua:22: attempt to perform arithmetic on global &#39;msfp&#39; (a nil value)</span></code></pre></div>
+<div><div class="result-type-header">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/table.lua:21: attempt to perform arithmetic on global &#39;msp&#39; (a nil value)</span></code></pre></div>
 </div>
 </div>
 </details>
@@ -6389,7 +6385,7 @@ $wing $nib
 Traceback (most recent call first):
   File &#39;Concat error 1&#39;, line 4: $wing $nib
                                         ^^^</span></code></pre></div>
-<div><div class="result-type-header">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/acc.lua:22: attempt to perform arithmetic on global &#39;msfp&#39; (a nil value)</span></code></pre></div>
+<div><div class="result-type-header">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/table.lua:21: attempt to perform arithmetic on global &#39;msp&#39; (a nil value)</span></code></pre></div>
 </div>
 </div>
 </details>
@@ -6444,7 +6440,7 @@ end
 Traceback (most recent call first):
   File &#39;Concat error 2&#39;, line 6: $nib
                                   ^^^</span></code></pre></div>
-<div><div class="result-type-header">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/acc.lua:22: attempt to perform arithmetic on global &#39;msfp&#39; (a nil value)</span></code></pre></div>
+<div><div class="result-type-header">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/table.lua:21: attempt to perform arithmetic on global &#39;msp&#39; (a nil value)</span></code></pre></div>
 </div>
 </div>
 </details>
@@ -6484,7 +6480,7 @@ $t[empty]
 Traceback (most recent call first):
   File &#39;Empty key&#39;, line 2: $t[empty]
                               ^^^^^^^</span></code></pre></div>
-<div><div class="result-type-header">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/acc.lua:22: attempt to perform arithmetic on global &#39;msfp&#39; (a nil value)</span></code></pre></div>
+<div><div class="result-type-header">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/table.lua:21: attempt to perform arithmetic on global &#39;msp&#39; (a nil value)</span></code></pre></div>
 </div>
 </div>
 </details>
@@ -6523,7 +6519,7 @@ let t = 1
 Traceback (most recent call first):
   File &#39;Expand non-table&#39;, line 2: ...t
                                    ^^^^</span></code></pre></div>
-<div><div class="result-type-header">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/acc.lua:22: attempt to perform arithmetic on global &#39;msfp&#39; (a nil value)</span></code></pre></div>
+<div><div class="result-type-header">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/table.lua:21: attempt to perform arithmetic on global &#39;msp&#39; (a nil value)</span></code></pre></div>
 </div>
 </div>
 </details>
@@ -6560,7 +6556,7 @@ $t[3]
 Traceback (most recent call first):
   File &#39;Index non-table&#39;, line 2: $t[3]
                                     ^^^</span></code></pre></div>
-<div><div class="result-type-header">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/store.lua:22: attempt to index global &#39;vsf&#39; (a nil value)</span></code></pre></div>
+<div><div class="result-type-header">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/table.lua:39: attempt to perform arithmetic on global &#39;msp&#39; (a nil value)</span></code></pre></div>
 </div>
 </div>
 </details>
@@ -6602,7 +6598,7 @@ $t[3]
 Traceback (most recent call first):
   File &#39;Invalid key (int)&#39;, line 2: $t[3]
                                       ^^^</span></code></pre></div>
-<div><div class="result-type-header">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/acc.lua:22: attempt to perform arithmetic on global &#39;msfp&#39; (a nil value)</span></code></pre></div>
+<div><div class="result-type-header">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/table.lua:21: attempt to perform arithmetic on global &#39;msp&#39; (a nil value)</span></code></pre></div>
 </div>
 </div>
 </details>
@@ -6645,7 +6641,7 @@ $t.nib
 Traceback (most recent call first):
   File &#39;Invalid key (string)&#39;, line 2: $t.nib
                                          ^^^^</span></code></pre></div>
-<div><div class="result-type-header">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/acc.lua:22: attempt to perform arithmetic on global &#39;msfp&#39; (a nil value)</span></code></pre></div>
+<div><div class="result-type-header">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/table.lua:21: attempt to perform arithmetic on global &#39;msp&#39; (a nil value)</span></code></pre></div>
 </div>
 </div>
 </details>
@@ -6774,7 +6770,7 @@ Traceback (most recent call first):
                                             ^^^^^^
   File &#39;callstack&#39;, line 12: $wing()
                               ^^^^^^</span></code></pre></div>
-<div><div class="result-type-header">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/store.lua:41: attempt to index global &#39;ms&#39; (a nil value)</span></code></pre></div>
+<div><div class="result-type-header">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/store.lua:45: attempt to index global &#39;ms&#39; (a nil value)</span></code></pre></div>
 </div>
 </div>
 </details>
@@ -6833,7 +6829,7 @@ end
 <h4>Expected</h4>
 <h4>Obtained</h4>
 <div><div class="result-type-header result-type-mismatch">Output</div><pre><code></code></pre></div>
-<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/acc.lua:22: attempt to perform arithmetic on global &#39;msfp&#39; (a nil value)</span></code></pre></div>
+<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/table.lua:21: attempt to perform arithmetic on global &#39;msp&#39; (a nil value)</span></code></pre></div>
 </div>
 </div>
 </details>
@@ -6894,7 +6890,7 @@ end
 <h4>Expected</h4>
 <h4>Obtained</h4>
 <div><div class="result-type-header result-type-mismatch">Output</div><pre><code></code></pre></div>
-<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/acc.lua:22: attempt to perform arithmetic on global &#39;msfp&#39; (a nil value)</span></code></pre></div>
+<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/table.lua:21: attempt to perform arithmetic on global &#39;msp&#39; (a nil value)</span></code></pre></div>
 </div>
 </div>
 </details>
@@ -7310,7 +7306,7 @@ $write(?flag)
 <h4>Obtained</h4>
 <div><div class="result-type-header result-type-mismatch">Output</div><pre><code><span class="diff-expected">sing
 paint</span></code></pre></div>
-<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/acc.lua:22: attempt to perform arithmetic on global &#39;msfp&#39; (a nil value)</span></code></pre></div>
+<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/store.lua:45: attempt to index global &#39;ms&#39; (a nil value)</span></code></pre></div>
 </div>
 </div>
 </details>
@@ -7343,8 +7339,8 @@ Wing
 <div class="comparison-grid">
 <h4>Expected</h4>
 <h4>Obtained</h4>
-<div><div class="result-type-header result-type-mismatch">Output</div><pre><code><span class="diff-expected">Nib</span></code></pre></div>
-<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/acc.lua:22: attempt to perform arithmetic on global &#39;msfp&#39; (a nil value)</span></code></pre></div>
+<div><div class="result-type-header">Output</div><pre><code><span class="diff-match">Nib</span></code></pre></div>
+<div><div class="result-type-header">Output</div><pre><code><span class="diff-match">Nib</span><span class="diff-obtained">Wing</span></code></pre></div>
 </div>
 </div>
 </details>
@@ -7406,7 +7402,7 @@ $t().content
 <h4>Expected</h4>
 <h4>Obtained</h4>
 <div><div class="result-type-header result-type-mismatch">Output</div><pre><code><span class="diff-expected">wing</span></code></pre></div>
-<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/store.lua:41: attempt to index global &#39;ms&#39; (a nil value)</span></code></pre></div>
+<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/store.lua:45: attempt to index global &#39;ms&#39; (a nil value)</span></code></pre></div>
 </div>
 </div>
 </details>
@@ -7510,7 +7506,7 @@ $index($t, red)
 <h4>Expected</h4>
 <h4>Obtained</h4>
 <div><div class="result-type-header result-type-mismatch">Output</div><pre><code><span class="diff-expected">2</span></code></pre></div>
-<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/acc.lua:22: attempt to perform arithmetic on global &#39;msfp&#39; (a nil value)</span></code></pre></div>
+<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/table.lua:21: attempt to perform arithmetic on global &#39;msp&#39; (a nil value)</span></code></pre></div>
 </div>
 </div>
 </details>
@@ -7633,7 +7629,7 @@ $write(write, paint, song, ink: quill, wing: mark)
 <h4>Obtained</h4>
 <div><div class="result-type-header result-type-mismatch">Output</div><pre><code><span class="diff-expected">Positionnals args: write, paint, song
 Named args: ink=quill, wing=mark</span></code></pre></div>
-<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/store.lua:41: attempt to index global &#39;ms&#39; (a nil value)</span></code></pre></div>
+<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/store.lua:45: attempt to index global &#39;ms&#39; (a nil value)</span></code></pre></div>
 </div>
 </div>
 </details>
@@ -7687,7 +7683,7 @@ $id(This is quite long\, i think.)
 <h4>Expected</h4>
 <h4>Obtained</h4>
 <div><div class="result-type-header result-type-mismatch">Output</div><pre><code><span class="diff-expected">This is quite long, i think.</span></code></pre></div>
-<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/store.lua:41: attempt to index global &#39;ms&#39; (a nil value)</span></code></pre></div>
+<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/store.lua:45: attempt to index global &#39;ms&#39; (a nil value)</span></code></pre></div>
 </div>
 </div>
 </details>
@@ -7742,7 +7738,7 @@ $double(quill)
 <h4>Expected</h4>
 <h4>Obtained</h4>
 <div><div class="result-type-header result-type-mismatch">Output</div><pre><code><span class="diff-expected">quill quill</span></code></pre></div>
-<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/store.lua:41: attempt to index global &#39;ms&#39; (a nil value)</span></code></pre></div>
+<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/store.lua:45: attempt to index global &#39;ms&#39; (a nil value)</span></code></pre></div>
 </div>
 </div>
 </details>
@@ -7798,7 +7794,7 @@ $f(quill, mark)
 <h4>Expected</h4>
 <h4>Obtained</h4>
 <div><div class="result-type-header result-type-mismatch">Output</div><pre><code><span class="diff-expected">quill mark</span></code></pre></div>
-<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/store.lua:41: attempt to index global &#39;ms&#39; (a nil value)</span></code></pre></div>
+<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/store.lua:45: attempt to index global &#39;ms&#39; (a nil value)</span></code></pre></div>
 </div>
 </div>
 </details>
@@ -7877,7 +7873,7 @@ $f(quill, ink, optn: another value)
 <h4>Obtained</h4>
 <div><div class="result-type-header result-type-mismatch">Output</div><pre><code><span class="diff-expected">quill mark value
 quill ink another value</span></code></pre></div>
-<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/acc.lua:22: attempt to perform arithmetic on global &#39;msfp&#39; (a nil value)</span></code></pre></div>
+<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/store.lua:45: attempt to index global &#39;ms&#39; (a nil value)</span></code></pre></div>
 </div>
 </div>
 </details>
@@ -7943,7 +7939,7 @@ $f(optn: another value)
 <h4>Obtained</h4>
 <div><div class="result-type-header result-type-mismatch">Output</div><pre><code><span class="diff-expected">value
 another value</span></code></pre></div>
-<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/acc.lua:22: attempt to perform arithmetic on global &#39;msfp&#39; (a nil value)</span></code></pre></div>
+<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/store.lua:45: attempt to index global &#39;ms&#39; (a nil value)</span></code></pre></div>
 </div>
 </div>
 </details>
@@ -8003,7 +7999,7 @@ $double($double(quill))
 <h4>Expected</h4>
 <h4>Obtained</h4>
 <div><div class="result-type-header result-type-mismatch">Output</div><pre><code><span class="diff-expected">quill quill quill quill</span></code></pre></div>
-<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/store.lua:41: attempt to index global &#39;ms&#39; (a nil value)</span></code></pre></div>
+<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/store.lua:45: attempt to index global &#39;ms&#39; (a nil value)</span></code></pre></div>
 </div>
 </div>
 </details>
@@ -8065,7 +8061,7 @@ $write
 <h4>Obtained</h4>
 <div><div class="result-type-header result-type-mismatch">Output</div><pre><code><span class="diff-expected">3
 5</span></code></pre></div>
-<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/acc.lua:22: attempt to perform arithmetic on global &#39;msfp&#39; (a nil value)</span></code></pre></div>
+<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/store.lua:45: attempt to index global &#39;ms&#39; (a nil value)</span></code></pre></div>
 </div>
 </div>
 </details>
@@ -8113,12 +8109,12 @@ $quill()
 <h4>Expected</h4>
 <h4>Obtained</h4>
 <div><div class="result-type-header result-type-mismatch">Output</div><pre><code><span class="diff-expected">mark</span></code></pre></div>
-<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/store.lua:41: attempt to index global &#39;ms&#39; (a nil value)</span></code></pre></div>
+<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/store.lua:45: attempt to index global &#39;ms&#39; (a nil value)</span></code></pre></div>
 </div>
 </div>
 </details>
-<h2>variables: <span style="font-weight: normal;">3 passed and <span class="fail-count">13</span> failed out of 16 tests</span></h2>
-<div class="progress-bar"><div class="progress-success" style="width: 18.75%"></div><div class="progress-fail" style="width: 81.25%"></div></div>
+<h2>variables: <span style="font-weight: normal;">4 passed and <span class="fail-count">12</span> failed out of 16 tests</span></h2>
+<div class="progress-bar"><div class="progress-success" style="width: 25.00%"></div><div class="progress-fail" style="width: 75.00%"></div></div>
 <details open>
 <summary>
 <span class="status-icon status-fail">✗</span> already exists 1
@@ -8151,7 +8147,7 @@ use tests/plume/toimport/lib
 <div><div class="result-type-header">Error</div><pre><code><span class="diff-expected">Compilation error: Cannot define static variable &#39;nib&#39; from lib &#39;tests/plume/toimport/lib&#39;, it already exists in the current file scope.
 File &#39;already exists 1&#39;, line 2: use tests/plume/toimport/lib
                                      ^^^^^^^^^^^^^^^^^^^^^^^^</span></code></pre></div>
-<div><div class="result-type-header">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/acc.lua:22: attempt to perform arithmetic on global &#39;msfp&#39; (a nil value)</span></code></pre></div>
+<div><div class="result-type-header">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/table.lua:21: attempt to perform arithmetic on global &#39;msp&#39; (a nil value)</span></code></pre></div>
 </div>
 </div>
 </details>
@@ -8187,7 +8183,7 @@ let static nib
 <div><div class="result-type-header">Error</div><pre><code><span class="diff-expected">Compilation error: Cannot define static variable &#39;nib&#39;, it already exists in the current file scope (imported from &#39;tests/plume/toimport/lib&#39;).
 File &#39;already exists 2&#39;, line 2: let static nib
                                  ^^^^^^^^^^^^^^</span></code></pre></div>
-<div><div class="result-type-header">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/acc.lua:22: attempt to perform arithmetic on global &#39;msfp&#39; (a nil value)</span></code></pre></div>
+<div><div class="result-type-header">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/table.lua:21: attempt to perform arithmetic on global &#39;msp&#39; (a nil value)</span></code></pre></div>
 </div>
 </div>
 </details>
@@ -8320,7 +8316,7 @@ $write
 <h4>Expected</h4>
 <h4>Obtained</h4>
 <div><div class="result-type-header result-type-mismatch">Output</div><pre><code><span class="diff-expected">01234</span></code></pre></div>
-<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/store.lua:22: attempt to index global &#39;vsf&#39; (a nil value)</span></code></pre></div>
+<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/alu.lua:221: attempt to perform arithmetic on global &#39;msp&#39; (a nil value)</span></code></pre></div>
 </div>
 </div>
 </details>
@@ -8364,7 +8360,7 @@ end
 <h4>Expected</h4>
 <h4>Obtained</h4>
 <div><div class="result-type-header result-type-mismatch">Output</div><pre><code><span class="diff-expected">0</span></code></pre></div>
-<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/store.lua:22: attempt to index global &#39;vsf&#39; (a nil value)</span></code></pre></div>
+<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/table.lua:21: attempt to perform arithmetic on global &#39;msp&#39; (a nil value)</span></code></pre></div>
 </div>
 </div>
 </details>
@@ -8421,7 +8417,7 @@ end
 <h4>Expected</h4>
 <h4>Obtained</h4>
 <div><div class="result-type-header result-type-mismatch">Output</div><pre><code><span class="diff-expected">0</span></code></pre></div>
-<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/store.lua:22: attempt to index global &#39;vsf&#39; (a nil value)</span></code></pre></div>
+<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/table.lua:21: attempt to perform arithmetic on global &#39;msp&#39; (a nil value)</span></code></pre></div>
 </div>
 </div>
 </details>
@@ -8462,7 +8458,7 @@ $write
 <h4>Expected</h4>
 <h4>Obtained</h4>
 <div><div class="result-type-header result-type-mismatch">Output</div><pre><code><span class="diff-expected">2</span></code></pre></div>
-<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/store.lua:22: attempt to index global &#39;vsf&#39; (a nil value)</span></code></pre></div>
+<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/alu.lua:272: attempt to perform arithmetic on global &#39;msp&#39; (a nil value)</span></code></pre></div>
 </div>
 </div>
 </details>
@@ -8505,7 +8501,7 @@ $write
 <h4>Expected</h4>
 <h4>Obtained</h4>
 <div><div class="result-type-header result-type-mismatch">Output</div><pre><code><span class="diff-expected">1</span></code></pre></div>
-<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/store.lua:22: attempt to index global &#39;vsf&#39; (a nil value)</span></code></pre></div>
+<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/alu.lua:272: attempt to perform arithmetic on global &#39;msp&#39; (a nil value)</span></code></pre></div>
 </div>
 </div>
 </details>
@@ -8535,38 +8531,7 @@ let write = quill
 <h4>Expected</h4>
 <h4>Obtained</h4>
 <div><div class="result-type-header result-type-mismatch">Output</div><pre><code></code></pre></div>
-<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/store.lua:22: attempt to index global &#39;vsf&#39; (a nil value)</span></code></pre></div>
-</div>
-</div>
-</details>
-<details open>
-<summary>
-<span class="status-icon status-fail">✗</span> simple affectation and eval
-</summary>
-<div class="test-content">
-<div class="code-grid">
-<div>
-<h4>Code</h4>
-<pre><code class="language-plume">
-let write = quill
-$write
-
-</code></pre>
-</div>
-<div>
-<h4>Bytecode</h4>
-<pre><code class="language-bytecode"><span class="bc-line-num">001</span> <span class="bc-opcode">ENTER_SCOPE     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; l</span>
-<span class="bc-line-num">002</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 1</span> <span class="bc-info">; quill</span>
-<span class="bc-line-num">003</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; write</span>
-<span class="bc-line-num">004</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 1</span> <span class="bc-info">; write</span>
-<span class="bc-line-num">005</span> <span class="bc-opcode">END             </span> <span class="bc-arg">0 0</span></code></pre>
-</div>
-</div>
-<div class="comparison-grid">
-<h4>Expected</h4>
-<h4>Obtained</h4>
-<div><div class="result-type-header result-type-mismatch">Output</div><pre><code><span class="diff-expected">quill</span></code></pre></div>
-<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/store.lua:22: attempt to index global &#39;vsf&#39; (a nil value)</span></code></pre></div>
+<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/load.lua:44: attempt to perform arithmetic on global &#39;msp&#39; (a nil value)</span></code></pre></div>
 </div>
 </div>
 </details>
@@ -8600,7 +8565,7 @@ $nib
 <h4>Expected</h4>
 <h4>Obtained</h4>
 <div><div class="result-type-header result-type-mismatch">Output</div><pre><code><span class="diff-expected">quill</span></code></pre></div>
-<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/acc.lua:22: attempt to perform arithmetic on global &#39;msfp&#39; (a nil value)</span></code></pre></div>
+<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/table.lua:21: attempt to perform arithmetic on global &#39;msp&#39; (a nil value)</span></code></pre></div>
 </div>
 </div>
 </details>
@@ -8641,8 +8606,37 @@ Traceback (most recent call first):
                                                         ^
 File &#39;use crash&#39;, line 1: use tests/plume/toimport/badlib
                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^</span></code></pre></div>
-<div><div class="result-type-header">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/store.lua:22: attempt to index global &#39;vsf&#39; (a nil value)</span></code></pre></div>
+<div><div class="result-type-header">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/alu.lua:122: attempt to perform arithmetic on global &#39;msp&#39; (a nil value)</span></code></pre></div>
 </div>
+</div>
+</details>
+<details>
+<summary>
+<span class="status-icon status-pass">✓</span> simple affectation and eval
+</summary>
+<div class="test-content">
+<div class="code-grid">
+<div>
+<h4>Code</h4>
+<pre><code class="language-plume">
+let write = quill
+$write
+
+</code></pre>
+</div>
+<div>
+<h4>Bytecode</h4>
+<pre><code class="language-bytecode"><span class="bc-line-num">001</span> <span class="bc-opcode">ENTER_SCOPE     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; l</span>
+<span class="bc-line-num">002</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 1</span> <span class="bc-info">; quill</span>
+<span class="bc-line-num">003</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; write</span>
+<span class="bc-line-num">004</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 1</span> <span class="bc-info">; write</span>
+<span class="bc-line-num">005</span> <span class="bc-opcode">END             </span> <span class="bc-arg">0 0</span></code></pre>
+</div>
+</div>
+<h4>Output</h4>
+<pre><code>
+quill
+</code></pre>
 </div>
 </details>
 <details>
@@ -8763,7 +8757,7 @@ $(1)()
 Traceback (most recent call first):
   File &#39;call a non-macro&#39;, line 1: $(1)()
                                     ^^^^^</span></code></pre></div>
-<div><div class="result-type-header">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/acc.lua:22: attempt to perform arithmetic on global &#39;msfp&#39; (a nil value)</span></code></pre></div>
+<div><div class="result-type-header">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/table.lua:21: attempt to perform arithmetic on global &#39;msp&#39; (a nil value)</span></code></pre></div>
 </div>
 </div>
 </details>
@@ -8815,7 +8809,7 @@ $quill(a)
 Traceback (most recent call first):
   File &#39;get macro name 1&#39;, line 3: $quill(a)
                                     ^^^^^^^^</span></code></pre></div>
-<div><div class="result-type-header">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/store.lua:22: attempt to index global &#39;vsf&#39; (a nil value)</span></code></pre></div>
+<div><div class="result-type-header">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/table.lua:21: attempt to perform arithmetic on global &#39;msp&#39; (a nil value)</span></code></pre></div>
 </div>
 </div>
 </details>
@@ -8877,7 +8871,7 @@ $quill.mark(a)
 Traceback (most recent call first):
   File &#39;get macro name 2&#39;, line 5: $quill.mark(a)
                                     ^^^^^^^^^^^^^</span></code></pre></div>
-<div><div class="result-type-header">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/acc.lua:22: attempt to perform arithmetic on global &#39;msfp&#39; (a nil value)</span></code></pre></div>
+<div><div class="result-type-header">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/table.lua:21: attempt to perform arithmetic on global &#39;msp&#39; (a nil value)</span></code></pre></div>
 </div>
 </div>
 </details>
@@ -8937,7 +8931,7 @@ $quill[1](a)
 Traceback (most recent call first):
   File &#39;get macro name 3&#39;, line 5: $quill[1](a)
                                     ^^^^^^^^^^^</span></code></pre></div>
-<div><div class="result-type-header">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/acc.lua:22: attempt to perform arithmetic on global &#39;msfp&#39; (a nil value)</span></code></pre></div>
+<div><div class="result-type-header">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/table.lua:21: attempt to perform arithmetic on global &#39;msp&#39; (a nil value)</span></code></pre></div>
 </div>
 </div>
 </details>
@@ -8990,7 +8984,7 @@ $Wings(paint, write)
 Traceback (most recent call first):
   File &#39;not enought macro args&#39;, line 3: $Wings(paint, write)
                                           ^^^^^^^^^^^^^^^^^^^</span></code></pre></div>
-<div><div class="result-type-header">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/store.lua:41: attempt to index global &#39;ms&#39; (a nil value)</span></code></pre></div>
+<div><div class="result-type-header">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/store.lua:45: attempt to index global &#39;ms&#39; (a nil value)</span></code></pre></div>
 </div>
 </div>
 </details>
@@ -9074,7 +9068,7 @@ Traceback (most recent call first):
                                   ^^^^^^^
   File &#39;stack overflow&#39;, line 12: $mark()
                                    ^^^^^^</span></code></pre></div>
-<div><div class="result-type-header">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/store.lua:41: attempt to index global &#39;ms&#39; (a nil value)</span></code></pre></div>
+<div><div class="result-type-header">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/store.lua:45: attempt to index global &#39;ms&#39; (a nil value)</span></code></pre></div>
 </div>
 </div>
 </details>
@@ -9129,7 +9123,7 @@ $Wings(paint, write, sing, dance)
 Traceback (most recent call first):
   File &#39;to many macro args&#39;, line 3: $Wings(paint, write, sing, dance)
                                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^</span></code></pre></div>
-<div><div class="result-type-header">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/store.lua:41: attempt to index global &#39;ms&#39; (a nil value)</span></code></pre></div>
+<div><div class="result-type-header">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/store.lua:45: attempt to index global &#39;ms&#39; (a nil value)</span></code></pre></div>
 </div>
 </div>
 </details>
@@ -9187,7 +9181,7 @@ $Wings(wing: red)
 Traceback (most recent call first):
   File &#39;unknow named parameter 1&#39;, line 3: $Wings(wing: red)
                                             ^^^^^^^^^^^^^^^^</span></code></pre></div>
-<div><div class="result-type-header">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/store.lua:41: attempt to index global &#39;ms&#39; (a nil value)</span></code></pre></div>
+<div><div class="result-type-header">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/store.lua:45: attempt to index global &#39;ms&#39; (a nil value)</span></code></pre></div>
 </div>
 </div>
 </details>
@@ -9248,403 +9242,8 @@ $Wings(nib: blue, wing: red)
 Traceback (most recent call first):
   File &#39;unknow named parameter 2&#39;, line 3: $Wings(nib: blue, wing: red)
                                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^</span></code></pre></div>
-<div><div class="result-type-header">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/store.lua:41: attempt to index global &#39;ms&#39; (a nil value)</span></code></pre></div>
+<div><div class="result-type-header">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/store.lua:45: attempt to index global &#39;ms&#39; (a nil value)</span></code></pre></div>
 </div>
-</div>
-</details>
-<h2>text: <span style="font-weight: normal;">4 passed and <span class="fail-count">9</span> failed out of 13 tests</span></h2>
-<div class="progress-bar"><div class="progress-success" style="width: 30.77%"></div><div class="progress-fail" style="width: 69.23%"></div></div>
-<details open>
-<summary>
-<span class="status-icon status-fail">✗</span> Escape 1
-</summary>
-<div class="test-content">
-<div class="code-grid">
-<div>
-<h4>Code</h4>
-<pre><code class="language-plume">
-$(1+1)\$(1+1)
-
-</code></pre>
-</div>
-<div>
-<h4>Bytecode</h4>
-<pre><code class="language-bytecode"><span class="bc-line-num">001</span> <span class="bc-opcode">ENTER_SCOPE     </span> <span class="bc-arg">0 0</span> <span class="bc-info">; $</span>
-<span class="bc-line-num">002</span> <span class="bc-opcode">BEGIN_ACC       </span> <span class="bc-arg">0 0</span> <span class="bc-info">; $</span>
-<span class="bc-line-num">003</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 1</span> <span class="bc-info">; 1</span>
-<span class="bc-line-num">004</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 1</span> <span class="bc-info">; 1</span>
-<span class="bc-line-num">005</span> <span class="bc-opcode">OPP_ADD         </span> <span class="bc-arg">0 0</span> <span class="bc-info">; 1+1</span>
-<span class="bc-line-num">006</span> <span class="bc-opcode">ACC_CHECK_TEXT  </span> <span class="bc-arg">0 0</span> <span class="bc-info">; (1+1)</span>
-<span class="bc-line-num">007</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 2</span> <span class="bc-info">; $</span>
-<span class="bc-line-num">008</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 3</span> <span class="bc-info">; (1+1)</span>
-<span class="bc-line-num">009</span> <span class="bc-opcode">ACC_TEXT        </span> <span class="bc-arg">0 0</span>
-<span class="bc-line-num">010</span> <span class="bc-opcode">END             </span> <span class="bc-arg">0 0</span></code></pre>
-</div>
-</div>
-<div class="comparison-grid">
-<h4>Expected</h4>
-<h4>Obtained</h4>
-<div><div class="result-type-header result-type-mismatch">Output</div><pre><code><span class="diff-expected">2$(1+1)</span></code></pre></div>
-<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/acc.lua:22: attempt to perform arithmetic on global &#39;msfp&#39; (a nil value)</span></code></pre></div>
-</div>
-</div>
-</details>
-<details open>
-<summary>
-<span class="status-icon status-fail">✗</span> Escape 2
-</summary>
-<div class="test-content">
-<div class="code-grid">
-<div>
-<h4>Code</h4>
-<pre><code class="language-plume">
-quill\$(1+1)
-
-</code></pre>
-</div>
-<div>
-<h4>Bytecode</h4>
-<pre><code class="language-bytecode"><span class="bc-line-num">001</span> <span class="bc-opcode">ENTER_SCOPE     </span> <span class="bc-arg">0 0</span> <span class="bc-info">; q</span>
-<span class="bc-line-num">002</span> <span class="bc-opcode">BEGIN_ACC       </span> <span class="bc-arg">0 0</span> <span class="bc-info">; q</span>
-<span class="bc-line-num">003</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 1</span> <span class="bc-info">; quill</span>
-<span class="bc-line-num">004</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 2</span> <span class="bc-info">; $</span>
-<span class="bc-line-num">005</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 3</span> <span class="bc-info">; (1+1)</span>
-<span class="bc-line-num">006</span> <span class="bc-opcode">ACC_TEXT        </span> <span class="bc-arg">0 0</span>
-<span class="bc-line-num">007</span> <span class="bc-opcode">END             </span> <span class="bc-arg">0 0</span></code></pre>
-</div>
-</div>
-<div class="comparison-grid">
-<h4>Expected</h4>
-<h4>Obtained</h4>
-<div><div class="result-type-header result-type-mismatch">Output</div><pre><code><span class="diff-expected">quill$(1+1)</span></code></pre></div>
-<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/acc.lua:22: attempt to perform arithmetic on global &#39;msfp&#39; (a nil value)</span></code></pre></div>
-</div>
-</div>
-</details>
-<details open>
-<summary>
-<span class="status-icon status-fail">✗</span> Escape 3
-</summary>
-<div class="test-content">
-<div class="code-grid">
-<div>
-<h4>Code</h4>
-<pre><code class="language-plume">
-\$(1+1)
-
-</code></pre>
-</div>
-<div>
-<h4>Bytecode</h4>
-<pre><code class="language-bytecode"><span class="bc-line-num">001</span> <span class="bc-opcode">ENTER_SCOPE     </span> <span class="bc-arg">0 0</span> <span class="bc-info">; \</span>
-<span class="bc-line-num">002</span> <span class="bc-opcode">BEGIN_ACC       </span> <span class="bc-arg">0 0</span> <span class="bc-info">; \</span>
-<span class="bc-line-num">003</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 1</span> <span class="bc-info">; $</span>
-<span class="bc-line-num">004</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 2</span> <span class="bc-info">; (1+1)</span>
-<span class="bc-line-num">005</span> <span class="bc-opcode">ACC_TEXT        </span> <span class="bc-arg">0 0</span>
-<span class="bc-line-num">006</span> <span class="bc-opcode">END             </span> <span class="bc-arg">0 0</span></code></pre>
-</div>
-</div>
-<div class="comparison-grid">
-<h4>Expected</h4>
-<h4>Obtained</h4>
-<div><div class="result-type-header result-type-mismatch">Output</div><pre><code><span class="diff-expected">$(1+1)</span></code></pre></div>
-<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/acc.lua:22: attempt to perform arithmetic on global &#39;msfp&#39; (a nil value)</span></code></pre></div>
-</div>
-</div>
-</details>
-<details open>
-<summary>
-<span class="status-icon status-fail">✗</span> Escape 5
-</summary>
-<div class="test-content">
-<div class="code-grid">
-<div>
-<h4>Code</h4>
-<pre><code class="language-plume">
-a\F
-
-</code></pre>
-</div>
-<div>
-<h4>Bytecode</h4>
-<pre><code class="language-bytecode"><span class="bc-line-num">001</span> <span class="bc-opcode">ENTER_SCOPE     </span> <span class="bc-arg">0 0</span> <span class="bc-info">; a</span>
-<span class="bc-line-num">002</span> <span class="bc-opcode">BEGIN_ACC       </span> <span class="bc-arg">0 0</span> <span class="bc-info">; a</span>
-<span class="bc-line-num">003</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 1</span> <span class="bc-info">; a</span>
-<span class="bc-line-num">004</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 2</span> <span class="bc-info">; F</span>
-<span class="bc-line-num">005</span> <span class="bc-opcode">ACC_TEXT        </span> <span class="bc-arg">0 0</span>
-<span class="bc-line-num">006</span> <span class="bc-opcode">END             </span> <span class="bc-arg">0 0</span></code></pre>
-</div>
-</div>
-<div class="comparison-grid">
-<h4>Expected</h4>
-<h4>Obtained</h4>
-<div><div class="result-type-header result-type-mismatch">Output</div><pre><code><span class="diff-expected">aF</span></code></pre></div>
-<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/acc.lua:22: attempt to perform arithmetic on global &#39;msfp&#39; (a nil value)</span></code></pre></div>
-</div>
-</div>
-</details>
-<details open>
-<summary>
-<span class="status-icon status-fail">✗</span> No space capture 1
-</summary>
-<div class="test-content">
-<div class="code-grid">
-<div>
-<h4>Code</h4>
-<pre><code class="language-plume">
-quill
-mark
-
-</code></pre>
-</div>
-<div>
-<h4>Bytecode</h4>
-<pre><code class="language-bytecode"><span class="bc-line-num">001</span> <span class="bc-opcode">ENTER_SCOPE     </span> <span class="bc-arg">0 0</span> <span class="bc-info">; q</span>
-<span class="bc-line-num">002</span> <span class="bc-opcode">BEGIN_ACC       </span> <span class="bc-arg">0 0</span> <span class="bc-info">; q</span>
-<span class="bc-line-num">003</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 1</span> <span class="bc-info">; quill</span>
-<span class="bc-line-num">004</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 2</span> <span class="bc-info">; mark</span>
-<span class="bc-line-num">005</span> <span class="bc-opcode">ACC_TEXT        </span> <span class="bc-arg">0 0</span>
-<span class="bc-line-num">006</span> <span class="bc-opcode">END             </span> <span class="bc-arg">0 0</span></code></pre>
-</div>
-</div>
-<div class="comparison-grid">
-<h4>Expected</h4>
-<h4>Obtained</h4>
-<div><div class="result-type-header result-type-mismatch">Output</div><pre><code><span class="diff-expected">quillmark</span></code></pre></div>
-<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/acc.lua:22: attempt to perform arithmetic on global &#39;msfp&#39; (a nil value)</span></code></pre></div>
-</div>
-</div>
-</details>
-<details open>
-<summary>
-<span class="status-icon status-fail">✗</span> No space capture 2
-</summary>
-<div class="test-content">
-<div class="code-grid">
-<div>
-<h4>Code</h4>
-<pre><code class="language-plume">
-    quill
-         mark
-
-</code></pre>
-</div>
-<div>
-<h4>Bytecode</h4>
-<pre><code class="language-bytecode"><span class="bc-line-num">001</span> <span class="bc-opcode">ENTER_SCOPE     </span> <span class="bc-arg">0 0</span> <span class="bc-info">;  </span>
-<span class="bc-line-num">002</span> <span class="bc-opcode">BEGIN_ACC       </span> <span class="bc-arg">0 0</span> <span class="bc-info">;  </span>
-<span class="bc-line-num">003</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 1</span> <span class="bc-info">; quill</span>
-<span class="bc-line-num">004</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 2</span> <span class="bc-info">; mark</span>
-<span class="bc-line-num">005</span> <span class="bc-opcode">ACC_TEXT        </span> <span class="bc-arg">0 0</span>
-<span class="bc-line-num">006</span> <span class="bc-opcode">END             </span> <span class="bc-arg">0 0</span></code></pre>
-</div>
-</div>
-<div class="comparison-grid">
-<h4>Expected</h4>
-<h4>Obtained</h4>
-<div><div class="result-type-header result-type-mismatch">Output</div><pre><code><span class="diff-expected">quillmark</span></code></pre></div>
-<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/acc.lua:22: attempt to perform arithmetic on global &#39;msfp&#39; (a nil value)</span></code></pre></div>
-</div>
-</div>
-</details>
-<details open>
-<summary>
-<span class="status-icon status-fail">✗</span> Raw space 1
-</summary>
-<div class="test-content">
-<div class="code-grid">
-<div>
-<h4>Code</h4>
-<pre><code class="language-plume">
-quill\smark
-
-</code></pre>
-</div>
-<div>
-<h4>Bytecode</h4>
-<pre><code class="language-bytecode"><span class="bc-line-num">001</span> <span class="bc-opcode">ENTER_SCOPE     </span> <span class="bc-arg">0 0</span> <span class="bc-info">; q</span>
-<span class="bc-line-num">002</span> <span class="bc-opcode">BEGIN_ACC       </span> <span class="bc-arg">0 0</span> <span class="bc-info">; q</span>
-<span class="bc-line-num">003</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 1</span> <span class="bc-info">; quill</span>
-<span class="bc-line-num">004</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 2</span>
-<span class="bc-line-num">005</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 3</span> <span class="bc-info">; mark</span>
-<span class="bc-line-num">006</span> <span class="bc-opcode">ACC_TEXT        </span> <span class="bc-arg">0 0</span>
-<span class="bc-line-num">007</span> <span class="bc-opcode">END             </span> <span class="bc-arg">0 0</span></code></pre>
-</div>
-</div>
-<div class="comparison-grid">
-<h4>Expected</h4>
-<h4>Obtained</h4>
-<div><div class="result-type-header result-type-mismatch">Output</div><pre><code><span class="diff-expected">quill mark</span></code></pre></div>
-<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/acc.lua:22: attempt to perform arithmetic on global &#39;msfp&#39; (a nil value)</span></code></pre></div>
-</div>
-</div>
-</details>
-<details open>
-<summary>
-<span class="status-icon status-fail">✗</span> Raw space 2
-</summary>
-<div class="test-content">
-<div class="code-grid">
-<div>
-<h4>Code</h4>
-<pre><code class="language-plume">
-quill\nmark
-
-</code></pre>
-</div>
-<div>
-<h4>Bytecode</h4>
-<pre><code class="language-bytecode"><span class="bc-line-num">001</span> <span class="bc-opcode">ENTER_SCOPE     </span> <span class="bc-arg">0 0</span> <span class="bc-info">; q</span>
-<span class="bc-line-num">002</span> <span class="bc-opcode">BEGIN_ACC       </span> <span class="bc-arg">0 0</span> <span class="bc-info">; q</span>
-<span class="bc-line-num">003</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 1</span> <span class="bc-info">; quill</span>
-<span class="bc-line-num">004</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 2</span>
-<span class="bc-line-num">005</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 3</span> <span class="bc-info">; mark</span>
-<span class="bc-line-num">006</span> <span class="bc-opcode">ACC_TEXT        </span> <span class="bc-arg">0 0</span>
-<span class="bc-line-num">007</span> <span class="bc-opcode">END             </span> <span class="bc-arg">0 0</span></code></pre>
-</div>
-</div>
-<div class="comparison-grid">
-<h4>Expected</h4>
-<h4>Obtained</h4>
-<div><div class="result-type-header result-type-mismatch">Output</div><pre><code><span class="diff-expected">quill
-mark</span></code></pre></div>
-<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/acc.lua:22: attempt to perform arithmetic on global &#39;msfp&#39; (a nil value)</span></code></pre></div>
-</div>
-</div>
-</details>
-<details open>
-<summary>
-<span class="status-icon status-fail">✗</span> Raw space 3
-</summary>
-<div class="test-content">
-<div class="code-grid">
-<div>
-<h4>Code</h4>
-<pre><code class="language-plume">
-\tquill
-
-</code></pre>
-</div>
-<div>
-<h4>Bytecode</h4>
-<pre><code class="language-bytecode"><span class="bc-line-num">001</span> <span class="bc-opcode">ENTER_SCOPE     </span> <span class="bc-arg">0 0</span> <span class="bc-info">; \</span>
-<span class="bc-line-num">002</span> <span class="bc-opcode">BEGIN_ACC       </span> <span class="bc-arg">0 0</span> <span class="bc-info">; \</span>
-<span class="bc-line-num">003</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 1</span>
-<span class="bc-line-num">004</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 2</span> <span class="bc-info">; quill</span>
-<span class="bc-line-num">005</span> <span class="bc-opcode">ACC_TEXT        </span> <span class="bc-arg">0 0</span>
-<span class="bc-line-num">006</span> <span class="bc-opcode">END             </span> <span class="bc-arg">0 0</span></code></pre>
-</div>
-</div>
-<div class="comparison-grid">
-<h4>Expected</h4>
-<h4>Obtained</h4>
-<div><div class="result-type-header result-type-mismatch">Output</div><pre><code><span class="diff-expected">quill</span></code></pre></div>
-<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/acc.lua:22: attempt to perform arithmetic on global &#39;msfp&#39; (a nil value)</span></code></pre></div>
-</div>
-</div>
-</details>
-<details>
-<summary>
-<span class="status-icon status-pass">✓</span> Escape 4
-</summary>
-<div class="test-content">
-<div class="code-grid">
-<div>
-<h4>Code</h4>
-<pre><code class="language-plume">
-\F
-
-</code></pre>
-</div>
-<div>
-<h4>Bytecode</h4>
-<pre><code class="language-bytecode"><span class="bc-line-num">001</span> <span class="bc-opcode">ENTER_SCOPE     </span> <span class="bc-arg">0 0</span> <span class="bc-info">; \</span>
-<span class="bc-line-num">002</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 1</span> <span class="bc-info">; F</span>
-<span class="bc-line-num">003</span> <span class="bc-opcode">END             </span> <span class="bc-arg">0 0</span></code></pre>
-</div>
-</div>
-<h4>Output</h4>
-<pre><code>
-F
-</code></pre>
-</div>
-</details>
-<details>
-<summary>
-<span class="status-icon status-pass">✓</span> Simple tewritet
-</summary>
-<div class="test-content">
-<div class="code-grid">
-<div>
-<h4>Code</h4>
-<pre><code class="language-plume">
-quill
-
-</code></pre>
-</div>
-<div>
-<h4>Bytecode</h4>
-<pre><code class="language-bytecode"><span class="bc-line-num">001</span> <span class="bc-opcode">ENTER_SCOPE     </span> <span class="bc-arg">0 0</span> <span class="bc-info">; q</span>
-<span class="bc-line-num">002</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 1</span> <span class="bc-info">; quill</span>
-<span class="bc-line-num">003</span> <span class="bc-opcode">END             </span> <span class="bc-arg">0 0</span></code></pre>
-</div>
-</div>
-<h4>Output</h4>
-<pre><code>
-quill
-</code></pre>
-</div>
-</details>
-<details>
-<summary>
-<span class="status-icon status-pass">✓</span> Space capture 1
-</summary>
-<div class="test-content">
-<div class="code-grid">
-<div>
-<h4>Code</h4>
-<pre><code class="language-plume">
-quill mark
-
-</code></pre>
-</div>
-<div>
-<h4>Bytecode</h4>
-<pre><code class="language-bytecode"><span class="bc-line-num">001</span> <span class="bc-opcode">ENTER_SCOPE     </span> <span class="bc-arg">0 0</span> <span class="bc-info">; q</span>
-<span class="bc-line-num">002</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 1</span> <span class="bc-info">; quill mark</span>
-<span class="bc-line-num">003</span> <span class="bc-opcode">END             </span> <span class="bc-arg">0 0</span></code></pre>
-</div>
-</div>
-<h4>Output</h4>
-<pre><code>
-quill mark
-</code></pre>
-</div>
-</details>
-<details>
-<summary>
-<span class="status-icon status-pass">✓</span> Space capture 2
-</summary>
-<div class="test-content">
-<div class="code-grid">
-<div>
-<h4>Code</h4>
-<pre><code class="language-plume">
-quill  mark
-
-</code></pre>
-</div>
-<div>
-<h4>Bytecode</h4>
-<pre><code class="language-bytecode"><span class="bc-line-num">001</span> <span class="bc-opcode">ENTER_SCOPE     </span> <span class="bc-arg">0 0</span> <span class="bc-info">; q</span>
-<span class="bc-line-num">002</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 1</span> <span class="bc-info">; quill  mark</span>
-<span class="bc-line-num">003</span> <span class="bc-opcode">END             </span> <span class="bc-arg">0 0</span></code></pre>
-</div>
-</div>
-<h4>Output</h4>
-<pre><code>
-quill  mark
-</code></pre>
 </div>
 </details>
 <h2>branchs: <span style="font-weight: normal;"><span class="fail-count">8</span> failed out of 8 tests</span></h2>
@@ -9685,7 +9284,7 @@ end
 <h4>Expected</h4>
 <h4>Obtained</h4>
 <div><div class="result-type-header result-type-mismatch">Output</div><pre><code></code></pre></div>
-<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/store.lua:22: attempt to index global &#39;vsf&#39; (a nil value)</span></code></pre></div>
+<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/alu.lua:179: attempt to perform arithmetic on global &#39;msp&#39; (a nil value)</span></code></pre></div>
 </div>
 </div>
 </details>
@@ -9725,7 +9324,7 @@ end
 <h4>Expected</h4>
 <h4>Obtained</h4>
 <div><div class="result-type-header result-type-mismatch">Output</div><pre><code><span class="diff-expected">quill</span></code></pre></div>
-<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/store.lua:22: attempt to index global &#39;vsf&#39; (a nil value)</span></code></pre></div>
+<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/alu.lua:179: attempt to perform arithmetic on global &#39;msp&#39; (a nil value)</span></code></pre></div>
 </div>
 </div>
 </details>
@@ -9767,7 +9366,7 @@ end
 <h4>Expected</h4>
 <h4>Obtained</h4>
 <div><div class="result-type-header result-type-mismatch">Output</div><pre><code><span class="diff-expected">mark</span></code></pre></div>
-<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/store.lua:22: attempt to index global &#39;vsf&#39; (a nil value)</span></code></pre></div>
+<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/alu.lua:179: attempt to perform arithmetic on global &#39;msp&#39; (a nil value)</span></code></pre></div>
 </div>
 </div>
 </details>
@@ -9809,7 +9408,7 @@ end
 <h4>Expected</h4>
 <h4>Obtained</h4>
 <div><div class="result-type-header result-type-mismatch">Output</div><pre><code><span class="diff-expected">quill</span></code></pre></div>
-<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/store.lua:22: attempt to index global &#39;vsf&#39; (a nil value)</span></code></pre></div>
+<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/alu.lua:179: attempt to perform arithmetic on global &#39;msp&#39; (a nil value)</span></code></pre></div>
 </div>
 </div>
 </details>
@@ -9867,7 +9466,7 @@ end
 <h4>Expected</h4>
 <h4>Obtained</h4>
 <div><div class="result-type-header result-type-mismatch">Output</div><pre><code><span class="diff-expected">quill</span></code></pre></div>
-<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/store.lua:22: attempt to index global &#39;vsf&#39; (a nil value)</span></code></pre></div>
+<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/alu.lua:272: attempt to perform arithmetic on global &#39;msp&#39; (a nil value)</span></code></pre></div>
 </div>
 </div>
 </details>
@@ -9925,7 +9524,7 @@ end
 <h4>Expected</h4>
 <h4>Obtained</h4>
 <div><div class="result-type-header result-type-mismatch">Output</div><pre><code><span class="diff-expected">mark</span></code></pre></div>
-<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/store.lua:22: attempt to index global &#39;vsf&#39; (a nil value)</span></code></pre></div>
+<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/alu.lua:272: attempt to perform arithmetic on global &#39;msp&#39; (a nil value)</span></code></pre></div>
 </div>
 </div>
 </details>
@@ -9983,7 +9582,7 @@ end
 <h4>Expected</h4>
 <h4>Obtained</h4>
 <div><div class="result-type-header result-type-mismatch">Output</div><pre><code><span class="diff-expected">ink</span></code></pre></div>
-<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/store.lua:22: attempt to index global &#39;vsf&#39; (a nil value)</span></code></pre></div>
+<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/alu.lua:272: attempt to perform arithmetic on global &#39;msp&#39; (a nil value)</span></code></pre></div>
 </div>
 </div>
 </details>
@@ -10041,7 +9640,7 @@ end
 <h4>Expected</h4>
 <h4>Obtained</h4>
 <div><div class="result-type-header result-type-mismatch">Output</div><pre><code><span class="diff-expected">???</span></code></pre></div>
-<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/store.lua:22: attempt to index global &#39;vsf&#39; (a nil value)</span></code></pre></div>
+<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/alu.lua:272: attempt to perform arithmetic on global &#39;msp&#39; (a nil value)</span></code></pre></div>
 </div>
 </div>
 </details>
@@ -10095,7 +9694,7 @@ end
 <h4>Expected</h4>
 <h4>Obtained</h4>
 <div><div class="result-type-header result-type-mismatch">Output</div><pre><code><span class="diff-expected">1</span></code></pre></div>
-<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/acc.lua:22: attempt to perform arithmetic on global &#39;msfp&#39; (a nil value)</span></code></pre></div>
+<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/table.lua:21: attempt to perform arithmetic on global &#39;msp&#39; (a nil value)</span></code></pre></div>
 </div>
 </div>
 </details>
@@ -10150,7 +9749,7 @@ end
 <h4>Expected</h4>
 <h4>Obtained</h4>
 <div><div class="result-type-header result-type-mismatch">Output</div><pre><code><span class="diff-expected">13</span></code></pre></div>
-<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/acc.lua:22: attempt to perform arithmetic on global &#39;msfp&#39; (a nil value)</span></code></pre></div>
+<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/alu.lua:221: attempt to perform arithmetic on global &#39;msp&#39; (a nil value)</span></code></pre></div>
 </div>
 </div>
 </details>
@@ -10208,7 +9807,7 @@ end
 <h4>Expected</h4>
 <h4>Obtained</h4>
 <div><div class="result-type-header result-type-mismatch">Output</div><pre><code><span class="diff-expected">13</span></code></pre></div>
-<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/acc.lua:22: attempt to perform arithmetic on global &#39;msfp&#39; (a nil value)</span></code></pre></div>
+<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/table.lua:21: attempt to perform arithmetic on global &#39;msp&#39; (a nil value)</span></code></pre></div>
 </div>
 </div>
 </details>
@@ -10263,7 +9862,7 @@ end
 <h4>Expected</h4>
 <h4>Obtained</h4>
 <div><div class="result-type-header result-type-mismatch">Output</div><pre><code><span class="diff-expected">nib;quill;wing;</span></code></pre></div>
-<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/acc.lua:22: attempt to perform arithmetic on global &#39;msfp&#39; (a nil value)</span></code></pre></div>
+<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/table.lua:21: attempt to perform arithmetic on global &#39;msp&#39; (a nil value)</span></code></pre></div>
 </div>
 </div>
 </details>
@@ -10330,7 +9929,7 @@ end
 <div><div class="result-type-header result-type-mismatch">Output</div><pre><code><span class="diff-expected">A new item: &quot;nib&quot;
 A new item: &quot;quill&quot;
 A new item: &quot;wing&quot;</span></code></pre></div>
-<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/acc.lua:22: attempt to perform arithmetic on global &#39;msfp&#39; (a nil value)</span></code></pre></div>
+<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/table.lua:21: attempt to perform arithmetic on global &#39;msp&#39; (a nil value)</span></code></pre></div>
 </div>
 </div>
 </details>
@@ -10449,7 +10048,7 @@ end
 <h4>Expected</h4>
 <h4>Obtained</h4>
 <div><div class="result-type-header result-type-mismatch">Output</div><pre><code><span class="diff-expected">12345</span></code></pre></div>
-<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/acc.lua:22: attempt to perform arithmetic on global &#39;msfp&#39; (a nil value)</span></code></pre></div>
+<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/table.lua:21: attempt to perform arithmetic on global &#39;msp&#39; (a nil value)</span></code></pre></div>
 </div>
 </div>
 </details>
@@ -10569,7 +10168,7 @@ end
 <h4>Expected</h4>
 <h4>Obtained</h4>
 <div><div class="result-type-header result-type-mismatch">Output</div><pre><code><span class="diff-expected">12345</span></code></pre></div>
-<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/acc.lua:22: attempt to perform arithmetic on global &#39;msfp&#39; (a nil value)</span></code></pre></div>
+<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/store.lua:45: attempt to index global &#39;ms&#39; (a nil value)</span></code></pre></div>
 </div>
 </div>
 </details>
@@ -10621,7 +10220,7 @@ end
 Iterate 2 times...
 Iterate 3 times...
 Iterate 4 times...</span></code></pre></div>
-<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/acc.lua:22: attempt to perform arithmetic on global &#39;msfp&#39; (a nil value)</span></code></pre></div>
+<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/alu.lua:221: attempt to perform arithmetic on global &#39;msp&#39; (a nil value)</span></code></pre></div>
 </div>
 </div>
 </details>
@@ -10794,7 +10393,7 @@ end
 <h4>Expected</h4>
 <h4>Obtained</h4>
 <div><div class="result-type-header result-type-mismatch">Output</div><pre><code><span class="diff-expected">write paint make</span></code></pre></div>
-<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/acc.lua:22: attempt to perform arithmetic on global &#39;msfp&#39; (a nil value)</span></code></pre></div>
+<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/table.lua:21: attempt to perform arithmetic on global &#39;msp&#39; (a nil value)</span></code></pre></div>
 </div>
 </div>
 </details>
@@ -10857,7 +10456,7 @@ end
 <h4>Expected</h4>
 <h4>Obtained</h4>
 <div><div class="result-type-header result-type-mismatch">Output</div><pre><code><span class="diff-expected">ink write paint make quill</span></code></pre></div>
-<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/acc.lua:22: attempt to perform arithmetic on global &#39;msfp&#39; (a nil value)</span></code></pre></div>
+<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/table.lua:21: attempt to perform arithmetic on global &#39;msp&#39; (a nil value)</span></code></pre></div>
 </div>
 </div>
 </details>
@@ -10921,7 +10520,7 @@ $t2.paint
 <h4>Obtained</h4>
 <div><div class="result-type-header result-type-mismatch">Output</div><pre><code><span class="diff-expected">quill
 song</span></code></pre></div>
-<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/acc.lua:22: attempt to perform arithmetic on global &#39;msfp&#39; (a nil value)</span></code></pre></div>
+<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/table.lua:21: attempt to perform arithmetic on global &#39;msp&#39; (a nil value)</span></code></pre></div>
 </div>
 </div>
 </details>
@@ -10993,7 +10592,7 @@ $t2.paint
 <h4>Obtained</h4>
 <div><div class="result-type-header result-type-mismatch">Output</div><pre><code><span class="diff-expected">quill
 words</span></code></pre></div>
-<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/acc.lua:22: attempt to perform arithmetic on global &#39;msfp&#39; (a nil value)</span></code></pre></div>
+<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/table.lua:21: attempt to perform arithmetic on global &#39;msp&#39; (a nil value)</span></code></pre></div>
 </div>
 </div>
 </details>
@@ -11079,7 +10678,7 @@ $wing(...t)
 <h4>Expected</h4>
 <h4>Obtained</h4>
 <div><div class="result-type-header result-type-mismatch">Output</div><pre><code><span class="diff-expected">write - paint - song - mark</span></code></pre></div>
-<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/acc.lua:22: attempt to perform arithmetic on global &#39;msfp&#39; (a nil value)</span></code></pre></div>
+<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/table.lua:21: attempt to perform arithmetic on global &#39;msp&#39; (a nil value)</span></code></pre></div>
 </div>
 </div>
 </details>
@@ -11118,7 +10717,7 @@ $t[1]
 <h4>Expected</h4>
 <h4>Obtained</h4>
 <div><div class="result-type-header result-type-mismatch">Output</div><pre><code><span class="diff-expected">mark</span></code></pre></div>
-<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/acc.lua:22: attempt to perform arithmetic on global &#39;msfp&#39; (a nil value)</span></code></pre></div>
+<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/table.lua:21: attempt to perform arithmetic on global &#39;msp&#39; (a nil value)</span></code></pre></div>
 </div>
 </div>
 </details>
@@ -11176,7 +10775,7 @@ $t[1]
 <h4>Obtained</h4>
 <div><div class="result-type-header result-type-mismatch">Output</div><pre><code><span class="diff-expected">write
 mark</span></code></pre></div>
-<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/acc.lua:22: attempt to perform arithmetic on global &#39;msfp&#39; (a nil value)</span></code></pre></div>
+<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/table.lua:21: attempt to perform arithmetic on global &#39;msp&#39; (a nil value)</span></code></pre></div>
 </div>
 </div>
 </details>
@@ -11220,7 +10819,7 @@ $t[1]
 <h4>Expected</h4>
 <h4>Obtained</h4>
 <div><div class="result-type-header result-type-mismatch">Output</div><pre><code><span class="diff-expected">wing</span></code></pre></div>
-<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/acc.lua:22: attempt to perform arithmetic on global &#39;msfp&#39; (a nil value)</span></code></pre></div>
+<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/table.lua:21: attempt to perform arithmetic on global &#39;msp&#39; (a nil value)</span></code></pre></div>
 </div>
 </div>
 </details>
@@ -11282,7 +10881,7 @@ $(t+1)
 Traceback (most recent call first):
   File &#39;meta wrong parameter number 1&#39;, line 1: let t = @table
                                                         ^^^^^^</span></code></pre></div>
-<div><div class="result-type-header">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/acc.lua:22: attempt to perform arithmetic on global &#39;msfp&#39; (a nil value)</span></code></pre></div>
+<div><div class="result-type-header">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/table.lua:21: attempt to perform arithmetic on global &#39;msp&#39; (a nil value)</span></code></pre></div>
 </div>
 </div>
 </details>
@@ -11342,7 +10941,7 @@ $(t+1)
 Traceback (most recent call first):
   File &#39;meta wrong parameter number 2&#39;, line 1: let t = @table
                                                         ^^^^^^</span></code></pre></div>
-<div><div class="result-type-header">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/acc.lua:22: attempt to perform arithmetic on global &#39;msfp&#39; (a nil value)</span></code></pre></div>
+<div><div class="result-type-header">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/table.lua:21: attempt to perform arithmetic on global &#39;msp&#39; (a nil value)</span></code></pre></div>
 </div>
 </div>
 </details>
@@ -11406,7 +11005,7 @@ $(t+1)
 Traceback (most recent call first):
   File &#39;meta wrong parameter number 3&#39;, line 1: let t = @table
                                                         ^^^^^^</span></code></pre></div>
-<div><div class="result-type-header">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/acc.lua:22: attempt to perform arithmetic on global &#39;msfp&#39; (a nil value)</span></code></pre></div>
+<div><div class="result-type-header">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/table.lua:21: attempt to perform arithmetic on global &#39;msp&#39; (a nil value)</span></code></pre></div>
 </div>
 </div>
 </details>
@@ -11472,7 +11071,7 @@ $t(1)
 Traceback (most recent call first):
   File &#39;meta wrong parameter number 4&#39;, line 7: $t(1)
                                                  ^^^^</span></code></pre></div>
-<div><div class="result-type-header">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/acc.lua:22: attempt to perform arithmetic on global &#39;msfp&#39; (a nil value)</span></code></pre></div>
+<div><div class="result-type-header">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/table.lua:21: attempt to perform arithmetic on global &#39;msp&#39; (a nil value)</span></code></pre></div>
 </div>
 </div>
 </details>
@@ -11539,7 +11138,7 @@ Traceback (most recent call first):
     ...
   File &#39;stack overflow&#39;, line 7: $(t+1)
                                    ^^^</span></code></pre></div>
-<div><div class="result-type-header">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/acc.lua:22: attempt to perform arithmetic on global &#39;msfp&#39; (a nil value)</span></code></pre></div>
+<div><div class="result-type-header">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/table.lua:21: attempt to perform arithmetic on global &#39;msp&#39; (a nil value)</span></code></pre></div>
 </div>
 </div>
 </details>
@@ -11594,7 +11193,7 @@ end
 Traceback (most recent call first):
   File &#39;unknow meta&#39;, line 1: let t = @table
                                       ^^^^^^</span></code></pre></div>
-<div><div class="result-type-header">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/acc.lua:22: attempt to perform arithmetic on global &#39;msfp&#39; (a nil value)</span></code></pre></div>
+<div><div class="result-type-header">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/table.lua:21: attempt to perform arithmetic on global &#39;msp&#39; (a nil value)</span></code></pre></div>
 </div>
 </div>
 </details>
@@ -11664,7 +11263,7 @@ end
 <h4>Expected</h4>
 <h4>Obtained</h4>
 <div><div class="result-type-header result-type-mismatch">Output</div><pre><code><span class="diff-expected">Write &quot;paint the quill&quot;</span></code></pre></div>
-<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/acc.lua:22: attempt to perform arithmetic on global &#39;msfp&#39; (a nil value)</span></code></pre></div>
+<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/table.lua:21: attempt to perform arithmetic on global &#39;msp&#39; (a nil value)</span></code></pre></div>
 </div>
 </div>
 </details>
@@ -11720,7 +11319,7 @@ $t[1]()
 <h4>Expected</h4>
 <h4>Obtained</h4>
 <div><div class="result-type-header result-type-mismatch">Output</div><pre><code><span class="diff-expected">mark</span></code></pre></div>
-<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/acc.lua:22: attempt to perform arithmetic on global &#39;msfp&#39; (a nil value)</span></code></pre></div>
+<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/table.lua:21: attempt to perform arithmetic on global &#39;msp&#39; (a nil value)</span></code></pre></div>
 </div>
 </div>
 </details>
@@ -11778,7 +11377,7 @@ $t.quill()
 <h4>Expected</h4>
 <h4>Obtained</h4>
 <div><div class="result-type-header result-type-mismatch">Output</div><pre><code><span class="diff-expected">mark</span></code></pre></div>
-<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/acc.lua:22: attempt to perform arithmetic on global &#39;msfp&#39; (a nil value)</span></code></pre></div>
+<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/table.lua:21: attempt to perform arithmetic on global &#39;msp&#39; (a nil value)</span></code></pre></div>
 </div>
 </div>
 </details>
@@ -11841,7 +11440,7 @@ $t[1]()
 <h4>Expected</h4>
 <h4>Obtained</h4>
 <div><div class="result-type-header result-type-mismatch">Output</div><pre><code><span class="diff-expected">song</span></code></pre></div>
-<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/acc.lua:22: attempt to perform arithmetic on global &#39;msfp&#39; (a nil value)</span></code></pre></div>
+<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/table.lua:21: attempt to perform arithmetic on global &#39;msp&#39; (a nil value)</span></code></pre></div>
 </div>
 </div>
 </details>
@@ -11906,7 +11505,7 @@ $t.quill()
 <h4>Expected</h4>
 <h4>Obtained</h4>
 <div><div class="result-type-header result-type-mismatch">Output</div><pre><code><span class="diff-expected">song</span></code></pre></div>
-<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/acc.lua:22: attempt to perform arithmetic on global &#39;msfp&#39; (a nil value)</span></code></pre></div>
+<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/table.lua:21: attempt to perform arithmetic on global &#39;msp&#39; (a nil value)</span></code></pre></div>
 </div>
 </div>
 </details>
@@ -11986,7 +11585,7 @@ $obj.wings
 <h4>Expected</h4>
 <h4>Obtained</h4>
 <div><div class="result-type-header result-type-mismatch">Output</div><pre><code><span class="diff-expected">quill</span></code></pre></div>
-<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/acc.lua:22: attempt to perform arithmetic on global &#39;msfp&#39; (a nil value)</span></code></pre></div>
+<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/table.lua:21: attempt to perform arithmetic on global &#39;msp&#39; (a nil value)</span></code></pre></div>
 </div>
 </div>
 </details>
@@ -12045,7 +11644,7 @@ end
 <h4>Expected</h4>
 <h4>Obtained</h4>
 <div><div class="result-type-header result-type-mismatch">Output</div><pre><code><span class="diff-expected">wing wing</span></code></pre></div>
-<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/store.lua:41: attempt to index global &#39;ms&#39; (a nil value)</span></code></pre></div>
+<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/store.lua:45: attempt to index global &#39;ms&#39; (a nil value)</span></code></pre></div>
 </div>
 </div>
 </details>
@@ -12104,7 +11703,7 @@ end
 <h4>Expected</h4>
 <h4>Obtained</h4>
 <div><div class="result-type-header result-type-mismatch">Output</div><pre><code><span class="diff-expected">ink quill</span></code></pre></div>
-<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/store.lua:41: attempt to index global &#39;ms&#39; (a nil value)</span></code></pre></div>
+<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/store.lua:45: attempt to index global &#39;ms&#39; (a nil value)</span></code></pre></div>
 </div>
 </div>
 </details>
@@ -12162,7 +11761,7 @@ end
 <h4>Expected</h4>
 <h4>Obtained</h4>
 <div><div class="result-type-header result-type-mismatch">Output</div><pre><code><span class="diff-expected">quill Bar</span></code></pre></div>
-<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/store.lua:41: attempt to index global &#39;ms&#39; (a nil value)</span></code></pre></div>
+<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/store.lua:45: attempt to index global &#39;ms&#39; (a nil value)</span></code></pre></div>
 </div>
 </div>
 </details>
@@ -12220,7 +11819,7 @@ end
 <h4>Expected</h4>
 <h4>Obtained</h4>
 <div><div class="result-type-header result-type-mismatch">Output</div><pre><code><span class="diff-expected">quill Bar</span></code></pre></div>
-<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/store.lua:41: attempt to index global &#39;ms&#39; (a nil value)</span></code></pre></div>
+<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/store.lua:45: attempt to index global &#39;ms&#39; (a nil value)</span></code></pre></div>
 </div>
 </div>
 </details>
@@ -12288,7 +11887,7 @@ end
 <h4>Expected</h4>
 <h4>Obtained</h4>
 <div><div class="result-type-header result-type-mismatch">Output</div><pre><code><span class="diff-expected">quill Bar baz</span></code></pre></div>
-<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/store.lua:41: attempt to index global &#39;ms&#39; (a nil value)</span></code></pre></div>
+<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/store.lua:45: attempt to index global &#39;ms&#39; (a nil value)</span></code></pre></div>
 </div>
 </div>
 </details>
@@ -12370,7 +11969,7 @@ end
 <div><div class="result-type-header result-type-mismatch">Output</div><pre><code><span class="diff-expected">Item 1 is quill.
 Item 2 is wing.
 Item 3 is bird.</span></code></pre></div>
-<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/acc.lua:22: attempt to perform arithmetic on global &#39;msfp&#39; (a nil value)</span></code></pre></div>
+<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/table.lua:21: attempt to perform arithmetic on global &#39;msp&#39; (a nil value)</span></code></pre></div>
 </div>
 </div>
 </details>
@@ -12456,7 +12055,7 @@ end
 <div><div class="result-type-header result-type-mismatch">Output</div><pre><code><span class="diff-expected">Item &quot;first&quot; is _(quill)_.
 Item &quot;second&quot; is _(wing)_.
 Item &quot;bonus&quot; is _(bird)_.</span></code></pre></div>
-<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/acc.lua:22: attempt to perform arithmetic on global &#39;msfp&#39; (a nil value)</span></code></pre></div>
+<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/table.lua:21: attempt to perform arithmetic on global &#39;msp&#39; (a nil value)</span></code></pre></div>
 </div>
 </div>
 </details>
@@ -12499,7 +12098,7 @@ $double(3)
 <h4>Expected</h4>
 <h4>Obtained</h4>
 <div><div class="result-type-header result-type-mismatch">Output</div><pre><code><span class="diff-expected">6</span></code></pre></div>
-<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/acc.lua:22: attempt to perform arithmetic on global &#39;msfp&#39; (a nil value)</span></code></pre></div>
+<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/table.lua:21: attempt to perform arithmetic on global &#39;msp&#39; (a nil value)</span></code></pre></div>
 </div>
 </div>
 </details>
@@ -12566,7 +12165,7 @@ $len($t)
 <h4>Obtained</h4>
 <div><div class="result-type-header result-type-mismatch">Output</div><pre><code><span class="diff-expected">2
 3</span></code></pre></div>
-<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/acc.lua:22: attempt to perform arithmetic on global &#39;msfp&#39; (a nil value)</span></code></pre></div>
+<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/table.lua:21: attempt to perform arithmetic on global &#39;msp&#39; (a nil value)</span></code></pre></div>
 </div>
 </div>
 </details>
@@ -12634,7 +12233,7 @@ $len($t)
 <div><div class="result-type-header result-type-mismatch">Output</div><pre><code><span class="diff-expected">2
 Nib
 1</span></code></pre></div>
-<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/acc.lua:22: attempt to perform arithmetic on global &#39;msfp&#39; (a nil value)</span></code></pre></div>
+<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/table.lua:21: attempt to perform arithmetic on global &#39;msp&#39; (a nil value)</span></code></pre></div>
 </div>
 </div>
 </details>
@@ -12673,7 +12272,7 @@ $(write+1) // 1 is a number
 <h4>Expected</h4>
 <h4>Obtained</h4>
 <div><div class="result-type-header result-type-mismatch">Output</div><pre><code><span class="diff-expected">2</span></code></pre></div>
-<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/acc.lua:22: attempt to perform arithmetic on global &#39;msfp&#39; (a nil value)</span></code></pre></div>
+<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/alu.lua:122: attempt to perform arithmetic on global &#39;msp&#39; (a nil value)</span></code></pre></div>
 </div>
 </div>
 </details>
@@ -12709,7 +12308,7 @@ $(write+paint)
 <h4>Expected</h4>
 <h4>Obtained</h4>
 <div><div class="result-type-header result-type-mismatch">Output</div><pre><code><span class="diff-expected">2</span></code></pre></div>
-<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/store.lua:22: attempt to index global &#39;vsf&#39; (a nil value)</span></code></pre></div>
+<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/alu.lua:122: attempt to perform arithmetic on global &#39;msp&#39; (a nil value)</span></code></pre></div>
 </div>
 </div>
 </details>
@@ -12747,7 +12346,7 @@ $type($write)
 <h4>Expected</h4>
 <h4>Obtained</h4>
 <div><div class="result-type-header result-type-mismatch">Output</div><pre><code><span class="diff-expected">table</span></code></pre></div>
-<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/acc.lua:22: attempt to perform arithmetic on global &#39;msfp&#39; (a nil value)</span></code></pre></div>
+<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/table.lua:21: attempt to perform arithmetic on global &#39;msp&#39; (a nil value)</span></code></pre></div>
 </div>
 </div>
 </details>
@@ -12839,7 +12438,7 @@ end
 <h4>Expected</h4>
 <h4>Obtained</h4>
 <div><div class="result-type-header result-type-mismatch">Output</div><pre><code></code></pre></div>
-<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/load.lua:27: attempt to perform arithmetic on global &#39;msp&#39; (a nil value)</span></code></pre></div>
+<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/load.lua:44: attempt to perform arithmetic on global &#39;msp&#39; (a nil value)</span></code></pre></div>
 </div>
 </div>
 </details>
@@ -12872,7 +12471,7 @@ Nib$(empty)Ink
 <h4>Expected</h4>
 <h4>Obtained</h4>
 <div><div class="result-type-header result-type-mismatch">Output</div><pre><code><span class="diff-expected">NibInk</span></code></pre></div>
-<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/acc.lua:22: attempt to perform arithmetic on global &#39;msfp&#39; (a nil value)</span></code></pre></div>
+<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/load.lua:44: attempt to perform arithmetic on global &#39;msp&#39; (a nil value)</span></code></pre></div>
 </div>
 </div>
 </details>
@@ -12907,7 +12506,7 @@ end
 <h4>Expected</h4>
 <h4>Obtained</h4>
 <div><div class="result-type-header result-type-mismatch">Output</div><pre><code></code></pre></div>
-<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/load.lua:43: attempt to perform arithmetic on global &#39;msp&#39; (a nil value)</span></code></pre></div>
+<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/load.lua:60: attempt to perform arithmetic on global &#39;msp&#39; (a nil value)</span></code></pre></div>
 </div>
 </div>
 </details>
@@ -12942,7 +12541,7 @@ end
 <h4>Expected</h4>
 <h4>Obtained</h4>
 <div><div class="result-type-header result-type-mismatch">Output</div><pre><code><span class="diff-expected">Nib</span></code></pre></div>
-<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/load.lua:35: attempt to perform arithmetic on global &#39;msp&#39; (a nil value)</span></code></pre></div>
+<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/load.lua:52: attempt to perform arithmetic on global &#39;msp&#39; (a nil value)</span></code></pre></div>
 </div>
 </div>
 </details>
@@ -12976,7 +12575,7 @@ $lua.math.pi
 <h4>Expected</h4>
 <h4>Obtained</h4>
 <div><div class="result-type-header result-type-mismatch">Output</div><pre><code><span class="diff-expected">3.1415926535898</span></code></pre></div>
-<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/load.lua:73: attempt to perform arithmetic on global &#39;msp&#39; (a nil value)</span></code></pre></div>
+<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/load.lua:81: attempt to perform arithmetic on global &#39;msp&#39; (a nil value)</span></code></pre></div>
 </div>
 </div>
 </details>
@@ -13012,7 +12611,7 @@ $lua.math.sin(0)
 <h4>Expected</h4>
 <h4>Obtained</h4>
 <div><div class="result-type-header result-type-mismatch">Output</div><pre><code><span class="diff-expected">0</span></code></pre></div>
-<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/acc.lua:22: attempt to perform arithmetic on global &#39;msfp&#39; (a nil value)</span></code></pre></div>
+<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/table.lua:21: attempt to perform arithmetic on global &#39;msp&#39; (a nil value)</span></code></pre></div>
 </div>
 </div>
 </details>
@@ -13049,7 +12648,7 @@ $lua.math.max(1, 2)
 <h4>Expected</h4>
 <h4>Obtained</h4>
 <div><div class="result-type-header result-type-mismatch">Output</div><pre><code><span class="diff-expected">2</span></code></pre></div>
-<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/acc.lua:22: attempt to perform arithmetic on global &#39;msfp&#39; (a nil value)</span></code></pre></div>
+<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/table.lua:21: attempt to perform arithmetic on global &#39;msp&#39; (a nil value)</span></code></pre></div>
 </div>
 </div>
 </details>
@@ -13087,7 +12686,7 @@ $lua.string.gsub(azerty, [ae], .)
 <h4>Expected</h4>
 <h4>Obtained</h4>
 <div><div class="result-type-header result-type-mismatch">Output</div><pre><code><span class="diff-match">.</span><span class="diff-expected">z.rty</span></code></pre></div>
-<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-match">.</span><span class="diff-obtained">\plume-data/engine/vm/acc.lua:22: attempt to perform arithmetic on global &#39;msfp&#39; (a nil value)</span></code></pre></div>
+<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-match">.</span><span class="diff-obtained">\plume-data/engine/vm/table.lua:21: attempt to perform arithmetic on global &#39;msp&#39; (a nil value)</span></code></pre></div>
 </div>
 </div>
 </details>
@@ -13130,7 +12729,7 @@ do $import(tests/plume/toimport/lib)
 <h4>Expected</h4>
 <h4>Obtained</h4>
 <div><div class="result-type-header result-type-mismatch">Output</div><pre><code></code></pre></div>
-<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/acc.lua:22: attempt to perform arithmetic on global &#39;msfp&#39; (a nil value)</span></code></pre></div>
+<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/table.lua:21: attempt to perform arithmetic on global &#39;msp&#39; (a nil value)</span></code></pre></div>
 </div>
 </div>
 </details>
@@ -13184,7 +12783,7 @@ $import(tests/plume/toimport/lib2).wing()
 <h4>Obtained</h4>
 <div><div class="result-type-header result-type-mismatch">Output</div><pre><code><span class="diff-expected">blue quill
 blue quill</span></code></pre></div>
-<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/acc.lua:22: attempt to perform arithmetic on global &#39;msfp&#39; (a nil value)</span></code></pre></div>
+<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/table.lua:21: attempt to perform arithmetic on global &#39;msp&#39; (a nil value)</span></code></pre></div>
 </div>
 </div>
 </details>
@@ -13241,7 +12840,7 @@ $import(tests/plume/toimport/lib2).wing()
 <h4>Obtained</h4>
 <div><div class="result-type-header result-type-mismatch">Output</div><pre><code><span class="diff-expected">blue bigquill
 blue quill</span></code></pre></div>
-<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/acc.lua:22: attempt to perform arithmetic on global &#39;msfp&#39; (a nil value)</span></code></pre></div>
+<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/table.lua:21: attempt to perform arithmetic on global &#39;msp&#39; (a nil value)</span></code></pre></div>
 </div>
 </div>
 </details>
@@ -13306,7 +12905,7 @@ end
 <h4>Expected</h4>
 <h4>Obtained</h4>
 <div><div class="result-type-header result-type-mismatch">Output</div><pre><code></code></pre></div>
-<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/store.lua:41: attempt to index global &#39;ms&#39; (a nil value)</span></code></pre></div>
+<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/store.lua:45: attempt to index global &#39;ms&#39; (a nil value)</span></code></pre></div>
 </div>
 </div>
 </details>
@@ -13367,7 +12966,7 @@ $x
 <h4>Expected</h4>
 <h4>Obtained</h4>
 <div><div class="result-type-header result-type-mismatch">Output</div><pre><code><span class="diff-expected">2</span></code></pre></div>
-<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/store.lua:41: attempt to index global &#39;ms&#39; (a nil value)</span></code></pre></div>
+<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/store.lua:45: attempt to index global &#39;ms&#39; (a nil value)</span></code></pre></div>
 </div>
 </div>
 </details>
@@ -13429,7 +13028,7 @@ $x
 <h4>Expected</h4>
 <h4>Obtained</h4>
 <div><div class="result-type-header result-type-mismatch">Output</div><pre><code><span class="diff-expected">2</span></code></pre></div>
-<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/store.lua:41: attempt to index global &#39;ms&#39; (a nil value)</span></code></pre></div>
+<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/store.lua:45: attempt to index global &#39;ms&#39; (a nil value)</span></code></pre></div>
 </div>
 </div>
 </details>
@@ -13463,7 +13062,7 @@ $import(tests/plume/toimport/param)
 <h4>Expected</h4>
 <h4>Obtained</h4>
 <div><div class="result-type-header result-type-mismatch">Output</div><pre><code><span class="diff-expected">10</span></code></pre></div>
-<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/acc.lua:22: attempt to perform arithmetic on global &#39;msfp&#39; (a nil value)</span></code></pre></div>
+<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/table.lua:21: attempt to perform arithmetic on global &#39;msp&#39; (a nil value)</span></code></pre></div>
 </div>
 </div>
 </details>
@@ -13498,7 +13097,7 @@ $import(tests/plume/toimport/param, x: 5)
 <h4>Expected</h4>
 <h4>Obtained</h4>
 <div><div class="result-type-header result-type-mismatch">Output</div><pre><code><span class="diff-expected">5</span></code></pre></div>
-<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/acc.lua:22: attempt to perform arithmetic on global &#39;msfp&#39; (a nil value)</span></code></pre></div>
+<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/table.lua:21: attempt to perform arithmetic on global &#39;msp&#39; (a nil value)</span></code></pre></div>
 </div>
 </div>
 </details>
@@ -13525,6 +13124,385 @@ let static param x = 4
 Compilation error: Cannot use &#39;static&#39; and &#39;param&#39; together (parameter variable are by default static).
 File &#39;static param&#39;, line 1: let static param x = 4
                              ^^^^^^^^^^^^^^^^^^^^^^
+</code></pre>
+</div>
+</details>
+<h2>text: <span style="font-weight: normal;">12 passed and <span class="fail-count">1</span> failed out of 13 tests</span></h2>
+<div class="progress-bar"><div class="progress-success" style="width: 92.31%"></div><div class="progress-fail" style="width: 7.69%"></div></div>
+<details open>
+<summary>
+<span class="status-icon status-fail">✗</span> Escape 1
+</summary>
+<div class="test-content">
+<div class="code-grid">
+<div>
+<h4>Code</h4>
+<pre><code class="language-plume">
+$(1+1)\$(1+1)
+
+</code></pre>
+</div>
+<div>
+<h4>Bytecode</h4>
+<pre><code class="language-bytecode"><span class="bc-line-num">001</span> <span class="bc-opcode">ENTER_SCOPE     </span> <span class="bc-arg">0 0</span> <span class="bc-info">; $</span>
+<span class="bc-line-num">002</span> <span class="bc-opcode">BEGIN_ACC       </span> <span class="bc-arg">0 0</span> <span class="bc-info">; $</span>
+<span class="bc-line-num">003</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 1</span> <span class="bc-info">; 1</span>
+<span class="bc-line-num">004</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 1</span> <span class="bc-info">; 1</span>
+<span class="bc-line-num">005</span> <span class="bc-opcode">OPP_ADD         </span> <span class="bc-arg">0 0</span> <span class="bc-info">; 1+1</span>
+<span class="bc-line-num">006</span> <span class="bc-opcode">ACC_CHECK_TEXT  </span> <span class="bc-arg">0 0</span> <span class="bc-info">; (1+1)</span>
+<span class="bc-line-num">007</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 2</span> <span class="bc-info">; $</span>
+<span class="bc-line-num">008</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 3</span> <span class="bc-info">; (1+1)</span>
+<span class="bc-line-num">009</span> <span class="bc-opcode">ACC_TEXT        </span> <span class="bc-arg">0 0</span>
+<span class="bc-line-num">010</span> <span class="bc-opcode">END             </span> <span class="bc-arg">0 0</span></code></pre>
+</div>
+</div>
+<div class="comparison-grid">
+<h4>Expected</h4>
+<h4>Obtained</h4>
+<div><div class="result-type-header result-type-mismatch">Output</div><pre><code><span class="diff-expected">2$(1+1)</span></code></pre></div>
+<div><div class="result-type-header result-type-mismatch">Error</div><pre><code><span class="diff-obtained">.\plume-data/engine/vm/alu.lua:122: attempt to perform arithmetic on global &#39;msp&#39; (a nil value)</span></code></pre></div>
+</div>
+</div>
+</details>
+<details>
+<summary>
+<span class="status-icon status-pass">✓</span> Escape 2
+</summary>
+<div class="test-content">
+<div class="code-grid">
+<div>
+<h4>Code</h4>
+<pre><code class="language-plume">
+quill\$(1+1)
+
+</code></pre>
+</div>
+<div>
+<h4>Bytecode</h4>
+<pre><code class="language-bytecode"><span class="bc-line-num">001</span> <span class="bc-opcode">ENTER_SCOPE     </span> <span class="bc-arg">0 0</span> <span class="bc-info">; q</span>
+<span class="bc-line-num">002</span> <span class="bc-opcode">BEGIN_ACC       </span> <span class="bc-arg">0 0</span> <span class="bc-info">; q</span>
+<span class="bc-line-num">003</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 1</span> <span class="bc-info">; quill</span>
+<span class="bc-line-num">004</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 2</span> <span class="bc-info">; $</span>
+<span class="bc-line-num">005</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 3</span> <span class="bc-info">; (1+1)</span>
+<span class="bc-line-num">006</span> <span class="bc-opcode">ACC_TEXT        </span> <span class="bc-arg">0 0</span>
+<span class="bc-line-num">007</span> <span class="bc-opcode">END             </span> <span class="bc-arg">0 0</span></code></pre>
+</div>
+</div>
+<h4>Output</h4>
+<pre><code>
+quill$(1+1)
+</code></pre>
+</div>
+</details>
+<details>
+<summary>
+<span class="status-icon status-pass">✓</span> Escape 3
+</summary>
+<div class="test-content">
+<div class="code-grid">
+<div>
+<h4>Code</h4>
+<pre><code class="language-plume">
+\$(1+1)
+
+</code></pre>
+</div>
+<div>
+<h4>Bytecode</h4>
+<pre><code class="language-bytecode"><span class="bc-line-num">001</span> <span class="bc-opcode">ENTER_SCOPE     </span> <span class="bc-arg">0 0</span> <span class="bc-info">; \</span>
+<span class="bc-line-num">002</span> <span class="bc-opcode">BEGIN_ACC       </span> <span class="bc-arg">0 0</span> <span class="bc-info">; \</span>
+<span class="bc-line-num">003</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 1</span> <span class="bc-info">; $</span>
+<span class="bc-line-num">004</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 2</span> <span class="bc-info">; (1+1)</span>
+<span class="bc-line-num">005</span> <span class="bc-opcode">ACC_TEXT        </span> <span class="bc-arg">0 0</span>
+<span class="bc-line-num">006</span> <span class="bc-opcode">END             </span> <span class="bc-arg">0 0</span></code></pre>
+</div>
+</div>
+<h4>Output</h4>
+<pre><code>
+$(1+1)
+</code></pre>
+</div>
+</details>
+<details>
+<summary>
+<span class="status-icon status-pass">✓</span> Escape 4
+</summary>
+<div class="test-content">
+<div class="code-grid">
+<div>
+<h4>Code</h4>
+<pre><code class="language-plume">
+\F
+
+</code></pre>
+</div>
+<div>
+<h4>Bytecode</h4>
+<pre><code class="language-bytecode"><span class="bc-line-num">001</span> <span class="bc-opcode">ENTER_SCOPE     </span> <span class="bc-arg">0 0</span> <span class="bc-info">; \</span>
+<span class="bc-line-num">002</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 1</span> <span class="bc-info">; F</span>
+<span class="bc-line-num">003</span> <span class="bc-opcode">END             </span> <span class="bc-arg">0 0</span></code></pre>
+</div>
+</div>
+<h4>Output</h4>
+<pre><code>
+F
+</code></pre>
+</div>
+</details>
+<details>
+<summary>
+<span class="status-icon status-pass">✓</span> Escape 5
+</summary>
+<div class="test-content">
+<div class="code-grid">
+<div>
+<h4>Code</h4>
+<pre><code class="language-plume">
+a\F
+
+</code></pre>
+</div>
+<div>
+<h4>Bytecode</h4>
+<pre><code class="language-bytecode"><span class="bc-line-num">001</span> <span class="bc-opcode">ENTER_SCOPE     </span> <span class="bc-arg">0 0</span> <span class="bc-info">; a</span>
+<span class="bc-line-num">002</span> <span class="bc-opcode">BEGIN_ACC       </span> <span class="bc-arg">0 0</span> <span class="bc-info">; a</span>
+<span class="bc-line-num">003</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 1</span> <span class="bc-info">; a</span>
+<span class="bc-line-num">004</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 2</span> <span class="bc-info">; F</span>
+<span class="bc-line-num">005</span> <span class="bc-opcode">ACC_TEXT        </span> <span class="bc-arg">0 0</span>
+<span class="bc-line-num">006</span> <span class="bc-opcode">END             </span> <span class="bc-arg">0 0</span></code></pre>
+</div>
+</div>
+<h4>Output</h4>
+<pre><code>
+aF
+</code></pre>
+</div>
+</details>
+<details>
+<summary>
+<span class="status-icon status-pass">✓</span> No space capture 1
+</summary>
+<div class="test-content">
+<div class="code-grid">
+<div>
+<h4>Code</h4>
+<pre><code class="language-plume">
+quill
+mark
+
+</code></pre>
+</div>
+<div>
+<h4>Bytecode</h4>
+<pre><code class="language-bytecode"><span class="bc-line-num">001</span> <span class="bc-opcode">ENTER_SCOPE     </span> <span class="bc-arg">0 0</span> <span class="bc-info">; q</span>
+<span class="bc-line-num">002</span> <span class="bc-opcode">BEGIN_ACC       </span> <span class="bc-arg">0 0</span> <span class="bc-info">; q</span>
+<span class="bc-line-num">003</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 1</span> <span class="bc-info">; quill</span>
+<span class="bc-line-num">004</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 2</span> <span class="bc-info">; mark</span>
+<span class="bc-line-num">005</span> <span class="bc-opcode">ACC_TEXT        </span> <span class="bc-arg">0 0</span>
+<span class="bc-line-num">006</span> <span class="bc-opcode">END             </span> <span class="bc-arg">0 0</span></code></pre>
+</div>
+</div>
+<h4>Output</h4>
+<pre><code>
+quillmark
+</code></pre>
+</div>
+</details>
+<details>
+<summary>
+<span class="status-icon status-pass">✓</span> No space capture 2
+</summary>
+<div class="test-content">
+<div class="code-grid">
+<div>
+<h4>Code</h4>
+<pre><code class="language-plume">
+    quill
+         mark
+
+</code></pre>
+</div>
+<div>
+<h4>Bytecode</h4>
+<pre><code class="language-bytecode"><span class="bc-line-num">001</span> <span class="bc-opcode">ENTER_SCOPE     </span> <span class="bc-arg">0 0</span> <span class="bc-info">;  </span>
+<span class="bc-line-num">002</span> <span class="bc-opcode">BEGIN_ACC       </span> <span class="bc-arg">0 0</span> <span class="bc-info">;  </span>
+<span class="bc-line-num">003</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 1</span> <span class="bc-info">; quill</span>
+<span class="bc-line-num">004</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 2</span> <span class="bc-info">; mark</span>
+<span class="bc-line-num">005</span> <span class="bc-opcode">ACC_TEXT        </span> <span class="bc-arg">0 0</span>
+<span class="bc-line-num">006</span> <span class="bc-opcode">END             </span> <span class="bc-arg">0 0</span></code></pre>
+</div>
+</div>
+<h4>Output</h4>
+<pre><code>
+quillmark
+</code></pre>
+</div>
+</details>
+<details>
+<summary>
+<span class="status-icon status-pass">✓</span> Raw space 1
+</summary>
+<div class="test-content">
+<div class="code-grid">
+<div>
+<h4>Code</h4>
+<pre><code class="language-plume">
+quill\smark
+
+</code></pre>
+</div>
+<div>
+<h4>Bytecode</h4>
+<pre><code class="language-bytecode"><span class="bc-line-num">001</span> <span class="bc-opcode">ENTER_SCOPE     </span> <span class="bc-arg">0 0</span> <span class="bc-info">; q</span>
+<span class="bc-line-num">002</span> <span class="bc-opcode">BEGIN_ACC       </span> <span class="bc-arg">0 0</span> <span class="bc-info">; q</span>
+<span class="bc-line-num">003</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 1</span> <span class="bc-info">; quill</span>
+<span class="bc-line-num">004</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 2</span>
+<span class="bc-line-num">005</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 3</span> <span class="bc-info">; mark</span>
+<span class="bc-line-num">006</span> <span class="bc-opcode">ACC_TEXT        </span> <span class="bc-arg">0 0</span>
+<span class="bc-line-num">007</span> <span class="bc-opcode">END             </span> <span class="bc-arg">0 0</span></code></pre>
+</div>
+</div>
+<h4>Output</h4>
+<pre><code>
+quill mark
+</code></pre>
+</div>
+</details>
+<details>
+<summary>
+<span class="status-icon status-pass">✓</span> Raw space 2
+</summary>
+<div class="test-content">
+<div class="code-grid">
+<div>
+<h4>Code</h4>
+<pre><code class="language-plume">
+quill\nmark
+
+</code></pre>
+</div>
+<div>
+<h4>Bytecode</h4>
+<pre><code class="language-bytecode"><span class="bc-line-num">001</span> <span class="bc-opcode">ENTER_SCOPE     </span> <span class="bc-arg">0 0</span> <span class="bc-info">; q</span>
+<span class="bc-line-num">002</span> <span class="bc-opcode">BEGIN_ACC       </span> <span class="bc-arg">0 0</span> <span class="bc-info">; q</span>
+<span class="bc-line-num">003</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 1</span> <span class="bc-info">; quill</span>
+<span class="bc-line-num">004</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 2</span>
+<span class="bc-line-num">005</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 3</span> <span class="bc-info">; mark</span>
+<span class="bc-line-num">006</span> <span class="bc-opcode">ACC_TEXT        </span> <span class="bc-arg">0 0</span>
+<span class="bc-line-num">007</span> <span class="bc-opcode">END             </span> <span class="bc-arg">0 0</span></code></pre>
+</div>
+</div>
+<h4>Output</h4>
+<pre><code>
+quill
+mark
+</code></pre>
+</div>
+</details>
+<details>
+<summary>
+<span class="status-icon status-pass">✓</span> Raw space 3
+</summary>
+<div class="test-content">
+<div class="code-grid">
+<div>
+<h4>Code</h4>
+<pre><code class="language-plume">
+\tquill
+
+</code></pre>
+</div>
+<div>
+<h4>Bytecode</h4>
+<pre><code class="language-bytecode"><span class="bc-line-num">001</span> <span class="bc-opcode">ENTER_SCOPE     </span> <span class="bc-arg">0 0</span> <span class="bc-info">; \</span>
+<span class="bc-line-num">002</span> <span class="bc-opcode">BEGIN_ACC       </span> <span class="bc-arg">0 0</span> <span class="bc-info">; \</span>
+<span class="bc-line-num">003</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 1</span>
+<span class="bc-line-num">004</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 2</span> <span class="bc-info">; quill</span>
+<span class="bc-line-num">005</span> <span class="bc-opcode">ACC_TEXT        </span> <span class="bc-arg">0 0</span>
+<span class="bc-line-num">006</span> <span class="bc-opcode">END             </span> <span class="bc-arg">0 0</span></code></pre>
+</div>
+</div>
+<h4>Output</h4>
+<pre><code>
+quill
+</code></pre>
+</div>
+</details>
+<details>
+<summary>
+<span class="status-icon status-pass">✓</span> Simple tewritet
+</summary>
+<div class="test-content">
+<div class="code-grid">
+<div>
+<h4>Code</h4>
+<pre><code class="language-plume">
+quill
+
+</code></pre>
+</div>
+<div>
+<h4>Bytecode</h4>
+<pre><code class="language-bytecode"><span class="bc-line-num">001</span> <span class="bc-opcode">ENTER_SCOPE     </span> <span class="bc-arg">0 0</span> <span class="bc-info">; q</span>
+<span class="bc-line-num">002</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 1</span> <span class="bc-info">; quill</span>
+<span class="bc-line-num">003</span> <span class="bc-opcode">END             </span> <span class="bc-arg">0 0</span></code></pre>
+</div>
+</div>
+<h4>Output</h4>
+<pre><code>
+quill
+</code></pre>
+</div>
+</details>
+<details>
+<summary>
+<span class="status-icon status-pass">✓</span> Space capture 1
+</summary>
+<div class="test-content">
+<div class="code-grid">
+<div>
+<h4>Code</h4>
+<pre><code class="language-plume">
+quill mark
+
+</code></pre>
+</div>
+<div>
+<h4>Bytecode</h4>
+<pre><code class="language-bytecode"><span class="bc-line-num">001</span> <span class="bc-opcode">ENTER_SCOPE     </span> <span class="bc-arg">0 0</span> <span class="bc-info">; q</span>
+<span class="bc-line-num">002</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 1</span> <span class="bc-info">; quill mark</span>
+<span class="bc-line-num">003</span> <span class="bc-opcode">END             </span> <span class="bc-arg">0 0</span></code></pre>
+</div>
+</div>
+<h4>Output</h4>
+<pre><code>
+quill mark
+</code></pre>
+</div>
+</details>
+<details>
+<summary>
+<span class="status-icon status-pass">✓</span> Space capture 2
+</summary>
+<div class="test-content">
+<div class="code-grid">
+<div>
+<h4>Code</h4>
+<pre><code class="language-plume">
+quill  mark
+
+</code></pre>
+</div>
+<div>
+<h4>Bytecode</h4>
+<pre><code class="language-bytecode"><span class="bc-line-num">001</span> <span class="bc-opcode">ENTER_SCOPE     </span> <span class="bc-arg">0 0</span> <span class="bc-info">; q</span>
+<span class="bc-line-num">002</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 1</span> <span class="bc-info">; quill  mark</span>
+<span class="bc-line-num">003</span> <span class="bc-opcode">END             </span> <span class="bc-arg">0 0</span></code></pre>
+</div>
+</div>
+<h4>Output</h4>
+<pre><code>
+quill  mark
 </code></pre>
 </div>
 </details>

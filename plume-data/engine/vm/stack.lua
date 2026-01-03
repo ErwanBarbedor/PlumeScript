@@ -6,6 +6,10 @@ function _STACK_SET(stack, index, value)
     stack[index] = value
 end
 
+function _STACK_POS(stack)
+    return stack.pointer
+end
+
 function _STACK_POP(stack)
     stack.pointer = stack.pointer - 1
     return stack[stack.pointer + 1]
@@ -16,7 +20,7 @@ function _STACK_PUSH(stack, value)
     stack[stack.pointer] = value
 end
 
-function _STACK_MOVE(stack, ivalue)
+function _STACK_MOVE(stack, value)
     stack.pointer = value
 end
 
@@ -26,4 +30,19 @@ end
 
 function _STACK_POP_FRAME(stack)
     _STACK_SET(stack, _STACK_POP(stack.frames)-1)
+end
+
+function _STACK_SET_FRAMED(stack, offset, value)
+    _STACK_SET(
+        stack,
+        _STACK_GET(stack.frames) + offset,
+        value
+    )
+end
+
+function _STACK_GET_FRAMED(stack, offset)
+    return _STACK_GET(
+        stack,
+        _STACK_GET(stack.frames) + offset
+    )
 end

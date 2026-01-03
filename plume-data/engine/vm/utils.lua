@@ -13,6 +13,10 @@ You should have received a copy of the GNU General Public License along with Plu
 If not, see <https://www.gnu.org/licenses/>.
 ]]
 
+function _GET_TYPE(vm, x)
+    return type(x) == "table" and (x == vm.empty or x.type) or type(x)
+end
+
 --- To rewrite
 function _ERROR (msg)
     return false, msg, ip, chunk
