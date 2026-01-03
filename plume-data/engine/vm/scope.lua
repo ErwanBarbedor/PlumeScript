@@ -13,7 +13,7 @@ You should have received a copy of the GNU General Public License along with Plu
 If not, see <https://www.gnu.org/licenses/>.
 ]]
 
-ENTER_SCOPE = function (vm, arg1, arg2)
+function ENTER_SCOPE (vm, arg1, arg2)
     --- Reserve slots for locals variables and save scope begin offset
     --- Stack 1 to frame
     --- Stack 1 empty for each non already allocated variable
@@ -28,7 +28,7 @@ ENTER_SCOPE = function (vm, arg1, arg2)
     end
 end
 
-LEAVE_SCOPE = function (vm, arg1, arg2)
+function LEAVE_SCOPE (vm, arg1, arg2)
     --- Unstack 1 from vsf
     --- Remove all local variables
     --- arg1: -

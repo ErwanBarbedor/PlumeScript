@@ -13,7 +13,7 @@ You should have received a copy of the GNU General Public License along with Plu
 If not, see <https://www.gnu.org/licenses/>.
 ]]
 
-_UNSTACK_PO = function (S)
+function _UNSTACK_POS ()
     local argcount = msp-msf[msfp]
     if argcount ~= macro.positionalParamCount and macro.variadicOffset==0 then
         local name
@@ -28,7 +28,7 @@ _UNSTACK_PO = function (S)
             name = macro.name or "???"
         end
 
-        _ERROR{{"Wrong number of positionnal arguments for macro '" .. name .. "', " ..   argcount .. " instead of " .. macro.positionalParamCount .. "."}}
+        _ERROR ("Wrong number of positionnal arguments for macro '" .. name .. "', " ..   argcount .. " instead of " .. macro.positionalParamCount .. ".")
     end
 
     for i=1, macro.positionalParamCount do
@@ -42,30 +42,30 @@ _UNSTACK_PO = function (S)
     msp = msf[msfp]
 end
 
-_UNSTACK_NAME = function (D)
+function _UNSTACK_NAMED ()
     for i=1, #ms[msf[msfp]], 3 do
         local k=ms[msf[msfp]][i]
         local v=ms[msf[msfp]][i+1]
         local m=ms[msf[msfp]][i+2]
         local j = macro.namedParamOffset[k]
         if m then
-            _TABLE_META_SET capture k v
+            _TABLE_META_SET (capture, k, v)
         elseif j then
             parameters[j] = v
         elseif macro.variadicOffset>0 then
-            _TABLE_SET capture k v
+            _TABLE_SET (capture, k, v)
         else
             local name = macro.name or "???"
-            _ERROR{{"Unknow named parameter '" .. k .."' for macro '" .. name .."'."}}
+            _ERROR("Unknow named parameter '" .. k .."' for macro '" .. name .."'.")
         end
     end    
     msp = msp-1
 end
 
-_CALL = function (macro parameters)
+function _CALL (macro, parameters)
     table.insert(chunk.callstack, {chunk=chunk, macro=macro, ip=ip})
     if #chunk.callstack>1000 then
-        _ERROR {{"stack overflow"}}
+        _ERROR ("stack overflow")
     end
 
     local success, callResult, cip, source  = plume.run(macro, parameters)
@@ -75,7 +75,7 @@ _CALL = function (macro parameters)
     table.remove(chunk.callstack)
 end
 
-ACC_CALL = function (vm, arg1, arg2)
+function ACC_CALL (vm, arg1, arg2)
     --- Unstack 1 (the macro)
     --- Unstack until frame begin + 1 (all positionals arguments)
     --- Unstack 1 (table of named arguments)
@@ -106,8 +106,8 @@ ACC_CALL = function (vm, arg1, arg2)
         if macro.variadicOffset>0 then -- variadic
             capture = ptable(0, 0) -- can be optimized
         end
-        _UNSTACK_POS
-        _UNSTACK_NAMED
+        _UNSTACK_POS()
+        _UNSTACK_NAMED()
 
         -- Add self to params
         if self then  
@@ -117,12 +117,12 @@ ACC_CALL = function (vm, arg1, arg2)
         if macro.variadicOffset>0 then -- variadic
             parameters[macro.variadicOffset] = capture
         end
-        _END_ACC
-        _CALL macro parameters
+        _END_ACC()
+        _CALL (macro, parameters)
         msp = msp+1
         ms[msp] = callResult
     elseif t == "luaFunction" then
-        ACC_TABLE
+        ACC_TABLE()
         table.insert(chunk.callstack, {chunk=chunk, macro=macro, ip=ip})
         local success, result  =  pcall(macro.callable, ms[msp], chunk)
         if not success then
@@ -135,11 +135,11 @@ ACC_CALL = function (vm, arg1, arg2)
         end
         ms[msp] = result
     else
-        _ERROR {{"Try to call a '" .. t .. "' value"}}
+        _ERROR ("Try to call a '" .. t .. "' value")
     end
 end
 
-RETURN = function (vm, arg1, arg2)
+function RETURN (vm, arg1, arg2)
     --- Unstack 1 from calls
     --- Set jump to it
     --- Leave scope
@@ -150,5 +150,5 @@ RETURN = function (vm, arg1, arg2)
         jump = #bytecode -- goto to END
     end
     cp = cp - 1
-    LEAVE_SCOPE 0 0
+    LEAVE_SCOPE (0, 0)
 end

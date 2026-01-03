@@ -13,7 +13,7 @@ You should have received a copy of the GNU General Public License along with Plu
 If not, see <https://www.gnu.org/licenses/>.
 ]]
 
-_CHECK_NUMBER = function (x)
+function _CHECK_NUMBER (x)
     if _type(x) == "string" then
         x = tonumber(x)
         if not x then
@@ -23,7 +23,7 @@ _CHECK_NUMBER = function (x)
         if _type(x) == "table" and x.meta.table.tonumber then
             local meta = ms[msp].meta.table.tonumber
             local params = {}
-            _CALL meta params
+            _CALL (meta, params)
             x = callResult
         else
             _ERROR ("Cannot do comparison or arithmetic with " .. _type(x).. " value.")
@@ -31,19 +31,19 @@ _CHECK_NUMBER = function (x)
     end
 end
 
-_CHECK_BOOL = function (x)
+function _CHECK_BOOL (x)
     if x == empty then
         x = false
     end
 end
 
-_CHECK_OPTN_NUMBER = function (x)
+function _CHECK_OPTN_NUMBER (x)
     if _type(x) == "string" then
         x = tonumber(x) or x
     end
 end
 
-_BIN_OPP = function (opp check)
+function _BIN_OPP (opp, check)
     --- Classic opperations
     --- Unstack 2
     --- Stack 1, the result
@@ -52,14 +52,14 @@ _BIN_OPP = function (opp check)
     x = ms[msp-1]
     y = ms[msp]
 
-    _CHECK_check x
-    _CHECK_check y
+    _CHECK_check (x)
+    _CHECK_check (y)
 
     msp = msp-1
-    ms[msp] = x opp y
+    ms[msp] = opp(x, y)
 end
 
-_UN_OPP = function (opp check)
+function _UN_OPP (opp, check)
     --- Classic opperations
     --- Unstack 1
     --- Stack 1, the result
@@ -69,11 +69,11 @@ _UN_OPP = function (opp check)
 
     _CHECK_check (x)
 
-    ms[msp] = opp x
+    ms[msp] = opp( x)
 end
 
 
-_CHECK_NUMBER_META = function (x)
+function _CHECK_NUMBER_META (x)
     if _type(x) == "string" then
         x = tonumber(x)
         if not x then
@@ -83,7 +83,7 @@ _CHECK_NUMBER_META = function (x)
         if _type(x) == "table" and x.meta.table.tonumber then
             local meta = x.meta.table.tonumber
             local params = {}
-            _CALL meta params
+            _CALL (meta, params)
             x = callResult
         else
             err = "Cannot do comparison or arithmetic with " .. _type(x).. " value."
@@ -91,51 +91,51 @@ _CHECK_NUMBER_META = function (x)
     end
 end
 
-_HANDLE_META_BIN = function (name)
+function _HANDLE_META_BIN (name)
     local meta
     local params
-    if _type(x) == "table" and x.meta and x.meta.table.(name)r then
-        meta = x.meta.table.(name)r
-        params = {y, x} -- self last
-    elseif _type(y) == "table" and y.meta and y.meta.table.(name)l then
-        meta = y.meta.table.(name)l
-        params = {x, y}
-    elseif _type(x) == "table" and x.meta and x.meta.table.name then
-        meta = x.meta.table.name
-        params = {x, y, x}
-    elseif _type(y) == "table" and y.meta and y.meta.table.name then
-        meta = y.meta.table.name
-        params = {x, y, y}
-    end
+    -- if _type(x) == "table" and x.meta and x.meta.table.(name)r then
+    --     meta = x.meta.table.(name)r
+    --     params = {y, x} -- self last
+    -- elseif _type(y) == "table" and y.meta and y.meta.table.(name)l then
+    --     meta = y.meta.table.(name)l
+    --     params = {x, y}
+    -- elseif _type(x) == "table" and x.meta and x.meta.table.name then
+    --     meta = x.meta.table.name
+    --     params = {x, y, x}
+    -- elseif _type(y) == "table" and y.meta and y.meta.table.name then
+    --     meta = y.meta.table.name
+    --     params = {x, y, y}
+    -- end
 
     if not meta then
-        _ERROR err
+        _ERROR (err)
     end
 
-    _CALL meta params
+    _CALL (meta, params)
 
     ms[msp] = callResult
 end
 
-_BIN_OPP_META = function (opp name)
+function _BIN_OPP_META (opp, name)
     x = ms[msp-1]
     y = ms[msp]
 
     local err
 
-    _CHECK_NUMBER_META x
-    _CHECK_NUMBER_META y
+    _CHECK_NUMBER_META (x)
+    _CHECK_NUMBER_META (y)
 
     msp = msp-1
 
     if err then
-        _HANDLE_META_BIN name
+        _HANDLE_META_BIN (name)
     else
-        ms[msp] = x opp y
+        ms[msp] = opp(x, y)
     end
 end
 
-_HANDLE_META_UN = function (name)
+function _HANDLE_META_UN (name)
     local meta
     local params = {x}
     if _type(x) == "table" and x.meta and x.meta.table.name then
@@ -143,45 +143,45 @@ _HANDLE_META_UN = function (name)
     end
 
     if not meta then
-        _ERROR err
+        _ERROR (err)
     end
 
-    _CALL meta params
+    _CALL (meta, params)
 
     ms[msp] = callResult
 end
 
-_UN_OPP_META = function (opp name)
+function _UN_OPP_META (opp, name)
     x = ms[msp]
 
     local err
 
-    _CHECK_NUMBER_META x
+    _CHECK_NUMBER_META (x)
 
     if err then
-        _HANDLE_META_UN name
+        _HANDLE_META_UN (name)
     else
-        ms[msp] = opp x
+        ms[msp] = opp (x)
     end
 end
 
-OPP_ADD = function (_BIN_OPP_META + add end)
-OPP_MUL = function (_BIN_OPP_META * mul end)
-OPP_SUB = function (_BIN_OPP_META - sub end)
-OPP_DIV = function (_BIN_OPP_META / div end)
-OPP_MOD = function (_BIN_OPP_META % mod end)
-OPP_POW = function (_BIN_OPP_META ^ pow end)
-OPP_NEG = function (_UN_OPP_META  - minus end)
+function OPP_ADD () _BIN_OPP_META (_ADD, "add") end
+function OPP_MUL () _BIN_OPP_META  (_MUL, "mul") end
+function OPP_SUB () _BIN_OPP_META (_SUB, "sub") end
+function OPP_DIV () _BIN_OPP_META (_DIV, "div") end
+function OPP_MOD () _BIN_OPP_META (_MOD, "mod") end
+function OPP_POW () _BIN_OPP_META (_POW, "pow") end
+function OPP_NEG () _UN_OPP_META (_MINUS, "minus") end
 
 -- comp
-OPP_G = function (T)
+function OPP_GT ()
     x = ms[msp-1]
     y = ms[msp]
 
     local err
 
-    _CHECK_NUMBER_META x
-    _CHECK_NUMBER_META y
+    _CHECK_NUMBER_META (x)
+    _CHECK_NUMBER_META (y)
 
     msp = msp-1
 
@@ -195,10 +195,10 @@ OPP_G = function (T)
             params = {x, y}
         end
         if not meta then
-            _ERROR err
+            _ERROR (err)
         end
 
-        _CALL meta params
+       _CALL (meta, params)
 
         if invert then
             callResult = not callResult
@@ -206,7 +206,7 @@ OPP_G = function (T)
                 ms[msp] = callResult
             else
                 msp = msp+1
-                OPP_EQ
+                OPP_EQ()
             end
         else
             ms[msp] = callResult
@@ -216,14 +216,14 @@ OPP_G = function (T)
     end
 end
 
-OPP_L = function (T)
+function OPP_LT ()
     x = ms[msp-1]
     y = ms[msp]
 
     local err
 
-    _CHECK_NUMBER_META x
-    _CHECK_NUMBER_META y
+    _CHECK_NUMBER_META (x)
+    _CHECK_NUMBER_META (y)
 
     msp = msp-1
 
@@ -245,10 +245,10 @@ OPP_L = function (T)
             invert = true
         end
         if not meta then
-            _ERROR err
+            _ERROR (err)
         end
 
-        _CALL meta params
+        _CALL (meta, params)
 
         if invert then
             callResult = not callResult
@@ -256,7 +256,7 @@ OPP_L = function (T)
                 ms[msp] = callResult
             else
                 msp = msp+1
-                OPP_EQ
+                OPP_EQ()
             end
         else
             ms[msp] = callResult
@@ -267,7 +267,7 @@ OPP_L = function (T)
     end
 end
 
-OPP_E = function (Q)
+function OPP_EQ ()
     x = ms[msp-1]
     y = ms[msp]
 
@@ -284,16 +284,16 @@ OPP_E = function (Q)
     end
 
     if meta then
-        _CALL meta params
+        _CALL (meta, params)
         ms[msp] = callResult
     else
-        _CHECK_OPTN_NUMBER x
-        _CHECK_OPTN_NUMBER y
+        _CHECK_OPTN_NUMBER (x)
+        _CHECK_OPTN_NUMBER (y)
         ms[msp] = x == y
     end
 end
 
-OPP_NE = function (Q)
+function OPP_NEQ ()
     x = ms[msp-1]
     y = ms[msp]
 
@@ -310,16 +310,16 @@ OPP_NE = function (Q)
     end
 
     if meta then
-        _CALL meta params
+        _CALL (meta, params)
         ms[msp] = not callResult
     else
-        _CHECK_OPTN_NUMBER x
-        _CHECK_OPTN_NUMBER y
+        _CHECK_OPTN_NUMBER (x)
+        _CHECK_OPTN_NUMBER (y)
         ms[msp] = x ~= y
     end
 end
 
 -- bool
-OPP_AND = function (_BIN_OPP and BOOL end)
-OPP_OR = function (_BIN_OPP or  BOOL end)
-OPP_NOT = function (_UN_OPP  not BOOL end)
+function OPP_AND () _BIN_OPP (_AND) end
+function OPP_OR () _BIN_OPP (_OR) end
+function OPP_NOT () _UN_OPP (_NOT) end
