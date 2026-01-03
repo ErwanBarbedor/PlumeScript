@@ -30,7 +30,19 @@ function TABLE_SET_ACC (vm, arg1, arg2)
     
     table.insert(t, _STACK_POP(vm.mainStack)) -- key
     table.insert(t, _STACK_POP(vm.mainStack)) -- value
-    table.insert(t, false)                    -- is named
+    table.insert(t, false)                    -- is meta
+end
+
+function _TABLE_SET (t, k, v)
+    -- if dont exists, register key
+    local key   = k
+    local value = v
+    key = tonumber(key) or key
+    if not t.table[key] then
+        table.insert(t.keys, k)
+    end
+    --set
+    t.table[key] = value 
 end
 
 --- To rewrite
@@ -115,16 +127,7 @@ function TABLE_INDEX_META (vm, arg1, arg2)
     msp = msp-1
 end
 
-function _TABLE_SET (t, k, v)
-    -- if dont exists, register key
-    local key   = k
-    local value = v
-    key = tonumber(key) or key
-    if not t.table[key] then
-        table.insert(t.keys, k)
-    end
-    t.table[key] = value --set
-end
+
 
 function _TABLE_META_SET (t, k, v)
     _META_CHECK (k, v)

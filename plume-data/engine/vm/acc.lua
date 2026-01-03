@@ -52,21 +52,26 @@ function ACC_TABLE (vm, arg1, arg2)
     --- Unstack main stack frame
     --- arg1: -
     --- arg2: -
-    local limit = msf[msfp]+1 -- Count items
-    local keyCount = #ms[limit-1] / 2
-    local args = ptable(msp-limit+1, keyCount)
-    for i=1, msp-limit+1 do -- dump items
-        args.table[i] = ms[limit+i-1]
+
+    -- Count items
+    local limit = _STACK_GET(vm.mainStack.frames)+1
+    local current = _STACK_POS(vm.mainStack)
+    local t = _STACK_GET(vm.mainStack, limit-1)
+    local keyCount = #t / 2
+    local args = vm.plume.obj.table(current-limit+1, keyCount)
+    for i=1, current-limit+1 do -- dump items
+        args.table[i] = _STACK_GET(vm.mainStack, limit+i-1)
     end
-    for i=1, #ms[limit-1], 3 do --dump keys 
-        if ms[limit-1][i+2] then -- meta
-            _TABLE_META_SET (args, ms[limit-1][i], ms[limit-1][i+1])
+    for i=1, #t, 3 do --dump keys 
+        if t[i+2] then -- meta
+            _TABLE_META_SET (vm, args, t[i], t[i+1])
         else
-            _TABLE_SET (args, ms[limit-1][i], ms[limit-1][i+1])
+            _TABLE_SET (args, t[i], t[i+1])
         end
     end
-    ms[limit-1] = args
-    msp = limit - 1
+    _STACK_MOVE(vm.mainStack, limit-2)
+    _STACK_PUSH(vm.mainStack, args)
+
     _END_ACC(vm)
 end
 

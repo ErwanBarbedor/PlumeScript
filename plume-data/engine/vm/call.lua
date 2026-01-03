@@ -63,12 +63,12 @@ function ACC_CALL (vm, arg1, arg2)
 
     elseif t == "luaFunction" then
         ACC_TABLE(vm)
-        table.insert(chunk.callstack, {chunk=chunk, macro=macro, ip=ip})
-        local success, result  =  pcall(macro.callable, ms[msp], chunk)
+        table.insert(vm.chunk.callstack, {chunk=vm.chunk, macro=macro, ip=vm.ip})
+        local success, result  =  pcall(macro.callable, _STACK_GET(vm.mainStack), chunk)
         if not success then
             return success, result, ip, chunk
         end
-        table.remove(chunk.callstack)
+        table.remove(vm.chunk.callstack)
 
         if result == nil then
             result = empty
