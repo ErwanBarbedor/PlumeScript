@@ -58,7 +58,7 @@ local init = [[
 
 	function plume.run (chunk, arguments)
 		-- Creates stacks, handle arguments
-		local vm = _VM_INIT(chunk, arguments)
+		local vm = _VM_INIT(plume, chunk, arguments)
 		
 		local op, arg1, arg2
 		::DISPATCH::
@@ -86,7 +86,7 @@ for op_name in plume.ops_names:gmatch("%S+") do
 	table.insert(dispatch, string.format("if op == %i then goto %s\n", count, op_name))
 
 	if op_name ~= "END" then
-		table.insert(labels,string.format( "\t\t\t::%s::\n\t\t\t\t%s(vm, arg1, arg2)\n", op_name, op_name))
+		table.insert(labels,string.format( "\t\t\t::%s::\n\t\t\t\t%s(vm, arg1, arg2)\n\t\t\t\tgoto DISPATCH\n", op_name, op_name))
 	end
 	count = count + 1
 end
@@ -94,7 +94,7 @@ table.insert(dispatch, "\t\t\tend\n\n")
 dispatch = table.concat(dispatch)
 labels = table.concat(labels)
 
-local footer = "\t\tgoto DISPATCH\n\t\t::END::\n\tend\nend"
+local footer = "\t\t::END::\n\t\treturn true, _STACK_GET(vm.mainStack)\n\tend\nend"
 
 
 local result = {header, import, init, dispatch, labels, footer}

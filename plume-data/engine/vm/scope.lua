@@ -13,19 +13,20 @@ You should have received a copy of the GNU General Public License along with Plu
 If not, see <https://www.gnu.org/licenses/>.
 ]]
 
---- To rewrite
 function ENTER_SCOPE (vm, arg1, arg2)
     --- Reserve slots for locals variables and save scope begin offset
     --- Stack 1 to frame
     --- Stack 1 empty for each non already allocated variable
     --- arg1: Number of local variables already stacked
     --- arg2: Number of local variables
-    vsfp = vsfp+1
-    vsf[vsfp] = vsp+1-arg1
 
+    _STACK_PUSH(
+        vm.variableStack.frames,
+        _STACK_GET_POINTER(vm.variableStack.frames) - arg1
+    )
+    
     for i = 1, arg2-arg1 do
-        vsp = vsp+1
-        vs[vsp] = empty
+        _STACK_PUSH(vm.variableStack, vm.empty)
     end
 end
 
@@ -34,6 +35,5 @@ function LEAVE_SCOPE (vm, arg1, arg2)
     --- Remove all local variables
     --- arg1: -
     --- arg2: -
-    vsp = vsf[vsfp]-1
-    vsfp = vsfp-1
+    _STACK_POP_FRAME(vm.variableStack)
 end

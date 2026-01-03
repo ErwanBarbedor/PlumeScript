@@ -29,38 +29,50 @@ local MASK_ARG2 = bit.lshift(1, ARG2_BITS) - 1
 --================--
 -- Initalization --
 --===============--
-function _VM_INIT ()
-
+function _VM_INIT (plume, chunk, arguments)
     require("table.new")
 
-    local bytecode    = chunk.bytecode
-    local constants   = chunk.constants
-    local static      = chunk.static
+    local vm = {} -- !table-to-remove
+    
+    -- to avoid context injection
+    vm.plume = plume -- !to-remove
+    -- !alias vm.plume plume
 
-    local ip      = 0 -- instruction pointer
-    local tic     = 0 -- total instruction count
+    _VM_INIT_VARS(vm, chunk)
+    _VM_INIT_ARGUMENTS(vm, chunk, arguments)
 
-    local ms   = table.new(2^14, 0) -- main stack
-    local msf  = table.new(2^8, 0)  -- main stack frames (accumulators)
-    local msp  = 0                  -- pointers
-    local msfp = 0
+    return vm
+end
 
-    local vs   = table.new(2^10, 0)  -- variables stack
-    local vsf  = table.new(2^8, 0)   -- variables stack frames (lexical scope)
-    local vsp  = 0                   -- pointers
-    local vsfp = 0
+function _VM_INIT_VARS(vm, chunk)
+    vm.bytecode  = chunk.bytecode
+    vm.constants = chunk.constants
+    vm.static    = chunk.static
 
-    local jump    = 0 -- easier debuging than setting ip
-    local instr, op, vm, arg1, arg2 = 0, 0, 0, 0
+    -- instruction pointer
+    vm.ip      = 0
+    -- total instruction count
+    vm.tic     = 0
 
-    --debug
-    local hook = plume.hook
+    vm.mainStack                = table.new(2^14, 0)
+    vm.mainStack.frames         = table.new(2^8, 0)
+    vm.mainStack.pointer        = 0 -- !index-to-inline
+    vm.mainStack.frames.pointer = 0 -- !index-to-inline
 
-    --------------------
-    -- When is called -- 
-    --------------------
+    vm.variableStack                = table.new(2^10, 0)
+    vm.variableStack.frames         = table.new(2^8, 0)
+    vm.variableStack.pointer        = 0  -- !index-to-inline
+    vm.variableStack.frames.pointer = 0 -- !index-to-inline
 
-    if parameters then
+    -- easier debuging than setting vm.ip
+    vm.jump    = 0
+
+    -- local variables
+    vm.empty = vm.plume.empty
+end
+
+function _VM_INIT_ARGUMENTS(vm, chunk, arguments)
+    if arguments then
         if chunk.isFile then
             for k, v in pairs(parameters) do
                 local offset = chunk.namedParamOffset[k]
@@ -68,27 +80,46 @@ function _VM_INIT ()
                     chunk.static[offset] = v
                 end
             end
-        else -- macro
+        -- macro
+        else 
             for i=1, chunk.localsCount do
                 if parameters[i] == nil then
-                    vs[i] = empty
+                    _STACK_SET(vm.variableStack, i, empty)
                 else
-                    vs[i] = parameters[i]
+                    _STACK_SET(vm.variableStack, i, parameters[i])
                 end
             end
 
-            vsp = chunk.localsCount
-            vsfp = 1
-            table.insert(vsf, 1)
+            _STACK_MOVE(vm.variableStack, chunk.localsCount)
+            _STACK_PUSH(vm.variableStack.frames, 1)
         end
     end
 end
 
-function _VM_DEBUG ()
+function _VM_TICK (vm)
+    -- !to-remove-begin
+    if vm.plume.hook then
+        if vm.ip>0 then 
+            vm.plume.hook (vm)
+        end       
+    end  
+    -- !to-remove-end
+
+    if vm.jump>0 then
+        vm.ip = vm.jump
+        vm.jump = 0-- 0 instead of nil to preserve type
+    else
+        vm.ip = vm.ip+1
+    end
+    vm.tic = vm.tic+1
 end
 
-function _VM_TICK ()
-end
+function _VM_DECODE_CURRENT_INSTRUCTION(vm)
+    local instr, op, arg1, arg2
+    instr = vm.bytecode[vm.ip]
+    op    = bit.band(bit.rshift(instr, OP_SHIFT), MASK_OP)
+    arg1  = bit.band(bit.rshift(instr, ARG1_SHIFT), MASK_ARG1)
+    arg2  = bit.band(instr, MASK_ARG2)
 
-function _VM_DECODE_CURRENT_INSTRUCTION()
+    return op, arg1, arg2
 end

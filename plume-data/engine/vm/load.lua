@@ -13,15 +13,13 @@ You should have received a copy of the GNU General Public License along with Plu
 If not, see <https://www.gnu.org/licenses/>.
 ]]
 
---- To rewrite
 function LOAD_CONSTANT (vm, arg1, arg2)
     --- Stack 1 from constant
     --- arg1: -
     --- arg2: constant offset
-    msp = msp+1
-    ms[msp] = constants[arg2]
+    _STACK_PUSH(vm.mainStack, vm.constants[arg2])
 end
-
+--- To rewrite
 function LOAD_EMPTY (vm, arg1, arg2)
     --- Stack 1 constant empty
     --- arg1: -
