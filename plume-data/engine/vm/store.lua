@@ -26,6 +26,15 @@ function STORE_LOCAL (vm, arg1, arg2)
     )
 end
 
+function STORE_STATIC (vm, arg1, arg2)
+    --- Unstack 1 static memory
+    --- memory[mp] is a pointer to the current
+    --- file intern memory
+    --- arg1: -
+    --- arg2: frame offset
+    vm.static[arg2] = _STACK_POP(vm.mainStack)
+end
+
 --- To rewrite
 function STORE_LEXICAL (vm, arg1, arg2)
     --- Unstack 1 to vs
@@ -36,15 +45,7 @@ function STORE_LEXICAL (vm, arg1, arg2)
     msp = msp-1
 end
 
-function STORE_STATIC (vm, arg1, arg2)
-    --- Unstack 1 static memory
-    --- memory[mp] is a pointer to the current
-    --- file intern memory
-    --- arg1: -
-    --- arg2: frame offset
-    static[arg2] = ms[msp]
-    msp = msp-1
-end
+
 
  function STORE_VOID (vm, arg1, arg2)
     --- Unstack 1
