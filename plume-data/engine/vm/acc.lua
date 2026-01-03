@@ -13,18 +13,14 @@ You should have received a copy of the GNU General Public License along with Plu
 If not, see <https://www.gnu.org/licenses/>.
 ]]
 
-
---- To rewrite
 function BEGIN_ACC(vm, arg1, arg2)
     --- Stack 1 to main stack frame, the current msp
     --- arg1: -
     --- arg2: -
-    msfp = msfp + 1
-    msf[msfp] = msp+1
-end
-
-function _END_ACC (vm)
-    msfp = msfp-1
+    _STACK_PUSH(
+        vm.mainStack.frames,
+        vm.mainStack.pointer+1
+    )
 end
 
 function ACC_TEXT (vm, arg1, arg2)
@@ -33,16 +29,41 @@ function ACC_TEXT (vm, arg1, arg2)
     --- Unstack main stack frame
     --- arg1: -
     --- arg2: -
-    local limit = msf[msfp]
-    for i=limit, msp do
-        if ms[i] == empty then
-            ms[i] = ""
+    local start = _STACK_GET(vm.mainStack.frames)
+    local stop  = _STACK_POS(vm.mainStack)
+    for i = start, stop do
+        if _STACK_GET(vm.mainStack, i) == vm.empty then
+            _STACK_SET(vm.mainStack, "")
         end
     end
-    ms[limit] = table.concat(ms, "", limit, msp)
-    msp = limit
-    _END_ACC()
+
+    local acc_text = table.concat(vm.mainStack, "", start, stop)
+    _STACK_MOVE(vm.mainStack, start)
+    _STACK_SET (vm.mainStack, start, acc_text)
+    _END_ACC(vm)
 end
+
+function ACC_CHECK_TEXT (vm, arg1, arg2)
+    --- Check if stack top can be concatened
+    local value = _STACK_GET(vm.mainStack)
+    local t = _GET_TYPE(vm, value)
+    -- if t ~= "number" and t ~= "string" and value ~= empty then
+    --     if t == "table" and value.meta.table.tostring then
+    --         local meta = value.meta.table.tostring
+    --         local params = {}
+    --         _CALL (meta, params)
+    --         ms[msp] = callResult
+    --     else
+    --         _ERROR ("Cannot concat a '" ..t .. "' value.")
+    --     end
+    -- end
+end
+
+function _END_ACC (vm)
+    _STACK_POP(vm.mainStack.frames)
+end
+
+--- To rewrite
 
 function ACC_TABLE (vm, arg1, arg2)
     --- Unstack all until main stack frame begin
@@ -81,17 +102,3 @@ function ACC_EMPTY (vm, arg1, arg2)
     _END_ACC(vm)
 end
 
-function ACC_CHECK_TEXT (vm, arg1, arg2)
-    --- Check if stack top can be concatened
-    local t = _type(ms[msp])
-    if t ~= "number" and t ~= "string" and ms[msp] ~= empty then
-        if t == "table" and ms[msp].meta.table.tostring then
-            local meta = ms[msp].meta.table.tostring
-            local params = {}
-            _CALL (meta, params)
-            ms[msp] = callResult
-        else
-            _ERROR ("Cannot concat a '" ..t .. "' value.")
-        end
-    end
-end

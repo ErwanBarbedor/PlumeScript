@@ -13,16 +13,20 @@ You should have received a copy of the GNU General Public License along with Plu
 If not, see <https://www.gnu.org/licenses/>.
 ]]
 
---- To rewrite
 function STORE_LOCAL (vm, arg1, arg2)
     --- Unstack 1 to vs
     --- Final offset: current frame + frame offset
     --- arg1: -
     --- arg2: frame offset
-    vs[vsf[vsfp] + arg2-1] = ms[msp]
-    msp = msp-1
+
+    _STACK_SET_FRAMED(
+        vm.variableStack,
+        arg2 - 1,
+        _STACK_POP(vm.mainStack)
+    )
 end
 
+--- To rewrite
 function STORE_LEXICAL (vm, arg1, arg2)
     --- Unstack 1 to vs
     --- Offset: the anth last frame + frame offset
