@@ -13,24 +13,35 @@ You should have received a copy of the GNU General Public License along with Plu
 If not, see <https://www.gnu.org/licenses/>.
 ]]
 
---- To rewrite
 function JUMP (vm, arg1, arg2)
     --- Jump to offset
     --- arg1: -
     --- arg2: target offset
-    jump = arg2
+    vm.jump = arg2
 end
+
+function JUMP_IF_NOT (vm, arg1, arg2)
+    --- Unstack 1
+    --- Jump to offset if false
+    --- arg1: -
+    --- arg2: target offset
+    local test = _STACK_POP(vm.mainStack)
+    if not test then
+        vm.jump = arg2
+    end
+end
+
+--- To rewrite
+
 function JUMP_IF (vm, arg1, arg2)
     --- Unstack 1
     --- Jump to offset if true
     --- arg1: -
     --- arg2: target offset
-    local test = ms[msp]
-    _CHECK_BOOL (test)
+    local test = _STACK_POP(vm.mainStack)
     if test then
-        jump = arg2
+        vm.jump = arg2
     end
-    msp = msp-1
 end
 function JUMP_IF_PEEK (vm, arg1, arg2)
     --- Jump to offset if top is true, without unpacking
@@ -42,18 +53,7 @@ function JUMP_IF_PEEK (vm, arg1, arg2)
         jump = arg2
     end
 end
-function JUMP_IF_NOT (vm, arg1, arg2)
-    --- Unstack 1
-    --- Jump to offset if false
-    --- arg1: -
-    --- arg2: target offset
-    local test = ms[msp]
-    _CHECK_BOOL (test)
-    if not test then
-        jump = arg2
-    end
-    msp = msp-1
-end
+
 function JUMP_IF_NOT_PEEK (vm, arg1, arg2)
     --- Unstack 1
     --- Jump to offset if top is false, without unpacking
