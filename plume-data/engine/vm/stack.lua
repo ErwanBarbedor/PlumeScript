@@ -43,17 +43,17 @@ function _STACK_POP_FRAME(stack)
     _STACK_SET(stack, _STACK_POP(stack.frames)-1)
 end
 
-function _STACK_SET_FRAMED(stack, offset, value)
+function _STACK_SET_FRAMED(stack, offset, frameOffset, value)
     _STACK_SET(
         stack,
-        _STACK_GET(stack.frames) + (offset or 0),
+        _STACK_GET_OFFSET(stack.frames, frameOffset or 0) + (offset or 0),
         value
     )
 end
 
-function _STACK_GET_FRAMED(stack, offset)
+function _STACK_GET_FRAMED(stack, offset, frameOffset)
     return _STACK_GET(
         stack,
-        _STACK_GET(stack.frames) + (offset or 0)
+        _STACK_GET_OFFSET(stack.frames, frameOffset or 0) + (offset or 0)
     )
 end

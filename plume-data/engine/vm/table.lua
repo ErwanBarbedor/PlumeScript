@@ -20,9 +20,20 @@ function TABLE_NEW (vm, arg1, arg2)
     _STACK_PUSH(vm.mainStack, table.new(0, arg1))
 end
 
+function TABLE_SET_ACC (vm, arg1, arg2)
+    --- Unstack 2: a key, then a value
+    --- Assume the main stack frame first value is a table
+    --- Register key, then value in
+    --- arg1: -
+    --- arg2: -
+    local t = _STACK_GET_FRAMED(vm.mainStack)
+    
+    table.insert(t, _STACK_POP(vm.mainStack)) -- key
+    table.insert(t, _STACK_POP(vm.mainStack)) -- value
+    table.insert(t, false)                    -- is named
+end
+
 --- To rewrite
-
-
 function TABLE_ADD (vm, arg1, arg2)
 end
 
@@ -152,17 +163,7 @@ function TABLE_SET_META (vm, arg1, arg2)
     msp = msp-3
 end
 
-function TABLE_SET_ACC (vm, arg1, arg2)
-    --- Unstack 2: a key, then a value
-    --- Assume the main stack frame first value is a table
-    --- Register key, then value in
-    --- arg1: -
-    --- arg2: -
-    table.insert(ms[msf[msfp]], ms[msp])
-    table.insert(ms[msf[msfp]], ms[msp-1])
-    table.insert(ms[msf[msfp]], false)
-    msp = msp-2
-end
+
 
 function TABLE_SET_ACC_META (vm, arg1, arg2)
     --- Unstack 2: a key, then a value
