@@ -48,15 +48,9 @@ function STORE_LEXICAL (vm, arg1, arg2)
         _STACK_POP(vm.mainStack)
     )
 end
-
---- To rewrite
-
-
-
-
  function STORE_VOID (vm, arg1, arg2)
     --- Unstack 1
     --- arg1: -
     --- arg2: frame offset
-    msp = msp-1
+    _STACK_POP(vm.mainStack)
 end

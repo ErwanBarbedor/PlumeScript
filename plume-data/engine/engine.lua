@@ -79,35 +79,34 @@ return function (plume)
 			elseif op == 26 then goto ACC_TEXT
 			elseif op == 27 then goto ACC_EMPTY
 			elseif op == 28 then goto ACC_CALL
-			elseif op == 29 then goto RETURN
-			elseif op == 30 then goto ACC_CHECK_TEXT
-			elseif op == 31 then goto JUMP_IF
-			elseif op == 32 then goto JUMP_IF_NOT
-			elseif op == 33 then goto JUMP_IF_NOT_EMPTY
-			elseif op == 34 then goto JUMP
-			elseif op == 35 then goto JUMP_IF_PEEK
-			elseif op == 36 then goto JUMP_IF_NOT_PEEK
-			elseif op == 37 then goto GET_ITER
-			elseif op == 38 then goto FOR_ITER
-			elseif op == 39 then goto OPP_ADD
-			elseif op == 40 then goto OPP_MUL
-			elseif op == 41 then goto OPP_SUB
-			elseif op == 42 then goto OPP_DIV
-			elseif op == 43 then goto OPP_NEG
-			elseif op == 44 then goto OPP_MOD
-			elseif op == 45 then goto OPP_POW
-			elseif op == 46 then goto OPP_GTE
-			elseif op == 47 then goto OPP_LTE
-			elseif op == 48 then goto OPP_GT
-			elseif op == 49 then goto OPP_LT
-			elseif op == 50 then goto OPP_EQ
-			elseif op == 51 then goto OPP_NEQ
-			elseif op == 52 then goto OPP_AND
-			elseif op == 53 then goto OPP_NOT
-			elseif op == 54 then goto OPP_OR
-			elseif op == 55 then goto DUPLICATE
-			elseif op == 56 then goto SWITCH
-			elseif op == 57 then goto END
+			elseif op == 29 then goto ACC_CHECK_TEXT
+			elseif op == 30 then goto JUMP_IF
+			elseif op == 31 then goto JUMP_IF_NOT
+			elseif op == 32 then goto JUMP_IF_NOT_EMPTY
+			elseif op == 33 then goto JUMP
+			elseif op == 34 then goto JUMP_IF_PEEK
+			elseif op == 35 then goto JUMP_IF_NOT_PEEK
+			elseif op == 36 then goto GET_ITER
+			elseif op == 37 then goto FOR_ITER
+			elseif op == 38 then goto OPP_ADD
+			elseif op == 39 then goto OPP_MUL
+			elseif op == 40 then goto OPP_SUB
+			elseif op == 41 then goto OPP_DIV
+			elseif op == 42 then goto OPP_NEG
+			elseif op == 43 then goto OPP_MOD
+			elseif op == 44 then goto OPP_POW
+			elseif op == 45 then goto OPP_GTE
+			elseif op == 46 then goto OPP_LTE
+			elseif op == 47 then goto OPP_GT
+			elseif op == 48 then goto OPP_LT
+			elseif op == 49 then goto OPP_EQ
+			elseif op == 50 then goto OPP_NEQ
+			elseif op == 51 then goto OPP_AND
+			elseif op == 52 then goto OPP_NOT
+			elseif op == 53 then goto OPP_OR
+			elseif op == 54 then goto DUPLICATE
+			elseif op == 55 then goto SWITCH
+			elseif op == 56 then goto END
 			end
 
 			::LOAD_CONSTANT::
@@ -193,9 +192,6 @@ return function (plume)
 				goto DISPATCH
 			::ACC_CALL::
 				ACC_CALL(vm, arg1, arg2)
-				goto DISPATCH
-			::RETURN::
-				RETURN(vm, arg1, arg2)
 				goto DISPATCH
 			::ACC_CHECK_TEXT::
 				ACC_CHECK_TEXT(vm, arg1, arg2)

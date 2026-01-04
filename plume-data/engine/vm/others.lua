@@ -13,22 +13,21 @@ You should have received a copy of the GNU General Public License along with Plu
 If not, see <https://www.gnu.org/licenses/>.
 ]]
 
---- To rewrite
 function SWITCH (vm, arg1, arg2)
     --- Unstack 2, stack 2 in reverse order
     --- arg1: -
     --- arg2: -
-    local temp = ms[msp]
-    ms[msp] = ms[msp-1]
-    ms[msp-1] = temp
+    local x = _STACK_POP(vm.mainStack)
+    local y = _STACK_POP(vm.mainStack)
+    _STACK_PUSH(vm.mainStack, y)
+    _STACK_PUSH(vm.mainStack, x)
 end
 
 function DUPLICATE (vm, arg1, arg2)
     --- Stack 1, current top
     --- arg1: -
     --- arg2: -
-    msp = msp+1
-    ms[msp] = ms[msp-1]
+    _STACK_PUSH(vm.mainStack, _STACK_GET(vm.mainStack))
 end
 
 function NULL (vm, arg1, arg2)
