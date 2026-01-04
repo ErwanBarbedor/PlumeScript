@@ -17,29 +17,14 @@ function _GET_TYPE(vm, x)
     return type(x) == "table" and (x == vm.empty or x.type) or type(x)
 end
 
---- To rewrite
-function _ERROR (msg)
-    return false, msg, ip, chunk
+function _ERROR (vm, msg)
+    vm.err = msg -- !to-remove
+    -- !to-add return false, msg, vm.ip, vm.chunk
 end
 
-function _START ()
-    if hook then
-        if ip>0 then
-            hook(
-                chunk,
-                tic, ip, jump,
-                instr, op, vm, arg1, arg2,
-                ms, msp, msf, msfp,
-                vs, vsp, vsf, vsfp
-            )
-        end
+function _CHECK_BOOL (vm, x)
+    if x == vm.empty then
+        return false
     end
-
-    if jump>0 then
-        ip = jump
-        jump = 0-- 0 instead of nil to preserve type
-    else
-        ip = ip+1
-    end
-    tic = tic+1
+    return x
 end

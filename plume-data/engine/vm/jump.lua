@@ -26,12 +26,10 @@ function JUMP_IF_NOT (vm, arg1, arg2)
     --- arg1: -
     --- arg2: target offset
     local test = _STACK_POP(vm.mainStack)
-    if not test then
+    if not _CHECK_BOOL (vm, test) then
         vm.jump = arg2
     end
 end
-
---- To rewrite
 
 function JUMP_IF (vm, arg1, arg2)
     --- Unstack 1
@@ -39,7 +37,7 @@ function JUMP_IF (vm, arg1, arg2)
     --- arg1: -
     --- arg2: target offset
     local test = _STACK_POP(vm.mainStack)
-    if test then
+    if _CHECK_BOOL (vm, test) then
         vm.jump = arg2
     end
 end
@@ -47,32 +45,30 @@ function JUMP_IF_PEEK (vm, arg1, arg2)
     --- Jump to offset if top is true, without unpacking
     --- arg1: -
     --- arg2: target offset
-    local test = ms[msp]
-    _CHECK_BOOL (test)
-    if test then
-        jump = arg2
+    local test = _STACK_GET(vm.mainStack)
+    if _CHECK_BOOL (vm, test) then
+        vm.jump = arg2
     end
 end
 
 function JUMP_IF_NOT_PEEK (vm, arg1, arg2)
-    --- Unstack 1
     --- Jump to offset if top is false, without unpacking
     --- arg1: -
     --- arg2: target offset
-    local test = ms[msp]
-    _CHECK_BOOL (test)
-    if not test then
-        jump = arg2
+    local test = _STACK_GET(vm.mainStack)
+    if not _CHECK_BOOL (vm, test) then
+        vm.jump = arg2
     end
 end
+
 function JUMP_IF_NOT_EMPTY (vm, arg1, arg2)
     --- Unstack 1
     --- Jump to offset if not empty
     --- Used by macro when setting defaut values
     --- arg1: -
     --- arg2: target offset
-    if ms[msp] ~= empty then
-        jump = arg2
+    local test = _STACK_POP(vm.mainStack)
+    if test ~= vm.empty then
+        vm.jump = arg2
     end
-    msp = msp-1
 end
