@@ -33,7 +33,7 @@ function ACC_TEXT (vm, arg1, arg2)
     local stop  = _STACK_POS(vm.mainStack)
     for i = start, stop do
         if _STACK_GET(vm.mainStack, i) == vm.empty then
-            _STACK_SET(vm.mainStack, "")
+            _STACK_SET(vm.mainStack, i, "")
         end
     end
 
@@ -78,34 +78,29 @@ end
 function ACC_CHECK_TEXT (vm, arg1, arg2)
     --- Check if stack top can be concatened
     local value = _STACK_GET(vm.mainStack)
-    local t = _GET_TYPE(vm, value)
-    -- if t ~= "number" and t ~= "string" and value ~= empty then
-    --     if t == "table" and value.meta.table.tostring then
-    --         local meta = value.meta.table.tostring
-    --         local params = {}
-    --         _CALL (meta, params)
-    --         ms[msp] = callResult
-    --     else
-    --         _ERROR ("Cannot concat a '" ..t .. "' value.")
-    --     end
-    -- end
+    local t     = _GET_TYPE(vm, value)
+    if t ~= "number" and t ~= "string" and value ~= vm.empty then
+        if t == "table" and value.meta.table.tostring then
+            local meta = value.meta.table.tostring
+            local args = {}
+            _STACK_SET(vm.mainStack, _STACK_POS(v.mainStack), _CALL (vm, meta, args))
+        else
+            _ERROR (vm, "Cannot concat a '" ..t .. "' value.")
+        end
+    end
+
 end
 
 function _END_ACC (vm)
     _STACK_POP(vm.mainStack.frames)
 end
 
---- To rewrite
-
-
-
 function ACC_EMPTY (vm, arg1, arg2)
     --- Stack 1 constant empty
     --- Unstack main stack frame
     --- arg1: -
     --- arg2: -
-    msp = msp+1
-    ms[msp] = empty
+    _STACK_PUSH(vm.mainStack, vm.empty)
     _END_ACC(vm)
 end
 

@@ -66,7 +66,7 @@ function TABLE_INDEX (vm, arg1, arg2)
     local key = _STACK_POP(vm.mainStack)
     key = tonumber(key) or key
 
-    if key==vm.empty then
+    if key == vm.empty then
         if arg1 == 1 then
             LOAD_EMPTY(vm)
         else
@@ -82,13 +82,15 @@ function TABLE_INDEX (vm, arg1, arg2)
             end
         else
             local value = t.table[key]
-            if not value then
+            if value then
+                _STACK_PUSH(vm.mainStack, value)
+            else
                 if arg1 == 1 then
                     LOAD_EMPTY(vm)
                 elseif t.meta.table.getindex then
                     local meta = t.meta.table.getindex
                     local args = {key}
-                    _STACK_PUSH(vm.mainStack, _CALL (meta, args))
+                    _STACK_PUSH(vm.mainStack, _CALL (vm, meta, args))
                 else
                     if tonumber(key) then
                         _ERROR (vm, "Invalid index '" .. key .."'.")
@@ -147,7 +149,7 @@ function TABLE_SET (vm, arg1, arg2)
             local meta = t.meta.table.setindex
             local args = {key, value}
             
-            value = _CALL (meta, args)
+            value = _CALL (vm, meta, args)
         end
     end
     key = tonumber(key) or key
