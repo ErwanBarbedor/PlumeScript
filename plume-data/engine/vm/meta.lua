@@ -40,12 +40,14 @@ function _META_CHECK (name, macro)
 
 	if expectedParamCount then
 		if macro.positionalParamCount ~= expectedParamCount then
-			_ERROR ("Wrong number of positionnal parameters for meta-macro '" .. name .. "', " .. macro.positionalParamCount .. " instead of " .. expectedParamCount .. ".")
+			return false, "Wrong number of positionnal parameters for meta-macro '" .. name .. "', " .. macro.positionalParamCount .. " instead of " .. expectedParamCount .. "."
 		end
 		if macro.namedParamCount > 1 then -- 1 for self
-			_ERROR ("Meta-macro '" .. name .. "' dont support named parameters.")
+			return false, "Meta-macro '" .. name .. "' dont support named parameters."
 		end
 	elseif name ~= "call" and name ~= "tostring" and name ~= "tonumber" and name ~= "getindex" and name ~= "setindex" and name ~= "next" and name ~= "iter" then
-		_ERROR ("'" .. name .. "' isn't a valid meta-macro name.")
+		return false, "'" .. name .. "' isn't a valid meta-macro name."
 	end
+
+	return true
 end

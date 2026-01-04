@@ -313,8 +313,6 @@ return function (plume)
 	end
 
 	function plume.debug.hookPrintVMState(chunk, tic, ip, jump, instr, op, arg1, arg2, ms, msp, msf, msfp, vs, vsp, vsf, vsfp)
-
-
 		if jump==0 then
 			jump = ip+1
 		end

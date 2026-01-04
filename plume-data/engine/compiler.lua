@@ -297,7 +297,7 @@ return function(plume)
 			registerOP(node, ops.LOAD_CONSTANT, 0, offset)
 
 			if meta then
-				registerOP(node, ops.TABLE_SET_ACC_META, 0, 0)
+				registerOP(node, ops.TABLE_SET_ACC, 0, 1)
 			else
 				registerOP(node, ops.TABLE_SET_ACC, 0, 0)
 			end
