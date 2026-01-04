@@ -13,7 +13,6 @@ You should have received a copy of the GNU General Public License along with Plu
 If not, see <https://www.gnu.org/licenses/>.
 ]]
 
---- To rewrite
 function _META_CHECK (name, macro)
 	local comopps = "add mul div sub mod pow"
 	local binopps = "eq lt"

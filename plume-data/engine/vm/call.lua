@@ -36,11 +36,9 @@ function ACC_CALL (vm, arg1, arg2)
     end
 
     if t == "macro" then
-        local capture
+        local capture = vm.plume.obj.table(0, 0)
         local arguments = {}
-        if tocall.variadicOffset>0 then -- variadic
-            capture = vm.plume.obj.table(0, 0) -- can be optimized
-        end
+
         _UNSTACK_POS   (vm, tocall, arguments, capture)
         _UNSTACK_NAMED (vm, tocall, arguments, capture)
 
@@ -74,7 +72,7 @@ function ACC_CALL (vm, arg1, arg2)
         _STACK_POP(vm.mainStack)
         _STACK_PUSH(vm.mainStack, result)
     else
-        _ERROR ("Try to call a '" .. t .. "' value")
+        _ERROR (vm, "Try to call a '" .. t .. "' value")
     end
 end
 
@@ -85,15 +83,15 @@ function _UNSTACK_POS (vm, macro, arguments, capture)
 
         -- Last OP_CODE before call is loading the macro
         -- by it's name
-        if chunk.mapping[vm.ip-1] then
-            name = chunk.mapping[vm.ip-1].content
+        if vm.chunk.mapping[vm.ip-1] then
+            name = vm.chunk.mapping[vm.ip-1].content
         end
 
         if not name then
             name = macro.name or "???"
         end
 
-        _ERROR ("Wrong number of positionnal arguments for macro '" .. name .. "', " ..   argcount .. " instead of " .. macro.positionalParamCount .. ".")
+        _ERROR (vm, "Wrong number of positionnal arguments for macro '" .. name .. "', " ..   argcount .. " instead of " .. macro.positionalParamCount .. ".")
     end
 
     for i=1, macro.positionalParamCount do
@@ -137,7 +135,7 @@ end
 function _CALL (vm, macro, arguments)
     table.insert(vm.chunk.callstack, {chunk=vm.chunk, macro=macro, ip=vm.ip})
     if #vm.chunk.callstack>1000 then
-        _ERROR ("stack overflow")
+        _ERROR (vm, "stack overflow")
     end
 
     local success, callResult, cip, source  = vm.plume.run(macro, arguments)
@@ -147,20 +145,4 @@ function _CALL (vm, macro, arguments)
     table.remove(vm.chunk.callstack)
 
     return callResult
-end
-
---- To rewrite
-
-function RETURN (vm, arg1, arg2)
-    --- Unstack 1 from calls
-    --- Set jump to it
-    --- Leave scope
-    --- arg1: -
-    --- arg2: -
-    jump = calls[cp]
-    if not jump then -- exit the main programm
-        jump = #bytecode -- goto to END
-    end
-    cp = cp - 1
-    LEAVE_SCOPE (0, 0)
 end

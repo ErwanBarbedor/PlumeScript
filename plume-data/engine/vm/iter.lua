@@ -25,7 +25,7 @@ function GET_ITER (vm, arg1, arg2)
         if obj.meta.table.next then
             iter = obj
         else
-            iter = obj.meta.table.iter or plume.defaultMeta.iter
+            iter = obj.meta.table.iter or vm.plume.defaultMeta.iter
         end
 
         local value
