@@ -162,10 +162,7 @@ function OPP_NOT (vm, arg1, arg2) _UN_OPP_BOOL  (vm, _NOT) end
 
 --- Comparison
 function _LT(x, y) return x < y end
-function _GT(x, y) return x > y end
-
 function OPP_LT (vm, arg1, arg2) _BIN_OPP_NUMBER (vm, _LT, "lt") end
-function OPP_GT (vm, arg1, arg2) _BIN_OPP_NUMBER (vm, _GT, "gt") end
 
 function OPP_EQ (vm, arg1, arg2)
     local right = _STACK_POP(vm.mainStack)
@@ -174,18 +171,6 @@ function OPP_EQ (vm, arg1, arg2)
     local success, result = _HANDLE_META_BIN (vm, left, right, "eq")
     if not success then
         result = left == right
-    end
-
-    _STACK_PUSH(vm.mainStack, result)  
-end
-
-function OPP_NEQ (vm, arg1, arg2)
-    local right = _STACK_POP(vm.mainStack)
-    local left  = _STACK_POP(vm.mainStack)
-
-    local success, result = _HANDLE_META_BIN (vm, left, right, "eq")
-    if not success then
-        result = left ~= right
     end
 
     _STACK_PUSH(vm.mainStack, result)  

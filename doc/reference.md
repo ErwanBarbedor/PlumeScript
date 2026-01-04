@@ -627,9 +627,11 @@ $(t + 1)
 
 Only a specific set of identifiers can be used as metafields:
 
-*   **Binary Operators:** `add`, `sub`, `mul`, `div`, `mod`, `pow`, `eq`, `lt`, `gt`.
+*   **Binary Operators:** `add`, `sub`, `mul`, `div`, `mod`, `pow`, `eq`, `lt`.
 *   **Unary Operator:** `minus`.
 *   **Accessors & Logic:** `getindex`, `setindex`, `call`, `iter`, `next`.
+
+Note: `neq` and `gt` are emulated from `eq`, `lt`.
 
 ##### Arithmetic Resolution (Left, Right, and Common)
 

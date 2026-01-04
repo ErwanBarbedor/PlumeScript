@@ -16,7 +16,7 @@ If not, see <https://www.gnu.org/licenses/>.
 --- To rewrite
 function _META_CHECK (name, macro)
 	local comopps = "add mul div sub mod pow"
-	local binopps = "eq lt gt"
+	local binopps = "eq lt"
 	local unopps = "minus"
 
 	local expectedParamCount
