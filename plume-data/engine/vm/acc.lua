@@ -83,7 +83,7 @@ function ACC_CHECK_TEXT (vm, arg1, arg2)
         if t == "table" and value.meta.table.tostring then
             local meta = value.meta.table.tostring
             local args = {}
-            _STACK_SET(vm.mainStack, _STACK_POS(v.mainStack), _CALL (vm, meta, args))
+            _STACK_SET(vm.mainStack, _STACK_POS(vm.mainStack), _CALL (vm, meta, args))
         else
             _ERROR (vm, "Cannot concat a '" ..t .. "' value.")
         end

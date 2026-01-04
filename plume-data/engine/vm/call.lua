@@ -62,7 +62,7 @@ function ACC_CALL (vm, arg1, arg2)
     elseif t == "luaFunction" then
         ACC_TABLE(vm)
         table.insert(vm.chunk.callstack, {chunk=vm.chunk, macro=tocall, ip=vm.ip})
-        local success, result  =  pcall(tocall.callable, _STACK_GET(vm.mainStack), chunk)
+        local success, result  =  pcall(tocall.callable, _STACK_GET(vm.mainStack), vm.chunk)
         if not success then
             return success, result, ip, chunk
         end
