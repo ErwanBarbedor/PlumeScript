@@ -69,7 +69,7 @@ function _VM_INIT_VARS(vm, chunk)
     vm.jump    = 0
 
     -- local variables
-    vm.empty = vm.plume.empty
+    vm.empty = vm.plume.obj.empty
 end
 
 function _VM_INIT_ARGUMENTS(vm, chunk, arguments)
@@ -101,7 +101,28 @@ function _VM_TICK (vm)
     -- !to-remove-begin
     if vm.plume.hook then
         if vm.ip>0 then 
-            vm.plume.hook (vm)
+            local instr, op, arg1, arg2
+            instr = vm.bytecode[vm.ip]
+            op, arg1, arg2 = _VM_DECODE_CURRENT_INSTRUCTION(vm)
+
+            vm.plume.hook (
+                vm.chunk,
+                vm.tic,
+                vm.ip,
+                vm.jump,
+                instr,
+                op,
+                arg1,
+                arg2,
+                vm.mainStack,
+                vm.mainStack.pointer,
+                vm.mainStack.frames,
+                vm.mainStack.frames.pointer,
+                vm.variableStack,
+                vm.variableStack.pointer,
+                vm.variableStack.frames,
+                vm.variableStack.frames.pointer
+            )
         end       
     end  
     -- !to-remove-end

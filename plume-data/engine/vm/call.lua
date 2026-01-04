@@ -41,7 +41,7 @@ function ACC_CALL (vm, arg1, arg2)
         local capture
         local arguments = {}
         if macro.variadicOffset>0 then -- variadic
-            capture = ptable(0, 0) -- can be optimized
+            capture = vm.plume.obj.table(0, 0) -- can be optimized
         end
         _UNSTACK_POS(vm, macro, arguments, capture)
         _UNSTACK_NAMED(vm, macro, arguments, capture)
@@ -118,11 +118,11 @@ function _UNSTACK_NAMED (vm, macro, arguments, capture)
         local m=stack_bottom[i+2]
         local j = macro.namedParamOffset[k]
         -- if m then
-        --     _TABLE_META_SET (capture, k, v)
+        --     _TABLE_META_SET (cvm, apture, k, v)
         -- elseif j then
         --     parameters[j] = v
         -- elseif macro.variadicOffset>0 then
-        --     _TABLE_SET (capture, k, v)
+        --     _TABLE_SET (vm, capture, k, v)
         -- else
         --     local name = macro.name or "???"
         --     _ERROR("Unknow named parameter '" .. k .."' for macro '" .. name .."'.")

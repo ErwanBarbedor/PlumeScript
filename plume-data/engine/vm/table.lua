@@ -20,19 +20,6 @@ function TABLE_NEW (vm, arg1, arg2)
     _STACK_PUSH(vm.mainStack, table.new(0, arg1))
 end
 
-function TABLE_SET_ACC (vm, arg1, arg2)
-    --- Unstack 2: a key, then a value
-    --- Assume the main stack frame first value is a table
-    --- Register key, then value in
-    --- arg1: -
-    --- arg2: -
-    local t = _STACK_GET_FRAMED(vm.mainStack)
-    
-    table.insert(t, _STACK_POP(vm.mainStack)) -- key
-    table.insert(t, _STACK_POP(vm.mainStack)) -- value
-    table.insert(t, false)                    -- is meta
-end
-
 function _TABLE_SET (t, k, v)
     -- if dont exists, register key
     local key   = k
@@ -45,58 +32,68 @@ function _TABLE_SET (t, k, v)
     t.table[key] = value 
 end
 
---- To rewrite
-function TABLE_ADD (vm, arg1, arg2)
+function TABLE_SET_ACC (vm, arg1, arg2)
+    --- Unstack 2: a key, then a value
+    --- Assume the main stack frame first value is a table
+    --- Register key, then value in
+    --- arg1: -
+    --- arg2: is meta?
+    local t = _STACK_GET_FRAMED(vm.mainStack)
+    
+    table.insert(t, _STACK_POP(vm.mainStack)) -- key
+    table.insert(t, _STACK_POP(vm.mainStack)) -- value
+    table.insert(t, arg2==1)                  -- is meta
 end
 
-function CHECK_META (vm, arg1, arg2)
-    if not arg1.meta then
-        arg1.meta = plume.obj.table(0, 0)
-    end
+function TABLE_SET_META (vm, arg1, arg2)
+    --- Unstack 3, in order: table, key, value
+    --- Set the table.key to value
+    --- arg1: -
+    --- arg2: -
+    local t     = _STACK_POP(vm.mainStack)
+    local key   = _STACK_POP(vm.mainStack)
+    local value = _STACK_POP(vm.mainStack)
+    t.meta.table[key] = value
 end
+
 
 function TABLE_INDEX (vm, arg1, arg2)
     --- Unstack 2, in order: table, key
     --- Stack 1, table[key]
     --- arg1: safe?
     --- arg2: -
-    local key = ms[msp-1]
+    local t   = _STACK_POP(vm.mainStack)
+    local key = _STACK_POP(vm.mainStack)
     key = tonumber(key) or key
-    if key==empty then
+
+    if key==vm.empty then
         if arg1 == 1 then
-            msp = msp-2
-            LOAD_EMPTY()
+            LOAD_EMPTY(vm)
         else
-            _ERROR ("Cannot use empty as key.")
+            _ERROR (vm, "Cannot use empty as key.")
         end
     else
-        local _table = ms[msp]
-        local t = _type(_table)
-        if t ~= "table" then
+        local tt = _GET_TYPE (vm, t)
+        if tt ~= "table" then
             if arg1 == 1 then
-                msp = msp-2
-                LOAD_EMPTY()
+                LOAD_EMPTY(vm)
             else
-                _ERROR("Try to index a '" ..t .."' value.")
+                _ERROR(vm, "Try to index a '" ..tt .."' value.")
             end
         else
-            local value = _table.table[key]
+            local value = t.table[key]
             if not value then
                 if arg1 == 1 then
-                    msp = msp-2
-                    LOAD_EMPTY()
-                elseif _table.meta.table.getindex then
-                    local meta = _table.meta.table.getindex
-                    local params = {key}
-                    _CALL (meta, params)
-                    value = callResult
-                    ms[msp-1] = value
-                    msp = msp-1
+                    LOAD_EMPTY(vm)
+                elseif t.meta.table.getindex then
+                    local meta = t.meta.table.getindex
+                    local args = {key}
+                    _STACK_PUSH(vm.mainStack, _CALL (meta, args))
                 else
                     if tonumber(key) then
-                        _ERROR ("Invalid index '" .. key .."'.")
+                        _ERROR (vm, "Invalid index '" .. key .."'.")
                     else
-                        _ERROR ("Unregistered key '" .. key .."'.")
+                        _ERROR (vm, "Unregistered key '" .. key .."'.")
                     end
                 end
             end
@@ -111,10 +108,11 @@ function TABLE_INDEX_ACC_SELF (vm, arg1, arg2)
     --- Stack 1, table[key]
     --- arg1: -
     --- arg2: -
-    table.insert(ms[msf[msfp]], "self")
-    table.insert(ms[msf[msfp]], ms[msp])
-    table.insert(ms[msf[msfp]], false)
-    TABLE_INDEX()
+    local t = _STACK_GET_FRAMED(vm.mainStack)
+    table.insert(t, "self")
+    table.insert(t, _STACK_GET(vm.mainStack))
+    table.insert(t, false)
+    TABLE_INDEX(vm, 0, 0)
 end
 
 function TABLE_INDEX_META (vm, arg1, arg2)
@@ -122,16 +120,17 @@ function TABLE_INDEX_META (vm, arg1, arg2)
     --- Stack 1, table[key]
     --- arg1: -
     --- arg2: -
-    _CHECK_META (ms[msp])
     ms[msp-1] = ms[msp].meta.table[ms[msp-1]]
     msp = msp-1
 end
 
-
-
-function _TABLE_META_SET (t, k, v)
-    _META_CHECK (k, v)
-    t.meta.table[k] = v --set
+function _TABLE_META_SET (vm, t, k, v)
+    local success, err = _META_CHECK (k, v)
+    if success then
+        t.meta.table[k] = v --set
+    else
+        _ERROR(vm, err)
+    end
 end
 
 function TABLE_SET (vm, arg1, arg2)
@@ -139,45 +138,20 @@ function TABLE_SET (vm, arg1, arg2)
     --- Set the table.key to value
     --- arg1: -
     --- arg2: -
-    local t = ms[msp]
-    local key = ms[msp-1]
-    local value = ms[msp-2]
+    local t     = _STACK_POP(vm.mainStack)
+    local key   = _STACK_POP(vm.mainStack)
+    local value = _STACK_POP(vm.mainStack)
     if not t.table[key] then
         table.insert(t.keys, key)
         if t.meta.table.setindex then
             local meta = t.meta.table.setindex
-            local params = {key, value}
-            _CALL (meta, params)
-            value = callResult
+            local args = {key, value}
+            
+            value = _CALL (meta, args)
         end
     end
     key = tonumber(key) or key
     t.table[key] = value
-    msp = msp-3
-end
-
-function TABLE_SET_META (vm, arg1, arg2)
-    --- Unstack 3, in order: table, key, value
-    --- Set the table.key to value
-    --- arg1: -
-    --- arg2: -
-    _CHECK_META (ms[msp-2])
-    ms[msp-2].meta.table[ms[msp-1]] = ms[msp]
-    msp = msp-3
-end
-
-
-
-function TABLE_SET_ACC_META (vm, arg1, arg2)
-    --- Unstack 2: a key, then a value
-    --- Assume the main stack frame first value is a table
-    --- Register key, then value in
-    --- arg1: -
-    --- arg2: -
-    table.insert(ms[msf[msfp]], ms[msp])
-    table.insert(ms[msf[msfp]], ms[msp-1])
-    table.insert(ms[msf[msfp]], true)
-    msp = msp-2
 end
 
 function TABLE_EXPAND (vm, arg1, arg2)
@@ -186,19 +160,22 @@ function TABLE_EXPAND (vm, arg1, arg2)
     --- Put all hash item on the acc table
     --- arg1: -
     --- arg2: -
-    local t = ms[msp]
-    if _type(t) ~= "table" then
-        _ERROR ("Try to expand a '" .._type(t) .."' value.")
+    local t  = _STACK_POP(vm.mainStack)
+    local tt = _GET_TYPE(vm, t)
+    if tt == "table" then
+        for _, item in ipairs(t.table) do
+            _STACK_PUSH(vm.mainStack, item)
+        end
+
+        local ft = _STACK_GET_FRAMED(vm.mainStack)
+        for _, key in ipairs(t.keys) do
+            table.insert(ft, key)
+            table.insert(ft, t.table[key])
+            table.insert(ft, false)
+        end
+    else
+        _ERROR (vm, "Try to expand a '" .. tt .."' value.")
     end
 
-    msp = msp-1
-    for _, item in ipairs(t.table) do
-        msp = msp+1
-        ms[msp] = item
-    end
-    for _, key in ipairs(t.keys) do
-        table.insert(ms[msf[msfp]], key)
-        table.insert(ms[msf[msfp]], t.table[key])
-        table.insert(ms[msf[msfp]], false)
-    end
+    
 end

@@ -55,7 +55,7 @@ function _STACK_GET_POINTER(stack)
 end
 
 function _STACK_POP_FRAME(stack)
-    _STACK_SET(stack, _STACK_POP(stack.frames)-1)
+    _STACK_MOVE(stack, _STACK_POP(stack.frames)-1)
 end
 
 function _STACK_SET_FRAMED(stack, offset, frameOffset, value)
