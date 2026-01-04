@@ -42,9 +42,9 @@ return function (plume)
 		
 		local op, arg1, arg2
 		::DISPATCH::
-			if plume.hook then
-				_VM_DEBUG(vm, plume.hook)
-			end
+			if vm.err then -- !to-remove
+				return false, vm.err, vm.ip, vm.chunk -- !to-remove
+			end -- !to-remove
 
 			-- Handle jump and incremente IP
 			_VM_TICK(vm)

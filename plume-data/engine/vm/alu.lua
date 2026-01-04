@@ -13,314 +13,179 @@ You should have received a copy of the GNU General Public License along with Plu
 If not, see <https://www.gnu.org/licenses/>.
 ]]
 
---- To rewrite
-function _CHECK_NUMBER (x)
-    if _type(x) == "string" then
+function _CHECK_NUMBER_META (vm, x)
+    local tx = _GET_TYPE(vm, x)
+    if tx  == "string" then
         x = tonumber(x)
         if not x then
-            _ERROR ("Cannot convert the string value to a number.")
+            return nil, "Cannot convert the string value to a number."
         end
-    elseif _type(x) ~= "number" then
-        if _type(x) == "table" and x.meta.table.tonumber then
-            local meta = ms[msp].meta.table.tonumber
-            local params = {}
-            _CALL (meta, params)
-            x = callResult
-        else
-            _ERROR ("Cannot do comparison or arithmetic with " .. _type(x).. " value.")
-        end
-    end
-end
-
-function _CHECK_BOOL (x)
-    if x == empty then
-        x = false
-    end
-end
-
-function _CHECK_OPTN_NUMBER (x)
-    if _type(x) == "string" then
-        x = tonumber(x) or x
-    end
-end
-
-function _BIN_OPP (opp, check)
-    --- Classic opperations
-    --- Unstack 2
-    --- Stack 1, the result
-    --- arg1: -
-    --- arg2: -
-    x = ms[msp-1]
-    y = ms[msp]
-
-    _CHECK_check (x)
-    _CHECK_check (y)
-
-    msp = msp-1
-    ms[msp] = opp(x, y)
-end
-
-function _UN_OPP (opp, check)
-    --- Classic opperations
-    --- Unstack 1
-    --- Stack 1, the result
-    --- arg1: -
-    --- arg2: -
-    x = ms[msp]
-
-    _CHECK_check (x)
-
-    ms[msp] = opp( x)
-end
-
-
-function _CHECK_NUMBER_META (x)
-    if _type(x) == "string" then
-        x = tonumber(x)
-        if not x then
-            err = "Cannot convert the string value to a number."
-        end
-    elseif _type(x) ~= "number" then
-        if _type(x) == "table" and x.meta.table.tonumber then
+    elseif tx  ~= "number" then
+        if tx  == "table" and x.meta.table.tonumber then
             local meta = x.meta.table.tonumber
             local params = {}
-            _CALL (meta, params)
-            x = callResult
+            return _CALL (meta, params)
         else
-            err = "Cannot do comparison or arithmetic with " .. _type(x).. " value."
+            return nil, "Cannot do comparison or arithmetic with " .. tx .. " value."
         end
     end
+    return x
 end
 
-function _HANDLE_META_BIN (name)
-    local meta
-    local params
-    -- if _type(x) == "table" and x.meta and x.meta.table.(name)r then
-    --     meta = x.meta.table.(name)r
-    --     params = {y, x} -- self last
-    -- elseif _type(y) == "table" and y.meta and y.meta.table.(name)l then
-    --     meta = y.meta.table.(name)l
-    --     params = {x, y}
-    -- elseif _type(x) == "table" and x.meta and x.meta.table.name then
-    --     meta = x.meta.table.name
-    --     params = {x, y, x}
-    -- elseif _type(y) == "table" and y.meta and y.meta.table.name then
-    --     meta = y.meta.table.name
-    --     params = {x, y, y}
-    -- end
+function _HANDLE_META_BIN (vm, left, right, name)
+    local meta, params
+    local tleft  = _GET_TYPE(vm, left)
+    local tright = _GET_TYPE(vm, right)
+    if tleft == "table" and left.meta and left.meta.table[name.."r"] then
+        meta = left.meta.table[name.."r"]
+        params = {right, left} -- self last
+    elseif tright == "table" and right.meta and right.meta.table[name.."l"] then
+        meta = y.meta.table[name.."l"]
+        params = {left, right}
+    elseif tleft == "table" and left.meta and left.meta.table[name] then
+        meta = left.meta.table[name]
+        params = {left, right, left}
+    elseif tright == "table" and right.meta and right.meta.table[name] then
+        meta = right.meta.table[name]
+        params = {left, right, right}
+    end
 
     if not meta then
-        _ERROR (err)
+        return false
     end
 
-    _CALL (meta, params)
-
-    ms[msp] = callResult
+    return true, _CALL (vm, meta, params)
 end
 
-function _BIN_OPP_META (opp, name)
-    x = ms[msp-1]
-    y = ms[msp]
-
-    local err
-
-    _CHECK_NUMBER_META (x)
-    _CHECK_NUMBER_META (y)
-
-    msp = msp-1
-
-    if err then
-        _HANDLE_META_BIN (name)
-    else
-        ms[msp] = opp(x, y)
-    end
-end
-
-function _HANDLE_META_UN (name)
+function _HANDLE_META_UN (vm, name)
     local meta
     local params = {x}
-    if _type(x) == "table" and x.meta and x.meta.table.name then
+    if _GET_TYPE(vm, x) == "table" and x.meta and x.meta.table.name then
         meta = x.meta.table.name
     end
 
     if not meta then
-        _ERROR (err)
+        return false
     end
 
-    _CALL (meta, params)
-
-    ms[msp] = callResult
+    return true, _CALL (meta, params)
 end
 
-function _UN_OPP_META (opp, name)
-    x = ms[msp]
+function _BIN_OPP_BOOL (vm, opp)
+    local right = _STACK_POP(vm.mainStack)
+    local left  = _STACK_POP(vm.mainStack)
 
-    local err
+    right = _CHECK_BOOL (vm, right)
+    left  = _CHECK_BOOL (vm, left)
 
-    _CHECK_NUMBER_META (x)
+    _STACK_PUSH(vm.mainStack, opp(right, left))
+end
+
+function _UN_OPP_BOOL (vm, opp)
+    local x = _STACK_POP(vm.mainStack)
+    x = _CHECK_BOOL (vm, x)
+    _STACK_PUSH(vm.mainStack, opp(x))
+end
+
+function _BIN_OPP_NUMBER (vm, opp, name)
+    local right = _STACK_POP(vm.mainStack)
+    local left  = _STACK_POP(vm.mainStack)
+
+    local err, success, result
+
+    right, err = _CHECK_NUMBER_META (vm, right)
+    left, err  = _CHECK_NUMBER_META (vm, left)
 
     if err then
-        _HANDLE_META_UN (name)
+        success, result = _HANDLE_META_BIN (vm, left, right, name)
     else
-        ms[msp] = opp (x)
+        success = true
+        result = opp(left, right)
     end
+
+    if success then
+        _STACK_PUSH(vm.mainStack, result)
+    else
+        _ERROR(vm, err)
+    end    
 end
 
-function OPP_ADD () _BIN_OPP_META (_ADD, "add") end
-function OPP_MUL () _BIN_OPP_META  (_MUL, "mul") end
-function OPP_SUB () _BIN_OPP_META (_SUB, "sub") end
-function OPP_DIV () _BIN_OPP_META (_DIV, "div") end
-function OPP_MOD () _BIN_OPP_META (_MOD, "mod") end
-function OPP_POW () _BIN_OPP_META (_POW, "pow") end
-function OPP_NEG () _UN_OPP_META (_MINUS, "minus") end
-
--- comp
-function OPP_GT ()
-    x = ms[msp-1]
-    y = ms[msp]
-
+function _UN_OPP_NUMBER (opp, name)
+    local x = _STACK_POP(vm.mainStack)
     local err
 
-    _CHECK_NUMBER_META (x)
-    _CHECK_NUMBER_META (y)
-
-    msp = msp-1
+    x, err = __CHECK_NUMBER_META (vm, x)
 
     if err then
-        local macro, params, meta
-        if _type(x) == "table" and x.meta and x.meta.table.gt then
-            meta = x.meta.table.gt
-            params = {y, x}
-        elseif _type(y) == "table" and y.meta and y.meta.table.lt then
-            meta = y.meta.table.lt
-            params = {x, y}
-        end
-        if not meta then
-            _ERROR (err)
-        end
-
-       _CALL (meta, params)
-
-        if invert then
-            callResult = not callResult
-            if callResult then
-                ms[msp] = callResult
-            else
-                msp = msp+1
-                OPP_EQ()
-            end
-        else
-            ms[msp] = callResult
-        end
+        success, result = _HANDLE_META_UN (vm, x, name)
     else
-        ms[msp] = x > y
+        success = true
+        result = opp(x)
     end
+
+    if success then
+        _STACK_PUSH(vm.mainStack, result)
+    else
+        _ERROR(vm, err)
+    end  
 end
 
-function OPP_LT ()
-    x = ms[msp-1]
-    y = ms[msp]
+--- Arithmetics
+function _ADD(x, y) return x+y end
+function _MUL(x, y) return x*y end
+function _SUB(x, y) return x-y end
+function _DIV(x, y) return x/y end
+function _MOD(x, y) return x%y end
+function _POW(x, y) return x^y end
+function _NEG(x)    return -x end
 
-    local err
+function OPP_ADD (vm, arg1, arg2) _BIN_OPP_NUMBER (vm, _ADD,   "add")   end
+function OPP_MUL (vm, arg1, arg2) _BIN_OPP_NUMBER (vm, _MUL,   "mul")   end
+function OPP_SUB (vm, arg1, arg2) _BIN_OPP_NUMBER (vm, _SUB,   "sub")   end
+function OPP_DIV (vm, arg1, arg2) _BIN_OPP_NUMBER (vm, _DIV,   "div")   end
+function OPP_MOD (vm, arg1, arg2) _BIN_OPP_NUMBER (vm, _MOD,   "mod")   end
+function OPP_POW (vm, arg1, arg2) _BIN_OPP_NUMBER (vm, _POW,   "pow")   end
+function OPP_NEG (vm, arg1, arg2) _UN_OPP_NUMBER  (vm, _MINUS, "minus") end
 
-    _CHECK_NUMBER_META (x)
-    _CHECK_NUMBER_META (y)
 
-    msp = msp-1
 
-    if err then
-        local macro, params, meta, invert
-        if _type(x) == "table" and x.meta and x.meta.table.lt then
-            meta = x.meta.table.lt
-            params = {y, x}
-        elseif _type(y) == "table" and y.meta and y.meta.table.gt then
-            meta = y.meta.table.gt
-            params = {x, y}
-        elseif _type(x) == "table" and x.meta and x.meta.table.gt then
-            meta = x.meta.table.gt
-            params = {y, x}
-            invert = true
-        elseif _type(y) == "table" and y.meta and y.meta.table.lt then
-            meta = y.meta.table.lt
-            params = {x, y}
-            invert = true
-        end
-        if not meta then
-            _ERROR (err)
-        end
+--- Bool
+function _AND(x, y) return x and y end
+function _OR(x, y)  return x or y end
+function _NOT(x)    return not x end
 
-        _CALL (meta, params)
+function OPP_AND (vm, arg1, arg2) _BIN_OPP_BOOL (vm, _AND) end
+function OPP_OR  (vm, arg1, arg2) _BIN_OPP_BOOL (vm, _OR) end
+function OPP_NOT (vm, arg1, arg2) _UN_OPP_BOOL  (vm, _NOT) end
 
-        if invert then
-            callResult = not callResult
-            if callResult then
-                ms[msp] = callResult
-            else
-                msp = msp+1
-                OPP_EQ()
-            end
-        else
-            ms[msp] = callResult
-        end
 
-    else
-        ms[msp] = x < y
+--- Comparison
+function _LT(x, y) return x < y end
+function _GT(x, y) return x > y end
+
+function OPP_LT (vm, arg1, arg2) _BIN_OPP_NUMBER (vm, _LT, "lt") end
+function OPP_GT (vm, arg1, arg2) _BIN_OPP_NUMBER (vm, _GT, "gt") end
+
+function OPP_EQ (vm, arg1, arg2)
+    local right = _STACK_POP(vm.mainStack)
+    local left  = _STACK_POP(vm.mainStack)
+
+    local success, result = _HANDLE_META_BIN (vm, left, right, "eq")
+    if not success then
+        result = left == right
     end
+
+    _STACK_PUSH(vm.mainStack, result)  
 end
 
-function OPP_EQ ()
-    x = ms[msp-1]
-    y = ms[msp]
+function OPP_NEQ (vm, arg1, arg2)
+    local right = _STACK_POP(vm.mainStack)
+    local left  = _STACK_POP(vm.mainStack)
 
-    msp = msp-1
-
-    local macro, params, meta
-
-    if _type(x) == "table" and x.meta and x.meta.table.eq then
-        meta = x.meta.table.eq
-        params = {y, x}
-    elseif _type(y) == "table" and y.meta and y.meta.table.eq then
-        meta = y.meta.table.eq
-        params = {x, y}
+    local success, result = _HANDLE_META_BIN (vm, left, right, "eq")
+    if not success then
+        result = left ~= right
     end
 
-    if meta then
-        _CALL (meta, params)
-        ms[msp] = callResult
-    else
-        _CHECK_OPTN_NUMBER (x)
-        _CHECK_OPTN_NUMBER (y)
-        ms[msp] = x == y
-    end
+    _STACK_PUSH(vm.mainStack, result)  
 end
-
-function OPP_NEQ ()
-    x = ms[msp-1]
-    y = ms[msp]
-
-    msp = msp-1
-
-    local macro, params, meta
-
-    if _type(x) == "table" and x.meta and x.meta.table.eq then
-        meta = x.meta.table.eq
-        params = {y, x}
-    elseif _type(y) == "table" and y.meta and y.meta.table.eq then
-        meta = y.meta.table.eq
-        params = {x, y}
-    end
-
-    if meta then
-        _CALL (meta, params)
-        ms[msp] = not callResult
-    else
-        _CHECK_OPTN_NUMBER (x)
-        _CHECK_OPTN_NUMBER (y)
-        ms[msp] = x ~= y
-    end
-end
-
--- bool
-function OPP_AND () _BIN_OPP (_AND) end
-function OPP_OR () _BIN_OPP (_OR) end
-function OPP_NOT () _UN_OPP (_NOT) end
