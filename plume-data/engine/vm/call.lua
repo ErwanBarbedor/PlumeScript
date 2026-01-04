@@ -23,55 +23,53 @@ function ACC_CALL (vm, arg1, arg2)
     --- Stack current ip to calls
     --- arg1: -
     --- arg2: -
-    local macro = _STACK_POP(vm.mainStack)
-    local t = _GET_TYPE(vm, macro)
+    local tocall = _STACK_POP(vm.mainStack)
+    local t = _GET_TYPE(vm, tocall)
     local self
 
     if t == "table" then
-        if macro.meta and macro.meta.table.call then
-            local params = _STACK_GET(vm.mainStack)
-            self = macro
-
-            t = macro.meta.table.call.type
-            macro = macro.meta.table.call
+        if tocall.meta and tocall.meta.table.call then
+            self = tocall
+            tocall = tocall.meta.table.call
+            t = tocall.type
         end
     end
 
     if t == "macro" then
         local capture
         local arguments = {}
-        if macro.variadicOffset>0 then -- variadic
+        if tocall.variadicOffset>0 then -- variadic
             capture = vm.plume.obj.table(0, 0) -- can be optimized
         end
-        _UNSTACK_POS(vm, macro, arguments, capture)
-        _UNSTACK_NAMED(vm, macro, arguments, capture)
+        _UNSTACK_POS   (vm, tocall, arguments, capture)
+        _UNSTACK_NAMED (vm, tocall, arguments, capture)
 
         -- Add self to params
         if self then  
             table.insert(arguments, self)
         end
 
-        if macro.variadicOffset>0 then -- variadic
-            arguments[macro.variadicOffset] = capture
+        if tocall.variadicOffset>0 then -- variadic
+            arguments[tocall.variadicOffset] = capture
         end
         _END_ACC(vm)
 
         _STACK_PUSH(
             vm.mainStack,
-            _CALL (vm, macro, arguments)
+            _CALL (vm, tocall, arguments)
         )
 
     elseif t == "luaFunction" then
         ACC_TABLE(vm)
-        table.insert(vm.chunk.callstack, {chunk=vm.chunk, macro=macro, ip=vm.ip})
-        local success, result  =  pcall(macro.callable, _STACK_GET(vm.mainStack), chunk)
+        table.insert(vm.chunk.callstack, {chunk=vm.chunk, macro=tocall, ip=vm.ip})
+        local success, result  =  pcall(tocall.callable, _STACK_GET(vm.mainStack), chunk)
         if not success then
             return success, result, ip, chunk
         end
         table.remove(vm.chunk.callstack)
 
         if result == nil then
-            result = empty
+            result = vm.empty
         end
         _STACK_POP(vm.mainStack)
         _STACK_PUSH(vm.mainStack, result)
@@ -111,24 +109,29 @@ end
 
 function _UNSTACK_NAMED (vm, macro, arguments, capture)
     local stack_bottom = _STACK_GET_FRAMED(vm.mainStack)
-
+    local err
     for i=1, #stack_bottom, 3 do
         local k=stack_bottom[i]
         local v=stack_bottom[i+1]
         local m=stack_bottom[i+2]
         local j = macro.namedParamOffset[k]
-        -- if m then
-        --     _TABLE_META_SET (cvm, apture, k, v)
-        -- elseif j then
-        --     parameters[j] = v
-        -- elseif macro.variadicOffset>0 then
-        --     _TABLE_SET (vm, capture, k, v)
-        -- else
-        --     local name = macro.name or "???"
-        --     _ERROR("Unknow named parameter '" .. k .."' for macro '" .. name .."'.")
-        -- end
+        if m then
+            _TABLE_META_SET (vm, capture, k, v)
+        elseif j then
+            arguments[j] = v
+        elseif macro.variadicOffset>0 then
+            _TABLE_SET (vm, capture, k, v)
+        else
+            local name = macro.name or "???"
+            err =  "Unknow named parameter '" .. k .."' for macro '" .. name .."'."
+        end
     end
-    _STACK_POP(vm.mainStack)
+
+    if err then
+        _ERROR(vm, err)
+    else
+        _STACK_POP(vm.mainStack)
+    end
 end
 
 function _CALL (vm, macro, arguments)
