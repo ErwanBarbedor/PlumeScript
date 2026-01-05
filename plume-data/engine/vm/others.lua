@@ -19,8 +19,9 @@ function SWITCH (vm, arg1, arg2)
     --- arg2: -
     local x = _STACK_POP(vm.mainStack)
     local y = _STACK_POP(vm.mainStack)
-    _STACK_PUSH(vm.mainStack, y)
     _STACK_PUSH(vm.mainStack, x)
+    _STACK_PUSH(vm.mainStack, y)
+    
 end
 
 function DUPLICATE (vm, arg1, arg2)
