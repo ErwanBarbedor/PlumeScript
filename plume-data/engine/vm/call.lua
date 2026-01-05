@@ -61,16 +61,17 @@ function ACC_CALL (vm, arg1, arg2)
         ACC_TABLE(vm)
         table.insert(vm.chunk.callstack, {chunk=vm.chunk, macro=tocall, ip=vm.ip})
         local success, result  =  pcall(tocall.callable, _STACK_GET(vm.mainStack), vm.chunk)
-        if not success then
-            return success, result, ip, chunk
+        if success then
+            table.remove(vm.chunk.callstack)
+            if result == nil then
+                result = vm.empty
+            end
+            _STACK_POP(vm.mainStack)
+            _STACK_PUSH(vm.mainStack, result)
+        else
+            _ERROR(vm, result)
         end
-        table.remove(vm.chunk.callstack)
-
-        if result == nil then
-            result = vm.empty
-        end
-        _STACK_POP(vm.mainStack)
-        _STACK_PUSH(vm.mainStack, result)
+        
     else
         _ERROR (vm, "Try to call a '" .. t .. "' value")
     end
@@ -134,15 +135,15 @@ end
 
 function _CALL (vm, macro, arguments)
     table.insert(vm.chunk.callstack, {chunk=vm.chunk, macro=macro, ip=vm.ip})
-    if #vm.chunk.callstack>1000 then
+    if #vm.chunk.callstack<=1000 then
+        local success, callResult, cip, source  = vm.plume.run(macro, arguments)
+        if success then
+            table.remove(vm.chunk.callstack)
+            return callResult
+        else
+            _SPECIAL_ERROR(vm, callResult, cip, (source or macro) )
+        end
+    else
         _ERROR (vm, "stack overflow")
     end
-
-    local success, callResult, cip, source  = vm.plume.run(macro, arguments)
-    if not success then
-        return success, callResult, cip, (source or macro)
-    end
-    table.remove(vm.chunk.callstack)
-
-    return callResult
 end

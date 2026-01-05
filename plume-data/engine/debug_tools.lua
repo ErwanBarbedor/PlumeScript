@@ -19,10 +19,10 @@ return function (plume)
 		if type(s) == "table" then
 			if s == plume.obj.empty then
 				s = "empty"
-			elseif s[1] == "macro" then
-				s = "macro x0" .. s[2]
-			elseif s[1] == "luaFunction" then
-				s = "luaFunction '" .. s[3] .. "'"
+			elseif s.type == "macro" then
+				s = "macro '" .. (s.name or "???") .. "'"
+			elseif s.type == "luaFunction" then
+				s = "luaFunction '" .. (s.name or "???") .. "'"
 			end
 		end
 
