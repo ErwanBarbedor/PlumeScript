@@ -169,69 +169,6 @@ $(t!=6)
 false
 /// End
 
-/// Test gt
-let t = @table
-  meta gt: macro(x)
-    $true
-  end
-end
-
-$(t>6)
-/// Output
-true
-/// End
-
-/// Test gt fallback 1
-let t = @table
-  meta gt: macro(x)
-    $true
-  end
-end
-
-$(t<=6)
-/// Output
-false
-/// End
-
-/// Test gt fallback 2
-let t = @table
-  meta gt: macro(x)
-    $true
-  end
-end
-
-$(6<t)
-/// Output
-true
-/// End
-
-/// Test gt fallback 3
-let t = @table
-  meta gt: macro(x)
-    $false
-  end
-end
-
-$(t>=6)
-/// Output
-false
-/// End
-
-/// Test gt fallback 4
-let t = @table
-  meta gt: macro(x)
-    $false
-  end
-  meta eq: macro(x)
-    $true
-  end
-end
-
-$(t>=6)
-/// Output
-true
-/// End
-
 /// Test lt
 let t = @table
   meta lt: macro(x)
@@ -244,19 +181,28 @@ $(t<6)
 true
 /// End
 
-/// Test gt fallback 5
+/// Test lt fallback 1
 let t = @table
-  meta gt: macro(x)
-    $(x<=6)
-  end
-  meta eq: macro(x)
-    $(x==6)
+  meta lt: macro(x)
+    $true
   end
 end
 
-$(t<6)
+$(t>6)
 /// Output
 true
+/// End
+
+/// Test lt fallback 2
+let t = @table
+  meta lt: macro(x)
+    $true
+  end
+end
+
+$(t>=6)
+/// Output
+false
 /// End
 
 /// Test tostring 1

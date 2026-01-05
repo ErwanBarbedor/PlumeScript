@@ -297,7 +297,7 @@ return function(plume)
 			registerOP(node, ops.LOAD_CONSTANT, 0, offset)
 
 			if meta then
-				registerOP(node, ops.TABLE_SET_ACC_META, 0, 0)
+				registerOP(node, ops.TABLE_SET_ACC, 0, 1)
 			else
 				registerOP(node, ops.TABLE_SET_ACC, 0, 0)
 			end
@@ -505,7 +505,7 @@ return function(plume)
 		----------
 		-- EVAL --
 		----------
-		local oppNames = "ADD SUB MUL DIV MOD LT GT EQ NEQ NOT NEG POW"
+		local oppNames = "ADD SUB MUL DIV MOD LT EQ NOT NEG POW"
 
 		for oppName in oppNames:gmatch("%S+") do
 			nodeHandlerTable[oppName] = function(node)
@@ -517,32 +517,28 @@ return function(plume)
 			end
 		end
 
-		nodeHandlerTable.LTE = function(node)
-			nodeHandler(node.children[1])
-			nodeHandler(node.children[2])
-			registerOP(node, ops["OPP_LT"], 0, 0)
+		nodeHandlerTable.NEQ = function(node)
+			nodeHandlerTable.EQ(node)
+			registerOP(node, ops.OPP_NOT, 0, 0)
+		end
 
-			local uid = getUID()
-			registerGoto(node, "or_end_"..uid, "JUMP_IF_PEEK")
-			nodeHandler(node.children[1])
+		nodeHandlerTable.GT = function(node)
+			-- reverse the order of operands
 			nodeHandler(node.children[2])
-			registerOP(node, ops["OPP_EQ"], 0, 0)
-			registerOP(node, ops["OPP_OR"], 0, 0)
-			registerLabel(node, "or_end_"..uid)
+			if node.children[2] then
+				nodeHandler(node.children[1])
+			end
+			registerOP(node, ops.OPP_LT, 0, 0)
+		end
+
+		nodeHandlerTable.LTE = function(node)
+			nodeHandlerTable.GT(node)
+			registerOP(node, ops.OPP_NOT, 0, 0)
 		end
 
 		nodeHandlerTable.GTE = function(node)
-			nodeHandler(node.children[1])
-			nodeHandler(node.children[2])
-			registerOP(node, ops["OPP_GT"], 0, 0)
-
-			local uid = getUID()
-			registerGoto(node, "or_end_"..uid, "JUMP_IF_PEEK")
-			nodeHandler(node.children[1])
-			nodeHandler(node.children[2])
-			registerOP(node, ops["OPP_EQ"], 0, 0)
-			registerOP(node, ops["OPP_OR"], 0, 0)
-			registerLabel(node, "or_end_"..uid)
+			nodeHandlerTable.LT(node)
+			registerOP(node, ops.OPP_NOT, 0, 0)
 		end
 
 		nodeHandlerTable.OR = function(node)
