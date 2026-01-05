@@ -66,7 +66,7 @@ function ACC_TABLE (vm, arg1, arg2)
         if t[i+2] then -- meta
             _TABLE_META_SET (vm, args, t[i], t[i+1])
         else
-            _TABLE_SET (args, t[i], t[i+1])
+            _TABLE_SET (vm, args, t[i], t[i+1])
         end
     end
     _STACK_MOVE(vm.mainStack, limit-2)

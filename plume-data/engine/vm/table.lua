@@ -20,7 +20,7 @@ function TABLE_NEW (vm, arg1, arg2)
     _STACK_PUSH(vm.mainStack, table.new(0, arg1))
 end
 
-function _TABLE_SET (t, k, v)
+function _TABLE_SET (vm, t, k, v)
     -- if dont exists, register key
     local key   = k
     local value = v
