@@ -22,7 +22,7 @@ function ENTER_SCOPE (vm, arg1, arg2)
 
     _STACK_PUSH(
         vm.variableStack.frames,
-        _STACK_GET_POINTER(vm.variableStack.frames) - arg1
+        _STACK_POS(vm.variableStack) + 1 - arg1
     )
     
     for i = 1, arg2-arg1 do

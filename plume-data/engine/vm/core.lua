@@ -85,7 +85,7 @@ function _VM_INIT_ARGUMENTS(vm, chunk, arguments)
         else 
             for i=1, chunk.localsCount do
                 if arguments[i] == nil then
-                    _STACK_SET(vm.variableStack, i, empty)
+                    _STACK_SET(vm.variableStack, i, vm.empty)
                 else
                     _STACK_SET(vm.variableStack, i, arguments[i])
                 end

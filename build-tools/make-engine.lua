@@ -62,9 +62,14 @@ local init = [[
 		
 		local op, arg1, arg2
 		::DISPATCH::
-			if vm.err then -- !to-remove
-				return false, vm.err, vm.ip, vm.chunk -- !to-remove
-			end -- !to-remove
+			-- !begin-to-remove
+			if vm.err then 
+				return false, vm.err, vm.ip, vm.chunk
+			end
+			if vm.serr then
+				return false, unpack(vm.serr)
+			end
+			-- !end-to-remove
 
 			-- Handle jump and incremente IP
 			_VM_TICK(vm)

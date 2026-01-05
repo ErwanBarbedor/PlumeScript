@@ -50,10 +50,6 @@ function _STACK_MOVE_FRAMED(stack)
     )
 end
 
-function _STACK_GET_POINTER(stack)
-    return stack.pointer
-end
-
 function _STACK_POP_FRAME(stack)
     _STACK_MOVE(stack, _STACK_POP(stack.frames)-1)
 end

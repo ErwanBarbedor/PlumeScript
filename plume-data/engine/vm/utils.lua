@@ -22,6 +22,11 @@ function _ERROR (vm, msg)
     -- !to-add return false, msg, vm.ip, vm.chunk
 end
 
+function _SPECIAL_ERROR (vm, msg, ip, chunk)
+    vm.serr = {msg, ip, chunk}-- !to-remove
+    -- !to-add return false, msg, vm.ip, vm.chunk
+end
+
 function _CHECK_BOOL (vm, x)
     if x == vm.empty then
         return false
