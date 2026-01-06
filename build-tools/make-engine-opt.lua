@@ -1,7 +1,6 @@
 require "build-tools/make-engine"
 
-local function parse(text)
-end
+local parse = require "build-tools/luaParser"
 
 local function inline(ast)
 end
