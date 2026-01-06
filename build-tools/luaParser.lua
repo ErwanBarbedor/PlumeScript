@@ -21,7 +21,7 @@ end
 
 local patterns = {
     {
-        pattern = {"function%s*([a-zA-Z_]+)%s*%((.-)%)"},
+        pattern = {"function%s*([a-zA-Z_%.]*)%s*%((.-)%)",},
         action = function (state, match)
             local params = {}
             for m in match[3]:gmatch('[^,%s]+') do
@@ -88,16 +88,29 @@ local patterns = {
     {
         pattern = {"[a-zA-Z_][a-zA-Z_]*"},
         action = function (state, match)
-            if ("then do"):match(match[1]) then
-                state.push({kind="var", name=match[1]})
+            if match[1] == "then" or match[1] == "do" then
+                if state.top.kind == "elseif" then
+                    state.pop()
+                    state.add({kind="then"})
+                else
+                    state.push({kind="open", name=match[1]})
+                end
+            elseif match[1] == "elseif" then
+                state.push({kind="elseif"})
             else
                 state.add({kind="var", name=match[1]})
             end
         end
     },
     {
-        pattern = {"[\t]"},
+        pattern = {"%-%-%[%[.-%]%]", "%-%-[^\n]+\n?"},
         action = function (state, match)
+        end
+    },
+    {
+        pattern = {'".-"', "'.-'"},
+        action = function (state, match)
+            state.add({kind="string", value=match[1]})
         end
     },
 }
@@ -163,20 +176,18 @@ local function parse(code)
         end
     end
     state.flushacc()
-
     -- plume.debug.pprint(state.ast)
     return state.top
 end
 
-local function export(ast, indent)
+local function export(ast)
     local result = {}
 
     for _, child in ipairs(ast.children) do
         if child.kind == "function" then
             table.insert(result, "function " .. child.name .. "(" .. table.concat(child.params, ", ") .. ")")
-                table.insert(result, export(child, "\t"))
+                table.insert(result, export(child))
             table.insert(result, "end")
-        
         elseif child.kind == "call" then
             if child.affected then
                 if child.isLocal then
@@ -184,12 +195,28 @@ local function export(ast, indent)
                 end
                 table.insert(result, child.affected .. " = ")
             end
-
             table.insert(result, child.name .. "(")
+            for i, childchild in ipairs(child.children) do
+                table.insert(result, export(childchild))
+                if i < #child.children then
+                    table.insert(result, ",")
+                end
+            end
             table.insert(result,  ")")
+        elseif child.kind == "open" then
+            table.insert(result, child.name)
+            table.insert(result, export(child))
+            table.insert(result, "end")
         elseif child.kind == "var" then
             table.insert(result, child.name)
-    elseif child.kind == "raw" then
+        elseif child.kind == "elseif" then
+            table.insert(result, child.kind.." ")
+            table.insert(result, export(child))
+        elseif child.kind == "then" then
+            table.insert(result, child.kind.." ")
+        elseif child.kind == "raw" then
+            table.insert(result, child.value)
+        elseif child.kind == "string" then
             table.insert(result, child.value)
         elseif not child.kind and child.children then
             table.insert(result, export(child))
@@ -201,68 +228,8 @@ local function export(ast, indent)
 end
 
 local ast = parse [=[
-
-function JUMP (vm, arg1, arg2)
-    --- Jump to offset
-    --- arg1: -
-    --- arg2: target offset
-    vm.jump = arg2
-end
-
-function JUMP_IF_NOT (vm, arg1, arg2)
-    --- Unstack 1
-    --- Jump to offset if false
-    --- arg1: -
-    --- arg2: target offset
-    local test = _STACK_POP(vm.mainStack)
-    if not _CHECK_BOOL (vm, test) then
-        vm.jump = arg2
-    end
-end
-
-function JUMP_IF (vm, arg1, arg2)
-    --- Unstack 1
-    --- Jump to offset if true
-    --- arg1: -
-    --- arg2: target offset
-    local test = _STACK_POP(vm.mainStack)
-    if _CHECK_BOOL (vm, test) then
-        vm.jump = arg2
-    end
-end
-function JUMP_IF_PEEK (vm, arg1, arg2)
-    --- Jump to offset if top is true, without unpacking
-    --- arg1: -
-    --- arg2: target offset
-    local test = _STACK_GET(vm.mainStack)
-    if _CHECK_BOOL (vm, test) then
-        vm.jump = arg2
-    end
-end
-
-function JUMP_IF_NOT_PEEK (vm, arg1, arg2)
-    --- Jump to offset if top is false, without unpacking
-    --- arg1: -
-    --- arg2: target offset
-    local test = _STACK_GET(vm.mainStack)
-    if not _CHECK_BOOL (vm, test) then
-        vm.jump = arg2
-    end
-end
-
-function JUMP_IF_NOT_EMPTY (vm, arg1, arg2)
-    --- Unstack 1
-    --- Jump to offset if not empty
-    --- Used by macro when setting defaut values
-    --- arg1: -
-    --- arg2: target offset
-    local test = _STACK_POP(vm.mainStack)
-    if test ~= vm.empty then
-        vm.jump = arg2
-    end
-end
-]=]
+"e"]=]
 
 print(export(ast))
 
-return parse
+return {parse=parse, export=export}
