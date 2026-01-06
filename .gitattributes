@@ -1,3 +1,4 @@
 doc/* linguist-documentation=true
 plume-data/engine/engine.lua linguist-generated=true
+plume-data/engine/engine-opt.lua linguist-generated=true
 tests/report.html linguist-generated=true
