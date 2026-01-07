@@ -67,6 +67,22 @@ local patterns = {
         end
     },
     {
+        pattern = {
+            "([a-zA-Z_][a-zA-Z_%.]*)%s*('.-')",
+            "([a-zA-Z_][a-zA-Z_%.]*)%s*(\".-\")",
+        },
+        action = function (state, match)
+            local affected = match[3]
+            local isLocal = match[2]
+
+            state.push({kind="call", name=match[2]})
+            state.push({kind="arg"})
+            state.add({kind="string", value=match[3]})
+            state.pop()
+            state.pop()
+        end
+    },
+    {
         pattern = {"%)"},
         action = function (state, match)
             if state.top.kind == "arg" then
