@@ -29,9 +29,18 @@ require 'plume-data/engine/std'           (plume)
 require 'plume-data/engine/parser'        (plume)
 require 'plume-data/engine/compiler'      (plume)
 require 'plume-data/engine/engine'        (plume)
+require 'plume-data/engine/engine-opt'    (plume)
 require 'plume-data/engine/finalizer'     (plume)
 require 'plume-data/engine/pec'           (plume)
 require 'plume-data/engine/env'           (plume)
+
+function plume.run(chunk, parameter)
+	if plume.runDevFlag then
+		return plume._run_dev(chunk, parameter)
+	else
+		return plume._run(chunk, parameter)
+	end
+end
 
 function plume.execute(code, filename, chunk, secondary, args)
 	local success, result, ip

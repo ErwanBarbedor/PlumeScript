@@ -55,8 +55,7 @@ end
 import = table.concat(import)
 
 local init = [[
-
-	function plume.run (chunk, arguments)
+	function plume._run_dev (chunk, arguments)
 		-- Creates stacks, handle arguments
 		local vm = _VM_INIT(plume, chunk, arguments)
 		
