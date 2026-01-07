@@ -115,8 +115,12 @@ local patterns = {
                     state.push({kind="open", name=match[1]})
                 end
             elseif match[1] == "elseif" then
+                state.popReturn()
                 state.push({kind="elseif"})
             else
+                if match[1] == "else" then
+                    state.popReturn()
+                end
                 state.add({kind="var", name=match[1]})
             end
         end
@@ -162,8 +166,11 @@ local function parse(code)
         end
     end
     function state.popReturn()
+        print("!!!", state.top.kind, #state.stack)
         if state.top.kind == "return" and #state.stack > 0 then
-            state.pop()
+            -- if state.stack[#state.stack].kind == "open" then
+                state.pop()
+            -- end
         end
     end
 
@@ -223,7 +230,7 @@ local function _export(ast)
         if child.kind == "function" then
             table.insert(result, "function " .. child.name .. "(" .. table.concat(child.params, ", ") .. ")")
                 table.insert(result, _export(child))
-            table.insert(result, "end")
+            table.insert(result, "end ")
         elseif child.kind == "call" then
             if child.affected then
                 if child.isLocal then
