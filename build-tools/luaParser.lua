@@ -133,10 +133,6 @@ local patterns = {
     },
 }
 
-
-
-local plume = require "plume-data/engine/init"
-
 local function parse(code)
     local state = {ast={children={}}, stack={}}
     state.top = state.ast
@@ -200,7 +196,6 @@ local function parse(code)
     end
     state.flushacc()
     state.popReturn()
-    plume.debug.pprint(state.ast)
 
     return state.top
 end
