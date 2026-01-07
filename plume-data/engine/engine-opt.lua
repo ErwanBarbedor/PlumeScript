@@ -827,7 +827,7 @@ return function(plume)
 		return x
 	end
 	
-	function plume.run(chunk, arguments)
+	function plume._run(chunk, arguments)
 		local vm = _VM_INIT(plume, chunk, arguments)
 		local op, arg1, arg2
 		

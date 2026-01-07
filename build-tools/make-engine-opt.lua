@@ -12,6 +12,15 @@ local function apply(ast, f)
 	end
 end
 
+local function renameRun(node)
+	if node.kind == "function" then
+		if node.name == "plume._run_dev" then
+			node.name = "plume._run"
+		end
+	end
+	return node
+end
+
 local function inline_require(node)
 	if node.kind == "call" and node.name == "require" then
 		local nodePath = node.children[1].children[1]
@@ -30,6 +39,7 @@ local function inline_require(node)
 end
 
 local function inline(ast)
+	apply(ast, renameRun)
 	apply(ast, inline_require)
 end
 

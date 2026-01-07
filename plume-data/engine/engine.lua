@@ -35,8 +35,7 @@ return function (plume)
 	require "plume-data/engine/vm/store"
 	require "plume-data/engine/vm/table"
 	require "plume-data/engine/vm/utils"
-
-	function plume.run (chunk, arguments)
+	function plume._run_dev (chunk, arguments)
 		-- Creates stacks, handle arguments
 		local vm = _VM_INIT(plume, chunk, arguments)
 		
