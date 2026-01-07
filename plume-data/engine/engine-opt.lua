@@ -929,28 +929,20 @@ return function(plume)
 		elseif op == 44 then
 			goto OPP_POW
 		elseif op == 45 then
-			goto OPP_GTE
-		elseif op == 46 then
-			goto OPP_LTE
-		elseif op == 47 then
-			goto OPP_GT
-		elseif op == 48 then
 			goto OPP_LT
-		elseif op == 49 then
+		elseif op == 46 then
 			goto OPP_EQ
-		elseif op == 50 then
-			goto OPP_NEQ
-		elseif op == 51 then
+		elseif op == 47 then
 			goto OPP_AND
-		elseif op == 52 then
+		elseif op == 48 then
 			goto OPP_NOT
-		elseif op == 53 then
+		elseif op == 49 then
 			goto OPP_OR
-		elseif op == 54 then
+		elseif op == 50 then
 			goto DUPLICATE
-		elseif op == 55 then
+		elseif op == 51 then
 			goto SWITCH
-		elseif op == 56 then
+		elseif op == 52 then
 			goto END
 		end
 		
@@ -1130,28 +1122,12 @@ return function(plume)
 		OPP_POW(vm, arg1, arg2)
 		goto DISPATCH
 		
-		::OPP_GTE::
-		OPP_GTE(vm, arg1, arg2)
-		goto DISPATCH
-		
-		::OPP_LTE::
-		OPP_LTE(vm, arg1, arg2)
-		goto DISPATCH
-		
-		::OPP_GT::
-		OPP_GT(vm, arg1, arg2)
-		goto DISPATCH
-		
 		::OPP_LT::
 		OPP_LT(vm, arg1, arg2)
 		goto DISPATCH
 		
 		::OPP_EQ::
 		OPP_EQ(vm, arg1, arg2)
-		goto DISPATCH
-		
-		::OPP_NEQ::
-		OPP_NEQ(vm, arg1, arg2)
 		goto DISPATCH
 		
 		::OPP_AND::
