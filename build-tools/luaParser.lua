@@ -35,20 +35,21 @@ local patterns = {
     {
         pattern = {"end"},
         action = function (state, match)
+            state.popReturn()
             state.pop()
         end
     },
     {
-        pattern = {"end"},
+        pattern = {"return"},
         action = function (state, match)
-            state.pop()
+            state.push({kind="return"})
         end
     },
     {
         pattern = {
-            "()()([a-zA-Z_][a-zA-Z_]*)%(",
-            "()([a-zA-Z_][a-zA-Z_]*)%s*=%s*([a-zA-Z_][a-zA-Z_]*)%(",
-            "(local)%s+([a-zA-Z_][a-zA-Z_]*)%s*=%s*([a-zA-Z_][a-zA-Z_]*)%("
+            "()()([a-zA-Z_][a-zA-Z_%.]*)%(",
+            "()([a-zA-Z_][a-zA-Z_%.]*)%s*=%s*([a-zA-Z_][a-zA-Z_%.]*)%(",
+            "(local)%s+([a-zA-Z_][a-zA-Z_]*)%s*=%s*([a-zA-Z_][a-zA-Z_%.]*)%("
         },
         action = function (state, match)
             local affected = match[3]
@@ -88,7 +89,7 @@ local patterns = {
         end
     },
     {
-        pattern = {"[a-zA-Z_][a-zA-Z_]*"},
+        pattern = {"[a-zA-Z_][a-zA-Z_%.]*"},
         action = function (state, match)
             if match[1] == "then" or match[1] == "do" then
                 if state.top.kind == "elseif" then
@@ -102,6 +103,21 @@ local patterns = {
             else
                 state.add({kind="var", name=match[1]})
             end
+        end
+    },
+    {
+        pattern = {"%-%-!%s*([^\n]*)"},
+        action = function (state, match)
+            local args = {}
+            for word in match[2]:gmatch('%S+') do
+                table.insert(args, word)
+            end
+
+            state.add({
+                kind="command",
+                name=table.remove(args, 1),
+                args=args
+            })
         end
     },
     {
@@ -131,6 +147,11 @@ local function parse(code)
     function state.flushacc()
         if acc then
             fallback(state, {code:sub(acc, pos-1)})
+        end
+    end
+    function state.popReturn()
+        if state.top.kind == "return" and #state.stack > 0 then
+            state.pop()
         end
     end
 
@@ -178,7 +199,9 @@ local function parse(code)
         end
     end
     state.flushacc()
-    -- plume.debug.pprint(state.ast)
+    state.popReturn()
+    plume.debug.pprint(state.ast)
+
     return state.top
 end
 
@@ -209,6 +232,9 @@ local function _export(ast)
             table.insert(result, child.name)
             table.insert(result, _export(child))
             table.insert(result, "end")
+        elseif child.kind == "return" then
+            table.insert(result, "return")
+            table.insert(result, _export(child))
         elseif child.kind == "var" then
             table.insert(result, child.name)
         elseif child.kind == "elseif" then
@@ -222,6 +248,7 @@ local function _export(ast)
             table.insert(result, child.value)
         elseif not child.kind and child.children then
             table.insert(result, _export(child))
+        elseif child.kind == "command" then
         else
             error("NYI '" .. child.kind .. "'")
         end
@@ -234,7 +261,12 @@ local function export(ast)
 end
 
 local ast = parse [=[
-"e"]=]
+return function ()
+    --! inline
+    x.a = 4
+end
+
+]=]
 
 print(export(ast))
 
