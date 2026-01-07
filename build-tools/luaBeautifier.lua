@@ -21,9 +21,21 @@ local patterns = {
         	state.write(match)
         end
     },
+    {   -- label
+        pattern = {"::.-::",},
+        action = function (state, match)
+            state.newline()
+            state.newline()
+            state.write(match)
+        end
+    },
 
 	{	-- affectation
-        pattern = {"[a-zA-Z_][a-zA-Z_0-9,]*%s*=%s*", "local%s+[a-zA-Z_][a-zA-Z_0-9,]*%s*=[^\n]*", "local [^\n=]+"},
+        pattern = {
+            "[a-zA-Z_][a-zA-Z_0-9]*%s*=[^\n]*",
+            "[a-zA-Z_][a-zA-Z_0-9],[^\n]-=[^\n]*",
+            "local[^\n]-=[^\n]*",
+            "local [^\n=]+"},
         action = function (state, match)
         	state.newline()
         	state.write(match)
@@ -63,46 +75,39 @@ local patterns = {
     },
 
     {	-- function
-        pattern = {"function [a-zA-Z_0-9%.:]*%s*%(.-%)"},
+        pattern = {"function%s*[a-zA-Z_0-9%.:]*%s*%(.-%)", "return function*%s*%(.-%)"},
         action = function (state, match)
         	state.newline()
         	state.write(match)
         	state.iinc()
-        end
-    },
-    {	-- before open
-        pattern = {"if", "while", "for"},
-        action = function (state, match)
-        	state.newcall = state.newcall + 1
-        	state.newline()
-        	state.write(match)
         end
     },
     {	-- open
-        pattern = {"then", "do"},
+        pattern = {"if.-then", "while.-do", "for.-do", "do"},
         action = function (state, match)
-        	state.newcall = state.newcall - 1
+        	state.newline()
         	state.write(match)
-        	state.iinc()
+            state.iinc()
+        end
+    },
+    {   -- elseif
+        pattern = {"elseif.-then"},
+        action = function (state, match)
+            state.idec()
+            state.newline()
+            state.write(match)
+            state.iinc()
         end
     },
 
     {	-- words
-        pattern = {"break"},
+        pattern = {"break", "goto"},
         action = function (state, match)
         	state.newline()
         	state.write(match)
         end
     },
-    {	-- elseif
-        pattern = {"elseif"},
-        action = function (state, match)
-        	state.newcall = state.newcall + 1
-        	state.idec()
-        	state.newline()
-        	state.write(match)
-        end
-    },
+    
     {	-- else
         pattern = {"else"},
         action = function (state, match)
@@ -113,13 +118,7 @@ local patterns = {
         end
     },
 
-    {	-- label
-        pattern = {"::.-::",},
-        action = function (state, match)
-        	state.newline()
-        	state.write(match)
-        end
-    },
+    
 
     {	-- end
         pattern = {"end"},
@@ -180,10 +179,10 @@ local function beautifier(code)
 		end
 	end
 	function state.iinc ()
-		state.indent = state.indent .. "  "
+		state.indent = state.indent .. "    "
 	end
 	function state.idec ()
-		state.indent = state.indent:sub(1, -3)
+		state.indent = state.indent:sub(1, -5)
 	end
 	function state.write(txt)
 		table.insert(state.result, txt)
@@ -209,11 +208,5 @@ local function beautifier(code)
 
     return table.concat(state.result)
 end
-
-print(beautifier[[
-_VM_TICK(vm)op, arg1, 
-  arg2 = 
-  _VM_DECODE_CURRENT_INSTRUCTION(vm)
-]])
 
 return beautifier
