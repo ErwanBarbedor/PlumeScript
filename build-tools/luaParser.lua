@@ -15,6 +15,8 @@ If not, see <https://www.gnu.org/licenses/>.
 
 -- Minimalist parser that captures only what is strictly necessary for engine optimization
 
+local beautifier = require "build-tools/luaBeautifier"
+
 local function fallback(state, match)
     state.add({kind="raw", value=match[1]})
 end
@@ -180,13 +182,13 @@ local function parse(code)
     return state.top
 end
 
-local function export(ast)
+local function _export(ast)
     local result = {}
 
     for _, child in ipairs(ast.children) do
         if child.kind == "function" then
             table.insert(result, "function " .. child.name .. "(" .. table.concat(child.params, ", ") .. ")")
-                table.insert(result, export(child))
+                table.insert(result, _export(child))
             table.insert(result, "end")
         elseif child.kind == "call" then
             if child.affected then
@@ -197,7 +199,7 @@ local function export(ast)
             end
             table.insert(result, child.name .. "(")
             for i, childchild in ipairs(child.children) do
-                table.insert(result, export(childchild))
+                table.insert(result, _export(childchild))
                 if i < #child.children then
                     table.insert(result, ",")
                 end
@@ -205,13 +207,13 @@ local function export(ast)
             table.insert(result,  ")")
         elseif child.kind == "open" then
             table.insert(result, child.name)
-            table.insert(result, export(child))
+            table.insert(result, _export(child))
             table.insert(result, "end")
         elseif child.kind == "var" then
             table.insert(result, child.name)
         elseif child.kind == "elseif" then
             table.insert(result, child.kind.." ")
-            table.insert(result, export(child))
+            table.insert(result, _export(child))
         elseif child.kind == "then" then
             table.insert(result, child.kind.." ")
         elseif child.kind == "raw" then
@@ -219,12 +221,16 @@ local function export(ast)
         elseif child.kind == "string" then
             table.insert(result, child.value)
         elseif not child.kind and child.children then
-            table.insert(result, export(child))
+            table.insert(result, _export(child))
         else
             error("NYI '" .. child.kind .. "'")
         end
     end
     return table.concat(result)
+end
+
+local function export(ast)
+    return beautifier(_export(ast))
 end
 
 local ast = parse [=[
