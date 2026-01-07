@@ -14,200 +14,129 @@ If not, see <https://www.gnu.org/licenses/>.
 ]]
 
 local patterns = {
-	{	-- comment
-        pattern = {"%-%-[^\n]*"},
-        action = function (state, match)
-        	state.newline()
-        	state.write(match)
-        end
-    },
-    {   -- label
-        pattern = {"::.-::",},
-        action = function (state, match)
-            state.newline()
-            state.newline()
-            state.write(match)
-        end
-    },
+    {"label", "::[a-zA-Z_][a-zA-Z_0-9]*::"},
+    {"word", "[a-zA-Z_][a-zA-Z_0-9%.:]*"},
+    {"space", "%s+"},
+    {"open", "[%(]"},
+    {"close", "[%)]"},
+    {"string", "'.-'"},
+    {"string", '".-"'},
+    {"opperator", "[=%*%+%-/^~%.<>%%]+"},
+    {"len", "#"},
+    {"delimiter-open", "[%{%[]"},
+    {"delimiter-close", "[%}%]]"},
+    {"comma", ','},
+    {"word", "[0-9]+"},
+    {"other", "."}
 
-	{	-- affectation
-        pattern = {
-            "[a-zA-Z_][a-zA-Z_0-9%.]*[ ]*=[^\n]*",
-            "[a-zA-Z_][a-zA-Z_0-9%.,][^\n]-=[^\n]*",
-            "local[^\n]-=[^\n]*",
-            "local [^\n=]+"
-        },
-        action = function (state, match)
-        	state.newline()
-        	state.write(match)
-        end
-    },
-    {	-- callbegin
-        pattern = {"[a-zA-Z_][a-zA-Z_0-9%.:]*%s*%("},
-        action = function (state, match)
-        	if state.newcall == 0 then
-        		state.newline()
-	        end
-	        state.newcall = state.newcall + 1
-        	state.write(match)
-        end
-    },
-    {	-- callstring
-        pattern = {'[a-zA-Z_][a-zA-Z_0-9%.:]*%s*".-"', "[a-zA-Z_][a-zA-Z_0-9%.:]*%s*'.-'"},
-        action = function (state, match)
-        	if state.newcall == 0 then
-        		state.newline()
-	        end
-        	state.write(match)
-        end
-    },
-    {	-- callchain
-        pattern = {"%)[:%.][a-zA-Z_][a-zA-Z_0-9%.:]*%s*%("},
-        action = function (state, match)
-        	state.write(match)
-        end
-    },
-    {	-- callend
-        pattern = {"%)"},
-        action = function (state, match)
-        	state.write(match)
-        	state.newcall = state.newcall - 1
-        end
-    },
-
-    {	-- function
-        pattern = {"function%s*[a-zA-Z_0-9%.:]*%s*%(.-%)", "return function*%s*%(.-%)"},
-        action = function (state, match)
-        	state.newline()
-        	state.write(match)
-        	state.iinc()
-        end
-    },
-    {	-- open
-        pattern = {"if.-then", "while.-do", "for.-do", "do"},
-        action = function (state, match)
-        	state.newline()
-        	state.write(match)
-            state.iinc()
-        end
-    },
-    {   -- elseif
-        pattern = {"elseif.-then"},
-        action = function (state, match)
-            state.idec()
-            state.newline()
-            state.write(match)
-            state.iinc()
-        end
-    },
-
-    {	-- words
-        pattern = {"break", "goto"},
-        action = function (state, match)
-        	state.newline()
-        	state.write(match)
-        end
-    },
-    
-    {	-- else
-        pattern = {"else"},
-        action = function (state, match)
-        	state.idec()
-        	state.newline()
-        	state.write(match)
-        	state.iinc()
-        end
-    },
-
-    
-
-    {	-- end
-        pattern = {"end"},
-        action = function (state, match)
-        	state.idec()
-        	state.newline()
-        	state.write(match)
-        end
-    },
-
-    {	-- line start space
-        pattern = {"\n[ \t]+"},
-        action = function (state, match)
-        end
-    },
-    {	-- white space
-        pattern = {" +"},
-        action = function (state, match)
-        	state.write(" ")
-        end
-    },
-    {	-- other space
-        pattern = {"%s+"},
-        action = function (state, match)
-        end
-    },
-
-    {	-- string
-        pattern = {'".-"', "'.-'"},
-        action = function (state, match)
-            state.write(match)
-        end
-    },
-    {	-- return
-        pattern = {'return[^\n]+'},
-        action = function (state, match)
-        	state.newline()
-            state.write(match)
-        end
-    },
-
-    {	-- fallback
-        pattern = {"."},
-        action = function (state, match)
-            state.write(match)
-        end
-    },
 }
 
 local function beautifier(code)
-	code = "\n" .. code
-	local state = {result={}, indent="", newcall=0}
-	local pos = 1
+    local elements = {}
+    local pos = 1
 
-	function state.newline()
-		if #state.result>0 then
-			table.insert(state.result, "\n"..state.indent)
-		end
-	end
-	function state.iinc ()
-		state.indent = state.indent .. "    "
-	end
-	function state.idec ()
-		state.indent = state.indent:sub(1, -5)
-	end
-	function state.write(txt)
-		table.insert(state.result, txt)
-	end
+    while pos < #code do
+        local chunk = code:sub(pos, -1)
+        for _, patternInfo in ipairs(patterns) do
+            local name    = patternInfo[1]
+            local pattern = patternInfo[2]
 
-	while pos < #code do
-		local match
-        for _, patternList in ipairs(patterns) do
-            for _, pattern in ipairs(patternList.pattern) do
-                match = code:sub(pos):match("^"..pattern)
-                if match then
-                    patternList.action(state, match)
-                    break
-                end
-            end
+            local match = chunk:match('^'..pattern)
             if match then
+                table.insert(elements, {name=name, value=match})
+                pos = pos + #match
                 break
             end
         end
-
-        pos = pos + #match
     end
 
-    return table.concat(state.result)
+    local result = {}
+    local indent = 0
+    local function newline()
+        if #result > 0 then
+            table.insert(result, "\n")
+            for i=1, indent do
+                table.insert(result, "\t")
+            end
+        end
+    end
+
+    local sticky
+    local stickyLine
+    local last
+    pos = 1
+    while pos <= #elements do
+        local element = elements[pos]
+        if element.name ~= "space" then
+            if element.name == "word" then
+                if element.value == "end" then
+                    indent = indent - 1
+                    sticky = false
+                    stickyLine = false
+                elseif element.value == "elseif" or element.value == "else" then
+                    indent = indent - 1
+                elseif element.value == "then" or element.value == "do" or element.value == "or" or element.value == "and" then
+                    sticky = true
+                end
+            elseif element.name == "opperator" or element.name == "open" or element.name == "delimiter-close" or element.name == "delimiter-open" or element.name == "comma" or element.name == "close"then
+                sticky = true
+            end
+
+
+            if not sticky and not stickyLine then
+                newline()
+                if element.name == "label" then
+                    newline()
+                elseif element.name == "word" and element.value == "function" then
+                    newline()
+                end
+            elseif element.name == "word" and last ~= "opperator" and last ~= "open" and last ~= "delimiter-open" and last ~= "comma" and last ~= "len" then
+                table.insert(result, " ")
+            end
+
+            sticky = false
+
+            if element.name == "word" then
+                if element.value == "function" then
+                    indent = indent + 1
+                    stickyLine = true
+                elseif element.value == "if" or element.value == "elseif" or element.value == "for" or element.value == "while" then
+                    stickyLine = true
+                elseif element.value == "else" then
+                    indent = indent + 1
+                elseif element.value == "then" or element.value == "do" then
+                    indent = indent + 1
+                    stickyLine = false
+                elseif element.value == "return" then
+                    stickyLine = true
+                elseif element.value == "local" or element.value == "or" or element.value == "and" or element.value == "goto" then
+                    sticky = true
+                end
+            elseif element.name == "open" then
+                stickyLine = true
+            elseif element.name == "close" then
+                stickyLine = false
+            elseif element.name == "opperator" then
+                sticky = true
+                table.insert(result, " ")
+            elseif element.name == "len" or element.name == "delimiter-open" or element.name == "comma" then
+                sticky = true
+            end
+
+            table.insert(result, element.value)
+            last = element.name
+
+            if element.name == "comma" then
+                table.insert(result, " ")
+            elseif element.name == "opperator" then
+                table.insert(result, " ")
+            end
+        end
+
+        pos = pos+1
+    end
+
+    return table.concat(result)
 end
 
 return beautifier
