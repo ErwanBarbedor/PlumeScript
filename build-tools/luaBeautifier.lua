@@ -32,10 +32,11 @@ local patterns = {
 
 	{	-- affectation
         pattern = {
-            "[a-zA-Z_][a-zA-Z_0-9%.]*%s*=[^\n]*",
-            "[a-zA-Z_][a-zA-Z_0-9%.],[^\n]-=[^\n]*",
+            "[a-zA-Z_][a-zA-Z_0-9%.]*[ ]*=[^\n]*",
+            "[a-zA-Z_][a-zA-Z_0-9%.,][^\n]-=[^\n]*",
             "local[^\n]-=[^\n]*",
-            "local [^\n=]+"},
+            "local [^\n=]+"
+        },
         action = function (state, match)
         	state.newline()
         	state.write(match)
