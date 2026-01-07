@@ -166,11 +166,8 @@ local function parse(code)
         end
     end
     function state.popReturn()
-        print("!!!", state.top.kind, #state.stack)
         if state.top.kind == "return" and #state.stack > 0 then
-            -- if state.stack[#state.stack].kind == "open" then
-                state.pop()
-            -- end
+            state.pop()
         end
     end
 
