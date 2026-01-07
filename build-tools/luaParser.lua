@@ -260,14 +260,4 @@ local function export(ast)
     return beautifier(_export(ast))
 end
 
-local ast = parse [=[
-return function ()
-    --! inline
-    x.a = 4
-end
-
-]=]
-
-print(export(ast))
-
 return {parse=parse, export=export}
