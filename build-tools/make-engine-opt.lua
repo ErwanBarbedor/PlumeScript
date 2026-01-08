@@ -3,11 +3,32 @@ require "build-tools/make-engine"
 local plume = require "plume-data/engine/init"
 local lib = require "build-tools/luaParser"
 
-local function apply(ast, f)
+local function checkToInline(name)
+	return name:match('^[_A-Z]+$')
+end
+
+local function deepcopy(obj)
+    if obj == nil then
+        return nil
+    end
+
+    if type(obj) == "table" then
+        local copy = {}
+        for key, value in pairs(obj) do
+            copy[deepcopy(key)] = deepcopy(value)
+        end
+        return copy
+    else
+        return obj
+    end
+end
+
+local function apply(ast, f, ...)
 	for i, node in ipairs(ast.children) do
-		ast.children[i] = f(node)
-		if ast.children[i].children then
-			apply(ast.children[i], f)
+		local rec
+		ast.children[i], rec = f(node, ...)
+		if rec and ast.children[i].children then
+			apply(ast.children[i], f, ...)
 		end
 	end
 end
@@ -18,10 +39,28 @@ local function renameRun(node)
 			node.name = "plume._run"
 		end
 	end
-	return node
+	return node, true
 end
 
-local function inline_require(node)
+local function searchFunctionsToInline(node, acc)
+	if node.kind == "function" then
+		if checkToInline(node.name) then
+			acc[node.name] = {body=node.children, params=node.params, affected=node.affected, isLocal = node.isLocal}
+		end
+	end
+	return node, true
+end
+
+local function subVar(node, map)
+	if node.kind == "var" then
+		if map[node.name] then
+			return map[node.name]
+		end
+	end
+	return node, false
+end
+
+local function inlineRequire(node)
 	if node.kind == "call" and node.name == "require" then
 		local nodePath = node.children[1].children[1]
 		if nodePath.kind == "string" then
@@ -35,12 +74,44 @@ local function inline_require(node)
 			end
 		end
 	end
-	return node
+	return node, true
+end
+
+local function inlineCall(node, functions)
+	if node.kind == "call" then
+		if checkToInline(node.name) and functions[node.name] then
+			local f = functions[node.name]
+			local body = deepcopy(f.body)
+
+			local argsmap = {}
+			local argscount = 0
+			for _, child in ipairs(node.children) do
+				if child.kind == "arg" then
+					argscount = argscount + 1
+					argsmap[f.params[argscount]] = {
+						kind = "blank",
+						children = child.children
+					}
+				end
+			end
+
+			apply({children=body}, subVar, argsmap)
+
+			if not f.affected then
+				return {kind="open", name="do", children=body}
+			end
+		end
+	end
+	return node, true
 end
 
 local function inline(ast)
 	apply(ast, renameRun)
-	apply(ast, inline_require)
+	apply(ast, inlineRequire)
+
+	local functions = {}
+	apply(ast, searchFunctionsToInline, functions)
+	apply(ast, inlineCall, functions)
 end
 
 local base = io.open('plume-data/engine/engine.lua')

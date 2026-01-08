@@ -82,6 +82,10 @@ local function beautifier(code)
                 sticky = true
             end
 
+            if last == "label" then
+                sticky = false
+            end
+
 
             if not sticky and not stickyLine then
                 newline()
