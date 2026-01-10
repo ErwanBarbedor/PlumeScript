@@ -1215,6 +1215,6 @@ return function(plume)
 				goto DISPATCH
 			
 			::END::
-				return true, _STACK_GET(vm.mainStack)
-			end
-		end
+		return true, _STACK_GET(vm.mainStack)
+	end
+end
