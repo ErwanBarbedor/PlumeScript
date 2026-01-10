@@ -23,11 +23,11 @@ return function(plume)
 		local meta, params
 		local tleft = _GET_TYPE(vm, left)
 		local tright = _GET_TYPE(vm, right)
-		if tleft == "table" and left.meta and left.meta.table[name..("r")] then
-			meta = left.meta.table[name..("r")]
+		if tleft == "table" and left.meta and left.meta.table[name .. ("r")] then
+			meta = left.meta.table[name .. ("r")]
 			params = {right, left}
-		elseif tright == "table" and right.meta and right.meta.table[name..("l")] then
-			meta = right.meta.table[name..("l")]
+		elseif tright == "table" and right.meta and right.meta.table[name .. ("l")] then
+			meta = right.meta.table[name .. ("l")]
 			params = {left, right}
 		elseif tleft == "table" and left.meta and left.meta.table[name] then
 			meta = left.meta.table[name]
@@ -103,7 +103,7 @@ return function(plume)
 		if argcount ~= macro.positionalParamCount and macro.variadicOffset == 0 then
 			local name
 			if vm.chunk.mapping[vm.ip - 1] then
-				name = vm.chunk.mapping[vm.ip - 1] . content
+				name = vm.chunk.mapping[vm.ip - 1].content
 			end
 			if not name then
 				name = macro.name or("???")
@@ -684,7 +684,7 @@ return function(plume)
 			
 			::TABLE_INDEX_META::
 				do
-					ms[msp - 1] = ms[msp] . meta.table[ms[msp - 1]]
+					ms[msp - 1] = ms[msp].meta.table[ms[msp - 1]]
 					msp = msp - 1
 				end
 				goto DISPATCH

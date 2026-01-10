@@ -17,18 +17,20 @@ local patterns = {
     {"label-end", "::END::"},
     {"label", "::[a-zA-Z_][a-zA-Z_0-9]*::"},
     {"goto-dispatch", "goto DISPATCH"},
-    {"word", "[a-zA-Z_][a-zA-Z_0-9%.:]*"},
+    {"word", "[a-zA-Z_][a-zA-Z_0-9]*"},
     {"space", "%s+"},
     {"open", "[%(]"},
     {"close", "[%)]"},
     {"string", "'.-'"},
     {"string", '".-"'},
-    {"opperator", "[=%*%+%-/^~%.<>%%]+"},
+    {"opperator", "[=%*%+%-/^~<>%%]+"},
+    {"opperator", "%.%.+"},
     {"len", "#"},
     {"delimiter-open", "[%{%[]"},
     {"delimiter-close", "[%}%]]"},
     {"comma", ','},
     {"word", "[0-9]+"},
+    {"index", "[:%.]"},
     {"other", "."}
 
 }
@@ -84,6 +86,8 @@ local function beautifier(code)
                 sticky = true
             elseif element.name == "goto-dispatch" then
                 sticky = false
+            elseif element.name == "index" then
+                sticky = true
             end
 
             if last == "label" then
@@ -102,7 +106,7 @@ local function beautifier(code)
                 elseif element.name == "word" and element.value == "function" then
                     newline()
                 end
-            elseif element.name == "word" and last ~= "opperator" and last ~= "open" and last ~= "delimiter-open" and last ~= "comma" and last ~= "len" then
+            elseif element.name == "word" and last ~= "opperator" and last ~= "open" and last ~= "delimiter-open" and last ~= "comma" and last ~= "len" and last ~= "index" then
                 table.insert(result, " ")
             end
 
@@ -142,6 +146,8 @@ local function beautifier(code)
                 table.insert(result, " ")
             elseif element.name == "opperator" then
                 table.insert(result, " ")
+            elseif element.name == "index" then
+                sticky = true
             elseif element.name == "goto-dispatch" then
                 indent = indent - 1
             end
