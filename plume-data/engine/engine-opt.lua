@@ -54,58 +54,6 @@ return function(plume)
 		return true, _CALL(vm, meta, params)
 	end
 	
-	function _BIN_OPP_BOOL(vm, opp)
-		local right = _STACK_POP(vm.mainStack)
-		local left = _STACK_POP(vm.mainStack)
-		right = _CHECK_BOOL(vm, right)
-		left = _CHECK_BOOL(vm, left)
-		_STACK_PUSH(vm.mainStack, opp(right, left))
-	end
-	
-	function _UN_OPP_BOOL(vm, opp)
-		local x = _STACK_POP(vm.mainStack)
-		x = _CHECK_BOOL(vm, x)
-		_STACK_PUSH(vm.mainStack, opp(x))
-	end
-	
-	function _BIN_OPP_NUMBER(vm, opp, name)
-		local right = _STACK_POP(vm.mainStack)
-		local left = _STACK_POP(vm.mainStack)
-		local rerr, lerr, success, result
-		right, rerr = _CHECK_NUMBER_META(vm, right)
-		left, lerr = _CHECK_NUMBER_META(vm, left)
-		if lerr or rerr then
-			success, result = _HANDLE_META_BIN(vm, left, right, name)
-		else
-			success = true
-			result = opp(left, right)
-		end
-		if success then
-			_STACK_PUSH(vm.mainStack, result)
-		else do
-				vm.err = lerr or rerr
-			end
-		end
-	end
-	
-	function _UN_OPP_NUMBER(vm, opp, name)
-		local x = _STACK_POP(vm.mainStack)
-		local err
-		x, err = _CHECK_NUMBER_META(vm, x)
-		if err then
-			success, result = _HANDLE_META_UN(vm, x, name)
-		else
-			success = true
-			result = opp(x)
-		end
-		if success then
-			_STACK_PUSH(vm.mainStack, result)
-		else do
-				vm.err = err
-			end
-		end
-	end
-	
 	function _ADD(x, y)
 		return x + y
 	end
@@ -134,34 +82,6 @@ return function(plume)
 		return - x
 	end
 	
-	function OPP_ADD(vm, arg1, arg2)
-		_BIN_OPP_NUMBER(vm, _ADD, "add")
-	end
-	
-	function OPP_MUL(vm, arg1, arg2)
-		_BIN_OPP_NUMBER(vm, _MUL, "mul")
-	end
-	
-	function OPP_SUB(vm, arg1, arg2)
-		_BIN_OPP_NUMBER(vm, _SUB, "sub")
-	end
-	
-	function OPP_DIV(vm, arg1, arg2)
-		_BIN_OPP_NUMBER(vm, _DIV, "div")
-	end
-	
-	function OPP_MOD(vm, arg1, arg2)
-		_BIN_OPP_NUMBER(vm, _MOD, "mod")
-	end
-	
-	function OPP_POW(vm, arg1, arg2)
-		_BIN_OPP_NUMBER(vm, _POW, "pow")
-	end
-	
-	function OPP_NEG(vm, arg1, arg2)
-		_UN_OPP_NUMBER(vm, _NEG, "minus")
-	end
-	
 	function _AND(x, y)
 		return x and y
 	end
@@ -174,34 +94,8 @@ return function(plume)
 		return not x
 	end
 	
-	function OPP_AND(vm, arg1, arg2)
-		_BIN_OPP_BOOL(vm, _AND)
-	end
-	
-	function OPP_OR(vm, arg1, arg2)
-		_BIN_OPP_BOOL(vm, _OR)
-	end
-	
-	function OPP_NOT(vm, arg1, arg2)
-		_UN_OPP_BOOL(vm, _NOT)
-	end
-	
 	function _LT(x, y)
 		return x < y
-	end
-	
-	function OPP_LT(vm, arg1, arg2)
-		_BIN_OPP_NUMBER(vm, _LT, "lt")
-	end
-	
-	function OPP_EQ(vm, arg1, arg2)
-		local right = _STACK_POP(vm.mainStack)
-		local left = _STACK_POP(vm.mainStack)
-		local success, result = _HANDLE_META_BIN(vm, left, right, "eq")
-		if not success then
-			result = left == right or tonumber(left) and tonumber(left) == tonumber(right)
-		end
-		_STACK_PUSH(vm.mainStack, result)
 	end
 	
 	function _UNSTACK_POS(vm, macro, arguments, capture)
@@ -734,7 +628,7 @@ return function(plume)
 						local key = _STACK_POP(vm.mainStack)
 						key = tonumber(key) or key
 						if key == vm.empty then
-							if arg1 == 1 then do
+							if 0 == 1 then do
 									_STACK_PUSH(vm.mainStack, vm.empty)
 								end
 							else do
@@ -744,7 +638,7 @@ return function(plume)
 						else
 							local tt = _GET_TYPE(vm, t)
 							if tt ~= "table" then
-								if arg1 == 1 then do
+								if 0 == 1 then do
 										_STACK_PUSH(vm.mainStack, vm.empty)
 									end
 								else do
@@ -756,7 +650,7 @@ return function(plume)
 								if value then
 									_STACK_PUSH(vm.mainStack, value)
 								else
-									if arg1 == 1 then do
+									if 0 == 1 then do
 											_STACK_PUSH(vm.mainStack, vm.empty)
 										end
 									elseif t.meta.table.getindex then
@@ -1081,51 +975,228 @@ return function(plume)
 				goto DISPATCH
 			
 			::OPP_ADD::
-				OPP_ADD(vm, arg1, arg2)
+				do do
+						local right = _STACK_POP(vm.mainStack)
+						local left = _STACK_POP(vm.mainStack)
+						local rerr, lerr, success, result
+						right, rerr = _CHECK_NUMBER_META(vm, right)
+						left, lerr = _CHECK_NUMBER_META(vm, left)
+						if lerr or rerr then
+							success, result = _HANDLE_META_BIN(vm, left, right, "add")
+						else
+							success = true
+							result = _ADD(left, right)
+						end
+						if success then
+							_STACK_PUSH(vm.mainStack, result)
+						else do
+								vm.err = lerr or rerr
+							end
+						end
+					end
+				end
 				goto DISPATCH
 			
 			::OPP_MUL::
-				OPP_MUL(vm, arg1, arg2)
+				do do
+						local right = _STACK_POP(vm.mainStack)
+						local left = _STACK_POP(vm.mainStack)
+						local rerr, lerr, success, result
+						right, rerr = _CHECK_NUMBER_META(vm, right)
+						left, lerr = _CHECK_NUMBER_META(vm, left)
+						if lerr or rerr then
+							success, result = _HANDLE_META_BIN(vm, left, right, "mul")
+						else
+							success = true
+							result = _MUL(left, right)
+						end
+						if success then
+							_STACK_PUSH(vm.mainStack, result)
+						else do
+								vm.err = lerr or rerr
+							end
+						end
+					end
+				end
 				goto DISPATCH
 			
 			::OPP_SUB::
-				OPP_SUB(vm, arg1, arg2)
+				do do
+						local right = _STACK_POP(vm.mainStack)
+						local left = _STACK_POP(vm.mainStack)
+						local rerr, lerr, success, result
+						right, rerr = _CHECK_NUMBER_META(vm, right)
+						left, lerr = _CHECK_NUMBER_META(vm, left)
+						if lerr or rerr then
+							success, result = _HANDLE_META_BIN(vm, left, right, "sub")
+						else
+							success = true
+							result = _SUB(left, right)
+						end
+						if success then
+							_STACK_PUSH(vm.mainStack, result)
+						else do
+								vm.err = lerr or rerr
+							end
+						end
+					end
+				end
 				goto DISPATCH
 			
 			::OPP_DIV::
-				OPP_DIV(vm, arg1, arg2)
+				do do
+						local right = _STACK_POP(vm.mainStack)
+						local left = _STACK_POP(vm.mainStack)
+						local rerr, lerr, success, result
+						right, rerr = _CHECK_NUMBER_META(vm, right)
+						left, lerr = _CHECK_NUMBER_META(vm, left)
+						if lerr or rerr then
+							success, result = _HANDLE_META_BIN(vm, left, right, "div")
+						else
+							success = true
+							result = _DIV(left, right)
+						end
+						if success then
+							_STACK_PUSH(vm.mainStack, result)
+						else do
+								vm.err = lerr or rerr
+							end
+						end
+					end
+				end
 				goto DISPATCH
 			
 			::OPP_NEG::
-				OPP_NEG(vm, arg1, arg2)
+				do do
+						local x = _STACK_POP(vm.mainStack)
+						local err
+						x, err = _CHECK_NUMBER_META(vm, x)
+						if err then
+							success, result = _HANDLE_META_UN(vm, x, "minus")
+						else
+							success = true
+							result = _NEG(x)
+						end
+						if success then
+							_STACK_PUSH(vm.mainStack, result)
+						else do
+								vm.err = err
+							end
+						end
+					end
+				end
 				goto DISPATCH
 			
 			::OPP_MOD::
-				OPP_MOD(vm, arg1, arg2)
+				do do
+						local right = _STACK_POP(vm.mainStack)
+						local left = _STACK_POP(vm.mainStack)
+						local rerr, lerr, success, result
+						right, rerr = _CHECK_NUMBER_META(vm, right)
+						left, lerr = _CHECK_NUMBER_META(vm, left)
+						if lerr or rerr then
+							success, result = _HANDLE_META_BIN(vm, left, right, "mod")
+						else
+							success = true
+							result = _MOD(left, right)
+						end
+						if success then
+							_STACK_PUSH(vm.mainStack, result)
+						else do
+								vm.err = lerr or rerr
+							end
+						end
+					end
+				end
 				goto DISPATCH
 			
 			::OPP_POW::
-				OPP_POW(vm, arg1, arg2)
+				do do
+						local right = _STACK_POP(vm.mainStack)
+						local left = _STACK_POP(vm.mainStack)
+						local rerr, lerr, success, result
+						right, rerr = _CHECK_NUMBER_META(vm, right)
+						left, lerr = _CHECK_NUMBER_META(vm, left)
+						if lerr or rerr then
+							success, result = _HANDLE_META_BIN(vm, left, right, "pow")
+						else
+							success = true
+							result = _POW(left, right)
+						end
+						if success then
+							_STACK_PUSH(vm.mainStack, result)
+						else do
+								vm.err = lerr or rerr
+							end
+						end
+					end
+				end
 				goto DISPATCH
 			
 			::OPP_LT::
-				OPP_LT(vm, arg1, arg2)
+				do do
+						local right = _STACK_POP(vm.mainStack)
+						local left = _STACK_POP(vm.mainStack)
+						local rerr, lerr, success, result
+						right, rerr = _CHECK_NUMBER_META(vm, right)
+						left, lerr = _CHECK_NUMBER_META(vm, left)
+						if lerr or rerr then
+							success, result = _HANDLE_META_BIN(vm, left, right, "lt")
+						else
+							success = true
+							result = _LT(left, right)
+						end
+						if success then
+							_STACK_PUSH(vm.mainStack, result)
+						else do
+								vm.err = lerr or rerr
+							end
+						end
+					end
+				end
 				goto DISPATCH
 			
 			::OPP_EQ::
-				OPP_EQ(vm, arg1, arg2)
+				do
+					local right = _STACK_POP(vm.mainStack)
+					local left = _STACK_POP(vm.mainStack)
+					local success, result = _HANDLE_META_BIN(vm, left, right, "eq")
+					if not success then
+						result = left == right or tonumber(left) and tonumber(left) == tonumber(right)
+					end
+					_STACK_PUSH(vm.mainStack, result)
+				end
 				goto DISPATCH
 			
 			::OPP_AND::
-				OPP_AND(vm, arg1, arg2)
+				do do
+						local right = _STACK_POP(vm.mainStack)
+						local left = _STACK_POP(vm.mainStack)
+						right = _CHECK_BOOL(vm, right)
+						left = _CHECK_BOOL(vm, left)
+						_STACK_PUSH(vm.mainStack, _AND(right, left))
+					end
+				end
 				goto DISPATCH
 			
 			::OPP_NOT::
-				OPP_NOT(vm, arg1, arg2)
+				do do
+						local x = _STACK_POP(vm.mainStack)
+						x = _CHECK_BOOL(vm, x)
+						_STACK_PUSH(vm.mainStack, _NOT(x))
+					end
+				end
 				goto DISPATCH
 			
 			::OPP_OR::
-				OPP_OR(vm, arg1, arg2)
+				do do
+						local right = _STACK_POP(vm.mainStack)
+						local left = _STACK_POP(vm.mainStack)
+						right = _CHECK_BOOL(vm, right)
+						left = _CHECK_BOOL(vm, left)
+						_STACK_PUSH(vm.mainStack, _OR(right, left))
+					end
+				end
 				goto DISPATCH
 			
 			::DUPLICATE::
