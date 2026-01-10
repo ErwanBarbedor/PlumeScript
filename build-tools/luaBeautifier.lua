@@ -15,6 +15,7 @@ If not, see <https://www.gnu.org/licenses/>.
 
 local patterns = {
     {"label", "::[a-zA-Z_][a-zA-Z_0-9]*::"},
+    {"goto-dispatch", "goto DISPATCH"},
     {"word", "[a-zA-Z_][a-zA-Z_0-9%.:]*"},
     {"space", "%s+"},
     {"open", "[%(]"},
@@ -80,6 +81,8 @@ local function beautifier(code)
                 end
             elseif element.name == "opperator" or element.name == "open" or element.name == "delimiter-close" or element.name == "delimiter-open" or element.name == "comma" or element.name == "close"then
                 sticky = true
+            elseif element.name == "goto-dispatch" then
+                sticky = false
             end
 
             if last == "label" then
@@ -91,6 +94,7 @@ local function beautifier(code)
                 newline()
                 if element.name == "label" then
                     newline()
+                    indent = indent + 1
                 elseif element.name == "word" and element.value == "function" then
                     newline()
                 end
@@ -134,6 +138,8 @@ local function beautifier(code)
                 table.insert(result, " ")
             elseif element.name == "opperator" then
                 table.insert(result, " ")
+            elseif element.name == "goto-dispatch" then
+                indent = indent - 1
             end
         end
 
