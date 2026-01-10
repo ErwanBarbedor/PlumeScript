@@ -105,7 +105,7 @@ local patterns = {
         end
     },
     {
-        pattern = {"[a-zA-Z_][a-zA-Z_%.0-9]*"},
+        pattern = {"[a-zA-Z_][a-zA-Z_0-9]*"},
         action = function (state, match)
             if match[1] == "then" or match[1] == "do" then
                 if state.top.kind == "elseif" then
@@ -143,6 +143,12 @@ local patterns = {
     {
         pattern = {"%-%-%[%[.-%]%]", "%-%-[^\n]+\n?"},
         action = function (state, match)
+        end
+    },
+    {
+        pattern = {'%.', ':'},
+        action = function (state, match)
+            state.add({kind="index", value=match[1]})
         end
     },
     {
@@ -262,6 +268,8 @@ local function _export(ast)
         elseif child.kind == "raw" then
             table.insert(result, child.value)
         elseif child.kind == "string" then
+            table.insert(result, child.value)
+        elseif child.kind == "index" then
             table.insert(result, child.value)
         elseif child.kind == "blank" then
             table.insert(result, _export(child))
