@@ -225,9 +225,11 @@ local function _export(ast)
 
     for _, child in ipairs(ast.children) do
         if child.kind == "function" then
-            table.insert(result, "function " .. child.name .. "(" .. table.concat(child.params, ", ") .. ")")
-                table.insert(result, _export(child))
-            table.insert(result, "end ")
+            if not child.inlined then
+                table.insert(result, "function " .. child.name .. "(" .. table.concat(child.params, ", ") .. ")")
+                    table.insert(result, _export(child))
+                table.insert(result, "end ")
+            end
         elseif child.kind == "call" then
             if child.affected then
                 if child.isLocal then
