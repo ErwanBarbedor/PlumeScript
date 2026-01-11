@@ -13,7 +13,6 @@ You should have received a copy of the GNU General Public License along with Plu
 If not, see <https://www.gnu.org/licenses/>.
 ]]
 
---! inline
 function SWITCH (vm, arg1, arg2)
     --- Unstack 2, stack 2 in reverse order
     --- arg1: -
@@ -25,7 +24,6 @@ function SWITCH (vm, arg1, arg2)
     
 end
 
---! inline
 function DUPLICATE (vm, arg1, arg2)
     --- Stack 1, current top
     --- arg1: -
@@ -33,7 +31,6 @@ function DUPLICATE (vm, arg1, arg2)
     _STACK_PUSH(vm.mainStack, _STACK_GET(vm.mainStack))
 end
 
---! inline
 function NULL (vm, arg1, arg2)
     --- Do nothing
     --- arg1: -

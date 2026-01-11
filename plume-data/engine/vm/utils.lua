@@ -17,7 +17,6 @@ function _GET_TYPE(vm, x)
     return type(x) == "table" and (x == vm.empty or x.type) or type(x)
 end
 
---! inline
 function _ERROR (vm, msg)
     vm.err = msg -- !to-remove
     -- !to-add return false, msg, vm.ip, vm.chunk

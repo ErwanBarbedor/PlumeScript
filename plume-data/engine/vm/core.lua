@@ -44,7 +44,6 @@ function _VM_INIT (plume, chunk, arguments)
     return vm
 end
 
---! inline
 function _VM_INIT_VARS(vm, chunk)
     vm.chunk = chunk
     vm.bytecode  = chunk.bytecode
@@ -73,7 +72,6 @@ function _VM_INIT_VARS(vm, chunk)
     vm.empty = vm.plume.obj.empty
 end
 
---! inline
 function _VM_INIT_ARGUMENTS(vm, chunk, arguments)
     if arguments then
         if chunk.isFile then
@@ -98,7 +96,6 @@ function _VM_INIT_ARGUMENTS(vm, chunk, arguments)
         end
     end
 end
---! inline
 
 function _VM_TICK (vm)
     --! to-remove-begin

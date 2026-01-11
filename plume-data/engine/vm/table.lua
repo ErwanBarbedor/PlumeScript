@@ -13,7 +13,6 @@ You should have received a copy of the GNU General Public License along with Plu
 If not, see <https://www.gnu.org/licenses/>.
 ]]
 
---! inline
 function TABLE_NEW (vm, arg1, arg2)
     --- Stack 1 table
     --- arg1: -
@@ -33,7 +32,6 @@ function _TABLE_SET (vm, t, k, v)
     t.table[key] = value 
 end
 
---! inline
 function TABLE_SET_ACC (vm, arg1, arg2)
     --- Unstack 2: a key, then a value
     --- Assume the main stack frame first value is a table
@@ -47,7 +45,6 @@ function TABLE_SET_ACC (vm, arg1, arg2)
     table.insert(t, arg2==1)                  -- is meta
 end
 
---! inline
 function TABLE_SET_META (vm, arg1, arg2)
     --- Unstack 3, in order: table, key, value
     --- Set the table.key to value
@@ -59,7 +56,6 @@ function TABLE_SET_META (vm, arg1, arg2)
     t.meta.table[key] = value
 end
 
---! inline
 function TABLE_INDEX (vm, arg1, arg2)
     --- Unstack 2, in order: table, key
     --- Stack 1, table[key]
@@ -106,7 +102,6 @@ function TABLE_INDEX (vm, arg1, arg2)
     end
 end
 
---! inline
 function TABLE_INDEX_ACC_SELF (vm, arg1, arg2)
     --- Unstack 2, in order: table, key
     --- Add current table as self key for current
@@ -121,7 +116,6 @@ function TABLE_INDEX_ACC_SELF (vm, arg1, arg2)
     TABLE_INDEX(vm, 0, 0)
 end
 
---! inline
 function TABLE_INDEX_META (vm, arg1, arg2)
     --- Unstack 2, in order: table, key
     --- Stack 1, table[key]
@@ -140,7 +134,6 @@ function _TABLE_META_SET (vm, t, k, v)
     end
 end
 
---! inline
 function TABLE_SET (vm, arg1, arg2)
     --- Unstack 3, in order: table, key, value
     --- Set the table.key to value
@@ -162,7 +155,6 @@ function TABLE_SET (vm, arg1, arg2)
     t.table[key] = value
 end
 
---! inline
 function TABLE_EXPAND (vm, arg1, arg2)
     --- Unstack 1: a table
     --- Stack all list item
@@ -185,6 +177,4 @@ function TABLE_EXPAND (vm, arg1, arg2)
     else
         _ERROR (vm, "Try to expand a '" .. tt .."' value.")
     end
-
-    
 end

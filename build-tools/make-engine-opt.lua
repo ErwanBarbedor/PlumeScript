@@ -70,6 +70,43 @@ local function inlineRequire(node)
 	return node
 end
 
+local function inlineFunctions(node)
+	if node.type == "call" then
+		local f = functionsToInline[node.func.name]
+		if f then
+			local body = f.body:copy()
+			local args = node.args
+			local params = f.params
+			for i, param in ipairs(params) do
+				local arg = node.args[i] or ast._nil()
+				body:traverse(function(node)
+					if node.type == "var" and node.name == param.name then
+						return arg:copy()
+					end
+					return node
+				end)
+			end
+
+			return ast._block(unpack(body))
+		end
+	end
+	return node
+end
+
+local function saveFunctionsToInline(node)
+	if node.type == "function" and node.name then
+		local name = node.name.name
+		if functionsToInline[name] then
+			functionsToInline[name] = {
+				body = node,
+				params = node.args
+			}
+			return ast._block()
+		end
+	end
+	return node
+end
+
 local function renameRun(node)
 	if node.type == "function" and node.name then
 		if node.name.key and node.name.key.value == "_run_dev" then
@@ -83,17 +120,21 @@ end
 require "make-engine" -- Compile base file
 local tree = loadCode('plume-data/engine/engine.lua', true)
 -- local tree = loadCode([[
--- --! to-remove-begin
--- zz
--- --! to-remove-end
+-- --! inline
+-- function TEST(x)
+-- 	x.foo()
+-- end
 
+-- TEST(y)
 -- ]], false)
+
 -- printTable(tree)
 
 tree:traverse(inlineRequire)
 tree:traverse(renameRun)
-
--- print(tree:toLua())
+tree:traverse(saveFunctionsToInline)
+tree:traverse(nil, inlineFunctions)
+print(tree:toLua())
 
 local f = io.open('plume-data/engine/engine-opt.lua', 'w')
 	f:write(tree:toLua())
