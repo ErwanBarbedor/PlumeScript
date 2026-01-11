@@ -23,7 +23,6 @@ function BEGIN_ACC(vm, arg1, arg2)
     )
 end
 
---! inline
 function ACC_TEXT (vm, arg1, arg2)
     --- Unstack all until main stack frame begin
     --- Concat and main stack the result
@@ -44,7 +43,6 @@ function ACC_TEXT (vm, arg1, arg2)
     _END_ACC(vm)
 end
 
---! inline
 function ACC_TABLE (vm, arg1, arg2)
     --- Unstack all until main stack frame begin
     --- Make a table from it
@@ -77,7 +75,6 @@ function ACC_TABLE (vm, arg1, arg2)
     _END_ACC(vm)
 end
 
---! inline
 function ACC_CHECK_TEXT (vm, arg1, arg2)
     --- Check if stack top can be concatened
     local value = _STACK_GET(vm.mainStack)
@@ -94,12 +91,10 @@ function ACC_CHECK_TEXT (vm, arg1, arg2)
 
 end
 
---! inline
 function _END_ACC (vm)
     _STACK_POP(vm.mainStack.frames)
 end
 
---! inline
 function ACC_EMPTY (vm, arg1, arg2)
     --- Stack 1 constant empty
     --- Unstack main stack frame
