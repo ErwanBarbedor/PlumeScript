@@ -25,6 +25,22 @@ local function printTable(t)
 	print(tolua(t))
 end
 
+local functionsToInline = {}
+local function applyCommands(code)
+	for name in code:gmatch('%-%-! inline\n%s*function%s+([a-zA-Z_0-9]*)') do
+		functionsToInline[name] = true
+	end
+
+	code = code:gsub('%-%-! to%-remove%-begin.-%-%-! to%-remove%-end', '')
+	for command in code:gmatch('%-%-! ([^\n]*)') do
+		if command ~= "inline" then
+			print("Error: unknow command '" .. command .. "'.")
+		end
+	end
+
+	return code
+end
+
 local function loadCode(path, isFile)
 	local code
 	if isFile then
@@ -35,6 +51,7 @@ local function loadCode(path, isFile)
 		code = path
 	end
 
+	code = applyCommands(code)
 	local result, msg = Parser.parse(code, isFile and path, '5.2', true)
 
 	if not result then
@@ -65,9 +82,18 @@ end
 
 require "make-engine" -- Compile base file
 local tree = loadCode('plume-data/engine/engine.lua', true)
+-- local tree = loadCode([[
+-- --! to-remove-begin
+-- zz
+-- --! to-remove-end
+
+-- ]], false)
+-- printTable(tree)
 
 tree:traverse(inlineRequire)
 tree:traverse(renameRun)
+
+-- print(tree:toLua())
 
 local f = io.open('plume-data/engine/engine-opt.lua', 'w')
 	f:write(tree:toLua())
