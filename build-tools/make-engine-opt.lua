@@ -18,6 +18,7 @@ If not, see <https://www.gnu.org/licenses/>.
 
 package.path =  "build-tools/?.lua;build-tools/thenumbernine/?.lua;build-tools/thenumbernine/ext/?.lua;;build-tools/thenumbernine/parser/?.lua;;build-tools/thenumbernine/template/?.lua;" .. package.path
 local Parser = require "parser"
+local ast = require "parser.lua.ast"
 local tolua = require 'ext.tolua'
 
 local function printTable(t)
@@ -44,6 +45,14 @@ local function loadCode(path, isFile)
 	return result
 end
 
+local function inlineRequire(node)
+	if node.type == "call" and node.func.name == "require" then
+		local path = node.args[1].value .. ".lua"
+		return ast._do(loadCode(path, true))
+	end
+	return node
+end
+
 local function renameRun(node)
 	if node.type == "function" and node.name then
 		if node.name.key and node.name.key.value == "_run_dev" then
@@ -56,12 +65,8 @@ end
 
 require "make-engine" -- Compile base file
 local tree = loadCode('plume-data/engine/engine.lua', true)
--- local tree = loadCode ([[
--- function test()
--- end
 
--- ]], false)
-
+tree:traverse(inlineRequire)
 tree:traverse(renameRun)
 
 local f = io.open('plume-data/engine/engine-opt.lua', 'w')
