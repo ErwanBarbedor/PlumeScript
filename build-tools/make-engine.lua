@@ -43,19 +43,20 @@ If not, see <https://www.gnu.org/licenses/>.
 
 -- Add all needed functions are loaded as globals
 return function (plume)
+	function plume._run_dev (chunk, arguments)
 ]=]
 
 local import = {}
 for file in lfs.dir("plume-data/engine/vm") do
 	if file:match('%.lua$') then
 		file = file:gsub('%.lua$', '')
-		table.insert(import, string.format("\trequire \"plume-data/engine/vm/%s\"\n", file))
+		table.insert(import, string.format("\t\trequire \"plume-data/engine/vm/%s\"\n", file))
 	end
 end
 import = table.concat(import)
 
 local init = [[
-	function plume._run_dev (chunk, arguments)
+	
 		-- Creates stacks, handle arguments
 		local vm = _VM_INIT(plume, chunk, arguments)
 		

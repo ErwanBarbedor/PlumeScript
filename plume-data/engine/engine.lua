@@ -21,21 +21,22 @@ If not, see <https://www.gnu.org/licenses/>.
 
 -- Add all needed functions are loaded as globals
 return function (plume)
-	require "plume-data/engine/vm/acc"
-	require "plume-data/engine/vm/alu"
-	require "plume-data/engine/vm/call"
-	require "plume-data/engine/vm/core"
-	require "plume-data/engine/vm/iter"
-	require "plume-data/engine/vm/jump"
-	require "plume-data/engine/vm/load"
-	require "plume-data/engine/vm/meta"
-	require "plume-data/engine/vm/others"
-	require "plume-data/engine/vm/scope"
-	require "plume-data/engine/vm/stack"
-	require "plume-data/engine/vm/store"
-	require "plume-data/engine/vm/table"
-	require "plume-data/engine/vm/utils"
 	function plume._run_dev (chunk, arguments)
+		require "plume-data/engine/vm/acc"
+		require "plume-data/engine/vm/alu"
+		require "plume-data/engine/vm/call"
+		require "plume-data/engine/vm/core"
+		require "plume-data/engine/vm/iter"
+		require "plume-data/engine/vm/jump"
+		require "plume-data/engine/vm/load"
+		require "plume-data/engine/vm/meta"
+		require "plume-data/engine/vm/others"
+		require "plume-data/engine/vm/scope"
+		require "plume-data/engine/vm/stack"
+		require "plume-data/engine/vm/store"
+		require "plume-data/engine/vm/table"
+		require "plume-data/engine/vm/utils"
+	
 		-- Creates stacks, handle arguments
 		local vm = _VM_INIT(plume, chunk, arguments)
 		
