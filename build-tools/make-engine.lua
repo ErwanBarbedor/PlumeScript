@@ -104,4 +104,6 @@ local footer = "\t\t::END::\n\t\treturn true, _STACK_GET(vm.mainStack)\n\tend\ne
 local result = {header, import, init, dispatch, labels, footer}
 
 
-io.open("plume-data/engine/engine.lua", "w"):write(table.concat( result, ""))
+local f = io.open("plume-data/engine/engine.lua", "w")
+	f:write(table.concat( result, ""))
+f:close()
