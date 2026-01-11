@@ -1,0 +1,143 @@
+-- TODO declare a parent-node 'op' somehow
+-- one downside to this system is .. you need one rule per unique ast node ...
+-- TODO all these should inherit from 'op'
+-- another TODO ...
+-- ... all these were originally implemented as `if token found then build the node` 
+-- but for the auto generation, I think I have to build the node, then bail if something doesn't match ...
+-- ... and that means no more 'mustbe' ? since instead it'll just be returning nil?
+-- or should I keep the old design?  but that means changing the code-generation ...
+-- hmm but that means pushing the first matched token of each rule back into the calling rule as a ...
+-- 	`if canbe(symbol) then parse_nextrule()`
+-- that might mean I need to assert every rule only has "or" on its topmost, and then next, every expression starts with a keyword/symbol
+--
+-- or how about I just generate a FSM?  that seems to be trendy.
+
+-- are the captures just the rules themselves?
+-- should I just capture everything?
+-- should I tag everything with what rule created it?
+
+block ::= {(stat) [';']} [(laststat) [';']] ;
+
+stat ::= 'local' 'function' (Name) (funcbody)
+	| 'local' (namelist) ['=' (explist)]
+	| 'function' (funcname) (funcbody)
+	| 'for' (Name) '=' (exp) ',' (exp) [',' (exp)] 'do' (block) 'end'
+	| 'for' (namelist) 'in' (explist) 'do' (block) 'end'
+	| 'if' (exp) 'then' (block) {'elseif' (exp) 'then' (block)} ['else' (block)] 'end'
+	| 'repeat' (block) 'until' (exp)
+	| 'while' (exp) 'do' (block) 'end'
+	| 'do' (block) 'end'
+	| (functioncall)
+	| (varlist) '=' (explist)
+	;
+
+laststat ::= 'return' [explist]
+	| 'break'
+	;
+
+funcname ::= Name {'.' Name} [':' Name] ;
+
+varlist ::= var {',' var} ;
+
+var ::=  Name
+	| prefixexp '[' exp ']'
+	| prefixexp '.' Name
+	;
+
+namelist ::= Name {',' Name} ;
+
+explist ::= {exp ','} exp ;
+
+exp ::= 'nil'
+	| 'false'
+	| 'true'
+	| Numeral
+	| LiteralString
+	| '...'
+	| functiondef
+	| prefixexp
+	| tableconstructor
+	| exp binop exp
+	| unop exp
+	;
+
+prefixexp ::= var
+	| functioncall
+	| '(' exp ')'
+	;
+
+functioncall ::= prefixexp args
+	| prefixexp ':' Name args
+	;
+
+args ::= '(' [explist] ')'
+	| tableconstructor
+	| LiteralString
+	;
+
+functiondef ::= 'function' funcbody ;
+
+funcbody ::= '(' [parlist] ')' block 'end' ;
+
+parlist ::= namelist [',' '...']
+	| '...'
+	;
+
+tableconstructor ::= '{' [fieldlist] '}' ;
+
+fieldlist ::= field {fieldsep field} [fieldsep] ;
+
+field ::= '[' exp ']' '=' exp
+	| Name '=' exp
+	| exp
+	;
+
+fieldsep ::= ','
+	| ';'
+	;
+
+binop ::= add
+	| sub
+	| mul
+	| div
+	| pow
+	| mod
+	| concat
+	| lt
+	| le
+	| gt
+	| ge
+	| eq
+	| ne
+	| and
+	| or
+	;
+
+add ::= '+' ;
+sub ::= '-' ;
+mul ::= '*' ;
+div ::= '/' ;
+pow ::= '^' ;
+mod ::= '%' ;
+concat ::= '..' ;
+lt ::= '<' ;
+le ::= '<=' ;
+gt ::= '>' ;
+ge ::= '>=' ;
+eq ::= '==' ;
+ne ::= '~=' ;
+and ::= 'and' ;
+or ::= 'or' ;
+
+unop ::= unm
+	| not
+	| len
+	;
+
+unm ::= '-' ;
+not ::= 'not' ;
+len ::= '#' ;
+
+-- Name ::= ... how to define valid names ...
+-- Numeral ::= ... how to define numerals ...
+-- LiteralString ::= how to define literal strings ...
