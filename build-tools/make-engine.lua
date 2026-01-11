@@ -14,7 +14,7 @@ If not, see <https://www.gnu.org/licenses/>.
 ]]
 
 -- Create the core big-dispatch-loop
--- Called by makevm.lua
+-- Called by make-engine-opt.lua
 
 local plume = {}
 require"plume-data/engine/utils"(plume)
