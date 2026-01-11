@@ -17,11 +17,53 @@ If not, see <https://www.gnu.org/licenses/>.
 -- Thanks for thenumbernine lua-parser lib.
 
 package.path =  "build-tools/?.lua;build-tools/thenumbernine/?.lua;build-tools/thenumbernine/ext/?.lua;;build-tools/thenumbernine/parser/?.lua;;build-tools/thenumbernine/template/?.lua;" .. package.path
-require "make-engine"
-
-local plume  = require "plume-data/engine/init"
 local Parser = require "parser"
+local tolua = require 'ext.tolua'
 
-local VM_PATH = "plume-data/engine/engine.lua"
+local function printTable(t)
+	print(tolua(t))
+end
 
-local tree = Parser.parse(io.open(VM_PATH):read('*a'), 'plume-data/engine/engine.lua', '5.2', true)
+local function loadCode(path, isFile)
+	local code
+	if isFile then
+		local f = io.open(path)
+			code = f:read("a")
+		f:close()
+	else
+		code = path
+	end
+
+	local result, msg = Parser.parse(code, isFile and path, '5.2', true)
+
+	if not result then
+		print("Cannot load " .. path .. ".")
+		error(msg)
+	end
+
+	return result
+end
+
+local function renameRun(node)
+	if node.type == "function" and node.name then
+		if node.name.key and node.name.key.value == "_run_dev" then
+			node.name.key.value = "_run"
+		end
+	end
+	return node
+end
+
+
+require "make-engine" -- Compile base file
+local tree = loadCode('plume-data/engine/engine.lua', true)
+-- local tree = loadCode ([[
+-- function test()
+-- end
+
+-- ]], false)
+
+tree:traverse(renameRun)
+
+local f = io.open('plume-data/engine/engine-opt.lua', 'w')
+	f:write(tree:toLua())
+f:close()
