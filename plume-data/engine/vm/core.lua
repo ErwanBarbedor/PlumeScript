@@ -32,11 +32,11 @@ local MASK_ARG2 = bit.lshift(1, ARG2_BITS) - 1
 function _VM_INIT (plume, chunk, arguments)
     require("table.new")
 
-    local vm = {} -- !table-to-remove
+    --! table-to-remove vm
+    local vm = {} 
     
     -- to avoid context injection
     vm.plume = plume -- !to-remove
-    -- !alias vm.plume plume
 
     _VM_INIT_VARS(vm, chunk)
     _VM_INIT_ARGUMENTS(vm, chunk, arguments)
@@ -101,7 +101,7 @@ end
 --! inline
 
 function _VM_TICK (vm)
-    -- !to-remove-begin
+    --! to-remove-begin
     if vm.plume.hook then
         if vm.ip>0 then 
             local instr, op, arg1, arg2
@@ -128,7 +128,7 @@ function _VM_TICK (vm)
             )
         end       
     end  
-    -- !to-remove-end
+    --! to-remove-end
 
     if vm.jump>0 then
         vm.ip = vm.jump
