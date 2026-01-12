@@ -13,6 +13,7 @@ You should have received a copy of the GNU General Public License along with Plu
 If not, see <https://www.gnu.org/licenses/>.
 ]]
 
+--! inline
 function LOAD_CONSTANT (vm, arg1, arg2)
     --- Stack 1 from constant
     --- arg1: -
@@ -20,6 +21,7 @@ function LOAD_CONSTANT (vm, arg1, arg2)
     _STACK_PUSH(vm.mainStack, vm.constants[arg2])
 end
 
+--! inline
 function LOAD_LEXICAL (vm, arg1, arg2)
     --- Stack 1 from vs.
     --- Final offset: the nth last frame + vs offset
@@ -31,6 +33,7 @@ function LOAD_LEXICAL (vm, arg1, arg2)
     )
 end
 
+--! inline
 function LOAD_LOCAL (vm, arg1, arg2)
     --- Stack 1 from vs.
     --- Final offset: current frame + vs offset
@@ -42,6 +45,7 @@ function LOAD_LOCAL (vm, arg1, arg2)
     )
 end
 
+--! inline
 function LOAD_STATIC (vm, arg1, arg2)
     --- Stack 1 from static memory
     --- memory[mp] is a pointer to the current
@@ -53,6 +57,7 @@ function LOAD_STATIC (vm, arg1, arg2)
         vm.static[arg2]
     )
 end
+--! inline
 
 function LOAD_TRUE (vm, arg1, arg2)
     --- Stack 1 constant true
@@ -61,6 +66,7 @@ function LOAD_TRUE (vm, arg1, arg2)
     _STACK_PUSH(vm.mainStack, true)
 end
 
+--! inline
 function LOAD_FALSE (vm, arg1, arg2)
     --- Stack 1 constant false
     --- arg1: -
@@ -68,6 +74,7 @@ function LOAD_FALSE (vm, arg1, arg2)
     _STACK_PUSH(vm.mainStack, false)
 end
 
+--! inline
 function LOAD_EMPTY (vm, arg1, arg2)
     --- Stack 1 constant empty
     --- arg1: -
