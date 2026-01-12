@@ -13,6 +13,7 @@ You should have received a copy of the GNU General Public License along with Plu
 If not, see <https://www.gnu.org/licenses/>.
 ]]
 
+--! inline
 function STORE_LOCAL (vm, arg1, arg2)
     --- Unstack 1 to vs
     --- Final offset: current frame + frame offset
@@ -27,6 +28,7 @@ function STORE_LOCAL (vm, arg1, arg2)
     )
 end
 
+--! inline
 function STORE_STATIC (vm, arg1, arg2)
     --- Unstack 1 static memory
     --- memory[mp] is a pointer to the current
@@ -36,6 +38,7 @@ function STORE_STATIC (vm, arg1, arg2)
     vm.static[arg2] = _STACK_POP(vm.mainStack)
 end
 
+--! inline
 function STORE_LEXICAL (vm, arg1, arg2)
     --- Unstack 1 to vs
     --- Offset: the anth last frame + frame offset
@@ -49,6 +52,7 @@ function STORE_LEXICAL (vm, arg1, arg2)
     )
 end
 
+--! inline
 function STORE_VOID (vm, arg1, arg2)
     --- Unstack 1
     --- arg1: -

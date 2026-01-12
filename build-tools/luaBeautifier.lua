@@ -183,6 +183,7 @@ local beautifier = function(node)
                     table.insert(result, ", ")
                 end
             end
+            removeNewLine()
             table.insert(result, ")")
             newline()
         end,

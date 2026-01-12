@@ -72,6 +72,7 @@ function _HANDLE_META_UN (vm, x, name)
     return true, _CALL (vm, meta, params)
 end
 
+--! inline
 function _BIN_OPP_BOOL (vm, opp)
     local right = _STACK_POP(vm.mainStack)
     local left  = _STACK_POP(vm.mainStack)
@@ -82,12 +83,14 @@ function _BIN_OPP_BOOL (vm, opp)
     _STACK_PUSH(vm.mainStack, opp(right, left))
 end
 
+--! inline
 function _UN_OPP_BOOL (vm, opp)
     local x = _STACK_POP(vm.mainStack)
     x = _CHECK_BOOL (vm, x)
     _STACK_PUSH(vm.mainStack, opp(x))
 end
 
+--! inline
 function _BIN_OPP_NUMBER (vm, opp, name)
     local right = _STACK_POP(vm.mainStack)
     local left  = _STACK_POP(vm.mainStack)
@@ -111,6 +114,7 @@ function _BIN_OPP_NUMBER (vm, opp, name)
     end    
 end
 
+--! inline
 function _UN_OPP_NUMBER (vm, opp, name)
     local x = _STACK_POP(vm.mainStack)
     local err
@@ -140,12 +144,19 @@ function _MOD(x, y) return x%y end
 function _POW(x, y) return x^y end
 function _NEG(x)    return -x end
 
+--! inline
 function OPP_ADD (vm, arg1, arg2) _BIN_OPP_NUMBER (vm, _ADD,   "add")   end
+--! inline
 function OPP_MUL (vm, arg1, arg2) _BIN_OPP_NUMBER (vm, _MUL,   "mul")   end
+--! inline
 function OPP_SUB (vm, arg1, arg2) _BIN_OPP_NUMBER (vm, _SUB,   "sub")   end
+--! inline
 function OPP_DIV (vm, arg1, arg2) _BIN_OPP_NUMBER (vm, _DIV,   "div")   end
+--! inline
 function OPP_MOD (vm, arg1, arg2) _BIN_OPP_NUMBER (vm, _MOD,   "mod")   end
+--! inline
 function OPP_POW (vm, arg1, arg2) _BIN_OPP_NUMBER (vm, _POW,   "pow")   end
+--! inline
 function OPP_NEG (vm, arg1, arg2) _UN_OPP_NUMBER  (vm, _NEG,   "minus") end
 
 
@@ -155,15 +166,21 @@ function _AND(x, y) return x and y end
 function _OR(x, y)  return x or y end
 function _NOT(x)    return not x end
 
+--! inline
 function OPP_AND (vm, arg1, arg2) _BIN_OPP_BOOL (vm, _AND) end
+--! inline
 function OPP_OR  (vm, arg1, arg2) _BIN_OPP_BOOL (vm, _OR) end
+--! inline
 function OPP_NOT (vm, arg1, arg2) _UN_OPP_BOOL  (vm, _NOT) end
 
 
 --- Comparison
 function _LT(x, y) return x < y end
 
+--! inline
 function OPP_LT (vm, arg1, arg2) _BIN_OPP_NUMBER (vm, _LT, "lt") end
+
+--! inline
 function OPP_EQ (vm, arg1, arg2)
     local right = _STACK_POP(vm.mainStack)
     local left  = _STACK_POP(vm.mainStack)
