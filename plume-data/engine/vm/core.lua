@@ -44,6 +44,7 @@ function _VM_INIT (plume, chunk, arguments)
     return vm
 end
 
+--! inline
 function _VM_INIT_VARS(vm, chunk)
     vm.chunk = chunk
     vm.bytecode  = chunk.bytecode
@@ -97,6 +98,7 @@ function _VM_INIT_ARGUMENTS(vm, chunk, arguments)
     end
 end
 
+--! inline
 function _VM_TICK (vm)
     --! to-remove-begin
     if vm.plume.hook then
