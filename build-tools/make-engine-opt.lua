@@ -87,7 +87,7 @@ local function inlineFunctions(node)
 				end)
 			end
 
-			return ast._block(unpack(body))
+			return ast._do(unpack(body))
 		end
 	end
 	return node
@@ -131,8 +131,8 @@ local tree = loadCode('plume-data/engine/engine.lua', true)
 
 tree:traverse(inlineRequire)
 tree:traverse(renameRun)
--- tree:traverse(saveFunctionsToInline)
--- tree:traverse(nil, inlineFunctions)
+tree:traverse(saveFunctionsToInline)
+tree:traverse(nil, inlineFunctions)
 -- print(tree:toLua())
 
 local beautifier = require "luaBeautifier"
