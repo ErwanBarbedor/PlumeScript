@@ -97,14 +97,10 @@ return function (plume)
                         table.remove (vm.chunk.callstack)
                         return callResult
                     else
-                        do
-                            vm.serr = {callResult, cip, (source or macro)}
-                        end
+                        vm.serr = {callResult, cip, (source or macro)}
                     end
                 else
-                    do
-                        vm.err = "stack overflow"
-                    end
+                    vm.err = "stack overflow"
                 end
             end
         end
@@ -122,24 +118,22 @@ return function (plume)
                 require ("table.new")
                 local vm = {}
                 vm.plume = plume
-                do
-                    vm.chunk = chunk
-                    vm.bytecode = chunk.bytecode
-                    vm.constants = chunk.constants
-                    vm.static = chunk.static
-                    vm.ip = 0
-                    vm.tic = 0
-                    vm.mainStack = table.new (2 ^ 14, 0)
-                    vm.mainStack.frames = table.new (2 ^ 8, 0)
-                    vm.mainStack.pointer = 0
-                    vm.mainStack.frames.pointer = 0
-                    vm.variableStack = table.new (2 ^ 10, 0)
-                    vm.variableStack.frames = table.new (2 ^ 8, 0)
-                    vm.variableStack.pointer = 0
-                    vm.variableStack.frames.pointer = 0
-                    vm.jump = 0
-                    vm.empty = vm.plume.obj.empty
-                end
+                vm.chunk = chunk
+                vm.bytecode = chunk.bytecode
+                vm.constants = chunk.constants
+                vm.static = chunk.static
+                vm.ip = 0
+                vm.tic = 0
+                vm.mainStack = table.new (2 ^ 14, 0)
+                vm.mainStack.frames = table.new (2 ^ 8, 0)
+                vm.mainStack.pointer = 0
+                vm.mainStack.frames.pointer = 0
+                vm.variableStack = table.new (2 ^ 10, 0)
+                vm.variableStack.frames = table.new (2 ^ 8, 0)
+                vm.variableStack.pointer = 0
+                vm.variableStack.frames.pointer = 0
+                vm.jump = 0
+                vm.empty = vm.plume.obj.empty
                 _VM_INIT_ARGUMENTS (vm, chunk, arguments)
                 return vm
             end
@@ -283,9 +277,7 @@ return function (plume)
                         table.insert (ft, false)
                     end
                 else
-                    do
-                        vm.err = "Try to expand a '" .. tt .. "' value."
-                    end
+                    vm.err = "Try to expand a '" .. tt .. "' value."
                 end
             end
         end
@@ -309,15 +301,13 @@ return function (plume)
         if vm.serr then
             return false, unpack (vm.serr)
         end
-        do
-            if vm.jump > 0 then
-                vm.ip = vm.jump
-                vm.jump = 0
-            else
-                vm.ip = vm.ip + 1
-            end
-            vm.tic = vm.tic + 1
+        if vm.jump > 0 then
+            vm.ip = vm.jump
+            vm.jump = 0
+        else
+            vm.ip = vm.ip + 1
         end
+        vm.tic = vm.tic + 1
         op, arg1, arg2 = _VM_DECODE_CURRENT_INSTRUCTION (vm)
         if op == 1 then
             goto LOAD_CONSTANT
@@ -425,64 +415,40 @@ return function (plume)
             goto END
         end
         ::LOAD_CONSTANT::
-        do
-            _STACK_PUSH (vm.mainStack, vm.constants[arg2])
-        end
+        _STACK_PUSH (vm.mainStack, vm.constants[arg2])
         goto DISPATCH
         ::LOAD_TRUE::
-        do
-            _STACK_PUSH (vm.mainStack, true)
-        end
+        _STACK_PUSH (vm.mainStack, true)
         goto DISPATCH
         ::LOAD_FALSE::
-        do
-            _STACK_PUSH (vm.mainStack, false)
-        end
+        _STACK_PUSH (vm.mainStack, false)
         goto DISPATCH
         ::LOAD_EMPTY::
-        do
-            _STACK_PUSH (vm.mainStack, vm.empty)
-        end
+        _STACK_PUSH (vm.mainStack, vm.empty)
         goto DISPATCH
         ::LOAD_LOCAL::
-        do
-            _STACK_PUSH (vm.mainStack, _STACK_GET_FRAMED (vm.variableStack, arg2 - 1))
-        end
+        _STACK_PUSH (vm.mainStack, _STACK_GET_FRAMED (vm.variableStack, arg2 - 1))
         goto DISPATCH
         ::LOAD_LEXICAL::
-        do
-            _STACK_PUSH (vm.mainStack, _STACK_GET_FRAMED (vm.variableStack, arg2 - 1, -arg1))
-        end
+        _STACK_PUSH (vm.mainStack, _STACK_GET_FRAMED (vm.variableStack, arg2 - 1, -arg1))
         goto DISPATCH
         ::LOAD_STATIC::
-        do
-            _STACK_PUSH (vm.mainStack, vm.static[arg2])
-        end
+        _STACK_PUSH (vm.mainStack, vm.static[arg2])
         goto DISPATCH
         ::STORE_LOCAL::
-        do
-            _STACK_SET_FRAMED (vm.variableStack, arg2 - 1, 0, _STACK_POP (vm.mainStack))
-        end
+        _STACK_SET_FRAMED (vm.variableStack, arg2 - 1, 0, _STACK_POP (vm.mainStack))
         goto DISPATCH
         ::STORE_LEXICAL::
-        do
-            _STACK_SET_FRAMED (vm.variableStack, arg2 - 1, -arg1, _STACK_POP (vm.mainStack))
-        end
+        _STACK_SET_FRAMED (vm.variableStack, arg2 - 1, -arg1, _STACK_POP (vm.mainStack))
         goto DISPATCH
         ::STORE_STATIC::
-        do
-            vm.static[arg2] = _STACK_POP (vm.mainStack)
-        end
+        vm.static[arg2] = _STACK_POP (vm.mainStack)
         goto DISPATCH
         ::STORE_VOID::
-        do
-            _STACK_POP (vm.mainStack)
-        end
+        _STACK_POP (vm.mainStack)
         goto DISPATCH
         ::TABLE_NEW::
-        do
-            _STACK_PUSH (vm.mainStack, table.new (0, arg1))
-        end
+        _STACK_PUSH (vm.mainStack, table.new (0, arg1))
         goto DISPATCH
         ::TABLE_ADD::
         TABLE_ADD (vm, arg1, arg2)
@@ -582,22 +548,16 @@ return function (plume)
         TABLE_EXPAND (vm, arg1, arg2)
         goto DISPATCH
         ::ENTER_SCOPE::
-        do
-            _STACK_PUSH (vm.variableStack.frames, _STACK_POS (vm.variableStack) + 1 - arg1)
-            for i = 1, arg2 - arg1 do
-                _STACK_PUSH (vm.variableStack, vm.empty)
-            end
+        _STACK_PUSH (vm.variableStack.frames, _STACK_POS (vm.variableStack) + 1 - arg1)
+        for i = 1, arg2 - arg1 do
+            _STACK_PUSH (vm.variableStack, vm.empty)
         end
         goto DISPATCH
         ::LEAVE_SCOPE::
-        do
-            _STACK_POP_FRAME (vm.variableStack)
-        end
+        _STACK_POP_FRAME (vm.variableStack)
         goto DISPATCH
         ::BEGIN_ACC::
-        do
-            _STACK_PUSH (vm.mainStack.frames, vm.mainStack.pointer + 1)
-        end
+        _STACK_PUSH (vm.mainStack.frames, vm.mainStack.pointer + 1)
         goto DISPATCH
         ::ACC_TABLE::
         do
@@ -637,10 +597,8 @@ return function (plume)
         end
         goto DISPATCH
         ::ACC_EMPTY::
-        do
-            _STACK_PUSH (vm.mainStack, vm.empty)
-            _END_ACC (vm)
-        end
+        _STACK_PUSH (vm.mainStack, vm.empty)
+        _END_ACC (vm)
         goto DISPATCH
         ::ACC_CALL::
         do
@@ -730,9 +688,7 @@ return function (plume)
         end
         goto DISPATCH
         ::JUMP::
-        do
-            vm.jump = arg2
-        end
+        vm.jump = arg2
         goto DISPATCH
         ::JUMP_IF_PEEK::
         do
@@ -795,44 +751,28 @@ return function (plume)
         end
         goto DISPATCH
         ::OPP_ADD::
-        do
-            _BIN_OPP_NUMBER (vm, _ADD, "add")
-        end
+        _BIN_OPP_NUMBER (vm, _ADD, "add")
         goto DISPATCH
         ::OPP_MUL::
-        do
-            _BIN_OPP_NUMBER (vm, _MUL, "mul")
-        end
+        _BIN_OPP_NUMBER (vm, _MUL, "mul")
         goto DISPATCH
         ::OPP_SUB::
-        do
-            _BIN_OPP_NUMBER (vm, _SUB, "sub")
-        end
+        _BIN_OPP_NUMBER (vm, _SUB, "sub")
         goto DISPATCH
         ::OPP_DIV::
-        do
-            _BIN_OPP_NUMBER (vm, _DIV, "div")
-        end
+        _BIN_OPP_NUMBER (vm, _DIV, "div")
         goto DISPATCH
         ::OPP_NEG::
-        do
-            _UN_OPP_NUMBER (vm, _NEG, "minus")
-        end
+        _UN_OPP_NUMBER (vm, _NEG, "minus")
         goto DISPATCH
         ::OPP_MOD::
-        do
-            _BIN_OPP_NUMBER (vm, _MOD, "mod")
-        end
+        _BIN_OPP_NUMBER (vm, _MOD, "mod")
         goto DISPATCH
         ::OPP_POW::
-        do
-            _BIN_OPP_NUMBER (vm, _POW, "pow")
-        end
+        _BIN_OPP_NUMBER (vm, _POW, "pow")
         goto DISPATCH
         ::OPP_LT::
-        do
-            _BIN_OPP_NUMBER (vm, _LT, "lt")
-        end
+        _BIN_OPP_NUMBER (vm, _LT, "lt")
         goto DISPATCH
         ::OPP_EQ::
         do
@@ -846,24 +786,16 @@ return function (plume)
         end
         goto DISPATCH
         ::OPP_AND::
-        do
-            _BIN_OPP_BOOL (vm, _AND)
-        end
+        _BIN_OPP_BOOL (vm, _AND)
         goto DISPATCH
         ::OPP_NOT::
-        do
-            _UN_OPP_BOOL (vm, _NOT)
-        end
+        _UN_OPP_BOOL (vm, _NOT)
         goto DISPATCH
         ::OPP_OR::
-        do
-            _BIN_OPP_BOOL (vm, _OR)
-        end
+        _BIN_OPP_BOOL (vm, _OR)
         goto DISPATCH
         ::DUPLICATE::
-        do
-            _STACK_PUSH (vm.mainStack, _STACK_GET (vm.mainStack))
-        end
+        _STACK_PUSH (vm.mainStack, _STACK_GET (vm.mainStack))
         goto DISPATCH
         ::SWITCH::
         do
