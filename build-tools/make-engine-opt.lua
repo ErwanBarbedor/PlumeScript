@@ -131,11 +131,12 @@ local tree = loadCode('plume-data/engine/engine.lua', true)
 
 tree:traverse(inlineRequire)
 tree:traverse(renameRun)
-tree:traverse(saveFunctionsToInline)
-tree:traverse(nil, inlineFunctions)
+-- tree:traverse(saveFunctionsToInline)
+-- tree:traverse(nil, inlineFunctions)
 -- print(tree:toLua())
 
 local beautifier = require "luaBeautifier"
 local f = io.open('plume-data/engine/engine-opt.lua', 'w')
 	f:write(beautifier(tree))
+	-- f:write(tree:toLua())
 f:close()
