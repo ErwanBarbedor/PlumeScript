@@ -87,7 +87,15 @@ local function inlineFunctions(node)
 				end)
 			end
 
-			return ast._do(unpack(body))
+			local parent = ast._block
+			for _, elem in ipairs(body) do
+				if elem.type == "local" then
+					parent = ast._do
+					break
+				end
+			end
+
+			return parent(unpack(body))
 		end
 	end
 	return node
