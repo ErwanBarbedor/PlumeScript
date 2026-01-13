@@ -3,46 +3,6 @@ return function (plume)
         do
         end
         do
-            function _CHECK_NUMBER_META (vm, x)
-                local tx = _GET_TYPE (vm, x)
-                if tx == "string" then
-                    x = tonumber (x)
-                    if not x then
-                        return x, "Cannot convert the string value to a number."
-                    end
-                elseif tx ~= "number" then
-                    if tx == "table" and x.meta.table.tonumber then
-                        local meta = x.meta.table.tonumber
-                        local params = {}
-                        return _CALL (vm, meta, params)
-                    else
-                        return x, "Cannot do comparison or arithmetic with " .. tostring (tx) .. " value."
-                    end
-                end
-                return x
-            end
-            function _HANDLE_META_BIN (vm, left, right, name)
-                local meta, params
-                local tleft = _GET_TYPE (vm, left)
-                local tright = _GET_TYPE (vm, right)
-                if tleft == "table" and left.meta and left.meta.table[name .. "r"] then
-                    meta = left.meta.table[name .. "r"]
-                    params = {right, left}
-                elseif tright == "table" and right.meta and right.meta.table[name .. "l"] then
-                    meta = right.meta.table[name .. "l"]
-                    params = {left, right}
-                elseif tleft == "table" and left.meta and left.meta.table[name] then
-                    meta = left.meta.table[name]
-                    params = {left, right, left}
-                elseif tright == "table" and right.meta and right.meta.table[name] then
-                    meta = right.meta.table[name]
-                    params = {left, right, right}
-                end
-                if not meta then
-                    return false
-                end
-                return true, _CALL (vm, meta, params)
-            end
             function _AND (x, y)
                 return x and y
             end
@@ -222,7 +182,7 @@ return function (plume)
                 return x
             end
         end
-        local _tmp1
+        local _ret1
         do
             require ("table.new")
             local vm = {}
@@ -244,9 +204,11 @@ return function (plume)
             vm.jump = 0
             vm.empty = vm.plume.obj.empty
             _VM_INIT_ARGUMENTS (vm, chunk, arguments)
-            _tmp1 = vm
+            _ret1 = vm
+            goto _inline_end5
         end
-        local vm = _tmp1
+        ::_inline_end5::
+        local vm = _ret1
         local op, arg1, arg2
         ::DISPATCH::
             if vm.err then
@@ -804,15 +766,91 @@ return function (plume)
                     local right = _STACK_POP (vm.mainStack)
                     local left = _STACK_POP (vm.mainStack)
                     local rerr, lerr, success, result
-                    right, rerr = _CHECK_NUMBER_META (vm, right)
-                    left, lerr = _CHECK_NUMBER_META (vm, left)
+                    local _ret2, _ret3
+                    do
+                        local tx = _GET_TYPE (vm, right)
+                        if tx == "string" then
+                            right = tonumber (right)
+                            if not right then
+                                _ret2, _ret3 = right, "Cannot convert the string value to a number."
+                                goto _inline_end91
+                            end
+                        elseif tx ~= "number" then
+                            if tx == "table" and right.meta.table.tonumber then
+                                local meta = right.meta.table.tonumber
+                                local params = {}
+                                _ret2, _ret3 = _CALL (vm, meta, params)
+                                goto _inline_end91
+                            else
+                                _ret2, _ret3 = right, "Cannot do comparison or arithmetic with " .. tostring (tx) .. " value."
+                                goto _inline_end91
+                            end
+                        end
+                        _ret2, _ret3 = right
+                        goto _inline_end91
+                    end
+                    ::_inline_end91::
+                    right, rerr = _ret2, _ret3
+                    local _ret4, _ret5
+                    do
+                        local tx = _GET_TYPE (vm, left)
+                        if tx == "string" then
+                            left = tonumber (left)
+                            if not left then
+                                _ret4, _ret5 = left, "Cannot convert the string value to a number."
+                                goto _inline_end92
+                            end
+                        elseif tx ~= "number" then
+                            if tx == "table" and left.meta.table.tonumber then
+                                local meta = left.meta.table.tonumber
+                                local params = {}
+                                _ret4, _ret5 = _CALL (vm, meta, params)
+                                goto _inline_end92
+                            else
+                                _ret4, _ret5 = left, "Cannot do comparison or arithmetic with " .. tostring (tx) .. " value."
+                                goto _inline_end92
+                            end
+                        end
+                        _ret4, _ret5 = left
+                        goto _inline_end92
+                    end
+                    ::_inline_end92::
+                    left, lerr = _ret4, _ret5
                     if lerr or rerr then
-                        success, result = _HANDLE_META_BIN (vm, left, right, "add")
+                        local _ret6, _ret7
+                        do
+                            local meta, params
+                            local tleft = _GET_TYPE (vm, left)
+                            local tright = _GET_TYPE (vm, right)
+                            if tleft == "table" and left.meta and left.meta.table["add" .. "r"] then
+                                meta = left.meta.table["add" .. "r"]
+                                params = {right, left}
+                            elseif tright == "table" and right.meta and right.meta.table["add" .. "l"] then
+                                meta = right.meta.table["add" .. "l"]
+                                params = {left, right}
+                            elseif tleft == "table" and left.meta and left.meta.table.add then
+                                meta = left.meta.table.add
+                                params = {left, right, left}
+                            elseif tright == "table" and right.meta and right.meta.table.add then
+                                meta = right.meta.table.add
+                                params = {left, right, right}
+                            end
+                            if not meta then
+                                _ret6 = false
+                                goto _inline_end93
+                            end
+                            _ret6, _ret7 = true, _CALL (vm, meta, params)
+                            goto _inline_end93
+                        end
+                        ::_inline_end93::
+                        success, result = _ret6, _ret7
                     else
                         success = true
-                        local _tmp2
-                        _tmp2 = left + right
-                        result = _tmp2
+                        local _ret8
+                        _ret8 = left + right
+                        goto _inline_end94
+                        ::_inline_end94::
+                        result = _ret8
                     end
                     if success then
                         _STACK_PUSH (vm.mainStack, result)
@@ -826,15 +864,91 @@ return function (plume)
                     local right = _STACK_POP (vm.mainStack)
                     local left = _STACK_POP (vm.mainStack)
                     local rerr, lerr, success, result
-                    right, rerr = _CHECK_NUMBER_META (vm, right)
-                    left, lerr = _CHECK_NUMBER_META (vm, left)
+                    local _ret9, _ret10
+                    do
+                        local tx = _GET_TYPE (vm, right)
+                        if tx == "string" then
+                            right = tonumber (right)
+                            if not right then
+                                _ret9, _ret10 = right, "Cannot convert the string value to a number."
+                                goto _inline_end98
+                            end
+                        elseif tx ~= "number" then
+                            if tx == "table" and right.meta.table.tonumber then
+                                local meta = right.meta.table.tonumber
+                                local params = {}
+                                _ret9, _ret10 = _CALL (vm, meta, params)
+                                goto _inline_end98
+                            else
+                                _ret9, _ret10 = right, "Cannot do comparison or arithmetic with " .. tostring (tx) .. " value."
+                                goto _inline_end98
+                            end
+                        end
+                        _ret9, _ret10 = right
+                        goto _inline_end98
+                    end
+                    ::_inline_end98::
+                    right, rerr = _ret9, _ret10
+                    local _ret11, _ret12
+                    do
+                        local tx = _GET_TYPE (vm, left)
+                        if tx == "string" then
+                            left = tonumber (left)
+                            if not left then
+                                _ret11, _ret12 = left, "Cannot convert the string value to a number."
+                                goto _inline_end99
+                            end
+                        elseif tx ~= "number" then
+                            if tx == "table" and left.meta.table.tonumber then
+                                local meta = left.meta.table.tonumber
+                                local params = {}
+                                _ret11, _ret12 = _CALL (vm, meta, params)
+                                goto _inline_end99
+                            else
+                                _ret11, _ret12 = left, "Cannot do comparison or arithmetic with " .. tostring (tx) .. " value."
+                                goto _inline_end99
+                            end
+                        end
+                        _ret11, _ret12 = left
+                        goto _inline_end99
+                    end
+                    ::_inline_end99::
+                    left, lerr = _ret11, _ret12
                     if lerr or rerr then
-                        success, result = _HANDLE_META_BIN (vm, left, right, "mul")
+                        local _ret13, _ret14
+                        do
+                            local meta, params
+                            local tleft = _GET_TYPE (vm, left)
+                            local tright = _GET_TYPE (vm, right)
+                            if tleft == "table" and left.meta and left.meta.table["mul" .. "r"] then
+                                meta = left.meta.table["mul" .. "r"]
+                                params = {right, left}
+                            elseif tright == "table" and right.meta and right.meta.table["mul" .. "l"] then
+                                meta = right.meta.table["mul" .. "l"]
+                                params = {left, right}
+                            elseif tleft == "table" and left.meta and left.meta.table.mul then
+                                meta = left.meta.table.mul
+                                params = {left, right, left}
+                            elseif tright == "table" and right.meta and right.meta.table.mul then
+                                meta = right.meta.table.mul
+                                params = {left, right, right}
+                            end
+                            if not meta then
+                                _ret13 = false
+                                goto _inline_end100
+                            end
+                            _ret13, _ret14 = true, _CALL (vm, meta, params)
+                            goto _inline_end100
+                        end
+                        ::_inline_end100::
+                        success, result = _ret13, _ret14
                     else
                         success = true
-                        local _tmp3
-                        _tmp3 = left * right
-                        result = _tmp3
+                        local _ret15
+                        _ret15 = left * right
+                        goto _inline_end101
+                        ::_inline_end101::
+                        result = _ret15
                     end
                     if success then
                         _STACK_PUSH (vm.mainStack, result)
@@ -848,15 +962,91 @@ return function (plume)
                     local right = _STACK_POP (vm.mainStack)
                     local left = _STACK_POP (vm.mainStack)
                     local rerr, lerr, success, result
-                    right, rerr = _CHECK_NUMBER_META (vm, right)
-                    left, lerr = _CHECK_NUMBER_META (vm, left)
+                    local _ret16, _ret17
+                    do
+                        local tx = _GET_TYPE (vm, right)
+                        if tx == "string" then
+                            right = tonumber (right)
+                            if not right then
+                                _ret16, _ret17 = right, "Cannot convert the string value to a number."
+                                goto _inline_end105
+                            end
+                        elseif tx ~= "number" then
+                            if tx == "table" and right.meta.table.tonumber then
+                                local meta = right.meta.table.tonumber
+                                local params = {}
+                                _ret16, _ret17 = _CALL (vm, meta, params)
+                                goto _inline_end105
+                            else
+                                _ret16, _ret17 = right, "Cannot do comparison or arithmetic with " .. tostring (tx) .. " value."
+                                goto _inline_end105
+                            end
+                        end
+                        _ret16, _ret17 = right
+                        goto _inline_end105
+                    end
+                    ::_inline_end105::
+                    right, rerr = _ret16, _ret17
+                    local _ret18, _ret19
+                    do
+                        local tx = _GET_TYPE (vm, left)
+                        if tx == "string" then
+                            left = tonumber (left)
+                            if not left then
+                                _ret18, _ret19 = left, "Cannot convert the string value to a number."
+                                goto _inline_end106
+                            end
+                        elseif tx ~= "number" then
+                            if tx == "table" and left.meta.table.tonumber then
+                                local meta = left.meta.table.tonumber
+                                local params = {}
+                                _ret18, _ret19 = _CALL (vm, meta, params)
+                                goto _inline_end106
+                            else
+                                _ret18, _ret19 = left, "Cannot do comparison or arithmetic with " .. tostring (tx) .. " value."
+                                goto _inline_end106
+                            end
+                        end
+                        _ret18, _ret19 = left
+                        goto _inline_end106
+                    end
+                    ::_inline_end106::
+                    left, lerr = _ret18, _ret19
                     if lerr or rerr then
-                        success, result = _HANDLE_META_BIN (vm, left, right, "sub")
+                        local _ret20, _ret21
+                        do
+                            local meta, params
+                            local tleft = _GET_TYPE (vm, left)
+                            local tright = _GET_TYPE (vm, right)
+                            if tleft == "table" and left.meta and left.meta.table["sub" .. "r"] then
+                                meta = left.meta.table["sub" .. "r"]
+                                params = {right, left}
+                            elseif tright == "table" and right.meta and right.meta.table["sub" .. "l"] then
+                                meta = right.meta.table["sub" .. "l"]
+                                params = {left, right}
+                            elseif tleft == "table" and left.meta and left.meta.table.sub then
+                                meta = left.meta.table.sub
+                                params = {left, right, left}
+                            elseif tright == "table" and right.meta and right.meta.table.sub then
+                                meta = right.meta.table.sub
+                                params = {left, right, right}
+                            end
+                            if not meta then
+                                _ret20 = false
+                                goto _inline_end107
+                            end
+                            _ret20, _ret21 = true, _CALL (vm, meta, params)
+                            goto _inline_end107
+                        end
+                        ::_inline_end107::
+                        success, result = _ret20, _ret21
                     else
                         success = true
-                        local _tmp4
-                        _tmp4 = left - right
-                        result = _tmp4
+                        local _ret22
+                        _ret22 = left - right
+                        goto _inline_end108
+                        ::_inline_end108::
+                        result = _ret22
                     end
                     if success then
                         _STACK_PUSH (vm.mainStack, result)
@@ -870,15 +1060,91 @@ return function (plume)
                     local right = _STACK_POP (vm.mainStack)
                     local left = _STACK_POP (vm.mainStack)
                     local rerr, lerr, success, result
-                    right, rerr = _CHECK_NUMBER_META (vm, right)
-                    left, lerr = _CHECK_NUMBER_META (vm, left)
+                    local _ret23, _ret24
+                    do
+                        local tx = _GET_TYPE (vm, right)
+                        if tx == "string" then
+                            right = tonumber (right)
+                            if not right then
+                                _ret23, _ret24 = right, "Cannot convert the string value to a number."
+                                goto _inline_end112
+                            end
+                        elseif tx ~= "number" then
+                            if tx == "table" and right.meta.table.tonumber then
+                                local meta = right.meta.table.tonumber
+                                local params = {}
+                                _ret23, _ret24 = _CALL (vm, meta, params)
+                                goto _inline_end112
+                            else
+                                _ret23, _ret24 = right, "Cannot do comparison or arithmetic with " .. tostring (tx) .. " value."
+                                goto _inline_end112
+                            end
+                        end
+                        _ret23, _ret24 = right
+                        goto _inline_end112
+                    end
+                    ::_inline_end112::
+                    right, rerr = _ret23, _ret24
+                    local _ret25, _ret26
+                    do
+                        local tx = _GET_TYPE (vm, left)
+                        if tx == "string" then
+                            left = tonumber (left)
+                            if not left then
+                                _ret25, _ret26 = left, "Cannot convert the string value to a number."
+                                goto _inline_end113
+                            end
+                        elseif tx ~= "number" then
+                            if tx == "table" and left.meta.table.tonumber then
+                                local meta = left.meta.table.tonumber
+                                local params = {}
+                                _ret25, _ret26 = _CALL (vm, meta, params)
+                                goto _inline_end113
+                            else
+                                _ret25, _ret26 = left, "Cannot do comparison or arithmetic with " .. tostring (tx) .. " value."
+                                goto _inline_end113
+                            end
+                        end
+                        _ret25, _ret26 = left
+                        goto _inline_end113
+                    end
+                    ::_inline_end113::
+                    left, lerr = _ret25, _ret26
                     if lerr or rerr then
-                        success, result = _HANDLE_META_BIN (vm, left, right, "div")
+                        local _ret27, _ret28
+                        do
+                            local meta, params
+                            local tleft = _GET_TYPE (vm, left)
+                            local tright = _GET_TYPE (vm, right)
+                            if tleft == "table" and left.meta and left.meta.table["div" .. "r"] then
+                                meta = left.meta.table["div" .. "r"]
+                                params = {right, left}
+                            elseif tright == "table" and right.meta and right.meta.table["div" .. "l"] then
+                                meta = right.meta.table["div" .. "l"]
+                                params = {left, right}
+                            elseif tleft == "table" and left.meta and left.meta.table.div then
+                                meta = left.meta.table.div
+                                params = {left, right, left}
+                            elseif tright == "table" and right.meta and right.meta.table.div then
+                                meta = right.meta.table.div
+                                params = {left, right, right}
+                            end
+                            if not meta then
+                                _ret27 = false
+                                goto _inline_end114
+                            end
+                            _ret27, _ret28 = true, _CALL (vm, meta, params)
+                            goto _inline_end114
+                        end
+                        ::_inline_end114::
+                        success, result = _ret27, _ret28
                     else
                         success = true
-                        local _tmp5
-                        _tmp5 = left / right
-                        result = _tmp5
+                        local _ret29
+                        _ret29 = left / right
+                        goto _inline_end115
+                        ::_inline_end115::
+                        result = _ret29
                     end
                     if success then
                         _STACK_PUSH (vm.mainStack, result)
@@ -891,9 +1157,33 @@ return function (plume)
                 do
                     local x = _STACK_POP (vm.mainStack)
                     local err
-                    x, err = _CHECK_NUMBER_META (vm, x)
+                    local _ret30, _ret31
+                    do
+                        local tx = _GET_TYPE (vm, x)
+                        if tx == "string" then
+                            x = tonumber (x)
+                            if not x then
+                                _ret30, _ret31 = x, "Cannot convert the string value to a number."
+                                goto _inline_end119
+                            end
+                        elseif tx ~= "number" then
+                            if tx == "table" and x.meta.table.tonumber then
+                                local meta = x.meta.table.tonumber
+                                local params = {}
+                                _ret30, _ret31 = _CALL (vm, meta, params)
+                                goto _inline_end119
+                            else
+                                _ret30, _ret31 = x, "Cannot do comparison or arithmetic with " .. tostring (tx) .. " value."
+                                goto _inline_end119
+                            end
+                        end
+                        _ret30, _ret31 = x
+                        goto _inline_end119
+                    end
+                    ::_inline_end119::
+                    x, err = _ret30, _ret31
                     if err then
-                        local _tmp6, _tmp7
+                        local _ret32, _ret33
                         do
                             local meta
                             local params = {x}
@@ -901,16 +1191,21 @@ return function (plume)
                                 meta = x.meta.table.minus
                             end
                             if not meta then
-                                _tmp6 = false
+                                _ret32 = false
+                                goto _inline_end120
                             end
-                            _tmp6, _tmp7 = true, _CALL (vm, meta, params)
+                            _ret32, _ret33 = true, _CALL (vm, meta, params)
+                            goto _inline_end120
                         end
-                        success, result = _tmp6, _tmp7
+                        ::_inline_end120::
+                        success, result = _ret32, _ret33
                     else
                         success = true
-                        local _tmp8
-                        _tmp8 = -x
-                        result = _tmp8
+                        local _ret34
+                        _ret34 = -x
+                        goto _inline_end121
+                        ::_inline_end121::
+                        result = _ret34
                     end
                     if success then
                         _STACK_PUSH (vm.mainStack, result)
@@ -924,15 +1219,91 @@ return function (plume)
                     local right = _STACK_POP (vm.mainStack)
                     local left = _STACK_POP (vm.mainStack)
                     local rerr, lerr, success, result
-                    right, rerr = _CHECK_NUMBER_META (vm, right)
-                    left, lerr = _CHECK_NUMBER_META (vm, left)
+                    local _ret35, _ret36
+                    do
+                        local tx = _GET_TYPE (vm, right)
+                        if tx == "string" then
+                            right = tonumber (right)
+                            if not right then
+                                _ret35, _ret36 = right, "Cannot convert the string value to a number."
+                                goto _inline_end125
+                            end
+                        elseif tx ~= "number" then
+                            if tx == "table" and right.meta.table.tonumber then
+                                local meta = right.meta.table.tonumber
+                                local params = {}
+                                _ret35, _ret36 = _CALL (vm, meta, params)
+                                goto _inline_end125
+                            else
+                                _ret35, _ret36 = right, "Cannot do comparison or arithmetic with " .. tostring (tx) .. " value."
+                                goto _inline_end125
+                            end
+                        end
+                        _ret35, _ret36 = right
+                        goto _inline_end125
+                    end
+                    ::_inline_end125::
+                    right, rerr = _ret35, _ret36
+                    local _ret37, _ret38
+                    do
+                        local tx = _GET_TYPE (vm, left)
+                        if tx == "string" then
+                            left = tonumber (left)
+                            if not left then
+                                _ret37, _ret38 = left, "Cannot convert the string value to a number."
+                                goto _inline_end126
+                            end
+                        elseif tx ~= "number" then
+                            if tx == "table" and left.meta.table.tonumber then
+                                local meta = left.meta.table.tonumber
+                                local params = {}
+                                _ret37, _ret38 = _CALL (vm, meta, params)
+                                goto _inline_end126
+                            else
+                                _ret37, _ret38 = left, "Cannot do comparison or arithmetic with " .. tostring (tx) .. " value."
+                                goto _inline_end126
+                            end
+                        end
+                        _ret37, _ret38 = left
+                        goto _inline_end126
+                    end
+                    ::_inline_end126::
+                    left, lerr = _ret37, _ret38
                     if lerr or rerr then
-                        success, result = _HANDLE_META_BIN (vm, left, right, "mod")
+                        local _ret39, _ret40
+                        do
+                            local meta, params
+                            local tleft = _GET_TYPE (vm, left)
+                            local tright = _GET_TYPE (vm, right)
+                            if tleft == "table" and left.meta and left.meta.table["mod" .. "r"] then
+                                meta = left.meta.table["mod" .. "r"]
+                                params = {right, left}
+                            elseif tright == "table" and right.meta and right.meta.table["mod" .. "l"] then
+                                meta = right.meta.table["mod" .. "l"]
+                                params = {left, right}
+                            elseif tleft == "table" and left.meta and left.meta.table.mod then
+                                meta = left.meta.table.mod
+                                params = {left, right, left}
+                            elseif tright == "table" and right.meta and right.meta.table.mod then
+                                meta = right.meta.table.mod
+                                params = {left, right, right}
+                            end
+                            if not meta then
+                                _ret39 = false
+                                goto _inline_end127
+                            end
+                            _ret39, _ret40 = true, _CALL (vm, meta, params)
+                            goto _inline_end127
+                        end
+                        ::_inline_end127::
+                        success, result = _ret39, _ret40
                     else
                         success = true
-                        local _tmp9
-                        _tmp9 = left % right
-                        result = _tmp9
+                        local _ret41
+                        _ret41 = left % right
+                        goto _inline_end128
+                        ::_inline_end128::
+                        result = _ret41
                     end
                     if success then
                         _STACK_PUSH (vm.mainStack, result)
@@ -946,15 +1317,91 @@ return function (plume)
                     local right = _STACK_POP (vm.mainStack)
                     local left = _STACK_POP (vm.mainStack)
                     local rerr, lerr, success, result
-                    right, rerr = _CHECK_NUMBER_META (vm, right)
-                    left, lerr = _CHECK_NUMBER_META (vm, left)
+                    local _ret42, _ret43
+                    do
+                        local tx = _GET_TYPE (vm, right)
+                        if tx == "string" then
+                            right = tonumber (right)
+                            if not right then
+                                _ret42, _ret43 = right, "Cannot convert the string value to a number."
+                                goto _inline_end132
+                            end
+                        elseif tx ~= "number" then
+                            if tx == "table" and right.meta.table.tonumber then
+                                local meta = right.meta.table.tonumber
+                                local params = {}
+                                _ret42, _ret43 = _CALL (vm, meta, params)
+                                goto _inline_end132
+                            else
+                                _ret42, _ret43 = right, "Cannot do comparison or arithmetic with " .. tostring (tx) .. " value."
+                                goto _inline_end132
+                            end
+                        end
+                        _ret42, _ret43 = right
+                        goto _inline_end132
+                    end
+                    ::_inline_end132::
+                    right, rerr = _ret42, _ret43
+                    local _ret44, _ret45
+                    do
+                        local tx = _GET_TYPE (vm, left)
+                        if tx == "string" then
+                            left = tonumber (left)
+                            if not left then
+                                _ret44, _ret45 = left, "Cannot convert the string value to a number."
+                                goto _inline_end133
+                            end
+                        elseif tx ~= "number" then
+                            if tx == "table" and left.meta.table.tonumber then
+                                local meta = left.meta.table.tonumber
+                                local params = {}
+                                _ret44, _ret45 = _CALL (vm, meta, params)
+                                goto _inline_end133
+                            else
+                                _ret44, _ret45 = left, "Cannot do comparison or arithmetic with " .. tostring (tx) .. " value."
+                                goto _inline_end133
+                            end
+                        end
+                        _ret44, _ret45 = left
+                        goto _inline_end133
+                    end
+                    ::_inline_end133::
+                    left, lerr = _ret44, _ret45
                     if lerr or rerr then
-                        success, result = _HANDLE_META_BIN (vm, left, right, "pow")
+                        local _ret46, _ret47
+                        do
+                            local meta, params
+                            local tleft = _GET_TYPE (vm, left)
+                            local tright = _GET_TYPE (vm, right)
+                            if tleft == "table" and left.meta and left.meta.table["pow" .. "r"] then
+                                meta = left.meta.table["pow" .. "r"]
+                                params = {right, left}
+                            elseif tright == "table" and right.meta and right.meta.table["pow" .. "l"] then
+                                meta = right.meta.table["pow" .. "l"]
+                                params = {left, right}
+                            elseif tleft == "table" and left.meta and left.meta.table.pow then
+                                meta = left.meta.table.pow
+                                params = {left, right, left}
+                            elseif tright == "table" and right.meta and right.meta.table.pow then
+                                meta = right.meta.table.pow
+                                params = {left, right, right}
+                            end
+                            if not meta then
+                                _ret46 = false
+                                goto _inline_end134
+                            end
+                            _ret46, _ret47 = true, _CALL (vm, meta, params)
+                            goto _inline_end134
+                        end
+                        ::_inline_end134::
+                        success, result = _ret46, _ret47
                     else
                         success = true
-                        local _tmp10
-                        _tmp10 = left ^ right
-                        result = _tmp10
+                        local _ret48
+                        _ret48 = left ^ right
+                        goto _inline_end135
+                        ::_inline_end135::
+                        result = _ret48
                     end
                     if success then
                         _STACK_PUSH (vm.mainStack, result)
@@ -968,15 +1415,91 @@ return function (plume)
                     local right = _STACK_POP (vm.mainStack)
                     local left = _STACK_POP (vm.mainStack)
                     local rerr, lerr, success, result
-                    right, rerr = _CHECK_NUMBER_META (vm, right)
-                    left, lerr = _CHECK_NUMBER_META (vm, left)
+                    local _ret49, _ret50
+                    do
+                        local tx = _GET_TYPE (vm, right)
+                        if tx == "string" then
+                            right = tonumber (right)
+                            if not right then
+                                _ret49, _ret50 = right, "Cannot convert the string value to a number."
+                                goto _inline_end139
+                            end
+                        elseif tx ~= "number" then
+                            if tx == "table" and right.meta.table.tonumber then
+                                local meta = right.meta.table.tonumber
+                                local params = {}
+                                _ret49, _ret50 = _CALL (vm, meta, params)
+                                goto _inline_end139
+                            else
+                                _ret49, _ret50 = right, "Cannot do comparison or arithmetic with " .. tostring (tx) .. " value."
+                                goto _inline_end139
+                            end
+                        end
+                        _ret49, _ret50 = right
+                        goto _inline_end139
+                    end
+                    ::_inline_end139::
+                    right, rerr = _ret49, _ret50
+                    local _ret51, _ret52
+                    do
+                        local tx = _GET_TYPE (vm, left)
+                        if tx == "string" then
+                            left = tonumber (left)
+                            if not left then
+                                _ret51, _ret52 = left, "Cannot convert the string value to a number."
+                                goto _inline_end140
+                            end
+                        elseif tx ~= "number" then
+                            if tx == "table" and left.meta.table.tonumber then
+                                local meta = left.meta.table.tonumber
+                                local params = {}
+                                _ret51, _ret52 = _CALL (vm, meta, params)
+                                goto _inline_end140
+                            else
+                                _ret51, _ret52 = left, "Cannot do comparison or arithmetic with " .. tostring (tx) .. " value."
+                                goto _inline_end140
+                            end
+                        end
+                        _ret51, _ret52 = left
+                        goto _inline_end140
+                    end
+                    ::_inline_end140::
+                    left, lerr = _ret51, _ret52
                     if lerr or rerr then
-                        success, result = _HANDLE_META_BIN (vm, left, right, "lt")
+                        local _ret53, _ret54
+                        do
+                            local meta, params
+                            local tleft = _GET_TYPE (vm, left)
+                            local tright = _GET_TYPE (vm, right)
+                            if tleft == "table" and left.meta and left.meta.table["lt" .. "r"] then
+                                meta = left.meta.table["lt" .. "r"]
+                                params = {right, left}
+                            elseif tright == "table" and right.meta and right.meta.table["lt" .. "l"] then
+                                meta = right.meta.table["lt" .. "l"]
+                                params = {left, right}
+                            elseif tleft == "table" and left.meta and left.meta.table.lt then
+                                meta = left.meta.table.lt
+                                params = {left, right, left}
+                            elseif tright == "table" and right.meta and right.meta.table.lt then
+                                meta = right.meta.table.lt
+                                params = {left, right, right}
+                            end
+                            if not meta then
+                                _ret53 = false
+                                goto _inline_end141
+                            end
+                            _ret53, _ret54 = true, _CALL (vm, meta, params)
+                            goto _inline_end141
+                        end
+                        ::_inline_end141::
+                        success, result = _ret53, _ret54
                     else
                         success = true
-                        local _tmp11
-                        _tmp11 = left < right
-                        result = _tmp11
+                        local _ret55
+                        _ret55 = left < right
+                        goto _inline_end142
+                        ::_inline_end142::
+                        result = _ret55
                     end
                     if success then
                         _STACK_PUSH (vm.mainStack, result)
@@ -989,7 +1512,33 @@ return function (plume)
                 do
                     local right = _STACK_POP (vm.mainStack)
                     local left = _STACK_POP (vm.mainStack)
-                    local success, result = _HANDLE_META_BIN (vm, left, right, "eq")
+                    local _ret56, _ret57
+                    do
+                        local meta, params
+                        local tleft = _GET_TYPE (vm, left)
+                        local tright = _GET_TYPE (vm, right)
+                        if tleft == "table" and left.meta and left.meta.table["eq" .. "r"] then
+                            meta = left.meta.table["eq" .. "r"]
+                            params = {right, left}
+                        elseif tright == "table" and right.meta and right.meta.table["eq" .. "l"] then
+                            meta = right.meta.table["eq" .. "l"]
+                            params = {left, right}
+                        elseif tleft == "table" and left.meta and left.meta.table.eq then
+                            meta = left.meta.table.eq
+                            params = {left, right, left}
+                        elseif tright == "table" and right.meta and right.meta.table.eq then
+                            meta = right.meta.table.eq
+                            params = {left, right, right}
+                        end
+                        if not meta then
+                            _ret56 = false
+                            goto _inline_end145
+                        end
+                        _ret56, _ret57 = true, _CALL (vm, meta, params)
+                        goto _inline_end145
+                    end
+                    ::_inline_end145::
+                    local success, result = _ret56, _ret57
                     if not success then
                         result = left == right or tonumber (left) and tonumber (left) == tonumber (right)
                     end
