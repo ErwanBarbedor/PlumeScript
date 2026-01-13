@@ -13,18 +13,7 @@ You should have received a copy of the GNU General Public License along with Plu
 If not, see <https://www.gnu.org/licenses/>.
 ]]
 
---=====================--
--- Instruction format --
---=====================--
-local bit = require("bit")
-local OP_BITS   = 7
-local ARG1_BITS = 5
-local ARG2_BITS = 20
-local ARG1_SHIFT = ARG2_BITS
-local OP_SHIFT   = ARG1_BITS + ARG2_BITS
-local MASK_OP   = bit.lshift(1, OP_BITS) - 1
-local MASK_ARG1 = bit.lshift(1, ARG1_BITS) - 1
-local MASK_ARG2 = bit.lshift(1, ARG2_BITS) - 1
+
 
 --================--
 -- Initalization --
@@ -139,7 +128,21 @@ function _VM_TICK (vm)
     vm.tic = vm.tic+1
 end
 
+--! inline
 function _VM_DECODE_CURRENT_INSTRUCTION(vm)
+    --=====================--
+    -- Instruction format --
+    --=====================--
+    local bit = require("bit")
+    local OP_BITS   = 7
+    local ARG1_BITS = 5
+    local ARG2_BITS = 20
+    local ARG1_SHIFT = ARG2_BITS
+    local OP_SHIFT   = ARG1_BITS + ARG2_BITS
+    local MASK_OP   = bit.lshift(1, OP_BITS) - 1
+    local MASK_ARG1 = bit.lshift(1, ARG1_BITS) - 1
+    local MASK_ARG2 = bit.lshift(1, ARG2_BITS) - 1
+
     local instr, op, arg1, arg2
     instr = vm.bytecode[vm.ip]
     op    = bit.band(bit.rshift(instr, OP_SHIFT), MASK_OP)
