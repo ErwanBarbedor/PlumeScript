@@ -251,12 +251,23 @@ local beautifier = function(node)
             table.insert(result, "::")
             table.insert(result, node.name)
             table.insert(result, "::")
+
+            -- harcoded style for engine.lua
+            if node.name ~= "END" then
+                indent = indent + 1
+            end
+            --
             newline()
         end,
 
         ["goto"] = function(node)
         	table.insert(result, "goto ")
             table.insert(result, node.name)
+            -- harcoded style for engine.lua
+            if node.name == "DISPATCH" then
+                indent = indent - 1
+            end
+            --
             newline()
     	end,
 
@@ -351,7 +362,10 @@ local beautifier = function(node)
     end
 
     beautify(node)
-    result = table.concat(result):gsub('%s*\n', '\n')
+
+    -- harcoded style for engine.lua
+    result = table.concat(result):gsub('%s*\n', '\n'):gsub('if op == ([0-9]+) then%s*goto (%S+)', 'if op == %1 then goto %2')
+    -- 
     return result
 end
 
