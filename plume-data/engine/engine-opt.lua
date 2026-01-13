@@ -425,17 +425,17 @@ return function (plume)
                     key = tonumber (key) or key
                     if key == vm.empty then
                         if arg1 == 1 then
-                            LOAD_EMPTY (vm)
+                            _STACK_PUSH (vm.mainStack, vm.empty)
                         else
-                            _ERROR (vm, "Cannot use empty as key.")
+                            vm.err = "Cannot use empty as key."
                         end
                     else
                         local tt = _GET_TYPE (vm, t)
                         if tt ~= "table" then
                             if arg1 == 1 then
-                                LOAD_EMPTY (vm)
+                                _STACK_PUSH (vm.mainStack, vm.empty)
                             else
-                                _ERROR (vm, "Try to index a '" .. tt .. "' value.")
+                                vm.err = "Try to index a '" .. tt .. "' value."
                             end
                         else
                             local value = t.table[key]
@@ -443,7 +443,7 @@ return function (plume)
                                 _STACK_PUSH (vm.mainStack, value)
                             else
                                 if arg1 == 1 then
-                                    LOAD_EMPTY (vm)
+                                    _STACK_PUSH (vm.mainStack, vm.empty)
                                 elseif t.meta.table.getindex then
                                     local meta = t.meta.table.getindex
                                     local args = {key}
@@ -451,9 +451,9 @@ return function (plume)
                                 else
                                     if tonumber (key)
                                      then
-                                        _ERROR (vm, "Invalid index '" .. key .. "'.")
+                                        vm.err = "Invalid index '" .. key .. "'."
                                     else
-                                        _ERROR (vm, "Unregistered key '" .. key .. "'.")
+                                        vm.err = "Unregistered key '" .. key .. "'."
                                     end
                                 end
                             end
@@ -467,7 +467,47 @@ return function (plume)
                     table.insert (t, "self")
                     table.insert (t, _STACK_GET (vm.mainStack))
                     table.insert (t, false)
-                    TABLE_INDEX (vm, 0, 0)
+                    do
+                        local t = _STACK_POP (vm.mainStack)
+                        local key = _STACK_POP (vm.mainStack)
+                        key = tonumber (key) or key
+                        if key == vm.empty then
+                            if 0 == 1 then
+                                _STACK_PUSH (vm.mainStack, vm.empty)
+                            else
+                                vm.err = "Cannot use empty as key."
+                            end
+                        else
+                            local tt = _GET_TYPE (vm, t)
+                            if tt ~= "table" then
+                                if 0 == 1 then
+                                    _STACK_PUSH (vm.mainStack, vm.empty)
+                                else
+                                    vm.err = "Try to index a '" .. tt .. "' value."
+                                end
+                            else
+                                local value = t.table[key]
+                                if value then
+                                    _STACK_PUSH (vm.mainStack, value)
+                                else
+                                    if 0 == 1 then
+                                        _STACK_PUSH (vm.mainStack, vm.empty)
+                                    elseif t.meta.table.getindex then
+                                        local meta = t.meta.table.getindex
+                                        local args = {key}
+                                        _STACK_PUSH (vm.mainStack, _CALL (vm, meta, args))
+                                    else
+                                        if tonumber (key)
+                                         then
+                                            vm.err = "Invalid index '" .. key .. "'."
+                                        else
+                                            vm.err = "Unregistered key '" .. key .. "'."
+                                        end
+                                    end
+                                end
+                            end
+                        end
+                    end
                 end
                 goto DISPATCH
             ::TABLE_SET_META::
@@ -519,14 +559,29 @@ return function (plume)
                     end
                     for i = 1, #t, 3 do
                         if t[i + 2] then
-                            _TABLE_META_SET (vm, args, t[i], t[i + 1])
+                            do
+                                local success, err = _META_CHECK (t[i], t[i + 1])
+                                if success then
+                                    args.meta.table[t[i]] = t[i + 1]
+                                else
+                                    vm.err = err
+                                end
+                            end
                         else
-                            _TABLE_SET (vm, args, t[i], t[i + 1])
+                            do
+                                local key = t[i]
+                                local value = t[i + 1]
+                                key = tonumber (key) or key
+                                if not args.table[key] then
+                                    table.insert (args.keys, t[i])
+                                end
+                                args.table[key] = value
+                            end
                         end
                     end
                     _STACK_MOVE (vm.mainStack, limit - 2)
                     _STACK_PUSH (vm.mainStack, args)
-                    _END_ACC (vm)
+                    _STACK_POP (vm.mainStack.frames)
                 end
                 goto DISPATCH
             ::ACC_TEXT::
@@ -541,12 +596,12 @@ return function (plume)
                     local acc_text = table.concat (vm.mainStack, "", start, stop)
                     _STACK_MOVE (vm.mainStack, start)
                     _STACK_SET (vm.mainStack, start, acc_text)
-                    _END_ACC (vm)
+                    _STACK_POP (vm.mainStack.frames)
                 end
                 goto DISPATCH
             ::ACC_EMPTY::
                 _STACK_PUSH (vm.mainStack, vm.empty)
-                _END_ACC (vm)
+                _STACK_POP (vm.mainStack.frames)
                 goto DISPATCH
             ::ACC_CALL::
                 do
@@ -563,18 +618,110 @@ return function (plume)
                     if t == "macro" then
                         local capture = vm.plume.obj.table (0, 0)
                         local arguments = {}
-                        _UNSTACK_POS (vm, tocall, arguments, capture)
-                        _UNSTACK_NAMED (vm, tocall, arguments, capture)
+                        do
+                            local argcount = _STACK_POS (vm.mainStack) - _STACK_GET (vm.mainStack.frames)
+                            if argcount ~= tocall.positionalParamCount and tocall.variadicOffset == 0 then
+                                local name
+                                if vm.chunk.mapping[vm.ip - 1] then
+                                    name = vm.chunk.mapping[vm.ip - 1].content
+                                end
+                                if not name then
+                                    name = tocall.name or "???"
+                                end
+                                vm.err = "Wrong number of positionnal arguments for macro '" .. name .. "', " .. argcount .. " instead of " .. tocall.positionalParamCount .. "."
+                            end
+                            for i = 1, tocall.positionalParamCount do
+                                arguments[i] = _STACK_GET_OFFSET (vm.mainStack, i - argcount)
+                            end
+                            for i = tocall.positionalParamCount + 1, argcount do
+                                table.insert (capture.table, _STACK_GET_OFFSET (vm.mainStack, i - argcount))
+                            end
+                            _STACK_MOVE_FRAMED (vm.mainStack)
+                        end
+                        do
+                            local stack_bottom = _STACK_GET_FRAMED (vm.mainStack)
+                            local err
+                            for i = 1, #stack_bottom, 3 do
+                                local k = stack_bottom[i]
+                                local v = stack_bottom[i + 1]
+                                local m = stack_bottom[i + 2]
+                                local j = tocall.namedParamOffset[k]
+                                if m then
+                                    do
+                                        local success, err = _META_CHECK (k, v)
+                                        if success then
+                                            capture.meta.table[k] = v
+                                        else
+                                            vm.err = err
+                                        end
+                                    end
+                                elseif j then
+                                    arguments[j] = v
+                                elseif tocall.variadicOffset > 0 then
+                                    do
+                                        local key = k
+                                        local value = v
+                                        key = tonumber (key) or key
+                                        if not capture.table[key] then
+                                            table.insert (capture.keys, k)
+                                        end
+                                        capture.table[key] = value
+                                    end
+                                else
+                                    local name = tocall.name or "???"
+                                    err = "Unknow named parameter '" .. k .. "' for macro '" .. name .. "'."
+                                end
+                            end
+                            if err then
+                                vm.err = err
+                            else
+                                _STACK_POP (vm.mainStack)
+                            end
+                        end
                         if self then
                             table.insert (arguments, self)
                         end
                         if tocall.variadicOffset > 0 then
                             arguments[tocall.variadicOffset] = capture
                         end
-                        _END_ACC (vm)
+                        _STACK_POP (vm.mainStack.frames)
                         _STACK_PUSH (vm.mainStack, _CALL (vm, tocall, arguments))
                     elseif t == "luaFunction" then
-                        ACC_TABLE (vm)
+                        do
+                            local limit = _STACK_GET (vm.mainStack.frames) + 1
+                            local current = _STACK_POS (vm.mainStack)
+                            local t = _STACK_GET (vm.mainStack, limit - 1)
+                            local keyCount = #t / 2
+                            local args = vm.plume.obj.table (current - limit + 1, keyCount)
+                            for i = 1, current - limit + 1 do
+                                args.table[i] = _STACK_GET (vm.mainStack, limit + i - 1)
+                            end
+                            for i = 1, #t, 3 do
+                                if t[i + 2] then
+                                    do
+                                        local success, err = _META_CHECK (t[i], t[i + 1])
+                                        if success then
+                                            args.meta.table[t[i]] = t[i + 1]
+                                        else
+                                            vm.err = err
+                                        end
+                                    end
+                                else
+                                    do
+                                        local key = t[i]
+                                        local value = t[i + 1]
+                                        key = tonumber (key) or key
+                                        if not args.table[key] then
+                                            table.insert (args.keys, t[i])
+                                        end
+                                        args.table[key] = value
+                                    end
+                                end
+                            end
+                            _STACK_MOVE (vm.mainStack, limit - 2)
+                            _STACK_PUSH (vm.mainStack, args)
+                            _STACK_POP (vm.mainStack.frames)
+                        end
                         table.insert (vm.chunk.callstack, {chunk = vm.chunk, macro = tocall, ip = vm.ip})
                         local success, result = pcall (tocall.callable, _STACK_GET (vm.mainStack)
                         , vm.chunk)
@@ -586,10 +733,10 @@ return function (plume)
                             _STACK_POP (vm.mainStack)
                             _STACK_PUSH (vm.mainStack, result)
                         else
-                            _ERROR (vm, result)
+                            vm.err = result
                         end
                     else
-                        _ERROR (vm, "Try to call a '" .. t .. "' value")
+                        vm.err = "Try to call a '" .. t .. "' value"
                     end
                 end
                 goto DISPATCH
@@ -604,7 +751,7 @@ return function (plume)
                             _STACK_SET (vm.mainStack, _STACK_POS (vm.mainStack)
                             , _CALL (vm, meta, args))
                         else
-                            _ERROR (vm, "Cannot concat a '" .. t .. "' value.")
+                            vm.err = "Cannot concat a '" .. t .. "' value."
                         end
                     end
                 end
@@ -677,7 +824,7 @@ return function (plume)
                         end
                         _STACK_PUSH (vm.mainStack, value)
                     else
-                        _ERROR (vm, "Try to iterate over a non-table '" .. tobj .. "' value.")
+                        vm.err = "Try to iterate over a non-table '" .. tobj .. "' value."
                     end
                 end
                 goto DISPATCH
@@ -692,35 +839,169 @@ return function (plume)
                         result = _CALL (vm, iter, {obj})
                     end
                     if result == vm.empty then
-                        JUMP (vm, 0, arg2)
+                        vm.jump = arg2
                     else
                         _STACK_PUSH (vm.mainStack, result)
                     end
                 end
                 goto DISPATCH
             ::OPP_ADD::
-                _BIN_OPP_NUMBER (vm, _ADD, "add")
+                do
+                    local right = _STACK_POP (vm.mainStack)
+                    local left = _STACK_POP (vm.mainStack)
+                    local rerr, lerr, success, result
+                    right, rerr = _CHECK_NUMBER_META (vm, right)
+                    left, lerr = _CHECK_NUMBER_META (vm, left)
+                    if lerr or rerr then
+                        success, result = _HANDLE_META_BIN (vm, left, right, "add")
+                    else
+                        success = true
+                        result = _ADD (left, right)
+                    end
+                    if success then
+                        _STACK_PUSH (vm.mainStack, result)
+                    else
+                        vm.err = lerr or rerr
+                    end
+                end
                 goto DISPATCH
             ::OPP_MUL::
-                _BIN_OPP_NUMBER (vm, _MUL, "mul")
+                do
+                    local right = _STACK_POP (vm.mainStack)
+                    local left = _STACK_POP (vm.mainStack)
+                    local rerr, lerr, success, result
+                    right, rerr = _CHECK_NUMBER_META (vm, right)
+                    left, lerr = _CHECK_NUMBER_META (vm, left)
+                    if lerr or rerr then
+                        success, result = _HANDLE_META_BIN (vm, left, right, "mul")
+                    else
+                        success = true
+                        result = _MUL (left, right)
+                    end
+                    if success then
+                        _STACK_PUSH (vm.mainStack, result)
+                    else
+                        vm.err = lerr or rerr
+                    end
+                end
                 goto DISPATCH
             ::OPP_SUB::
-                _BIN_OPP_NUMBER (vm, _SUB, "sub")
+                do
+                    local right = _STACK_POP (vm.mainStack)
+                    local left = _STACK_POP (vm.mainStack)
+                    local rerr, lerr, success, result
+                    right, rerr = _CHECK_NUMBER_META (vm, right)
+                    left, lerr = _CHECK_NUMBER_META (vm, left)
+                    if lerr or rerr then
+                        success, result = _HANDLE_META_BIN (vm, left, right, "sub")
+                    else
+                        success = true
+                        result = _SUB (left, right)
+                    end
+                    if success then
+                        _STACK_PUSH (vm.mainStack, result)
+                    else
+                        vm.err = lerr or rerr
+                    end
+                end
                 goto DISPATCH
             ::OPP_DIV::
-                _BIN_OPP_NUMBER (vm, _DIV, "div")
+                do
+                    local right = _STACK_POP (vm.mainStack)
+                    local left = _STACK_POP (vm.mainStack)
+                    local rerr, lerr, success, result
+                    right, rerr = _CHECK_NUMBER_META (vm, right)
+                    left, lerr = _CHECK_NUMBER_META (vm, left)
+                    if lerr or rerr then
+                        success, result = _HANDLE_META_BIN (vm, left, right, "div")
+                    else
+                        success = true
+                        result = _DIV (left, right)
+                    end
+                    if success then
+                        _STACK_PUSH (vm.mainStack, result)
+                    else
+                        vm.err = lerr or rerr
+                    end
+                end
                 goto DISPATCH
             ::OPP_NEG::
-                _UN_OPP_NUMBER (vm, _NEG, "minus")
+                do
+                    local x = _STACK_POP (vm.mainStack)
+                    local err
+                    x, err = _CHECK_NUMBER_META (vm, x)
+                    if err then
+                        success, result = _HANDLE_META_UN (vm, x, "minus")
+                    else
+                        success = true
+                        result = _NEG (x)
+                    end
+                    if success then
+                        _STACK_PUSH (vm.mainStack, result)
+                    else
+                        vm.err = err
+                    end
+                end
                 goto DISPATCH
             ::OPP_MOD::
-                _BIN_OPP_NUMBER (vm, _MOD, "mod")
+                do
+                    local right = _STACK_POP (vm.mainStack)
+                    local left = _STACK_POP (vm.mainStack)
+                    local rerr, lerr, success, result
+                    right, rerr = _CHECK_NUMBER_META (vm, right)
+                    left, lerr = _CHECK_NUMBER_META (vm, left)
+                    if lerr or rerr then
+                        success, result = _HANDLE_META_BIN (vm, left, right, "mod")
+                    else
+                        success = true
+                        result = _MOD (left, right)
+                    end
+                    if success then
+                        _STACK_PUSH (vm.mainStack, result)
+                    else
+                        vm.err = lerr or rerr
+                    end
+                end
                 goto DISPATCH
             ::OPP_POW::
-                _BIN_OPP_NUMBER (vm, _POW, "pow")
+                do
+                    local right = _STACK_POP (vm.mainStack)
+                    local left = _STACK_POP (vm.mainStack)
+                    local rerr, lerr, success, result
+                    right, rerr = _CHECK_NUMBER_META (vm, right)
+                    left, lerr = _CHECK_NUMBER_META (vm, left)
+                    if lerr or rerr then
+                        success, result = _HANDLE_META_BIN (vm, left, right, "pow")
+                    else
+                        success = true
+                        result = _POW (left, right)
+                    end
+                    if success then
+                        _STACK_PUSH (vm.mainStack, result)
+                    else
+                        vm.err = lerr or rerr
+                    end
+                end
                 goto DISPATCH
             ::OPP_LT::
-                _BIN_OPP_NUMBER (vm, _LT, "lt")
+                do
+                    local right = _STACK_POP (vm.mainStack)
+                    local left = _STACK_POP (vm.mainStack)
+                    local rerr, lerr, success, result
+                    right, rerr = _CHECK_NUMBER_META (vm, right)
+                    left, lerr = _CHECK_NUMBER_META (vm, left)
+                    if lerr or rerr then
+                        success, result = _HANDLE_META_BIN (vm, left, right, "lt")
+                    else
+                        success = true
+                        result = _LT (left, right)
+                    end
+                    if success then
+                        _STACK_PUSH (vm.mainStack, result)
+                    else
+                        vm.err = lerr or rerr
+                    end
+                end
                 goto DISPATCH
             ::OPP_EQ::
                 do
@@ -734,13 +1015,29 @@ return function (plume)
                 end
                 goto DISPATCH
             ::OPP_AND::
-                _BIN_OPP_BOOL (vm, _AND)
+                do
+                    local right = _STACK_POP (vm.mainStack)
+                    local left = _STACK_POP (vm.mainStack)
+                    right = _CHECK_BOOL (vm, right)
+                    left = _CHECK_BOOL (vm, left)
+                    _STACK_PUSH (vm.mainStack, _AND (right, left))
+                end
                 goto DISPATCH
             ::OPP_NOT::
-                _UN_OPP_BOOL (vm, _NOT)
+                do
+                    local x = _STACK_POP (vm.mainStack)
+                    x = _CHECK_BOOL (vm, x)
+                    _STACK_PUSH (vm.mainStack, _NOT (x))
+                end
                 goto DISPATCH
             ::OPP_OR::
-                _BIN_OPP_BOOL (vm, _OR)
+                do
+                    local right = _STACK_POP (vm.mainStack)
+                    local left = _STACK_POP (vm.mainStack)
+                    right = _CHECK_BOOL (vm, right)
+                    left = _CHECK_BOOL (vm, left)
+                    _STACK_PUSH (vm.mainStack, _OR (right, left))
+                end
                 goto DISPATCH
             ::DUPLICATE::
                 _STACK_PUSH (vm.mainStack, _STACK_GET (vm.mainStack))
