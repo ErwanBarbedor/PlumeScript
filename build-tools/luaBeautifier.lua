@@ -237,7 +237,13 @@ local beautifier = function(node)
         		end
         	end
             table.insert(result, " = ")
-            beautifyAll(node.exprs)
+            for i, elem in ipairs(node.exprs) do
+                beautify(elem)
+                if i<#node.exprs then
+                    removeNewLine()
+                    table.insert(result, ", ")
+                end
+            end
             newline()
         end,
 
