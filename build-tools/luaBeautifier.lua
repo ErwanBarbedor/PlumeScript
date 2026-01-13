@@ -259,7 +259,7 @@ local beautifier = function(node)
             table.insert(result, "::")
 
             -- harcoded style for engine.lua
-            if node.name ~= "END" then
+            if node.name ~= "END" and node.name:sub(1, 1) ~= "_" then
                 indent = indent + 1
             end
             --

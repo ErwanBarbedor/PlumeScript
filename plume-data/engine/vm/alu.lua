@@ -13,6 +13,7 @@ You should have received a copy of the GNU General Public License along with Plu
 If not, see <https://www.gnu.org/licenses/>.
 ]]
 
+--! inline
 function _CHECK_NUMBER_META (vm, x)
     local tx = _GET_TYPE(vm, x)
     if tx  == "string" then
@@ -32,6 +33,7 @@ function _CHECK_NUMBER_META (vm, x)
     return x
 end
 
+--! inline
 function _HANDLE_META_BIN (vm, left, right, name)
     local meta, params
     local tleft  = _GET_TYPE(vm, left)

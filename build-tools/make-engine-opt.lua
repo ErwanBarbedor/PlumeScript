@@ -25,10 +25,15 @@ local function printTable(t)
 	print(tolua(t))
 end
 
-local _uid = 0
-local function getUID()
-	_uid = _uid + 1
-	return "_tmp".._uid
+local _ret = 0
+local function geturet()
+	_ret = _ret + 1
+	return "_ret".._ret
+end
+local _labend = 0
+local function getulabend()
+	_labend = _labend + 1
+	return "_inline_end".._labend
 end
 
 local functionsToInline = {}
@@ -93,15 +98,19 @@ local function inlineFunctions(node)
 				end)
 			end
 
+			local labend = getulabend()
 			local rets = {}
 			body:traverse(function(node)
 				if node.type == "return" then
 					for i=1, #node.exprs do
 						if #rets<i then
-							table.insert(rets, ast._var(getUID()))
+							table.insert(rets, ast._var(geturet()))
 						end
 					end
-					return ast._assign(rets, node.exprs)
+					return ast._block(
+						ast._assign(rets, node.exprs),
+						ast._goto(labend)
+					)
 				end
 				return node
 			end)
@@ -124,6 +133,9 @@ local function inlineFunctions(node)
 			local result = parent(unpack(body))
 			if init then
 				result = ast._block(init, result)
+			end
+			if #rets>0 then
+				result = ast._block(result, ast._label(labend))
 			end
 
 			local insertPoint, assignPoint
