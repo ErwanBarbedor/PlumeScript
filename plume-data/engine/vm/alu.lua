@@ -58,6 +58,7 @@ function _HANDLE_META_BIN (vm, left, right, name)
     return true, _CALL (vm, meta, params)
 end
 
+--! inline
 function _HANDLE_META_UN (vm, x, name)
     local meta
     local params = {x}
@@ -136,12 +137,19 @@ function _UN_OPP_NUMBER (vm, opp, name)
 end
 
 --- Arithmetics
+--! inline
 function _ADD(x, y) return x+y end
+--! inline
 function _MUL(x, y) return x*y end
+--! inline
 function _SUB(x, y) return x-y end
+--! inline
 function _DIV(x, y) return x/y end
+--! inline
 function _MOD(x, y) return x%y end
+--! inline
 function _POW(x, y) return x^y end
+--! inline
 function _NEG(x)    return -x end
 
 --! inline
@@ -175,6 +183,7 @@ function OPP_NOT (vm, arg1, arg2) _UN_OPP_BOOL  (vm, _NOT) end
 
 
 --- Comparison
+--! inline
 function _LT(x, y) return x < y end
 
 --! inline
@@ -184,8 +193,6 @@ function OPP_LT (vm, arg1, arg2) _BIN_OPP_NUMBER (vm, _LT, "lt") end
 function OPP_EQ (vm, arg1, arg2)
     local right = _STACK_POP(vm.mainStack)
     local left  = _STACK_POP(vm.mainStack)
-    
-
 
     local success, result = _HANDLE_META_BIN (vm, left, right, "eq")
 
