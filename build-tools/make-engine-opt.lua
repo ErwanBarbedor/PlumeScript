@@ -87,6 +87,8 @@ local function inlineFunctions(node)
 				end)
 			end
 
+			body:traverse(nil, inlineFunctions)
+
 			local parent = ast._block
 			for _, elem in ipairs(body) do
 				if elem.type == "local" then
