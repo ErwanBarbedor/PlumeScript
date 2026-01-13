@@ -39,10 +39,12 @@ function _STACK_PUSH(stack, value)
     stack[stack.pointer] = value
 end
 
+--! inline
 function _STACK_MOVE(stack, value)
     stack.pointer = value
 end
 
+--! inline
 function _STACK_MOVE_FRAMED(stack)
      _STACK_MOVE(
         stack,
@@ -50,10 +52,12 @@ function _STACK_MOVE_FRAMED(stack)
     )
 end
 
+--! inline
 function _STACK_POP_FRAME(stack)
     _STACK_MOVE(stack, _STACK_POP(stack.frames)-1)
 end
 
+--! inline
 function _STACK_SET_FRAMED(stack, offset, frameOffset, value)
     _STACK_SET(
         stack,

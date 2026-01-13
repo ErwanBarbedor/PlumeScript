@@ -29,6 +29,7 @@ local MASK_ARG2 = bit.lshift(1, ARG2_BITS) - 1
 --================--
 -- Initalization --
 --===============--
+--! inline
 function _VM_INIT (plume, chunk, arguments)
     require("table.new")
 

@@ -43,38 +43,6 @@ return function (plume)
                 end
                 return true, _CALL (vm, meta, params)
             end
-            function _HANDLE_META_UN (vm, x, name)
-                local meta
-                local params = {x}
-                if _GET_TYPE (vm, x) == "table" and x.meta and x.meta.table[name] then
-                    meta = x.meta.table[name]
-                end
-                if not meta then
-                    return false
-                end
-                return true, _CALL (vm, meta, params)
-            end
-            function _ADD (x, y)
-                return x + y
-            end
-            function _MUL (x, y)
-                return x * y
-            end
-            function _SUB (x, y)
-                return x - y
-            end
-            function _DIV (x, y)
-                return x / y
-            end
-            function _MOD (x, y)
-                return x % y
-            end
-            function _POW (x, y)
-                return x ^ y
-            end
-            function _NEG (x)
-                return -x
-            end
             function _AND (x, y)
                 return x and y
             end
@@ -83,9 +51,6 @@ return function (plume)
             end
             function _NOT (x)
                 return not x
-            end
-            function _LT (x, y)
-                return x < y
             end
         end
         do
@@ -114,29 +79,6 @@ return function (plume)
             local MASK_OP = bit.lshift (1, OP_BITS) - 1
             local MASK_ARG1 = bit.lshift (1, ARG1_BITS) - 1
             local MASK_ARG2 = bit.lshift (1, ARG2_BITS) - 1
-            function _VM_INIT (plume, chunk, arguments)
-                require ("table.new")
-                local vm = {}
-                vm.plume = plume
-                vm.chunk = chunk
-                vm.bytecode = chunk.bytecode
-                vm.constants = chunk.constants
-                vm.static = chunk.static
-                vm.ip = 0
-                vm.tic = 0
-                vm.mainStack = table.new (2 ^ 14, 0)
-                vm.mainStack.frames = table.new (2 ^ 8, 0)
-                vm.mainStack.pointer = 0
-                vm.mainStack.frames.pointer = 0
-                vm.variableStack = table.new (2 ^ 10, 0)
-                vm.variableStack.frames = table.new (2 ^ 8, 0)
-                vm.variableStack.pointer = 0
-                vm.variableStack.frames.pointer = 0
-                vm.jump = 0
-                vm.empty = vm.plume.obj.empty
-                _VM_INIT_ARGUMENTS (vm, chunk, arguments)
-                return vm
-            end
             function _VM_INIT_ARGUMENTS (vm, chunk, arguments)
                 if arguments then
                     if chunk.isFile then
@@ -155,7 +97,7 @@ return function (plume)
                                 _STACK_SET (vm.variableStack, i, arguments[i])
                             end
                         end
-                        _STACK_MOVE (vm.variableStack, chunk.localsCount)
+                        vm.variableStack.pointer = chunk.localsCount
                         _STACK_PUSH (vm.variableStack.frames, 1)
                     end
                 end
@@ -242,18 +184,6 @@ return function (plume)
                 stack.pointer = stack.pointer + 1
                 stack[stack.pointer] = value
             end
-            function _STACK_MOVE (stack, value)
-                stack.pointer = value
-            end
-            function _STACK_MOVE_FRAMED (stack)
-                _STACK_MOVE (stack, _STACK_GET (stack.frames))
-            end
-            function _STACK_POP_FRAME (stack)
-                _STACK_MOVE (stack, _STACK_POP (stack.frames) - 1)
-            end
-            function _STACK_SET_FRAMED (stack, offset, frameOffset, value)
-                _STACK_SET (stack, _STACK_GET_OFFSET (stack.frames, frameOffset or 0) + (offset or 0), value)
-            end
             function _STACK_GET_FRAMED (stack, offset, frameOffset)
                 return _STACK_GET (stack, _STACK_GET_OFFSET (stack.frames, frameOffset or 0) + (offset or 0))
             end
@@ -292,7 +222,31 @@ return function (plume)
                 return x
             end
         end
-        local vm = _VM_INIT (plume, chunk, arguments)
+        local _tmp1
+        do
+            require ("table.new")
+            local vm = {}
+            vm.plume = plume
+            vm.chunk = chunk
+            vm.bytecode = chunk.bytecode
+            vm.constants = chunk.constants
+            vm.static = chunk.static
+            vm.ip = 0
+            vm.tic = 0
+            vm.mainStack = table.new (2 ^ 14, 0)
+            vm.mainStack.frames = table.new (2 ^ 8, 0)
+            vm.mainStack.pointer = 0
+            vm.mainStack.frames.pointer = 0
+            vm.variableStack = table.new (2 ^ 10, 0)
+            vm.variableStack.frames = table.new (2 ^ 8, 0)
+            vm.variableStack.pointer = 0
+            vm.variableStack.frames.pointer = 0
+            vm.jump = 0
+            vm.empty = vm.plume.obj.empty
+            _VM_INIT_ARGUMENTS (vm, chunk, arguments)
+            _tmp1 = vm
+        end
+        local vm = _tmp1
         local op, arg1, arg2
         ::DISPATCH::
             if vm.err then
@@ -384,10 +338,10 @@ return function (plume)
                 _STACK_PUSH (vm.mainStack, vm.static[arg2])
                 goto DISPATCH
             ::STORE_LOCAL::
-                _STACK_SET_FRAMED (vm.variableStack, arg2 - 1, 0, _STACK_POP (vm.mainStack))
+                _STACK_SET (vm.variableStack, _STACK_GET_OFFSET (vm.variableStack.frames, 0 or 0) + (arg2 - 1 or 0), _STACK_POP (vm.mainStack))
                 goto DISPATCH
             ::STORE_LEXICAL::
-                _STACK_SET_FRAMED (vm.variableStack, arg2 - 1, -arg1, _STACK_POP (vm.mainStack))
+                _STACK_SET (vm.variableStack, _STACK_GET_OFFSET (vm.variableStack.frames, -arg1 or 0) + (arg2 - 1 or 0), _STACK_POP (vm.mainStack))
                 goto DISPATCH
             ::STORE_STATIC::
                 vm.static[arg2] = _STACK_POP (vm.mainStack)
@@ -542,7 +496,7 @@ return function (plume)
                 end
                 goto DISPATCH
             ::LEAVE_SCOPE::
-                _STACK_POP_FRAME (vm.variableStack)
+                vm.variableStack.pointer = _STACK_POP (vm.variableStack.frames) - 1
                 goto DISPATCH
             ::BEGIN_ACC::
                 _STACK_PUSH (vm.mainStack.frames, vm.mainStack.pointer + 1)
@@ -579,7 +533,7 @@ return function (plume)
                             end
                         end
                     end
-                    _STACK_MOVE (vm.mainStack, limit - 2)
+                    vm.mainStack.pointer = limit - 2
                     _STACK_PUSH (vm.mainStack, args)
                     _STACK_POP (vm.mainStack.frames)
                 end
@@ -594,7 +548,7 @@ return function (plume)
                         end
                     end
                     local acc_text = table.concat (vm.mainStack, "", start, stop)
-                    _STACK_MOVE (vm.mainStack, start)
+                    vm.mainStack.pointer = start
                     _STACK_SET (vm.mainStack, start, acc_text)
                     _STACK_POP (vm.mainStack.frames)
                 end
@@ -636,7 +590,7 @@ return function (plume)
                             for i = tocall.positionalParamCount + 1, argcount do
                                 table.insert (capture.table, _STACK_GET_OFFSET (vm.mainStack, i - argcount))
                             end
-                            _STACK_MOVE_FRAMED (vm.mainStack)
+                            vm.mainStack.pointer = _STACK_GET (vm.mainStack.frames)
                         end
                         do
                             local stack_bottom = _STACK_GET_FRAMED (vm.mainStack)
@@ -718,7 +672,7 @@ return function (plume)
                                     end
                                 end
                             end
-                            _STACK_MOVE (vm.mainStack, limit - 2)
+                            vm.mainStack.pointer = limit - 2
                             _STACK_PUSH (vm.mainStack, args)
                             _STACK_POP (vm.mainStack.frames)
                         end
@@ -856,7 +810,9 @@ return function (plume)
                         success, result = _HANDLE_META_BIN (vm, left, right, "add")
                     else
                         success = true
-                        result = _ADD (left, right)
+                        local _tmp2
+                        _tmp2 = left + right
+                        result = _tmp2
                     end
                     if success then
                         _STACK_PUSH (vm.mainStack, result)
@@ -876,7 +832,9 @@ return function (plume)
                         success, result = _HANDLE_META_BIN (vm, left, right, "mul")
                     else
                         success = true
-                        result = _MUL (left, right)
+                        local _tmp3
+                        _tmp3 = left * right
+                        result = _tmp3
                     end
                     if success then
                         _STACK_PUSH (vm.mainStack, result)
@@ -896,7 +854,9 @@ return function (plume)
                         success, result = _HANDLE_META_BIN (vm, left, right, "sub")
                     else
                         success = true
-                        result = _SUB (left, right)
+                        local _tmp4
+                        _tmp4 = left - right
+                        result = _tmp4
                     end
                     if success then
                         _STACK_PUSH (vm.mainStack, result)
@@ -916,7 +876,9 @@ return function (plume)
                         success, result = _HANDLE_META_BIN (vm, left, right, "div")
                     else
                         success = true
-                        result = _DIV (left, right)
+                        local _tmp5
+                        _tmp5 = left / right
+                        result = _tmp5
                     end
                     if success then
                         _STACK_PUSH (vm.mainStack, result)
@@ -931,10 +893,24 @@ return function (plume)
                     local err
                     x, err = _CHECK_NUMBER_META (vm, x)
                     if err then
-                        success, result = _HANDLE_META_UN (vm, x, "minus")
+                        local _tmp6, _tmp7
+                        do
+                            local meta
+                            local params = {x}
+                            if _GET_TYPE (vm, x) == "table" and x.meta and x.meta.table.minus then
+                                meta = x.meta.table.minus
+                            end
+                            if not meta then
+                                _tmp6 = false
+                            end
+                            _tmp6, _tmp7 = true, _CALL (vm, meta, params)
+                        end
+                        success, result = _tmp6, _tmp7
                     else
                         success = true
-                        result = _NEG (x)
+                        local _tmp8
+                        _tmp8 = -x
+                        result = _tmp8
                     end
                     if success then
                         _STACK_PUSH (vm.mainStack, result)
@@ -954,7 +930,9 @@ return function (plume)
                         success, result = _HANDLE_META_BIN (vm, left, right, "mod")
                     else
                         success = true
-                        result = _MOD (left, right)
+                        local _tmp9
+                        _tmp9 = left % right
+                        result = _tmp9
                     end
                     if success then
                         _STACK_PUSH (vm.mainStack, result)
@@ -974,7 +952,9 @@ return function (plume)
                         success, result = _HANDLE_META_BIN (vm, left, right, "pow")
                     else
                         success = true
-                        result = _POW (left, right)
+                        local _tmp10
+                        _tmp10 = left ^ right
+                        result = _tmp10
                     end
                     if success then
                         _STACK_PUSH (vm.mainStack, result)
@@ -994,7 +974,9 @@ return function (plume)
                         success, result = _HANDLE_META_BIN (vm, left, right, "lt")
                     else
                         success = true
-                        result = _LT (left, right)
+                        local _tmp11
+                        _tmp11 = left < right
+                        result = _tmp11
                     end
                     if success then
                         _STACK_PUSH (vm.mainStack, result)

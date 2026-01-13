@@ -25,6 +25,12 @@ local function printTable(t)
 	print(tolua(t))
 end
 
+local _uid = 0
+local function getUID()
+	_uid = _uid + 1
+	return "_tmp".._uid
+end
+
 local functionsToInline = {}
 local function applyCommands(code)
 	for name in code:gmatch('%-%-! inline\n%s*function%s+([a-zA-Z_0-9]*)') do
@@ -87,6 +93,24 @@ local function inlineFunctions(node)
 				end)
 			end
 
+			local rets = {}
+			body:traverse(function(node)
+				if node.type == "return" then
+					for i=1, #node.exprs do
+						if #rets<i then
+							table.insert(rets, ast._var(getUID()))
+						end
+					end
+					return ast._assign(rets, node.exprs)
+				end
+				return node
+			end)
+
+			local init
+			if #rets>0 then
+				init = ast._local(rets)
+			end
+
 			body:traverse(nil, inlineFunctions)
 
 			local parent = ast._block
@@ -96,9 +120,55 @@ local function inlineFunctions(node)
 					break
 				end
 			end
+			
+			local result = parent(unpack(body))
+			if init then
+				result = ast._block(init, result)
+			end
 
-			return parent(unpack(body))
+			local insertPoint, assignPoint
+			if node.parent.type == "assign" then
+				assignPoint = node.parent
+				if node.parent.parent.type == "local" then
+					insertPoint = node.parent.parent
+				else
+					insertPoint = node.parent
+				end
+			else
+				return result
+			end
+
+			if insertPoint then
+				insertPoint.insertBefore = result
+
+				if assignPoint and #rets>0 then
+					assignPoint.exprs = rets
+					return
+				else
+					return ast._nil()
+				end
+			end
+
+
 		end
+	end
+	return node
+end
+
+local function applyInsertBefore(node)
+	if node.insertBefore then
+		local before = node.insertBefore
+		node.insertBefore = nil
+		return ast._block(before, node)
+	end
+	return node
+end
+
+local function applyInsertExprs(node)
+	if node.insertExprs then
+		local exprs = node.insertExprs
+		node.insertExprs = nil
+		node.exprs = exprs
 	end
 	return node
 end
@@ -130,11 +200,11 @@ require "make-engine" -- Compile base file
 local tree = loadCode('plume-data/engine/engine.lua', true)
 -- local tree = loadCode([[
 -- --! inline
--- function TEST(x)
--- 	x.foo()
+-- function double()
+-- 	return x, y
 -- end
 
--- TEST(y)
+-- a, b = double()
 -- ]], false)
 
 -- printTable(tree)
@@ -143,6 +213,8 @@ tree:traverse(inlineRequire)
 tree:traverse(renameRun)
 tree:traverse(saveFunctionsToInline)
 tree:traverse(nil, inlineFunctions)
+tree:traverse(nil, applyInsertBefore)
+tree:traverse(nil, applyInsertExprs)
 -- print(tree:toLua())
 
 local beautifier = require "luaBeautifier"
