@@ -208,16 +208,21 @@ local function renameRun(node)
 	return node
 end
 
-require "make-engine" -- Compile base file
-local tree = loadCode('plume-data/engine/engine.lua', true)
--- local tree = loadCode([[
--- --! inline
--- function double()
--- 	return x, y
--- end
+local debug = true
 
--- a, b = double()
--- ]], false)
+require "make-engine" -- Compile base file
+local tree
+
+if debug then
+	tree = loadCode([[
+--! inline
+function double()
+	return x, y
+end]], false)
+
+else
+	tree = loadCode('plume-data/engine/engine.lua', true)
+end
 
 -- printTable(tree)
 
@@ -227,10 +232,13 @@ tree:traverse(saveFunctionsToInline)
 tree:traverse(nil, inlineFunctions)
 tree:traverse(nil, applyInsertBefore)
 tree:traverse(nil, applyInsertExprs)
--- print(tree:toLua())
 
 local beautifier = require "luaBeautifier"
-local f = io.open('plume-data/engine/engine-opt.lua', 'w')
-	f:write(beautifier(tree))
-	-- f:write(tree:toLua())
-f:close()
+local finalCode = beautifier(tree)
+if debug then
+	print(finalCode)
+else
+	local f = io.open('plume-data/engine/engine-opt.lua', 'w')
+		f:write(finalCode)
+	f:close()
+end
