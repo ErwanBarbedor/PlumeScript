@@ -81,6 +81,52 @@ local function inlineRequire(node)
 	return node
 end
 
+local recAnchor = {
+	"add", "sub", "mul", "div", "mod", "concat", "pow",
+	"eq", "ne", "lt", "le", "gt", "ge",
+	"and", "or", "not"
+}
+for _, k in ipairs(recAnchor) do
+	recAnchor[k] = true
+end
+
+local function findAnchor(node)
+	local insertPoint, assignPoint
+	if node.parent then
+		if node.parent.type == "assign" then
+			assignPoint = node.parent
+			if node.parent.parent and node.parent.parent.type == "local" then
+				insertPoint = node.parent.parent
+			else
+				insertPoint = node.parent
+			end
+		elseif node.parent.type == "if" then
+			if node == node.parent.cond then
+				insertPoint = node.parent
+			else
+				insertPoint = node
+			end
+		-- Break lazy if-else strategy
+		elseif node.parent.type == "elseif" then
+			if node == node.parent.cond then
+				insertPoint = node.parent.parent
+			else
+				insertPoint = node
+			end
+		elseif recAnchor[node.parent.type] then
+			return findAnchor(node.parent)
+		elseif node.parent.type == "block" or node.parent.type == "function" then
+			insertPoint = node
+		elseif node.parent.type == "call" then
+			local anchor = findAnchor(node.parent)
+			if anchor == node.parent then
+				insertPoint = node.parent
+			end
+		end
+	end
+	return insertPoint, assignPoint
+end
+
 local function inlineFunctions(node)
 	if node.type == "call" then
 		local f = functionsToInline[node.func.name]
@@ -138,30 +184,25 @@ local function inlineFunctions(node)
 				result = ast._block(result, ast._label(labend))
 			end
 
-			local insertPoint, assignPoint
-			if node.parent.type == "assign" then
-				assignPoint = node.parent
-				if node.parent.parent.type == "local" then
-					insertPoint = node.parent.parent
+			local insertPoint, assignPoint = findAnchor(node)
+			if insertPoint and insertPoint ~= node then
+				if insertPoint.insertBefore then
+					insertPoint.insertBefore = ast._block(insertPoint.insertBefore, result)
 				else
-					insertPoint = node.parent
+					insertPoint.insertBefore = result
+				end
+
+				if #rets>1 then
+					assignPoint.exprs = rets
+					return
+				elseif #rets == 1 then
+					return rets[1]
+				else
+					return ast._nil()
 				end
 			else
 				return result
 			end
-
-			if insertPoint then
-				insertPoint.insertBefore = result
-
-				if assignPoint and #rets>0 then
-					assignPoint.exprs = rets
-					return
-				else
-					return ast._nil()
-				end
-			end
-
-
 		end
 	end
 	return node
@@ -171,7 +212,9 @@ local function applyInsertBefore(node)
 	if node.insertBefore then
 		local before = node.insertBefore
 		node.insertBefore = nil
-		return ast._block(before, node)
+		local result = ast._block(before, node)
+		result:traverse(applyInsertBefore)
+		return result
 	end
 	return node
 end
@@ -208,7 +251,9 @@ local function renameRun(node)
 	return node
 end
 
-local debug = true
+
+
+local debug = false
 
 require "make-engine" -- Compile base file
 local tree
@@ -216,9 +261,18 @@ local tree
 if debug then
 	tree = loadCode([[
 --! inline
-function double()
-	return x, y
-end]], false)
+function foo ()
+    return 1
+end
+
+--! inline
+function bar()
+	local a = foo()
+	return a
+end
+
+a = bar()
+]], false)
 
 else
 	tree = loadCode('plume-data/engine/engine.lua', true)
@@ -229,9 +283,9 @@ end
 tree:traverse(inlineRequire)
 tree:traverse(renameRun)
 tree:traverse(saveFunctionsToInline)
-tree:traverse(nil, inlineFunctions)
-tree:traverse(nil, applyInsertBefore)
-tree:traverse(nil, applyInsertExprs)
+tree:traverse(inlineFunctions)
+tree:traverse(applyInsertBefore)
+tree:traverse(applyInsertExprs)
 
 local beautifier = require "luaBeautifier"
 local finalCode = beautifier(tree)
