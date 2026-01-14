@@ -154,6 +154,7 @@ function TABLE_SET (vm, arg1, arg2)
     t.table[key] = value
 end
 
+--! inline
 function TABLE_EXPAND (vm, arg1, arg2)
     --- Unstack 1: a table
     --- Stack all list item

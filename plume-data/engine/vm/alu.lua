@@ -172,8 +172,11 @@ function OPP_NEG (vm, arg1, arg2) _UN_OPP_NUMBER  (vm, _NEG,   "minus") end
 
 
 --- Bool
+--! inline
 function _AND(x, y) return x and y end
+--! inline
 function _OR(x, y)  return x or y end
+--! inline
 function _NOT(x)    return not x end
 
 --! inline
