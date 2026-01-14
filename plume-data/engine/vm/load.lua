@@ -57,8 +57,8 @@ function LOAD_STATIC (vm, arg1, arg2)
         vm.static[arg2]
     )
 end
---! inline
 
+--! inline
 function LOAD_TRUE (vm, arg1, arg2)
     --- Stack 1 constant true
     --- arg1: -
