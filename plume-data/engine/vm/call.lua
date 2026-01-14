@@ -136,6 +136,7 @@ function _UNSTACK_NAMED (vm, macro, arguments, capture)
     end
 end
 
+--! inline
 function _CALL (vm, macro, arguments)
     table.insert(vm.chunk.callstack, {chunk=vm.chunk, macro=macro, ip=vm.ip})
     if #vm.chunk.callstack<=1000 then
