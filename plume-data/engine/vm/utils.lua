@@ -13,6 +13,7 @@ You should have received a copy of the GNU General Public License along with Plu
 If not, see <https://www.gnu.org/licenses/>.
 ]]
 
+--! inline
 function _GET_TYPE(vm, x)
     return type(x) == "table" and (x == vm.empty or x.type) or type(x)
 end
@@ -29,6 +30,7 @@ function _SPECIAL_ERROR (vm, msg, ip, chunk)
     -- !to-add return false, msg, vm.ip, vm.chunk
 end
 
+--! inline
 function _CHECK_BOOL (vm, x)
     if x == vm.empty then
         return false
