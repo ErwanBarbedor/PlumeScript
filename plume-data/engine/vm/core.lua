@@ -63,6 +63,7 @@ function _VM_INIT_VARS(vm, chunk)
     vm.empty = vm.plume.obj.empty
 end
 
+--! inline
 function _VM_INIT_ARGUMENTS(vm, chunk, arguments)
     if arguments then
         if chunk.isFile then

@@ -132,6 +132,7 @@ local function inlineFunctions(node)
 		local f = functionsToInline[node.func.name]
 		if f then
 			local body = f.body:copy()
+			
 			local args = node.args
 			local params = f.params
 			for i, param in ipairs(params) do
@@ -251,8 +252,6 @@ local function renameRun(node)
 	return node
 end
 
-
-
 local debug = false
 
 require "make-engine" -- Compile base file
@@ -260,18 +259,15 @@ local tree
 
 if debug then
 	tree = loadCode([[
---! inline
-function foo ()
-    return 1
-end
 
 --! inline
-function bar()
-	local a = foo()
-	return a
+function f ()
+	local x
+    return 5
 end
 
-a = bar()
+f ()
+
 ]], false)
 
 else
@@ -296,3 +292,4 @@ else
 		f:write(finalCode)
 	f:close()
 end
+
