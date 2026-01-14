@@ -181,6 +181,7 @@ local fields = {
 	{'expr', 'one'},
 	{'stmt', 'one'},
 	{'args', 'many'},
+	{'iterexprs', 'one'},
 	{'exprs', 'many'},
 	{'elseifs', 'many'},
 	{'elsestmt', 'many'},
