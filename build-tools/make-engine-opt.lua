@@ -84,7 +84,7 @@ end
 local recAnchor = {
 	"add", "sub", "mul", "div", "mod", "concat", "pow",
 	"eq", "ne", "lt", "le", "gt", "ge",
-	"and", "or", "not"
+	"and", "or", "not", "index", "return"
 }
 for _, k in ipairs(recAnchor) do
 	recAnchor[k] = true
@@ -118,10 +118,7 @@ local function findAnchor(node)
 		elseif node.parent.type == "block" or node.parent.type == "function" then
 			insertPoint = node
 		elseif node.parent.type == "call" then
-			local anchor = findAnchor(node.parent)
-			if anchor == node.parent then
-				insertPoint = node.parent
-			end
+			insertPoint = findAnchor(node.parent)
 		end
 	end
 	return insertPoint, assignPoint
@@ -169,13 +166,7 @@ local function inlineFunctions(node)
 
 			body:traverse(nil, inlineFunctions)
 
-			local parent = ast._block
-			for _, elem in ipairs(body) do
-				if elem.type == "local" then
-					parent = ast._do
-					break
-				end
-			end
+			local parent = ast._do
 			
 			local result = parent(unpack(body))
 			if init then
@@ -184,7 +175,6 @@ local function inlineFunctions(node)
 			if #rets>0 then
 				result = ast._block(result, ast._label(labend))
 			end
-
 			local insertPoint, assignPoint = findAnchor(node)
 			if insertPoint and insertPoint ~= node then
 				if insertPoint.insertBefore then
@@ -202,6 +192,9 @@ local function inlineFunctions(node)
 					return ast._nil()
 				end
 			else
+				if node.insertBefore then
+                    result = ast._block(node.insertBefore, result)
+                end
 				return result
 			end
 		end
@@ -258,18 +251,7 @@ require "make-engine" -- Compile base file
 local tree
 
 if debug then
-	tree = loadCode([[
-
---! inline
-function f ()
-	local x
-    return 5
-end
-
-f ()
-
-]], false)
-
+	tree = loadCode([[]], false)
 else
 	tree = loadCode('plume-data/engine/engine.lua', true)
 end
