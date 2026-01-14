@@ -13,6 +13,7 @@ You should have received a copy of the GNU General Public License along with Plu
 If not, see <https://www.gnu.org/licenses/>.
 ]]
 
+--! inline
 function _STACK_GET(stack, index)
     return stack[index or stack.pointer]
 end
@@ -21,19 +22,23 @@ function _STACK_GET_OFFSET(stack, offset)
     return stack[stack.pointer + offset]
 end
 
+--! inline
 function _STACK_SET(stack, index, value)
     stack[index] = value
 end
 
+--! inline
 function _STACK_POS(stack)
     return stack.pointer
 end
 
+--! inline
 function _STACK_POP(stack)
     stack.pointer = stack.pointer - 1
     return stack[stack.pointer + 1]
 end
 
+--! inline
 function _STACK_PUSH(stack, value)
     stack.pointer = stack.pointer + 1
     stack[stack.pointer] = value
@@ -66,6 +71,7 @@ function _STACK_SET_FRAMED(stack, offset, frameOffset, value)
     )
 end
 
+--! inline
 function _STACK_GET_FRAMED(stack, offset, frameOffset)
     return _STACK_GET(
         stack,

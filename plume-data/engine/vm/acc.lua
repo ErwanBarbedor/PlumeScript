@@ -91,7 +91,6 @@ function ACC_CHECK_TEXT (vm, arg1, arg2)
             _ERROR (vm, "Cannot concat a '" ..t .. "' value.")
         end
     end
-
 end
 
 --! inline
