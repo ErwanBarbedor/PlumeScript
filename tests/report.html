@@ -98,7 +98,7 @@
 <body>
 <div class="container">
     
-<h1>Global: <span style="font-weight: normal;">280 passed out of 280 tests</span></h1>
+<h1>Global: <span style="font-weight: normal;">281 passed out of 281 tests</span></h1>
 <div class="progress-bar"><div class="progress-success" style="width: 100.00%"></div><div class="progress-fail" style="width: 0.00%"></div></div>
 <h2>arithmetic: <span style="font-weight: normal;">30 passed out of 30 tests</span></h2>
 <div class="progress-bar"><div class="progress-success" style="width: 100.00%"></div><div class="progress-fail" style="width: 0.00%"></div></div>
@@ -12058,7 +12058,7 @@ File &#39;wrong indentifier&#39;, line 1: let if = 5
 </code></pre>
 </div>
 </details>
-<h2>z_issues: <span style="font-weight: normal;">27 passed out of 27 tests</span></h2>
+<h2>z_issues: <span style="font-weight: normal;">28 passed out of 28 tests</span></h2>
 <div class="progress-bar"><div class="progress-success" style="width: 100.00%"></div><div class="progress-fail" style="width: 0.00%"></div></div>
 <details>
 <summary>
@@ -13458,6 +13458,59 @@ $quill()
 <h4>Output</h4>
 <pre><code>
 true
+</code></pre>
+</div>
+</details>
+<details>
+<summary>
+<span class="status-icon status-pass">✓</span> #231 <em style='font-weight: normal'></em>
+</summary>
+<div class="test-content">
+<div class="code-grid">
+<div>
+<h4>Code</h4>
+<pre><code class="language-plume">
+macro quill(?flag)
+end
+
+$(quill(?flag))
+
+</code></pre>
+</div>
+<div>
+<h4>Bytecode</h4>
+<div class="tab-container">
+<div class="tab-headers">
+<button class="tab-link active" onclick="openBytecodeTab(event, 'bc_tabs_97_content_1')">main</button>
+<button class="tab-link" onclick="openBytecodeTab(event, 'bc_tabs_97_content_2')">quill</button>
+</div>
+<div id="bc_tabs_97_content_1" class="tab-content" style="display: block;">
+<pre><code class="language-bytecode"><span class="bc-line-num">001</span> <span class="bc-opcode">ENTER_SCOPE     </span> <span class="bc-arg">0 0</span> <span class="bc-info">; m</span>
+<span class="bc-line-num">002</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 1</span> <span class="bc-info">; quill</span>
+<span class="bc-line-num">003</span> <span class="bc-opcode">STORE_STATIC    </span> <span class="bc-arg">0 20</span> <span class="bc-info">; quill</span>
+<span class="bc-line-num">004</span> <span class="bc-opcode">BEGIN_ACC       </span> <span class="bc-arg">0 0</span>
+<span class="bc-line-num">005</span> <span class="bc-opcode">TABLE_NEW       </span> <span class="bc-arg">0 0</span>
+<span class="bc-line-num">006</span> <span class="bc-opcode">LOAD_TRUE       </span> <span class="bc-arg">0 0</span> <span class="bc-info">; ?flag</span>
+<span class="bc-line-num">007</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 2</span> <span class="bc-info">; ?flag</span>
+<span class="bc-line-num">008</span> <span class="bc-opcode">TABLE_SET_ACC   </span> <span class="bc-arg">0 0</span> <span class="bc-info">; ?flag</span>
+<span class="bc-line-num">009</span> <span class="bc-opcode">LOAD_STATIC     </span> <span class="bc-arg">0 20</span> <span class="bc-info">; quill</span>
+<span class="bc-line-num">010</span> <span class="bc-opcode">ACC_CALL        </span> <span class="bc-arg">0 0</span> <span class="bc-info">; quill(?flag)</span>
+<span class="bc-line-num">011</span> <span class="bc-opcode">END             </span> <span class="bc-arg">0 0</span></code></pre>
+</div>
+<div id="bc_tabs_97_content_2" class="tab-content" style="display: none;">
+<pre><code class="language-bytecode"><span class="bc-line-num">001</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 1</span>
+<span class="bc-line-num">002</span> <span class="bc-opcode">JUMP_IF_NOT_EMPTY</span> <span class="bc-arg">0 5</span>
+<span class="bc-line-num">003</span> <span class="bc-opcode">LOAD_FALSE      </span> <span class="bc-arg">0 0</span> <span class="bc-info">; ?flag</span>
+<span class="bc-line-num">004</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">0 1</span>
+<span class="bc-line-num">005</span> <span class="bc-opcode">LOAD_EMPTY      </span> <span class="bc-arg">0 0</span>
+<span class="bc-line-num">006</span> <span class="bc-opcode">END             </span> <span class="bc-arg">0 0</span></code></pre>
+</div>
+</div>
+</div>
+</div>
+<h4>Output</h4>
+<pre><code>
+
 </code></pre>
 </div>
 </details>

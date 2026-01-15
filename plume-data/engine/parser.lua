@@ -69,6 +69,49 @@ return function (plume)
             end
         end
 
+        local function sugarFlagParam(p)
+            return p / function(capture)
+                capture.name = "PARAM"
+                table.insert(capture.children, {
+                    name="BODY",
+                    bpos=capture.bpos,
+                    epos=capture.epos,
+                    children={{
+                        name="EVAL",
+                        bpos=capture.bpos,
+                        epos=capture.epos,
+                        children={{
+                            name = "FALSE",
+                            bpos=capture.bpos,
+                            epos=capture.epos,
+                        }}
+                    }},
+                })
+                return capture
+            end
+        end
+        local function sugarFlagCall(p)
+            return p / function(capture)
+                capture.name = "HASH_ITEM"
+                table.insert(capture.children, {
+                    name="BODY",
+                    bpos=capture.bpos,
+                    epos=capture.epos,
+                    children={{
+                        name="EVAL",
+                        bpos=capture.bpos,
+                        epos=capture.epos,
+                        children={{
+                            name = "TRUE",
+                            bpos=capture.bpos,
+                            epos=capture.epos,
+                        }}
+                    }},
+                })
+                return capture
+            end
+        end
+
         ------------
         -- common --
         ------------
@@ -182,7 +225,7 @@ return function (plume)
             -- Eval & index
             local posarg  = Ct("LIST_ITEM", V"_layer1")
             local optnarg = Ct("HASH_ITEM", idn*os*P":"*os*Ct("BODY", V"_layer1"^-1))
-            local arg = optnarg + posarg
+            local arg = optnarg + posarg + sugarFlagCall(Ct("FLAG", os *"?"*idn))
             local arglist = Ct("CALL", P"(" * arg^-1 * (os * P"," * os * arg)^0 * P")")
             local index = Ct("INDEX", P"[" * V"_layer1" * P"]")
         	local directindex = Ct("DIRECT_INDEX", P"." * idn)
@@ -229,49 +272,6 @@ return function (plume)
         
 
         -- macro & calls
-        local function sugarFlagParam(p)
-        	return p / function(capture)
-        		capture.name = "PARAM"
-        		table.insert(capture.children, {
-        			name="BODY",
-        			bpos=capture.bpos,
-        			epos=capture.epos,
-        			children={{
-            			name="EVAL",
-            			bpos=capture.bpos,
-            			epos=capture.epos,
-            			children={{
-            				name = "FALSE",
-            				bpos=capture.bpos,
-            				epos=capture.epos,
-        				}}
-        			}},
-        		})
-        		return capture
-        	end
-        end
-        local function sugarFlagCall(p)
-        	return p / function(capture)
-        		capture.name = "HASH_ITEM"
-        		table.insert(capture.children, {
-        			name="BODY",
-        			bpos=capture.bpos,
-        			epos=capture.epos,
-        			children={{
-            			name="EVAL",
-            			bpos=capture.bpos,
-            			epos=capture.epos,
-            			children={{
-            				name = "TRUE",
-            				bpos=capture.bpos,
-            				epos=capture.epos,
-        				}}
-        			}},
-        		})
-        		return capture
-        	end
-        end
-
         local param      = Ct("PARAM",
                 			      idn * os * P":" * os * Ct("BODY", V"textic"^-1)
                     			+ idn
