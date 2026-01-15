@@ -167,7 +167,7 @@ return function (plume)
                     local _ret4
                     do
                         local _ret5
-                        _ret5 = variableStackFrames[variableStackFramesPointer + (nil or 0)]
+                        _ret5 = variableStackFrames[variableStackFramesPointer]
                         goto _inline_end20
                         ::_inline_end20::
                         local _ret6
@@ -215,7 +215,7 @@ return function (plume)
                     ::_inline_end31::
                     do
                         local _ret11
-                        _ret11 = variableStackFrames[variableStackFramesPointer + 0 or 0]
+                        _ret11 = variableStackFrames[variableStackFramesPointer or 0]
                         goto _inline_end33
                         ::_inline_end33::
                         variableStack[_ret11 + (arg2 - 1 or 0)] = _ret10
@@ -393,11 +393,11 @@ return function (plume)
                     local _ret24
                     do
                         local _ret25
-                        _ret25 = mainStackFrames[mainStackFramesPointer + (nil or 0)]
+                        _ret25 = mainStackFrames[mainStackFramesPointer]
                         goto _inline_end74
                         ::_inline_end74::
                         local _ret26
-                        _ret26 = mainStack[_ret25 + (nil or 0) or mainStackPointer]
+                        _ret26 = mainStack[_ret25 or mainStackPointer]
                         goto _inline_end75
                         ::_inline_end75::
                         _ret24 = _ret26
@@ -407,7 +407,7 @@ return function (plume)
                     local t = _ret24
                     table.insert (t, "self")
                     local _ret27
-                    _ret27 = mainStack[nil or mainStackPointer]
+                    _ret27 = mainStack[mainStackPointer]
                     goto _inline_end76
                     ::_inline_end76::
                     table.insert (t, _ret27)
@@ -427,7 +427,7 @@ return function (plume)
                         local key = _ret29
                         key = tonumber (key) or key
                         if key == empty then
-                            if 0 == 1 then
+                            if false then
                                 mainStackPointer = mainStackPointer + 1
                                 mainStack[mainStackPointer] = empty
                             else
@@ -440,7 +440,7 @@ return function (plume)
                             ::_inline_end95::
                             local tt = _ret31
                             if tt ~= "table" then
-                                if 0 == 1 then
+                                if false then
                                     mainStackPointer = mainStackPointer + 1
                                     mainStack[mainStackPointer] = empty
                                 else
@@ -452,7 +452,7 @@ return function (plume)
                                     mainStackPointer = mainStackPointer + 1
                                     mainStack[mainStackPointer] = value
                                 else
-                                    if 0 == 1 then
+                                    if false then
                                         mainStackPointer = mainStackPointer + 1
                                         mainStack[mainStackPointer] = empty
                                     elseif t.meta.table.getindex then
@@ -520,11 +520,11 @@ return function (plume)
                     local _ret35
                     do
                         local _ret36
-                        _ret36 = mainStackFrames[mainStackFramesPointer + (nil or 0)]
+                        _ret36 = mainStackFrames[mainStackFramesPointer]
                         goto _inline_end102
                         ::_inline_end102::
                         local _ret37
-                        _ret37 = mainStack[_ret36 + (nil or 0) or mainStackPointer]
+                        _ret37 = mainStack[_ret36 or mainStackPointer]
                         goto _inline_end103
                         ::_inline_end103::
                         _ret35 = _ret37
@@ -569,11 +569,11 @@ return function (plume)
                         local _ret42
                         do
                             local _ret43
-                            _ret43 = mainStackFrames[mainStackFramesPointer + (nil or 0)]
+                            _ret43 = mainStackFrames[mainStackFramesPointer]
                             goto _inline_end111
                             ::_inline_end111::
                             local _ret44
-                            _ret44 = mainStack[_ret43 + (nil or 0) or mainStackPointer]
+                            _ret44 = mainStack[_ret43 or mainStackPointer]
                             goto _inline_end112
                             ::_inline_end112::
                             _ret42 = _ret44
@@ -623,7 +623,7 @@ return function (plume)
             ::ACC_TABLE::
                 do
                     local _ret47
-                    _ret47 = mainStackFrames[nil or mainStackFramesPointer]
+                    _ret47 = mainStackFrames[mainStackFramesPointer]
                     goto _inline_end125
                     ::_inline_end125::
                     local limit = _ret47 + 1
@@ -727,7 +727,7 @@ return function (plume)
             ::ACC_TEXT::
                 do
                     local _ret54
-                    _ret54 = mainStackFrames[nil or mainStackFramesPointer]
+                    _ret54 = mainStackFrames[mainStackFramesPointer]
                     goto _inline_end138
                     ::_inline_end138::
                     local start = _ret54
@@ -798,7 +798,7 @@ return function (plume)
                             goto _inline_end154
                             ::_inline_end154::
                             local _ret62
-                            _ret62 = mainStackFrames[nil or mainStackFramesPointer]
+                            _ret62 = mainStackFrames[mainStackFramesPointer]
                             goto _inline_end155
                             ::_inline_end155::
                             local argcount = _ret61 - _ret62
@@ -828,7 +828,7 @@ return function (plume)
                             end
                             do
                                 local _ret65
-                                _ret65 = mainStackFrames[nil or mainStackFramesPointer]
+                                _ret65 = mainStackFrames[mainStackFramesPointer]
                                 goto _inline_end160
                                 ::_inline_end160::
                                 mainStackPointer = _ret65
@@ -838,11 +838,11 @@ return function (plume)
                             local _ret66
                             do
                                 local _ret67
-                                _ret67 = mainStackFrames[mainStackFramesPointer + (nil or 0)]
+                                _ret67 = mainStackFrames[mainStackFramesPointer]
                                 goto _inline_end164
                                 ::_inline_end164::
                                 local _ret68
-                                _ret68 = mainStack[_ret67 + (nil or 0) or mainStackPointer]
+                                _ret68 = mainStack[_ret67 or mainStackPointer]
                                 goto _inline_end165
                                 ::_inline_end165::
                                 _ret66 = _ret68
@@ -969,7 +969,7 @@ return function (plume)
                     elseif t == "luaFunction" then
                         do
                             local _ret74
-                            _ret74 = mainStackFrames[nil or mainStackFramesPointer]
+                            _ret74 = mainStackFrames[mainStackFramesPointer]
                             goto _inline_end179
                             ::_inline_end179::
                             local limit = _ret74 + 1
@@ -1071,7 +1071,7 @@ return function (plume)
                         end
                         table.insert (chunk.callstack, {chunk = chunk, macro = tocall, ip = ip})
                         local _ret81
-                        _ret81 = mainStack[nil or mainStackPointer]
+                        _ret81 = mainStack[mainStackPointer]
                         goto _inline_end191
                         ::_inline_end191::
                         local success, result = pcall (tocall.callable, _ret81, chunk)
@@ -1098,7 +1098,7 @@ return function (plume)
             ::ACC_CHECK_TEXT::
                 do
                     local _ret83
-                    _ret83 = mainStack[nil or mainStackPointer]
+                    _ret83 = mainStack[mainStackPointer]
                     goto _inline_end197
                     ::_inline_end197::
                     local value = _ret83
@@ -1198,7 +1198,7 @@ return function (plume)
             ::JUMP_IF_PEEK::
                 do
                     local _ret92
-                    _ret92 = mainStack[nil or mainStackPointer]
+                    _ret92 = mainStack[mainStackPointer]
                     goto _inline_end215
                     ::_inline_end215::
                     local test = _ret92
@@ -1218,7 +1218,7 @@ return function (plume)
             ::JUMP_IF_NOT_PEEK::
                 do
                     local _ret94
-                    _ret94 = mainStack[nil or mainStackPointer]
+                    _ret94 = mainStack[mainStackPointer]
                     goto _inline_end218
                     ::_inline_end218::
                     local test = _ret94
@@ -2797,7 +2797,7 @@ return function (plume)
             ::DUPLICATE::
                 do
                     local _ret243
-                    _ret243 = mainStack[nil or mainStackPointer]
+                    _ret243 = mainStack[mainStackPointer]
                     goto _inline_end445
                     ::_inline_end445::
                     mainStackPointer = mainStackPointer + 1
@@ -2826,7 +2826,7 @@ return function (plume)
                 goto DISPATCH
             ::END::
             local _ret246
-            _ret246 = mainStack[nil or mainStackPointer]
+            _ret246 = mainStack[mainStackPointer]
             goto _inline_end452
             ::_inline_end452::
             return true, _ret246

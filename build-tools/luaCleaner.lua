@@ -37,15 +37,47 @@ local function hasLocals(node)
 end
 
 local function removeUselessDo(node)
-		if node.type == "do" then
-			if isEmpty(node) then
-				return ast._block()
-			elseif not hasLocals(node) then
-				return ast._block(unpack(node)):traverse(removeUselessDo)
+	if node.type == "do" then
+		if isEmpty(node) then
+			return ast._block()
+		elseif not hasLocals(node) then
+			return ast._block(unpack(node)):traverse(removeUselessDo)
+		end
+	end
+	return node
+end
+
+
+local function constantFolding(node)
+	if node.type == "or" then
+		if node[1].type == "nil" or node[1].type == "false" then
+			return node[2]
+		end
+		if node[2].type == "nil" or node[2].type == "false" then
+			return node[1]
+		end
+	elseif node.type == "eq" then
+		if node[1].type == "number" and node[2].type == "number" then
+			if node[1].value == node[2].value then
+				return ast._true()
+			else
+				return ast._false()
 			end
 		end
-		return node
+	elseif node.type == "add" then
+		if node[1].type == "number" and node[1].value == "0" then
+			return node[2]
+		end
+		if node[2].type == "number" and node[2].value == "0" then
+			return node[1]
+		end
+	elseif node.type == "par" and node.expr.type == "number" then
+		return node.expr
 	end
+	return node
+end
+
 return {
-	removeUselessDo = removeUselessDo
+	removeUselessDo = removeUselessDo,
+	constantFolding = constantFolding
 }
