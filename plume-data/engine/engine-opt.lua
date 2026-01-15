@@ -106,45 +106,44 @@ return function (plume)
             elseif op == 10 then goto STORE_STATIC
             elseif op == 11 then goto STORE_VOID
             elseif op == 12 then goto TABLE_NEW
-            elseif op == 13 then goto TABLE_ADD
-            elseif op == 14 then goto TABLE_SET
-            elseif op == 15 then goto TABLE_INDEX
-            elseif op == 16 then goto TABLE_INDEX_ACC_SELF
-            elseif op == 17 then goto TABLE_SET_META
-            elseif op == 18 then goto TABLE_INDEX_META
-            elseif op == 19 then goto TABLE_SET_ACC
-            elseif op == 20 then goto TABLE_EXPAND
-            elseif op == 21 then goto ENTER_SCOPE
-            elseif op == 22 then goto LEAVE_SCOPE
-            elseif op == 23 then goto BEGIN_ACC
-            elseif op == 24 then goto ACC_TABLE
-            elseif op == 25 then goto ACC_TEXT
-            elseif op == 26 then goto ACC_EMPTY
-            elseif op == 27 then goto ACC_CALL
-            elseif op == 28 then goto ACC_CHECK_TEXT
-            elseif op == 29 then goto JUMP_IF
-            elseif op == 30 then goto JUMP_IF_NOT
-            elseif op == 31 then goto JUMP_IF_NOT_EMPTY
-            elseif op == 32 then goto JUMP
-            elseif op == 33 then goto JUMP_IF_PEEK
-            elseif op == 34 then goto JUMP_IF_NOT_PEEK
-            elseif op == 35 then goto GET_ITER
-            elseif op == 36 then goto FOR_ITER
-            elseif op == 37 then goto OPP_ADD
-            elseif op == 38 then goto OPP_MUL
-            elseif op == 39 then goto OPP_SUB
-            elseif op == 40 then goto OPP_DIV
-            elseif op == 41 then goto OPP_NEG
-            elseif op == 42 then goto OPP_MOD
-            elseif op == 43 then goto OPP_POW
-            elseif op == 44 then goto OPP_LT
-            elseif op == 45 then goto OPP_EQ
-            elseif op == 46 then goto OPP_AND
-            elseif op == 47 then goto OPP_NOT
-            elseif op == 48 then goto OPP_OR
-            elseif op == 49 then goto DUPLICATE
-            elseif op == 50 then goto SWITCH
-            elseif op == 51 then goto END
+            elseif op == 13 then goto TABLE_SET
+            elseif op == 14 then goto TABLE_INDEX
+            elseif op == 15 then goto TABLE_INDEX_ACC_SELF
+            elseif op == 16 then goto TABLE_SET_META
+            elseif op == 17 then goto TABLE_INDEX_META
+            elseif op == 18 then goto TABLE_SET_ACC
+            elseif op == 19 then goto TABLE_EXPAND
+            elseif op == 20 then goto ENTER_SCOPE
+            elseif op == 21 then goto LEAVE_SCOPE
+            elseif op == 22 then goto BEGIN_ACC
+            elseif op == 23 then goto ACC_TABLE
+            elseif op == 24 then goto ACC_TEXT
+            elseif op == 25 then goto ACC_EMPTY
+            elseif op == 26 then goto ACC_CALL
+            elseif op == 27 then goto ACC_CHECK_TEXT
+            elseif op == 28 then goto JUMP_IF
+            elseif op == 29 then goto JUMP_IF_NOT
+            elseif op == 30 then goto JUMP_IF_NOT_EMPTY
+            elseif op == 31 then goto JUMP
+            elseif op == 32 then goto JUMP_IF_PEEK
+            elseif op == 33 then goto JUMP_IF_NOT_PEEK
+            elseif op == 34 then goto GET_ITER
+            elseif op == 35 then goto FOR_ITER
+            elseif op == 36 then goto OPP_ADD
+            elseif op == 37 then goto OPP_MUL
+            elseif op == 38 then goto OPP_SUB
+            elseif op == 39 then goto OPP_DIV
+            elseif op == 40 then goto OPP_NEG
+            elseif op == 41 then goto OPP_MOD
+            elseif op == 42 then goto OPP_POW
+            elseif op == 43 then goto OPP_LT
+            elseif op == 44 then goto OPP_EQ
+            elseif op == 45 then goto OPP_AND
+            elseif op == 46 then goto OPP_NOT
+            elseif op == 47 then goto OPP_OR
+            elseif op == 48 then goto DUPLICATE
+            elseif op == 49 then goto SWITCH
+            elseif op == 50 then goto END
             end
             ::LOAD_CONSTANT::
                 mainStackPointer = mainStackPointer + 1
@@ -260,9 +259,6 @@ return function (plume)
             ::TABLE_NEW::
                 mainStackPointer = mainStackPointer + 1
                 mainStack[mainStackPointer] = table.new (0, arg1)
-                goto DISPATCH
-            ::TABLE_ADD::
-                TABLE_ADD (vm, arg1, arg2)
                 goto DISPATCH
             ::TABLE_SET::
                 do
