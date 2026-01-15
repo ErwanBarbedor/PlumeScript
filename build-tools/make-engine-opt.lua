@@ -20,6 +20,8 @@ package.path =  "build-tools/?.lua;build-tools/thenumbernine/?.lua;build-tools/t
 local Parser = require "parser"
 local ast = require "parser.lua.ast"
 local tolua = require 'ext.tolua'
+local cleaner = require"luaCleaner"
+local beautifier = require "luaBeautifier"
 
 local function printTable(t)
 	print(tolua(t))
@@ -254,7 +256,30 @@ require "make-engine" -- Compile base file
 local tree
 
 if debug then
-	tree = loadCode([[]], false)
+	tree = loadCode([[do
+                    local _ret5
+                    do
+                        local _ret6
+                        do
+                            _ret6 = vm.variableStack.frames[vm.variableStack.frames.pointer + (nil or 0)]
+                            goto _inline_end20
+                        end
+                        ::_inline_end20::
+                        local _ret7
+                        do
+                            _ret7 = vm.variableStack[_ret6 + (arg2 - 1 or 0) or vm.variableStack.pointer]
+                            goto _inline_end21
+                        end
+                        ::_inline_end21::
+                        _ret5 = _ret7
+                        goto _inline_end19
+                    end
+                    ::_inline_end19::
+                    do
+                        vm.mainStack.pointer = vm.mainStack.pointer + 1
+                        vm.mainStack[vm.mainStack.pointer] = _ret5
+                    end
+                end]], false)
 else
 	tree = loadCode('plume-data/engine/engine.lua', true)
 end
@@ -268,7 +293,10 @@ tree:traverse(inlineFunctions)
 tree:traverse(applyInsertBefore)
 tree:traverse(applyInsertExprs)
 
-local beautifier = require "luaBeautifier"
+tree = loadCode(beautifier(tree), false)
+tree:traverse(cleaner.removeUselessDo)
+
+
 local finalCode = beautifier(tree)
 if debug then
 	print(finalCode)
