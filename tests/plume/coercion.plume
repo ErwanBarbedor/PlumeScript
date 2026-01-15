@@ -1,32 +1,32 @@
 /// Test string+string
-let write = 1 // string
+let _write = 1 // string
 let paint = 1 // string
-$(write+paint)
+$(_write+paint)
 /// Output
 2
 /// End
 
 /// Test string+number
-let write = 1 // string
-$(write+1) // 1 is a number
+let _write = 1 // string
+$(_write+1) // 1 is a number
 /// Output
 2
 /// End
 
 /// Test type convertion
-let write = $table()
-$type($write)
+let _write = $table()
+$type($_write)
 /// Output
 table
 /// End
 
 /// Test type convertion (if)
-let write = if 2==1+1
+let _write = if 2==1+1
 	$table()
 else
 	$table(write)
 end
-$type($write)
+$type($_write)
 /// Output
 table
 /// End

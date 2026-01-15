@@ -316,3 +316,12 @@ a
 /// Output
 a
 /// End
+
+/// Test #239
+let x = 5
+let static x = 5
+/// Error
+Compilation error: Cannot define static variable 'x', it already exists in the current file scope.
+File '#239', line 2: let static x = 5
+                     ^^^^^^^^^^^^^^^^
+/// End
