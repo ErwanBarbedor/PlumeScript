@@ -34,7 +34,9 @@ require "make-engine" -- Compile base file
 local tree
 
 if debug then
-	tree = optimizer.loadCode([[]], false)
+	tree = optimizer.loadCode([[
+--! to-add foo()
+]], false)
 else
 	tree = optimizer.loadCode('plume-data/engine/engine.lua', true)
 end
@@ -47,6 +49,10 @@ tree:traverse(optimizer.saveFunctionsToInline)
 tree:traverse(optimizer.inlineFunctions)
 tree:traverse(optimizer.applyInsertBefore)
 tree:traverse(optimizer.applyInsertExprs)
+tree:traverse(optimizer.inlineIndex)
+tree:traverse(optimizer.inlineIndex)
+tree:traverse(optimizer.inlineIndex)
+tree:traverse(optimizer.tolocal)
 
 tree = optimizer.loadCode(beautifier(tree), false)
 tree:traverse(cleaner.removeUselessDo)
