@@ -22,7 +22,7 @@ function LOAD_CONSTANT (vm, arg1, arg2)
 end
 
 --! inline
-function LOAD_LEXICAL (vm, arg1, arg2)
+function LOAD_LOCAL (vm, arg1, arg2)
     --- Stack 1 from vs.
     --- Final offset: the nth last frame + vs offset
     --- arg1: frame offset
@@ -30,18 +30,6 @@ function LOAD_LEXICAL (vm, arg1, arg2)
     _STACK_PUSH(
         vm.mainStack,
         _STACK_GET_FRAMED(vm.variableStack, arg2 - 1, -arg1)
-    )
-end
-
---! inline
-function LOAD_LOCAL (vm, arg1, arg2)
-    --- Stack 1 from vs.
-    --- Final offset: current frame + vs offset
-    --- arg1: -
-    --- arg2: vs offset
-    _STACK_PUSH(
-        vm.mainStack,
-        _STACK_GET_FRAMED(vm.variableStack, arg2 - 1)
     )
 end
 

@@ -12,22 +12,6 @@ See the GNU General Public License for more details.
 You should have received a copy of the GNU General Public License along with Plume🪶.
 If not, see <https://www.gnu.org/licenses/>.
 ]]
-
---! inline
-function STORE_LOCAL (vm, arg1, arg2)
-    --- Unstack 1 to vs
-    --- Final offset: current frame + frame offset
-    --- arg1: -
-    --- arg2: frame offset
-
-    _STACK_SET_FRAMED(
-        vm.variableStack,
-        arg2 - 1,
-        0,
-        _STACK_POP(vm.mainStack)
-    )
-end
-
 --! inline
 function STORE_STATIC (vm, arg1, arg2)
     --- Unstack 1 static memory
@@ -39,7 +23,7 @@ function STORE_STATIC (vm, arg1, arg2)
 end
 
 --! inline
-function STORE_LEXICAL (vm, arg1, arg2)
+function STORE_LOCAL (vm, arg1, arg2)
     --- Unstack 1 to vs
     --- Offset: the anth last frame + frame offset
     --- arg1: frame offset

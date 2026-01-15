@@ -252,7 +252,7 @@ return function(plume)
 			if var.isStatic then
 				registerOP(node, ops.LOAD_STATIC, 0, var.offset)
 			elseif var.frameOffset > 0 then
-				registerOP(node, ops.LOAD_LEXICAL, var.frameOffset, var.offset)
+				registerOP(node, ops.LOAD_LOCAL, var.frameOffset, var.offset)
 			else
 				registerOP(node, ops.LOAD_LOCAL, 0, var.offset)
 			end
@@ -463,7 +463,7 @@ return function(plume)
 						if var.isStatic then
 							registerOP(var.ref, ops.STORE_STATIC, 0, var.offset)
 						elseif not isLet and var.frameOffset > 0 then
-							registerOP(var.ref, ops.STORE_LEXICAL, var.frameOffset, var.offset)
+							registerOP(var.ref, ops.STORE_LOCAL, var.frameOffset, var.offset)
 						else
 							registerOP(var.ref, ops.STORE_LOCAL, 0, var.offset)
 						end
