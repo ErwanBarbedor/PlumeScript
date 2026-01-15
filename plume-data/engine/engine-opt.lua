@@ -17,86 +17,54 @@ If not, see <https://www.gnu.org/licenses/>.
 -- It is an inlined and optimized version of engine.lua
 return function (plume)
     function plume._run (chunk, arguments)
-        do
-        end
-        do
-        end
-        do
-        end
-        do
-        end
-        do
-        end
-        do
-        end
-        do
-        end
-        do
-        end
-        do
-        end
-        do
-        end
-        do
-        end
-        do
-        end
-        do
-        end
-        do
-        end
         local _ret1
         do
             require ("table.new")
             local vm = {}
             vm.plume = plume
-            do
-                vm.chunk = chunk
-                vm.bytecode = chunk.bytecode
-                vm.constants = chunk.constants
-                vm.static = chunk.static
-                vm.ip = 0
-                vm.tic = 0
-                vm.mainStack = table.new (2 ^ 14, 0)
-                vm.mainStack.frames = table.new (2 ^ 8, 0)
-                vm.mainStack.pointer = 0
-                vm.mainStack.frames.pointer = 0
-                vm.variableStack = table.new (2 ^ 10, 0)
-                vm.variableStack.frames = table.new (2 ^ 8, 0)
-                vm.variableStack.pointer = 0
-                vm.variableStack.frames.pointer = 0
-                vm.jump = 0
-                vm.empty = vm.plume.obj.empty
-            end
-            do
-                if arguments then
-                    if chunk.isFile then
-                        for k, v in pairs (arguments)
-                         do
-                            local offset = chunk.namedParamOffset[k]
-                            if offset then
-                                chunk.static[offset] = v
+            vm.chunk = chunk
+            vm.bytecode = chunk.bytecode
+            vm.constants = chunk.constants
+            vm.static = chunk.static
+            vm.ip = 0
+            vm.tic = 0
+            vm.mainStack = table.new (2 ^ 14, 0)
+            vm.mainStack.frames = table.new (2 ^ 8, 0)
+            vm.mainStack.pointer = 0
+            vm.mainStack.frames.pointer = 0
+            vm.variableStack = table.new (2 ^ 10, 0)
+            vm.variableStack.frames = table.new (2 ^ 8, 0)
+            vm.variableStack.pointer = 0
+            vm.variableStack.frames.pointer = 0
+            vm.jump = 0
+            vm.empty = vm.plume.obj.empty
+            if arguments then
+                if chunk.isFile then
+                    for k, v in pairs (arguments)
+                     do
+                        local offset = chunk.namedParamOffset[k]
+                        if offset then
+                            chunk.static[offset] = v
+                        end
+                    end
+                else
+                    for i = 1, chunk.localsCount do
+                        if arguments[i] == nil then
+                            do
+                                vm.variableStack[i] = vm.empty
+                            end
+                        else
+                            do
+                                vm.variableStack[i] = arguments[i]
                             end
                         end
-                    else
-                        for i = 1, chunk.localsCount do
-                            if arguments[i] == nil then
-                                do
-                                    vm.variableStack[i] = vm.empty
-                                end
-                            else
-                                do
-                                    vm.variableStack[i] = arguments[i]
-                                end
-                            end
-                        end
-                        do
-                            vm.variableStack.pointer = chunk.localsCount
-                        end
-                        do
-                            vm.variableStack.frames.pointer = vm.variableStack.frames.pointer + 1
-                            vm.variableStack.frames[vm.variableStack.frames.pointer] = 1
-                        end
+                    end
+                    do
+                        vm.variableStack.pointer = chunk.localsCount
+                    end
+                    do
+                        vm.variableStack.frames.pointer = vm.variableStack.frames.pointer + 1
+                        vm.variableStack.frames[vm.variableStack.frames.pointer] = 1
                     end
                 end
             end
@@ -113,15 +81,13 @@ return function (plume)
             if vm.serr then
                 return false, unpack (vm.serr)
             end
-            do
-                if vm.jump > 0 then
-                    vm.ip = vm.jump
-                    vm.jump = 0
-                else
-                    vm.ip = vm.ip + 1
-                end
-                vm.tic = vm.tic + 1
+            if vm.jump > 0 then
+                vm.ip = vm.jump
+                vm.jump = 0
+            else
+                vm.ip = vm.ip + 1
             end
+            vm.tic = vm.tic + 1
             local _ret2, _ret3, _ret4
             do
                 local bit = require ("bit")
@@ -199,34 +165,26 @@ return function (plume)
             end
             ::LOAD_CONSTANT::
                 do
-                    do
-                        vm.mainStack.pointer = vm.mainStack.pointer + 1
-                        vm.mainStack[vm.mainStack.pointer] = vm.constants[arg2]
-                    end
+                    vm.mainStack.pointer = vm.mainStack.pointer + 1
+                    vm.mainStack[vm.mainStack.pointer] = vm.constants[arg2]
                 end
                 goto DISPATCH
             ::LOAD_TRUE::
                 do
-                    do
-                        vm.mainStack.pointer = vm.mainStack.pointer + 1
-                        vm.mainStack[vm.mainStack.pointer] = true
-                    end
+                    vm.mainStack.pointer = vm.mainStack.pointer + 1
+                    vm.mainStack[vm.mainStack.pointer] = true
                 end
                 goto DISPATCH
             ::LOAD_FALSE::
                 do
-                    do
-                        vm.mainStack.pointer = vm.mainStack.pointer + 1
-                        vm.mainStack[vm.mainStack.pointer] = false
-                    end
+                    vm.mainStack.pointer = vm.mainStack.pointer + 1
+                    vm.mainStack[vm.mainStack.pointer] = false
                 end
                 goto DISPATCH
             ::LOAD_EMPTY::
                 do
-                    do
-                        vm.mainStack.pointer = vm.mainStack.pointer + 1
-                        vm.mainStack[vm.mainStack.pointer] = vm.empty
-                    end
+                    vm.mainStack.pointer = vm.mainStack.pointer + 1
+                    vm.mainStack[vm.mainStack.pointer] = vm.empty
                 end
                 goto DISPATCH
             ::LOAD_LOCAL::
@@ -234,25 +192,19 @@ return function (plume)
                     local _ret5
                     do
                         local _ret6
-                        do
-                            _ret6 = vm.variableStack.frames[vm.variableStack.frames.pointer + (nil or 0)]
-                            goto _inline_end20
-                        end
+                        _ret6 = vm.variableStack.frames[vm.variableStack.frames.pointer + (nil or 0)]
+                        goto _inline_end20
                         ::_inline_end20::
                         local _ret7
-                        do
-                            _ret7 = vm.variableStack[_ret6 + (arg2 - 1 or 0) or vm.variableStack.pointer]
-                            goto _inline_end21
-                        end
+                        _ret7 = vm.variableStack[_ret6 + (arg2 - 1 or 0) or vm.variableStack.pointer]
+                        goto _inline_end21
                         ::_inline_end21::
                         _ret5 = _ret7
                         goto _inline_end19
                     end
                     ::_inline_end19::
-                    do
-                        vm.mainStack.pointer = vm.mainStack.pointer + 1
-                        vm.mainStack[vm.mainStack.pointer] = _ret5
-                    end
+                    vm.mainStack.pointer = vm.mainStack.pointer + 1
+                    vm.mainStack[vm.mainStack.pointer] = _ret5
                 end
                 goto DISPATCH
             ::LOAD_LEXICAL::
@@ -260,87 +212,65 @@ return function (plume)
                     local _ret8
                     do
                         local _ret9
-                        do
-                            _ret9 = vm.variableStack.frames[vm.variableStack.frames.pointer + (-arg1 or 0)]
-                            goto _inline_end25
-                        end
+                        _ret9 = vm.variableStack.frames[vm.variableStack.frames.pointer + (-arg1 or 0)]
+                        goto _inline_end25
                         ::_inline_end25::
                         local _ret10
-                        do
-                            _ret10 = vm.variableStack[_ret9 + (arg2 - 1 or 0) or vm.variableStack.pointer]
-                            goto _inline_end26
-                        end
+                        _ret10 = vm.variableStack[_ret9 + (arg2 - 1 or 0) or vm.variableStack.pointer]
+                        goto _inline_end26
                         ::_inline_end26::
                         _ret8 = _ret10
                         goto _inline_end24
                     end
                     ::_inline_end24::
-                    do
-                        vm.mainStack.pointer = vm.mainStack.pointer + 1
-                        vm.mainStack[vm.mainStack.pointer] = _ret8
-                    end
+                    vm.mainStack.pointer = vm.mainStack.pointer + 1
+                    vm.mainStack[vm.mainStack.pointer] = _ret8
                 end
                 goto DISPATCH
             ::LOAD_STATIC::
                 do
-                    do
-                        vm.mainStack.pointer = vm.mainStack.pointer + 1
-                        vm.mainStack[vm.mainStack.pointer] = vm.static[arg2]
-                    end
+                    vm.mainStack.pointer = vm.mainStack.pointer + 1
+                    vm.mainStack[vm.mainStack.pointer] = vm.static[arg2]
                 end
                 goto DISPATCH
             ::STORE_LOCAL::
                 do
                     local _ret11
-                    do
-                        vm.mainStack.pointer = vm.mainStack.pointer - 1
-                        _ret11 = vm.mainStack[vm.mainStack.pointer + 1]
-                        goto _inline_end31
-                    end
+                    vm.mainStack.pointer = vm.mainStack.pointer - 1
+                    _ret11 = vm.mainStack[vm.mainStack.pointer + 1]
+                    goto _inline_end31
                     ::_inline_end31::
                     do
                         local _ret12
-                        do
-                            _ret12 = vm.variableStack.frames[vm.variableStack.frames.pointer + 0 or 0]
-                            goto _inline_end33
-                        end
+                        _ret12 = vm.variableStack.frames[vm.variableStack.frames.pointer + 0 or 0]
+                        goto _inline_end33
                         ::_inline_end33::
-                        do
-                            vm.variableStack[_ret12 + (arg2 - 1 or 0)] = _ret11
-                        end
+                        vm.variableStack[_ret12 + (arg2 - 1 or 0)] = _ret11
                     end
                 end
                 goto DISPATCH
             ::STORE_LEXICAL::
                 do
                     local _ret13
-                    do
-                        vm.mainStack.pointer = vm.mainStack.pointer - 1
-                        _ret13 = vm.mainStack[vm.mainStack.pointer + 1]
-                        goto _inline_end36
-                    end
+                    vm.mainStack.pointer = vm.mainStack.pointer - 1
+                    _ret13 = vm.mainStack[vm.mainStack.pointer + 1]
+                    goto _inline_end36
                     ::_inline_end36::
                     do
                         local _ret14
-                        do
-                            _ret14 = vm.variableStack.frames[vm.variableStack.frames.pointer + -arg1 or 0]
-                            goto _inline_end38
-                        end
+                        _ret14 = vm.variableStack.frames[vm.variableStack.frames.pointer + -arg1 or 0]
+                        goto _inline_end38
                         ::_inline_end38::
-                        do
-                            vm.variableStack[_ret14 + (arg2 - 1 or 0)] = _ret13
-                        end
+                        vm.variableStack[_ret14 + (arg2 - 1 or 0)] = _ret13
                     end
                 end
                 goto DISPATCH
             ::STORE_STATIC::
                 do
                     local _ret15
-                    do
-                        vm.mainStack.pointer = vm.mainStack.pointer - 1
-                        _ret15 = vm.mainStack[vm.mainStack.pointer + 1]
-                        goto _inline_end41
-                    end
+                    vm.mainStack.pointer = vm.mainStack.pointer - 1
+                    _ret15 = vm.mainStack[vm.mainStack.pointer + 1]
+                    goto _inline_end41
                     ::_inline_end41::
                     vm.static[arg2] = _ret15
                 end
@@ -348,20 +278,16 @@ return function (plume)
             ::STORE_VOID::
                 do
                     local _ret16
-                    do
-                        vm.mainStack.pointer = vm.mainStack.pointer - 1
-                        _ret16 = vm.mainStack[vm.mainStack.pointer + 1]
-                        goto _inline_end43
-                    end
+                    vm.mainStack.pointer = vm.mainStack.pointer - 1
+                    _ret16 = vm.mainStack[vm.mainStack.pointer + 1]
+                    goto _inline_end43
                     ::_inline_end43::
                 end
                 goto DISPATCH
             ::TABLE_NEW::
                 do
-                    do
-                        vm.mainStack.pointer = vm.mainStack.pointer + 1
-                        vm.mainStack[vm.mainStack.pointer] = table.new (0, arg1)
-                    end
+                    vm.mainStack.pointer = vm.mainStack.pointer + 1
+                    vm.mainStack[vm.mainStack.pointer] = table.new (0, arg1)
                 end
                 goto DISPATCH
             ::TABLE_ADD::
@@ -370,27 +296,21 @@ return function (plume)
             ::TABLE_SET::
                 do
                     local _ret17
-                    do
-                        vm.mainStack.pointer = vm.mainStack.pointer - 1
-                        _ret17 = vm.mainStack[vm.mainStack.pointer + 1]
-                        goto _inline_end47
-                    end
+                    vm.mainStack.pointer = vm.mainStack.pointer - 1
+                    _ret17 = vm.mainStack[vm.mainStack.pointer + 1]
+                    goto _inline_end47
                     ::_inline_end47::
                     local t = _ret17
                     local _ret18
-                    do
-                        vm.mainStack.pointer = vm.mainStack.pointer - 1
-                        _ret18 = vm.mainStack[vm.mainStack.pointer + 1]
-                        goto _inline_end48
-                    end
+                    vm.mainStack.pointer = vm.mainStack.pointer - 1
+                    _ret18 = vm.mainStack[vm.mainStack.pointer + 1]
+                    goto _inline_end48
                     ::_inline_end48::
                     local key = _ret18
                     local _ret19
-                    do
-                        vm.mainStack.pointer = vm.mainStack.pointer - 1
-                        _ret19 = vm.mainStack[vm.mainStack.pointer + 1]
-                        goto _inline_end49
-                    end
+                    vm.mainStack.pointer = vm.mainStack.pointer - 1
+                    _ret19 = vm.mainStack[vm.mainStack.pointer + 1]
+                    goto _inline_end49
                     ::_inline_end49::
                     local value = _ret19
                     if not t.table[key] then
@@ -399,23 +319,21 @@ return function (plume)
                             local meta = t.meta.table.setindex
                             local args = {key, value}
                             local _ret20
-                            do
-                                table.insert (vm.chunk.callstack, {chunk = vm.chunk, macro = meta, ip = vm.ip})
-                                if #vm.chunk.callstack <= 1000 then
-                                    local success, callResult, cip, source = vm.plume.run (meta, args)
-                                    if success then
-                                        table.remove (vm.chunk.callstack)
-                                        _ret20 = callResult
-                                        goto _inline_end50
-                                    else
-                                        do
-                                            vm.serr = {callResult, cip, (source or meta)}
-                                        end
-                                    end
+                            table.insert (vm.chunk.callstack, {chunk = vm.chunk, macro = meta, ip = vm.ip})
+                            if #vm.chunk.callstack <= 1000 then
+                                local success, callResult, cip, source = vm.plume.run (meta, args)
+                                if success then
+                                    table.remove (vm.chunk.callstack)
+                                    _ret20 = callResult
+                                    goto _inline_end50
                                 else
                                     do
-                                        vm.err = "stack overflow"
+                                        vm.serr = {callResult, cip, (source or meta)}
                                     end
+                                end
+                            else
+                                do
+                                    vm.err = "stack overflow"
                                 end
                             end
                             ::_inline_end50::
@@ -429,109 +347,83 @@ return function (plume)
             ::TABLE_INDEX::
                 do
                     local _ret21
-                    do
-                        vm.mainStack.pointer = vm.mainStack.pointer - 1
-                        _ret21 = vm.mainStack[vm.mainStack.pointer + 1]
-                        goto _inline_end54
-                    end
+                    vm.mainStack.pointer = vm.mainStack.pointer - 1
+                    _ret21 = vm.mainStack[vm.mainStack.pointer + 1]
+                    goto _inline_end54
                     ::_inline_end54::
                     local t = _ret21
                     local _ret22
-                    do
-                        vm.mainStack.pointer = vm.mainStack.pointer - 1
-                        _ret22 = vm.mainStack[vm.mainStack.pointer + 1]
-                        goto _inline_end55
-                    end
+                    vm.mainStack.pointer = vm.mainStack.pointer - 1
+                    _ret22 = vm.mainStack[vm.mainStack.pointer + 1]
+                    goto _inline_end55
                     ::_inline_end55::
                     local key = _ret22
                     key = tonumber (key) or key
                     if key == vm.empty then
                         if arg1 == 1 then
                             do
-                                do
-                                    vm.mainStack.pointer = vm.mainStack.pointer + 1
-                                    vm.mainStack[vm.mainStack.pointer] = vm.empty
-                                end
+                                vm.mainStack.pointer = vm.mainStack.pointer + 1
+                                vm.mainStack[vm.mainStack.pointer] = vm.empty
                             end
                         else
-                            do
-                                vm.err = "Cannot use empty as key."
-                            end
+                            vm.err = "Cannot use empty as key."
                         end
                     else
                         local _ret24
-                        do
-                            _ret24 = type (t) == "table" and (t == vm.empty or t.type) or type (t)
-                            goto _inline_end71
-                        end
+                        _ret24 = type (t) == "table" and (t == vm.empty or t.type) or type (t)
+                        goto _inline_end71
                         ::_inline_end71::
                         local tt = _ret24
                         if tt ~= "table" then
                             if arg1 == 1 then
                                 do
-                                    do
-                                        vm.mainStack.pointer = vm.mainStack.pointer + 1
-                                        vm.mainStack[vm.mainStack.pointer] = vm.empty
-                                    end
+                                    vm.mainStack.pointer = vm.mainStack.pointer + 1
+                                    vm.mainStack[vm.mainStack.pointer] = vm.empty
                                 end
                             else
-                                do
-                                    vm.err = "Try to index a '" .. tt .. "' value."
-                                end
+                                vm.err = "Try to index a '" .. tt .. "' value."
                             end
                         else
                             local value = t.table[key]
                             if value then
-                                do
-                                    vm.mainStack.pointer = vm.mainStack.pointer + 1
-                                    vm.mainStack[vm.mainStack.pointer] = value
-                                end
+                                vm.mainStack.pointer = vm.mainStack.pointer + 1
+                                vm.mainStack[vm.mainStack.pointer] = value
                             else
                                 if arg1 == 1 then
                                     do
-                                        do
-                                            vm.mainStack.pointer = vm.mainStack.pointer + 1
-                                            vm.mainStack[vm.mainStack.pointer] = vm.empty
-                                        end
+                                        vm.mainStack.pointer = vm.mainStack.pointer + 1
+                                        vm.mainStack[vm.mainStack.pointer] = vm.empty
                                     end
                                 elseif t.meta.table.getindex then
                                     local meta = t.meta.table.getindex
                                     local args = {key}
                                     local _ret23
-                                    do
-                                        table.insert (vm.chunk.callstack, {chunk = vm.chunk, macro = meta, ip = vm.ip})
-                                        if #vm.chunk.callstack <= 1000 then
-                                            local success, callResult, cip, source = vm.plume.run (meta, args)
-                                            if success then
-                                                table.remove (vm.chunk.callstack)
-                                                _ret23 = callResult
-                                                goto _inline_end65
-                                            else
-                                                do
-                                                    vm.serr = {callResult, cip, (source or meta)}
-                                                end
-                                            end
+                                    table.insert (vm.chunk.callstack, {chunk = vm.chunk, macro = meta, ip = vm.ip})
+                                    if #vm.chunk.callstack <= 1000 then
+                                        local success, callResult, cip, source = vm.plume.run (meta, args)
+                                        if success then
+                                            table.remove (vm.chunk.callstack)
+                                            _ret23 = callResult
+                                            goto _inline_end65
                                         else
                                             do
-                                                vm.err = "stack overflow"
+                                                vm.serr = {callResult, cip, (source or meta)}
                                             end
-                                        end
-                                    end
-                                    ::_inline_end65::
-                                    do
-                                        vm.mainStack.pointer = vm.mainStack.pointer + 1
-                                        vm.mainStack[vm.mainStack.pointer] = _ret23
-                                    end
-                                else
-                                    if tonumber (key)
-                                     then
-                                        do
-                                            vm.err = "Invalid index '" .. key .. "'."
                                         end
                                     else
                                         do
-                                            vm.err = "Unregistered key '" .. key .. "'."
+                                            vm.err = "stack overflow"
                                         end
+                                    end
+                                    ::_inline_end65::
+                                    vm.mainStack.pointer = vm.mainStack.pointer + 1
+                                    vm.mainStack[vm.mainStack.pointer] = _ret23
+                                else
+                                    if tonumber (key)
+                                     then
+                                        vm.err = "Invalid index '" .. key .. "'."
+                                    else
+                                        vm.err = "Unregistered key '" .. key .. "'."
                                     end
                                 end
                             end
@@ -544,16 +436,12 @@ return function (plume)
                     local _ret25
                     do
                         local _ret26
-                        do
-                            _ret26 = vm.mainStack.frames[vm.mainStack.frames.pointer + (nil or 0)]
-                            goto _inline_end74
-                        end
+                        _ret26 = vm.mainStack.frames[vm.mainStack.frames.pointer + (nil or 0)]
+                        goto _inline_end74
                         ::_inline_end74::
                         local _ret27
-                        do
-                            _ret27 = vm.mainStack[_ret26 + (nil or 0) or vm.mainStack.pointer]
-                            goto _inline_end75
-                        end
+                        _ret27 = vm.mainStack[_ret26 + (nil or 0) or vm.mainStack.pointer]
+                        goto _inline_end75
                         ::_inline_end75::
                         _ret25 = _ret27
                         goto _inline_end73
@@ -562,118 +450,90 @@ return function (plume)
                     local t = _ret25
                     table.insert (t, "self")
                     local _ret28
-                    do
-                        _ret28 = vm.mainStack[nil or vm.mainStack.pointer]
-                        goto _inline_end76
-                    end
+                    _ret28 = vm.mainStack[nil or vm.mainStack.pointer]
+                    goto _inline_end76
                     ::_inline_end76::
                     table.insert (t, _ret28)
                     table.insert (t, false)
                     do
                         local _ret29
-                        do
-                            vm.mainStack.pointer = vm.mainStack.pointer - 1
-                            _ret29 = vm.mainStack[vm.mainStack.pointer + 1]
-                            goto _inline_end78
-                        end
+                        vm.mainStack.pointer = vm.mainStack.pointer - 1
+                        _ret29 = vm.mainStack[vm.mainStack.pointer + 1]
+                        goto _inline_end78
                         ::_inline_end78::
                         local t = _ret29
                         local _ret30
-                        do
-                            vm.mainStack.pointer = vm.mainStack.pointer - 1
-                            _ret30 = vm.mainStack[vm.mainStack.pointer + 1]
-                            goto _inline_end79
-                        end
+                        vm.mainStack.pointer = vm.mainStack.pointer - 1
+                        _ret30 = vm.mainStack[vm.mainStack.pointer + 1]
+                        goto _inline_end79
                         ::_inline_end79::
                         local key = _ret30
                         key = tonumber (key) or key
                         if key == vm.empty then
                             if 0 == 1 then
                                 do
-                                    do
-                                        vm.mainStack.pointer = vm.mainStack.pointer + 1
-                                        vm.mainStack[vm.mainStack.pointer] = vm.empty
-                                    end
+                                    vm.mainStack.pointer = vm.mainStack.pointer + 1
+                                    vm.mainStack[vm.mainStack.pointer] = vm.empty
                                 end
                             else
-                                do
-                                    vm.err = "Cannot use empty as key."
-                                end
+                                vm.err = "Cannot use empty as key."
                             end
                         else
                             local _ret32
-                            do
-                                _ret32 = type (t) == "table" and (t == vm.empty or t.type) or type (t)
-                                goto _inline_end95
-                            end
+                            _ret32 = type (t) == "table" and (t == vm.empty or t.type) or type (t)
+                            goto _inline_end95
                             ::_inline_end95::
                             local tt = _ret32
                             if tt ~= "table" then
                                 if 0 == 1 then
                                     do
-                                        do
-                                            vm.mainStack.pointer = vm.mainStack.pointer + 1
-                                            vm.mainStack[vm.mainStack.pointer] = vm.empty
-                                        end
+                                        vm.mainStack.pointer = vm.mainStack.pointer + 1
+                                        vm.mainStack[vm.mainStack.pointer] = vm.empty
                                     end
                                 else
-                                    do
-                                        vm.err = "Try to index a '" .. tt .. "' value."
-                                    end
+                                    vm.err = "Try to index a '" .. tt .. "' value."
                                 end
                             else
                                 local value = t.table[key]
                                 if value then
-                                    do
-                                        vm.mainStack.pointer = vm.mainStack.pointer + 1
-                                        vm.mainStack[vm.mainStack.pointer] = value
-                                    end
+                                    vm.mainStack.pointer = vm.mainStack.pointer + 1
+                                    vm.mainStack[vm.mainStack.pointer] = value
                                 else
                                     if 0 == 1 then
                                         do
-                                            do
-                                                vm.mainStack.pointer = vm.mainStack.pointer + 1
-                                                vm.mainStack[vm.mainStack.pointer] = vm.empty
-                                            end
+                                            vm.mainStack.pointer = vm.mainStack.pointer + 1
+                                            vm.mainStack[vm.mainStack.pointer] = vm.empty
                                         end
                                     elseif t.meta.table.getindex then
                                         local meta = t.meta.table.getindex
                                         local args = {key}
                                         local _ret31
-                                        do
-                                            table.insert (vm.chunk.callstack, {chunk = vm.chunk, macro = meta, ip = vm.ip})
-                                            if #vm.chunk.callstack <= 1000 then
-                                                local success, callResult, cip, source = vm.plume.run (meta, args)
-                                                if success then
-                                                    table.remove (vm.chunk.callstack)
-                                                    _ret31 = callResult
-                                                    goto _inline_end89
-                                                else
-                                                    do
-                                                        vm.serr = {callResult, cip, (source or meta)}
-                                                    end
-                                                end
+                                        table.insert (vm.chunk.callstack, {chunk = vm.chunk, macro = meta, ip = vm.ip})
+                                        if #vm.chunk.callstack <= 1000 then
+                                            local success, callResult, cip, source = vm.plume.run (meta, args)
+                                            if success then
+                                                table.remove (vm.chunk.callstack)
+                                                _ret31 = callResult
+                                                goto _inline_end89
                                             else
                                                 do
-                                                    vm.err = "stack overflow"
+                                                    vm.serr = {callResult, cip, (source or meta)}
                                                 end
-                                            end
-                                        end
-                                        ::_inline_end89::
-                                        do
-                                            vm.mainStack.pointer = vm.mainStack.pointer + 1
-                                            vm.mainStack[vm.mainStack.pointer] = _ret31
-                                        end
-                                    else
-                                        if tonumber (key)
-                                         then
-                                            do
-                                                vm.err = "Invalid index '" .. key .. "'."
                                             end
                                         else
                                             do
-                                                vm.err = "Unregistered key '" .. key .. "'."
+                                                vm.err = "stack overflow"
                                             end
+                                        end
+                                        ::_inline_end89::
+                                        vm.mainStack.pointer = vm.mainStack.pointer + 1
+                                        vm.mainStack[vm.mainStack.pointer] = _ret31
+                                    else
+                                        if tonumber (key)
+                                         then
+                                            vm.err = "Invalid index '" .. key .. "'."
+                                        else
+                                            vm.err = "Unregistered key '" .. key .. "'."
                                         end
                                     end
                                 end
@@ -685,27 +545,21 @@ return function (plume)
             ::TABLE_SET_META::
                 do
                     local _ret33
-                    do
-                        vm.mainStack.pointer = vm.mainStack.pointer - 1
-                        _ret33 = vm.mainStack[vm.mainStack.pointer + 1]
-                        goto _inline_end97
-                    end
+                    vm.mainStack.pointer = vm.mainStack.pointer - 1
+                    _ret33 = vm.mainStack[vm.mainStack.pointer + 1]
+                    goto _inline_end97
                     ::_inline_end97::
                     local t = _ret33
                     local _ret34
-                    do
-                        vm.mainStack.pointer = vm.mainStack.pointer - 1
-                        _ret34 = vm.mainStack[vm.mainStack.pointer + 1]
-                        goto _inline_end98
-                    end
+                    vm.mainStack.pointer = vm.mainStack.pointer - 1
+                    _ret34 = vm.mainStack[vm.mainStack.pointer + 1]
+                    goto _inline_end98
                     ::_inline_end98::
                     local key = _ret34
                     local _ret35
-                    do
-                        vm.mainStack.pointer = vm.mainStack.pointer - 1
-                        _ret35 = vm.mainStack[vm.mainStack.pointer + 1]
-                        goto _inline_end99
-                    end
+                    vm.mainStack.pointer = vm.mainStack.pointer - 1
+                    _ret35 = vm.mainStack[vm.mainStack.pointer + 1]
+                    goto _inline_end99
                     ::_inline_end99::
                     local value = _ret35
                     t.meta.table[key] = value
@@ -719,16 +573,12 @@ return function (plume)
                     local _ret36
                     do
                         local _ret37
-                        do
-                            _ret37 = vm.mainStack.frames[vm.mainStack.frames.pointer + (nil or 0)]
-                            goto _inline_end102
-                        end
+                        _ret37 = vm.mainStack.frames[vm.mainStack.frames.pointer + (nil or 0)]
+                        goto _inline_end102
                         ::_inline_end102::
                         local _ret38
-                        do
-                            _ret38 = vm.mainStack[_ret37 + (nil or 0) or vm.mainStack.pointer]
-                            goto _inline_end103
-                        end
+                        _ret38 = vm.mainStack[_ret37 + (nil or 0) or vm.mainStack.pointer]
+                        goto _inline_end103
                         ::_inline_end103::
                         _ret36 = _ret38
                         goto _inline_end101
@@ -736,19 +586,15 @@ return function (plume)
                     ::_inline_end101::
                     local t = _ret36
                     local _ret39
-                    do
-                        vm.mainStack.pointer = vm.mainStack.pointer - 1
-                        _ret39 = vm.mainStack[vm.mainStack.pointer + 1]
-                        goto _inline_end104
-                    end
+                    vm.mainStack.pointer = vm.mainStack.pointer - 1
+                    _ret39 = vm.mainStack[vm.mainStack.pointer + 1]
+                    goto _inline_end104
                     ::_inline_end104::
                     table.insert (t, _ret39)
                     local _ret40
-                    do
-                        vm.mainStack.pointer = vm.mainStack.pointer - 1
-                        _ret40 = vm.mainStack[vm.mainStack.pointer + 1]
-                        goto _inline_end105
-                    end
+                    vm.mainStack.pointer = vm.mainStack.pointer - 1
+                    _ret40 = vm.mainStack[vm.mainStack.pointer + 1]
+                    goto _inline_end105
                     ::_inline_end105::
                     table.insert (t, _ret40)
                     table.insert (t, arg2 == 1)
@@ -757,41 +603,31 @@ return function (plume)
             ::TABLE_EXPAND::
                 do
                     local _ret41
-                    do
-                        vm.mainStack.pointer = vm.mainStack.pointer - 1
-                        _ret41 = vm.mainStack[vm.mainStack.pointer + 1]
-                        goto _inline_end107
-                    end
+                    vm.mainStack.pointer = vm.mainStack.pointer - 1
+                    _ret41 = vm.mainStack[vm.mainStack.pointer + 1]
+                    goto _inline_end107
                     ::_inline_end107::
                     local t = _ret41
                     local _ret42
-                    do
-                        _ret42 = type (t) == "table" and (t == vm.empty or t.type) or type (t)
-                        goto _inline_end108
-                    end
+                    _ret42 = type (t) == "table" and (t == vm.empty or t.type) or type (t)
+                    goto _inline_end108
                     ::_inline_end108::
                     local tt = _ret42
                     if tt == "table" then
                         for _, item in ipairs (t.table)
                          do
-                            do
-                                vm.mainStack.pointer = vm.mainStack.pointer + 1
-                                vm.mainStack[vm.mainStack.pointer] = item
-                            end
+                            vm.mainStack.pointer = vm.mainStack.pointer + 1
+                            vm.mainStack[vm.mainStack.pointer] = item
                         end
                         local _ret43
                         do
                             local _ret44
-                            do
-                                _ret44 = vm.mainStack.frames[vm.mainStack.frames.pointer + (nil or 0)]
-                                goto _inline_end111
-                            end
+                            _ret44 = vm.mainStack.frames[vm.mainStack.frames.pointer + (nil or 0)]
+                            goto _inline_end111
                             ::_inline_end111::
                             local _ret45
-                            do
-                                _ret45 = vm.mainStack[_ret44 + (nil or 0) or vm.mainStack.pointer]
-                                goto _inline_end112
-                            end
+                            _ret45 = vm.mainStack[_ret44 + (nil or 0) or vm.mainStack.pointer]
+                            goto _inline_end112
                             ::_inline_end112::
                             _ret43 = _ret45
                             goto _inline_end110
@@ -805,87 +641,67 @@ return function (plume)
                             table.insert (ft, false)
                         end
                     else
-                        do
-                            vm.err = "Try to expand a '" .. tt .. "' value."
-                        end
+                        vm.err = "Try to expand a '" .. tt .. "' value."
                     end
                 end
                 goto DISPATCH
             ::ENTER_SCOPE::
                 do
                     local _ret46
-                    do
-                        _ret46 = vm.variableStack.pointer
-                        goto _inline_end115
-                    end
+                    _ret46 = vm.variableStack.pointer
+                    goto _inline_end115
                     ::_inline_end115::
-                    do
-                        vm.variableStack.frames.pointer = vm.variableStack.frames.pointer + 1
-                        vm.variableStack.frames[vm.variableStack.frames.pointer] = _ret46 + 1 - arg1
-                    end
+                    vm.variableStack.frames.pointer = vm.variableStack.frames.pointer + 1
+                    vm.variableStack.frames[vm.variableStack.frames.pointer] = _ret46 + 1 - arg1
                     for i = 1, arg2 - arg1 do
-                        do
-                            vm.variableStack.pointer = vm.variableStack.pointer + 1
-                            vm.variableStack[vm.variableStack.pointer] = vm.empty
-                        end
+                        vm.variableStack.pointer = vm.variableStack.pointer + 1
+                        vm.variableStack[vm.variableStack.pointer] = vm.empty
                     end
                 end
                 goto DISPATCH
             ::LEAVE_SCOPE::
                 do
+                    local _ret47
                     do
-                        local _ret47
-                        do
-                            vm.variableStack.frames.pointer = vm.variableStack.frames.pointer - 1
-                            _ret47 = vm.variableStack.frames[vm.variableStack.frames.pointer + 1]
-                            goto _inline_end120
-                        end
-                        ::_inline_end120::
-                        do
-                            vm.variableStack.pointer = _ret47 - 1
-                        end
+                        vm.variableStack.frames.pointer = vm.variableStack.frames.pointer - 1
+                        _ret47 = vm.variableStack.frames[vm.variableStack.frames.pointer + 1]
+                        goto _inline_end120
+                    end
+                    ::_inline_end120::
+                    do
+                        vm.variableStack.pointer = _ret47 - 1
                     end
                 end
                 goto DISPATCH
             ::BEGIN_ACC::
                 do
-                    do
-                        vm.mainStack.frames.pointer = vm.mainStack.frames.pointer + 1
-                        vm.mainStack.frames[vm.mainStack.frames.pointer] = vm.mainStack.pointer + 1
-                    end
+                    vm.mainStack.frames.pointer = vm.mainStack.frames.pointer + 1
+                    vm.mainStack.frames[vm.mainStack.frames.pointer] = vm.mainStack.pointer + 1
                 end
                 goto DISPATCH
             ::ACC_TABLE::
                 do
                     local _ret48
-                    do
-                        _ret48 = vm.mainStack.frames[nil or vm.mainStack.frames.pointer]
-                        goto _inline_end125
-                    end
+                    _ret48 = vm.mainStack.frames[nil or vm.mainStack.frames.pointer]
+                    goto _inline_end125
                     ::_inline_end125::
                     local limit = _ret48 + 1
                     local _ret49
-                    do
-                        _ret49 = vm.mainStack.pointer
-                        goto _inline_end126
-                    end
+                    _ret49 = vm.mainStack.pointer
+                    goto _inline_end126
                     ::_inline_end126::
                     local current = _ret49
                     local _ret50
-                    do
-                        _ret50 = vm.mainStack[limit - 1 or vm.mainStack.pointer]
-                        goto _inline_end127
-                    end
+                    _ret50 = vm.mainStack[limit - 1 or vm.mainStack.pointer]
+                    goto _inline_end127
                     ::_inline_end127::
                     local t = _ret50
                     local keyCount = #t / 2
                     local args = vm.plume.obj.table (current - limit + 1, keyCount)
                     for i = 1, current - limit + 1 do
                         local _ret51
-                        do
-                            _ret51 = vm.mainStack[limit + i - 1 or vm.mainStack.pointer]
-                            goto _inline_end128
-                        end
+                        _ret51 = vm.mainStack[limit + i - 1 or vm.mainStack.pointer]
+                        goto _inline_end128
                         ::_inline_end128::
                         args.table[i] = _ret51
                     end
@@ -940,9 +756,7 @@ return function (plume)
                                 if success then
                                     args.meta.table[t[i]] = t[i + 1]
                                 else
-                                    do
-                                        vm.err = err
-                                    end
+                                    vm.err = err
                                 end
                             end
                         else
@@ -957,20 +771,14 @@ return function (plume)
                             end
                         end
                     end
-                    do
-                        vm.mainStack.pointer = limit - 2
-                    end
-                    do
-                        vm.mainStack.pointer = vm.mainStack.pointer + 1
-                        vm.mainStack[vm.mainStack.pointer] = args
-                    end
+                    vm.mainStack.pointer = limit - 2
+                    vm.mainStack.pointer = vm.mainStack.pointer + 1
+                    vm.mainStack[vm.mainStack.pointer] = args
                     do
                         local _ret54
-                        do
-                            vm.mainStack.frames.pointer = vm.mainStack.frames.pointer - 1
-                            _ret54 = vm.mainStack.frames[vm.mainStack.frames.pointer + 1]
-                            goto _inline_end136
-                        end
+                        vm.mainStack.frames.pointer = vm.mainStack.frames.pointer - 1
+                        _ret54 = vm.mainStack.frames[vm.mainStack.frames.pointer + 1]
+                        goto _inline_end136
                         ::_inline_end136::
                     end
                 end
@@ -978,82 +786,62 @@ return function (plume)
             ::ACC_TEXT::
                 do
                     local _ret55
-                    do
-                        _ret55 = vm.mainStack.frames[nil or vm.mainStack.frames.pointer]
-                        goto _inline_end138
-                    end
+                    _ret55 = vm.mainStack.frames[nil or vm.mainStack.frames.pointer]
+                    goto _inline_end138
                     ::_inline_end138::
                     local start = _ret55
                     local _ret56
-                    do
-                        _ret56 = vm.mainStack.pointer
-                        goto _inline_end139
-                    end
+                    _ret56 = vm.mainStack.pointer
+                    goto _inline_end139
                     ::_inline_end139::
                     local stop = _ret56
                     for i = start, stop do
                         local _ret57
-                        do
-                            _ret57 = vm.mainStack[i or vm.mainStack.pointer]
-                            goto _inline_end141
-                        end
+                        _ret57 = vm.mainStack[i or vm.mainStack.pointer]
+                        goto _inline_end141
                         ::_inline_end141::
                         if _ret57 == vm.empty then
-                            do
-                                vm.mainStack[i] = ""
-                            end
+                            vm.mainStack[i] = ""
                         end
                     end
                     local acc_text = table.concat (vm.mainStack, "", start, stop)
-                    do
-                        vm.mainStack.pointer = start
-                    end
-                    do
-                        vm.mainStack[start] = acc_text
-                    end
+                    vm.mainStack.pointer = start
+                    vm.mainStack[start] = acc_text
                     do
                         local _ret58
-                        do
-                            vm.mainStack.frames.pointer = vm.mainStack.frames.pointer - 1
-                            _ret58 = vm.mainStack.frames[vm.mainStack.frames.pointer + 1]
-                            goto _inline_end145
-                        end
+                        vm.mainStack.frames.pointer = vm.mainStack.frames.pointer - 1
+                        _ret58 = vm.mainStack.frames[vm.mainStack.frames.pointer + 1]
+                        goto _inline_end145
                         ::_inline_end145::
                     end
                 end
                 goto DISPATCH
             ::ACC_EMPTY::
                 do
+                    vm.mainStack.pointer = vm.mainStack.pointer + 1
+                    vm.mainStack[vm.mainStack.pointer] = vm.empty
+                end
+                do
+                    local _ret59
                     do
-                        vm.mainStack.pointer = vm.mainStack.pointer + 1
-                        vm.mainStack[vm.mainStack.pointer] = vm.empty
+                        vm.mainStack.frames.pointer = vm.mainStack.frames.pointer - 1
+                        _ret59 = vm.mainStack.frames[vm.mainStack.frames.pointer + 1]
+                        goto _inline_end149
                     end
-                    do
-                        local _ret59
-                        do
-                            vm.mainStack.frames.pointer = vm.mainStack.frames.pointer - 1
-                            _ret59 = vm.mainStack.frames[vm.mainStack.frames.pointer + 1]
-                            goto _inline_end149
-                        end
-                        ::_inline_end149::
-                    end
+                    ::_inline_end149::
                 end
                 goto DISPATCH
             ::ACC_CALL::
                 do
                     local _ret60
-                    do
-                        vm.mainStack.pointer = vm.mainStack.pointer - 1
-                        _ret60 = vm.mainStack[vm.mainStack.pointer + 1]
-                        goto _inline_end151
-                    end
+                    vm.mainStack.pointer = vm.mainStack.pointer - 1
+                    _ret60 = vm.mainStack[vm.mainStack.pointer + 1]
+                    goto _inline_end151
                     ::_inline_end151::
                     local tocall = _ret60
                     local _ret61
-                    do
-                        _ret61 = type (tocall) == "table" and (tocall == vm.empty or tocall.type) or type (tocall)
-                        goto _inline_end152
-                    end
+                    _ret61 = type (tocall) == "table" and (tocall == vm.empty or tocall.type) or type (tocall)
+                    goto _inline_end152
                     ::_inline_end152::
                     local t = _ret61
                     local self
@@ -1069,16 +857,12 @@ return function (plume)
                         local arguments = {}
                         do
                             local _ret62
-                            do
-                                _ret62 = vm.mainStack.pointer
-                                goto _inline_end154
-                            end
+                            _ret62 = vm.mainStack.pointer
+                            goto _inline_end154
                             ::_inline_end154::
                             local _ret63
-                            do
-                                _ret63 = vm.mainStack.frames[nil or vm.mainStack.frames.pointer]
-                                goto _inline_end155
-                            end
+                            _ret63 = vm.mainStack.frames[nil or vm.mainStack.frames.pointer]
+                            goto _inline_end155
                             ::_inline_end155::
                             local argcount = _ret62 - _ret63
                             if argcount ~= tocall.positionalParamCount and tocall.variadicOffset == 0 then
@@ -1089,54 +873,40 @@ return function (plume)
                                 if not name then
                                     name = tocall.name or "???"
                                 end
-                                do
-                                    vm.err = "Wrong number of positionnal arguments for macro '" .. name .. "', " .. argcount .. " instead of " .. tocall.positionalParamCount .. "."
-                                end
+                                vm.err = "Wrong number of positionnal arguments for macro '" .. name .. "', " .. argcount .. " instead of " .. tocall.positionalParamCount .. "."
                             end
                             for i = 1, tocall.positionalParamCount do
                                 local _ret64
-                                do
-                                    _ret64 = vm.mainStack[vm.mainStack.pointer + i - argcount]
-                                    goto _inline_end157
-                                end
+                                _ret64 = vm.mainStack[vm.mainStack.pointer + i - argcount]
+                                goto _inline_end157
                                 ::_inline_end157::
                                 arguments[i] = _ret64
                             end
                             for i = tocall.positionalParamCount + 1, argcount do
                                 local _ret65
-                                do
-                                    _ret65 = vm.mainStack[vm.mainStack.pointer + i - argcount]
-                                    goto _inline_end158
-                                end
+                                _ret65 = vm.mainStack[vm.mainStack.pointer + i - argcount]
+                                goto _inline_end158
                                 ::_inline_end158::
                                 table.insert (capture.table, _ret65)
                             end
                             do
                                 local _ret66
-                                do
-                                    _ret66 = vm.mainStack.frames[nil or vm.mainStack.frames.pointer]
-                                    goto _inline_end160
-                                end
+                                _ret66 = vm.mainStack.frames[nil or vm.mainStack.frames.pointer]
+                                goto _inline_end160
                                 ::_inline_end160::
-                                do
-                                    vm.mainStack.pointer = _ret66
-                                end
+                                vm.mainStack.pointer = _ret66
                             end
                         end
                         do
                             local _ret67
                             do
                                 local _ret68
-                                do
-                                    _ret68 = vm.mainStack.frames[vm.mainStack.frames.pointer + (nil or 0)]
-                                    goto _inline_end164
-                                end
+                                _ret68 = vm.mainStack.frames[vm.mainStack.frames.pointer + (nil or 0)]
+                                goto _inline_end164
                                 ::_inline_end164::
                                 local _ret69
-                                do
-                                    _ret69 = vm.mainStack[_ret68 + (nil or 0) or vm.mainStack.pointer]
-                                    goto _inline_end165
-                                end
+                                _ret69 = vm.mainStack[_ret68 + (nil or 0) or vm.mainStack.pointer]
+                                goto _inline_end165
                                 ::_inline_end165::
                                 _ret67 = _ret69
                                 goto _inline_end163
@@ -1199,9 +969,7 @@ return function (plume)
                                         if success then
                                             capture.meta.table[k] = v
                                         else
-                                            do
-                                                vm.err = err
-                                            end
+                                            vm.err = err
                                         end
                                     end
                                 elseif j then
@@ -1222,16 +990,12 @@ return function (plume)
                                 end
                             end
                             if err then
-                                do
-                                    vm.err = err
-                                end
+                                vm.err = err
                             else
                                 local _ret72
-                                do
-                                    vm.mainStack.pointer = vm.mainStack.pointer - 1
-                                    _ret72 = vm.mainStack[vm.mainStack.pointer + 1]
-                                    goto _inline_end171
-                                end
+                                vm.mainStack.pointer = vm.mainStack.pointer - 1
+                                _ret72 = vm.mainStack[vm.mainStack.pointer + 1]
+                                goto _inline_end171
                                 ::_inline_end171::
                             end
                         end
@@ -1243,69 +1007,55 @@ return function (plume)
                         end
                         do
                             local _ret73
-                            do
-                                vm.mainStack.frames.pointer = vm.mainStack.frames.pointer - 1
-                                _ret73 = vm.mainStack.frames[vm.mainStack.frames.pointer + 1]
-                                goto _inline_end173
-                            end
+                            vm.mainStack.frames.pointer = vm.mainStack.frames.pointer - 1
+                            _ret73 = vm.mainStack.frames[vm.mainStack.frames.pointer + 1]
+                            goto _inline_end173
                             ::_inline_end173::
                         end
                         local _ret74
-                        do
-                            table.insert (vm.chunk.callstack, {chunk = vm.chunk, macro = tocall, ip = vm.ip})
-                            if #vm.chunk.callstack <= 1000 then
-                                local success, callResult, cip, source = vm.plume.run (tocall, arguments)
-                                if success then
-                                    table.remove (vm.chunk.callstack)
-                                    _ret74 = callResult
-                                    goto _inline_end174
-                                else
-                                    do
-                                        vm.serr = {callResult, cip, (source or tocall)}
-                                    end
-                                end
+                        table.insert (vm.chunk.callstack, {chunk = vm.chunk, macro = tocall, ip = vm.ip})
+                        if #vm.chunk.callstack <= 1000 then
+                            local success, callResult, cip, source = vm.plume.run (tocall, arguments)
+                            if success then
+                                table.remove (vm.chunk.callstack)
+                                _ret74 = callResult
+                                goto _inline_end174
                             else
                                 do
-                                    vm.err = "stack overflow"
+                                    vm.serr = {callResult, cip, (source or tocall)}
                                 end
+                            end
+                        else
+                            do
+                                vm.err = "stack overflow"
                             end
                         end
                         ::_inline_end174::
-                        do
-                            vm.mainStack.pointer = vm.mainStack.pointer + 1
-                            vm.mainStack[vm.mainStack.pointer] = _ret74
-                        end
+                        vm.mainStack.pointer = vm.mainStack.pointer + 1
+                        vm.mainStack[vm.mainStack.pointer] = _ret74
                     elseif t == "luaFunction" then
                         do
                             local _ret75
-                            do
-                                _ret75 = vm.mainStack.frames[nil or vm.mainStack.frames.pointer]
-                                goto _inline_end179
-                            end
+                            _ret75 = vm.mainStack.frames[nil or vm.mainStack.frames.pointer]
+                            goto _inline_end179
                             ::_inline_end179::
                             local limit = _ret75 + 1
                             local _ret76
-                            do
-                                _ret76 = vm.mainStack.pointer
-                                goto _inline_end180
-                            end
+                            _ret76 = vm.mainStack.pointer
+                            goto _inline_end180
                             ::_inline_end180::
                             local current = _ret76
                             local _ret77
-                            do
-                                _ret77 = vm.mainStack[limit - 1 or vm.mainStack.pointer]
-                                goto _inline_end181
-                            end
+                            _ret77 = vm.mainStack[limit - 1 or vm.mainStack.pointer]
+                            goto _inline_end181
                             ::_inline_end181::
                             local t = _ret77
                             local keyCount = #t / 2
                             local args = vm.plume.obj.table (current - limit + 1, keyCount)
                             for i = 1, current - limit + 1 do
                                 local _ret78
-                                do
-                                    _ret78 = vm.mainStack[limit + i - 1 or vm.mainStack.pointer]
-                                    goto _inline_end182
-                                end
+                                _ret78 = vm.mainStack[limit + i - 1 or vm.mainStack.pointer]
+                                goto _inline_end182
                                 ::_inline_end182::
                                 args.table[i] = _ret78
                             end
@@ -1360,9 +1110,7 @@ return function (plume)
                                         if success then
                                             args.meta.table[t[i]] = t[i + 1]
                                         else
-                                            do
-                                                vm.err = err
-                                            end
+                                            vm.err = err
                                         end
                                     end
                                 else
@@ -1377,29 +1125,21 @@ return function (plume)
                                     end
                                 end
                             end
-                            do
-                                vm.mainStack.pointer = limit - 2
-                            end
-                            do
-                                vm.mainStack.pointer = vm.mainStack.pointer + 1
-                                vm.mainStack[vm.mainStack.pointer] = args
-                            end
+                            vm.mainStack.pointer = limit - 2
+                            vm.mainStack.pointer = vm.mainStack.pointer + 1
+                            vm.mainStack[vm.mainStack.pointer] = args
                             do
                                 local _ret81
-                                do
-                                    vm.mainStack.frames.pointer = vm.mainStack.frames.pointer - 1
-                                    _ret81 = vm.mainStack.frames[vm.mainStack.frames.pointer + 1]
-                                    goto _inline_end190
-                                end
+                                vm.mainStack.frames.pointer = vm.mainStack.frames.pointer - 1
+                                _ret81 = vm.mainStack.frames[vm.mainStack.frames.pointer + 1]
+                                goto _inline_end190
                                 ::_inline_end190::
                             end
                         end
                         table.insert (vm.chunk.callstack, {chunk = vm.chunk, macro = tocall, ip = vm.ip})
                         local _ret82
-                        do
-                            _ret82 = vm.mainStack[nil or vm.mainStack.pointer]
-                            goto _inline_end191
-                        end
+                        _ret82 = vm.mainStack[nil or vm.mainStack.pointer]
+                        goto _inline_end191
                         ::_inline_end191::
                         local success, result = pcall (tocall.callable, _ret82, vm.chunk)
                         if success then
@@ -1408,42 +1148,30 @@ return function (plume)
                                 result = vm.empty
                             end
                             local _ret83
-                            do
-                                vm.mainStack.pointer = vm.mainStack.pointer - 1
-                                _ret83 = vm.mainStack[vm.mainStack.pointer + 1]
-                                goto _inline_end192
-                            end
+                            vm.mainStack.pointer = vm.mainStack.pointer - 1
+                            _ret83 = vm.mainStack[vm.mainStack.pointer + 1]
+                            goto _inline_end192
                             ::_inline_end192::
-                            do
-                                vm.mainStack.pointer = vm.mainStack.pointer + 1
-                                vm.mainStack[vm.mainStack.pointer] = result
-                            end
+                            vm.mainStack.pointer = vm.mainStack.pointer + 1
+                            vm.mainStack[vm.mainStack.pointer] = result
                         else
-                            do
-                                vm.err = result
-                            end
+                            vm.err = result
                         end
                     else
-                        do
-                            vm.err = "Try to call a '" .. t .. "' value"
-                        end
+                        vm.err = "Try to call a '" .. t .. "' value"
                     end
                 end
                 goto DISPATCH
             ::ACC_CHECK_TEXT::
                 do
                     local _ret84
-                    do
-                        _ret84 = vm.mainStack[nil or vm.mainStack.pointer]
-                        goto _inline_end197
-                    end
+                    _ret84 = vm.mainStack[nil or vm.mainStack.pointer]
+                    goto _inline_end197
                     ::_inline_end197::
                     local value = _ret84
                     local _ret85
-                    do
-                        _ret85 = type (value) == "table" and (value == vm.empty or value.type) or type (value)
-                        goto _inline_end198
-                    end
+                    _ret85 = type (value) == "table" and (value == vm.empty or value.type) or type (value)
+                    goto _inline_end198
                     ::_inline_end198::
                     local t = _ret85
                     if t ~= "number" and t ~= "string" and value ~= vm.empty then
@@ -1451,39 +1179,31 @@ return function (plume)
                             local meta = value.meta.table.tostring
                             local args = {}
                             local _ret86
-                            do
-                                table.insert (vm.chunk.callstack, {chunk = vm.chunk, macro = meta, ip = vm.ip})
-                                if #vm.chunk.callstack <= 1000 then
-                                    local success, callResult, cip, source = vm.plume.run (meta, args)
-                                    if success then
-                                        table.remove (vm.chunk.callstack)
-                                        _ret86 = callResult
-                                        goto _inline_end199
-                                    else
-                                        do
-                                            vm.serr = {callResult, cip, (source or meta)}
-                                        end
-                                    end
+                            table.insert (vm.chunk.callstack, {chunk = vm.chunk, macro = meta, ip = vm.ip})
+                            if #vm.chunk.callstack <= 1000 then
+                                local success, callResult, cip, source = vm.plume.run (meta, args)
+                                if success then
+                                    table.remove (vm.chunk.callstack)
+                                    _ret86 = callResult
+                                    goto _inline_end199
                                 else
                                     do
-                                        vm.err = "stack overflow"
+                                        vm.serr = {callResult, cip, (source or meta)}
                                     end
+                                end
+                            else
+                                do
+                                    vm.err = "stack overflow"
                                 end
                             end
                             ::_inline_end199::
                             local _ret87
-                            do
-                                _ret87 = vm.mainStack.pointer
-                                goto _inline_end202
-                            end
+                            _ret87 = vm.mainStack.pointer
+                            goto _inline_end202
                             ::_inline_end202::
-                            do
-                                vm.mainStack[_ret87] = _ret86
-                            end
+                            vm.mainStack[_ret87] = _ret86
                         else
-                            do
-                                vm.err = "Cannot concat a '" .. t .. "' value."
-                            end
+                            vm.err = "Cannot concat a '" .. t .. "' value."
                         end
                     end
                 end
@@ -1491,22 +1211,18 @@ return function (plume)
             ::JUMP_IF::
                 do
                     local _ret88
-                    do
-                        vm.mainStack.pointer = vm.mainStack.pointer - 1
-                        _ret88 = vm.mainStack[vm.mainStack.pointer + 1]
-                        goto _inline_end206
-                    end
+                    vm.mainStack.pointer = vm.mainStack.pointer - 1
+                    _ret88 = vm.mainStack[vm.mainStack.pointer + 1]
+                    goto _inline_end206
                     ::_inline_end206::
                     local test = _ret88
                     local _ret89
-                    do
-                        if test == vm.empty then
-                            _ret89 = false
-                            goto _inline_end207
-                        end
-                        _ret89 = test
+                    if test == vm.empty then
+                        _ret89 = false
                         goto _inline_end207
                     end
+                    _ret89 = test
+                    goto _inline_end207
                     ::_inline_end207::
                     if _ret89 then
                         vm.jump = arg2
@@ -1516,22 +1232,18 @@ return function (plume)
             ::JUMP_IF_NOT::
                 do
                     local _ret90
-                    do
-                        vm.mainStack.pointer = vm.mainStack.pointer - 1
-                        _ret90 = vm.mainStack[vm.mainStack.pointer + 1]
-                        goto _inline_end209
-                    end
+                    vm.mainStack.pointer = vm.mainStack.pointer - 1
+                    _ret90 = vm.mainStack[vm.mainStack.pointer + 1]
+                    goto _inline_end209
                     ::_inline_end209::
                     local test = _ret90
                     local _ret91
-                    do
-                        if test == vm.empty then
-                            _ret91 = false
-                            goto _inline_end210
-                        end
-                        _ret91 = test
+                    if test == vm.empty then
+                        _ret91 = false
                         goto _inline_end210
                     end
+                    _ret91 = test
+                    goto _inline_end210
                     ::_inline_end210::
                     if not _ret91 then
                         vm.jump = arg2
@@ -1541,11 +1253,9 @@ return function (plume)
             ::JUMP_IF_NOT_EMPTY::
                 do
                     local _ret92
-                    do
-                        vm.mainStack.pointer = vm.mainStack.pointer - 1
-                        _ret92 = vm.mainStack[vm.mainStack.pointer + 1]
-                        goto _inline_end212
-                    end
+                    vm.mainStack.pointer = vm.mainStack.pointer - 1
+                    _ret92 = vm.mainStack[vm.mainStack.pointer + 1]
+                    goto _inline_end212
                     ::_inline_end212::
                     local test = _ret92
                     if test ~= vm.empty then
@@ -1554,28 +1264,22 @@ return function (plume)
                 end
                 goto DISPATCH
             ::JUMP::
-                do
-                    vm.jump = arg2
-                end
+                vm.jump = arg2
                 goto DISPATCH
             ::JUMP_IF_PEEK::
                 do
                     local _ret93
-                    do
-                        _ret93 = vm.mainStack[nil or vm.mainStack.pointer]
-                        goto _inline_end215
-                    end
+                    _ret93 = vm.mainStack[nil or vm.mainStack.pointer]
+                    goto _inline_end215
                     ::_inline_end215::
                     local test = _ret93
                     local _ret94
-                    do
-                        if test == vm.empty then
-                            _ret94 = false
-                            goto _inline_end216
-                        end
-                        _ret94 = test
+                    if test == vm.empty then
+                        _ret94 = false
                         goto _inline_end216
                     end
+                    _ret94 = test
+                    goto _inline_end216
                     ::_inline_end216::
                     if _ret94 then
                         vm.jump = arg2
@@ -1585,21 +1289,17 @@ return function (plume)
             ::JUMP_IF_NOT_PEEK::
                 do
                     local _ret95
-                    do
-                        _ret95 = vm.mainStack[nil or vm.mainStack.pointer]
-                        goto _inline_end218
-                    end
+                    _ret95 = vm.mainStack[nil or vm.mainStack.pointer]
+                    goto _inline_end218
                     ::_inline_end218::
                     local test = _ret95
                     local _ret96
-                    do
-                        if test == vm.empty then
-                            _ret96 = false
-                            goto _inline_end219
-                        end
-                        _ret96 = test
+                    if test == vm.empty then
+                        _ret96 = false
                         goto _inline_end219
                     end
+                    _ret96 = test
+                    goto _inline_end219
                     ::_inline_end219::
                     if not _ret96 then
                         vm.jump = arg2
@@ -1609,18 +1309,14 @@ return function (plume)
             ::GET_ITER::
                 do
                     local _ret97
-                    do
-                        vm.mainStack.pointer = vm.mainStack.pointer - 1
-                        _ret97 = vm.mainStack[vm.mainStack.pointer + 1]
-                        goto _inline_end221
-                    end
+                    vm.mainStack.pointer = vm.mainStack.pointer - 1
+                    _ret97 = vm.mainStack[vm.mainStack.pointer + 1]
+                    goto _inline_end221
                     ::_inline_end221::
                     local obj = _ret97
                     local _ret98
-                    do
-                        _ret98 = type (obj) == "table" and (obj == vm.empty or obj.type) or type (obj)
-                        goto _inline_end222
-                    end
+                    _ret98 = type (obj) == "table" and (obj == vm.empty or obj.type) or type (obj)
+                    goto _inline_end222
                     ::_inline_end222::
                     local tobj = _ret98
                     if tobj == "table" then
@@ -1637,63 +1333,13 @@ return function (plume)
                             value = iter
                         elseif iter.type == "macro" then
                             local _ret99
-                            do
-                                table.insert (vm.chunk.callstack, {chunk = vm.chunk, macro = iter, ip = vm.ip})
-                                if #vm.chunk.callstack <= 1000 then
-                                    local success, callResult, cip, source = vm.plume.run (iter, {obj})
-                                    if success then
-                                        table.remove (vm.chunk.callstack)
-                                        _ret99 = callResult
-                                        goto _inline_end223
-                                    else
-                                        do
-                                            vm.serr = {callResult, cip, (source or iter)}
-                                        end
-                                    end
-                                else
-                                    do
-                                        vm.err = "stack overflow"
-                                    end
-                                end
-                            end
-                            ::_inline_end223::
-                            value = _ret99
-                        end
-                        do
-                            vm.mainStack.pointer = vm.mainStack.pointer + 1
-                            vm.mainStack[vm.mainStack.pointer] = value
-                        end
-                    else
-                        do
-                            vm.err = "Try to iterate over a non-table '" .. tobj .. "' value."
-                        end
-                    end
-                end
-                goto DISPATCH
-            ::FOR_ITER::
-                do
-                    local _ret100
-                    do
-                        vm.mainStack.pointer = vm.mainStack.pointer - 1
-                        _ret100 = vm.mainStack[vm.mainStack.pointer + 1]
-                        goto _inline_end229
-                    end
-                    ::_inline_end229::
-                    local obj = _ret100
-                    local iter = obj.meta.table.next
-                    local result
-                    if iter.type == "luaFunction" then
-                        result = iter.callable ()
-                    else
-                        local _ret101
-                        do
                             table.insert (vm.chunk.callstack, {chunk = vm.chunk, macro = iter, ip = vm.ip})
                             if #vm.chunk.callstack <= 1000 then
                                 local success, callResult, cip, source = vm.plume.run (iter, {obj})
                                 if success then
                                     table.remove (vm.chunk.callstack)
-                                    _ret101 = callResult
-                                    goto _inline_end230
+                                    _ret99 = callResult
+                                    goto _inline_end223
                                 else
                                     do
                                         vm.serr = {callResult, cip, (source or iter)}
@@ -1704,190 +1350,105 @@ return function (plume)
                                     vm.err = "stack overflow"
                                 end
                             end
+                            ::_inline_end223::
+                            value = _ret99
+                        end
+                        vm.mainStack.pointer = vm.mainStack.pointer + 1
+                        vm.mainStack[vm.mainStack.pointer] = value
+                    else
+                        vm.err = "Try to iterate over a non-table '" .. tobj .. "' value."
+                    end
+                end
+                goto DISPATCH
+            ::FOR_ITER::
+                do
+                    local _ret100
+                    vm.mainStack.pointer = vm.mainStack.pointer - 1
+                    _ret100 = vm.mainStack[vm.mainStack.pointer + 1]
+                    goto _inline_end229
+                    ::_inline_end229::
+                    local obj = _ret100
+                    local iter = obj.meta.table.next
+                    local result
+                    if iter.type == "luaFunction" then
+                        result = iter.callable ()
+                    else
+                        local _ret101
+                        table.insert (vm.chunk.callstack, {chunk = vm.chunk, macro = iter, ip = vm.ip})
+                        if #vm.chunk.callstack <= 1000 then
+                            local success, callResult, cip, source = vm.plume.run (iter, {obj})
+                            if success then
+                                table.remove (vm.chunk.callstack)
+                                _ret101 = callResult
+                                goto _inline_end230
+                            else
+                                do
+                                    vm.serr = {callResult, cip, (source or iter)}
+                                end
+                            end
+                        else
+                            do
+                                vm.err = "stack overflow"
+                            end
                         end
                         ::_inline_end230::
                         result = _ret101
                     end
                     if result == vm.empty then
-                        do
-                            vm.jump = arg2
-                        end
+                        vm.jump = arg2
                     else
-                        do
-                            vm.mainStack.pointer = vm.mainStack.pointer + 1
-                            vm.mainStack[vm.mainStack.pointer] = result
-                        end
+                        vm.mainStack.pointer = vm.mainStack.pointer + 1
+                        vm.mainStack[vm.mainStack.pointer] = result
                     end
                 end
                 goto DISPATCH
             ::OPP_ADD::
                 do
+                    local _ret102
                     do
-                        local _ret102
+                        vm.mainStack.pointer = vm.mainStack.pointer - 1
+                        _ret102 = vm.mainStack[vm.mainStack.pointer + 1]
+                        goto _inline_end237
+                    end
+                    ::_inline_end237::
+                    local right = _ret102
+                    local _ret103
+                    do
+                        vm.mainStack.pointer = vm.mainStack.pointer - 1
+                        _ret103 = vm.mainStack[vm.mainStack.pointer + 1]
+                        goto _inline_end238
+                    end
+                    ::_inline_end238::
+                    local left = _ret103
+                    local rerr, lerr, success, result
+                    local _ret104, _ret105
+                    do
+                        local _ret106
                         do
-                            vm.mainStack.pointer = vm.mainStack.pointer - 1
-                            _ret102 = vm.mainStack[vm.mainStack.pointer + 1]
-                            goto _inline_end237
+                            _ret106 = type (right) == "table" and (right == vm.empty or right.type) or type (right)
+                            goto _inline_end240
                         end
-                        ::_inline_end237::
-                        local right = _ret102
-                        local _ret103
-                        do
-                            vm.mainStack.pointer = vm.mainStack.pointer - 1
-                            _ret103 = vm.mainStack[vm.mainStack.pointer + 1]
-                            goto _inline_end238
-                        end
-                        ::_inline_end238::
-                        local left = _ret103
-                        local rerr, lerr, success, result
-                        local _ret104, _ret105
-                        do
-                            local _ret106
-                            do
-                                _ret106 = type (right) == "table" and (right == vm.empty or right.type) or type (right)
-                                goto _inline_end240
+                        ::_inline_end240::
+                        local tx = _ret106
+                        if tx == "string" then
+                            right = tonumber (right)
+                            if not right then
+                                _ret104, _ret105 = right, "Cannot convert the string value to a number."
+                                goto _inline_end239
                             end
-                            ::_inline_end240::
-                            local tx = _ret106
-                            if tx == "string" then
-                                right = tonumber (right)
-                                if not right then
-                                    _ret104, _ret105 = right, "Cannot convert the string value to a number."
-                                    goto _inline_end239
-                                end
-                            elseif tx ~= "number" then
-                                if tx == "table" and right.meta.table.tonumber then
-                                    local meta = right.meta.table.tonumber
-                                    local params = {}
-                                    local _ret107
-                                    do
-                                        table.insert (vm.chunk.callstack, {chunk = vm.chunk, macro = meta, ip = vm.ip})
-                                        if #vm.chunk.callstack <= 1000 then
-                                            local success, callResult, cip, source = vm.plume.run (meta, params)
-                                            if success then
-                                                table.remove (vm.chunk.callstack)
-                                                _ret107 = callResult
-                                                goto _inline_end241
-                                            else
-                                                do
-                                                    vm.serr = {callResult, cip, (source or meta)}
-                                                end
-                                            end
-                                        else
-                                            do
-                                                vm.err = "stack overflow"
-                                            end
-                                        end
-                                    end
-                                    ::_inline_end241::
-                                    _ret104, _ret105 = _ret107
-                                    goto _inline_end239
-                                else
-                                    _ret104, _ret105 = right, "Cannot do comparison or arithmetic with " .. tostring (tx) .. " value."
-                                    goto _inline_end239
-                                end
-                            end
-                            _ret104, _ret105 = right
-                            goto _inline_end239
-                        end
-                        ::_inline_end239::
-                        right, rerr = _ret104, _ret105
-                        local _ret108, _ret109
-                        do
-                            local _ret110
-                            do
-                                _ret110 = type (left) == "table" and (left == vm.empty or left.type) or type (left)
-                                goto _inline_end245
-                            end
-                            ::_inline_end245::
-                            local tx = _ret110
-                            if tx == "string" then
-                                left = tonumber (left)
-                                if not left then
-                                    _ret108, _ret109 = left, "Cannot convert the string value to a number."
-                                    goto _inline_end244
-                                end
-                            elseif tx ~= "number" then
-                                if tx == "table" and left.meta.table.tonumber then
-                                    local meta = left.meta.table.tonumber
-                                    local params = {}
-                                    local _ret111
-                                    do
-                                        table.insert (vm.chunk.callstack, {chunk = vm.chunk, macro = meta, ip = vm.ip})
-                                        if #vm.chunk.callstack <= 1000 then
-                                            local success, callResult, cip, source = vm.plume.run (meta, params)
-                                            if success then
-                                                table.remove (vm.chunk.callstack)
-                                                _ret111 = callResult
-                                                goto _inline_end246
-                                            else
-                                                do
-                                                    vm.serr = {callResult, cip, (source or meta)}
-                                                end
-                                            end
-                                        else
-                                            do
-                                                vm.err = "stack overflow"
-                                            end
-                                        end
-                                    end
-                                    ::_inline_end246::
-                                    _ret108, _ret109 = _ret111
-                                    goto _inline_end244
-                                else
-                                    _ret108, _ret109 = left, "Cannot do comparison or arithmetic with " .. tostring (tx) .. " value."
-                                    goto _inline_end244
-                                end
-                            end
-                            _ret108, _ret109 = left
-                            goto _inline_end244
-                        end
-                        ::_inline_end244::
-                        left, lerr = _ret108, _ret109
-                        if lerr or rerr then
-                            local _ret112, _ret113
-                            do
-                                local meta, params
-                                local _ret114
-                                do
-                                    _ret114 = type (left) == "table" and (left == vm.empty or left.type) or type (left)
-                                    goto _inline_end250
-                                end
-                                ::_inline_end250::
-                                local tleft = _ret114
-                                local _ret115
-                                do
-                                    _ret115 = type (right) == "table" and (right == vm.empty or right.type) or type (right)
-                                    goto _inline_end251
-                                end
-                                ::_inline_end251::
-                                local tright = _ret115
-                                if tleft == "table" and left.meta and left.meta.table["add" .. "r"] then
-                                    meta = left.meta.table["add" .. "r"]
-                                    params = {right, left}
-                                elseif tright == "table" and right.meta and right.meta.table["add" .. "l"] then
-                                    meta = right.meta.table["add" .. "l"]
-                                    params = {left, right}
-                                elseif tleft == "table" and left.meta and left.meta.table.add then
-                                    meta = left.meta.table.add
-                                    params = {left, right, left}
-                                elseif tright == "table" and right.meta and right.meta.table.add then
-                                    meta = right.meta.table.add
-                                    params = {left, right, right}
-                                end
-                                if not meta then
-                                    _ret112 = false
-                                    goto _inline_end249
-                                end
-                                local _ret116
+                        elseif tx ~= "number" then
+                            if tx == "table" and right.meta.table.tonumber then
+                                local meta = right.meta.table.tonumber
+                                local params = {}
+                                local _ret107
                                 do
                                     table.insert (vm.chunk.callstack, {chunk = vm.chunk, macro = meta, ip = vm.ip})
                                     if #vm.chunk.callstack <= 1000 then
                                         local success, callResult, cip, source = vm.plume.run (meta, params)
                                         if success then
                                             table.remove (vm.chunk.callstack)
-                                            _ret116 = callResult
-                                            goto _inline_end252
+                                            _ret107 = callResult
+                                            goto _inline_end241
                                         else
                                             do
                                                 vm.serr = {callResult, cip, (source or meta)}
@@ -1899,203 +1460,201 @@ return function (plume)
                                         end
                                     end
                                 end
-                                ::_inline_end252::
-                                _ret112, _ret113 = true, _ret116
+                                ::_inline_end241::
+                                _ret104, _ret105 = _ret107
+                                goto _inline_end239
+                            else
+                                _ret104, _ret105 = right, "Cannot do comparison or arithmetic with " .. tostring (tx) .. " value."
+                                goto _inline_end239
+                            end
+                        end
+                        _ret104, _ret105 = right
+                        goto _inline_end239
+                    end
+                    ::_inline_end239::
+                    right, rerr = _ret104, _ret105
+                    local _ret108, _ret109
+                    do
+                        local _ret110
+                        do
+                            _ret110 = type (left) == "table" and (left == vm.empty or left.type) or type (left)
+                            goto _inline_end245
+                        end
+                        ::_inline_end245::
+                        local tx = _ret110
+                        if tx == "string" then
+                            left = tonumber (left)
+                            if not left then
+                                _ret108, _ret109 = left, "Cannot convert the string value to a number."
+                                goto _inline_end244
+                            end
+                        elseif tx ~= "number" then
+                            if tx == "table" and left.meta.table.tonumber then
+                                local meta = left.meta.table.tonumber
+                                local params = {}
+                                local _ret111
+                                do
+                                    table.insert (vm.chunk.callstack, {chunk = vm.chunk, macro = meta, ip = vm.ip})
+                                    if #vm.chunk.callstack <= 1000 then
+                                        local success, callResult, cip, source = vm.plume.run (meta, params)
+                                        if success then
+                                            table.remove (vm.chunk.callstack)
+                                            _ret111 = callResult
+                                            goto _inline_end246
+                                        else
+                                            do
+                                                vm.serr = {callResult, cip, (source or meta)}
+                                            end
+                                        end
+                                    else
+                                        do
+                                            vm.err = "stack overflow"
+                                        end
+                                    end
+                                end
+                                ::_inline_end246::
+                                _ret108, _ret109 = _ret111
+                                goto _inline_end244
+                            else
+                                _ret108, _ret109 = left, "Cannot do comparison or arithmetic with " .. tostring (tx) .. " value."
+                                goto _inline_end244
+                            end
+                        end
+                        _ret108, _ret109 = left
+                        goto _inline_end244
+                    end
+                    ::_inline_end244::
+                    left, lerr = _ret108, _ret109
+                    if lerr or rerr then
+                        local _ret112, _ret113
+                        do
+                            local meta, params
+                            local _ret114
+                            do
+                                _ret114 = type (left) == "table" and (left == vm.empty or left.type) or type (left)
+                                goto _inline_end250
+                            end
+                            ::_inline_end250::
+                            local tleft = _ret114
+                            local _ret115
+                            do
+                                _ret115 = type (right) == "table" and (right == vm.empty or right.type) or type (right)
+                                goto _inline_end251
+                            end
+                            ::_inline_end251::
+                            local tright = _ret115
+                            if tleft == "table" and left.meta and left.meta.table["add" .. "r"] then
+                                meta = left.meta.table["add" .. "r"]
+                                params = {right, left}
+                            elseif tright == "table" and right.meta and right.meta.table["add" .. "l"] then
+                                meta = right.meta.table["add" .. "l"]
+                                params = {left, right}
+                            elseif tleft == "table" and left.meta and left.meta.table.add then
+                                meta = left.meta.table.add
+                                params = {left, right, left}
+                            elseif tright == "table" and right.meta and right.meta.table.add then
+                                meta = right.meta.table.add
+                                params = {left, right, right}
+                            end
+                            if not meta then
+                                _ret112 = false
                                 goto _inline_end249
                             end
-                            ::_inline_end249::
-                            success, result = _ret112, _ret113
-                        else
-                            success = true
-                            local _ret117
+                            local _ret116
                             do
-                                _ret117 = left + right
-                                goto _inline_end255
+                                table.insert (vm.chunk.callstack, {chunk = vm.chunk, macro = meta, ip = vm.ip})
+                                if #vm.chunk.callstack <= 1000 then
+                                    local success, callResult, cip, source = vm.plume.run (meta, params)
+                                    if success then
+                                        table.remove (vm.chunk.callstack)
+                                        _ret116 = callResult
+                                        goto _inline_end252
+                                    else
+                                        do
+                                            vm.serr = {callResult, cip, (source or meta)}
+                                        end
+                                    end
+                                else
+                                    do
+                                        vm.err = "stack overflow"
+                                    end
+                                end
                             end
-                            ::_inline_end255::
-                            result = _ret117
+                            ::_inline_end252::
+                            _ret112, _ret113 = true, _ret116
+                            goto _inline_end249
                         end
-                        if success then
-                            do
-                                vm.mainStack.pointer = vm.mainStack.pointer + 1
-                                vm.mainStack[vm.mainStack.pointer] = result
-                            end
-                        else
-                            do
-                                vm.err = lerr or rerr
-                            end
+                        ::_inline_end249::
+                        success, result = _ret112, _ret113
+                    else
+                        success = true
+                        local _ret117
+                        do
+                            _ret117 = left + right
+                            goto _inline_end255
+                        end
+                        ::_inline_end255::
+                        result = _ret117
+                    end
+                    if success then
+                        do
+                            vm.mainStack.pointer = vm.mainStack.pointer + 1
+                            vm.mainStack[vm.mainStack.pointer] = result
+                        end
+                    else
+                        do
+                            vm.err = lerr or rerr
                         end
                     end
                 end
                 goto DISPATCH
             ::OPP_MUL::
                 do
+                    local _ret118
                     do
-                        local _ret118
+                        vm.mainStack.pointer = vm.mainStack.pointer - 1
+                        _ret118 = vm.mainStack[vm.mainStack.pointer + 1]
+                        goto _inline_end260
+                    end
+                    ::_inline_end260::
+                    local right = _ret118
+                    local _ret119
+                    do
+                        vm.mainStack.pointer = vm.mainStack.pointer - 1
+                        _ret119 = vm.mainStack[vm.mainStack.pointer + 1]
+                        goto _inline_end261
+                    end
+                    ::_inline_end261::
+                    local left = _ret119
+                    local rerr, lerr, success, result
+                    local _ret120, _ret121
+                    do
+                        local _ret122
                         do
-                            vm.mainStack.pointer = vm.mainStack.pointer - 1
-                            _ret118 = vm.mainStack[vm.mainStack.pointer + 1]
-                            goto _inline_end260
+                            _ret122 = type (right) == "table" and (right == vm.empty or right.type) or type (right)
+                            goto _inline_end263
                         end
-                        ::_inline_end260::
-                        local right = _ret118
-                        local _ret119
-                        do
-                            vm.mainStack.pointer = vm.mainStack.pointer - 1
-                            _ret119 = vm.mainStack[vm.mainStack.pointer + 1]
-                            goto _inline_end261
-                        end
-                        ::_inline_end261::
-                        local left = _ret119
-                        local rerr, lerr, success, result
-                        local _ret120, _ret121
-                        do
-                            local _ret122
-                            do
-                                _ret122 = type (right) == "table" and (right == vm.empty or right.type) or type (right)
-                                goto _inline_end263
+                        ::_inline_end263::
+                        local tx = _ret122
+                        if tx == "string" then
+                            right = tonumber (right)
+                            if not right then
+                                _ret120, _ret121 = right, "Cannot convert the string value to a number."
+                                goto _inline_end262
                             end
-                            ::_inline_end263::
-                            local tx = _ret122
-                            if tx == "string" then
-                                right = tonumber (right)
-                                if not right then
-                                    _ret120, _ret121 = right, "Cannot convert the string value to a number."
-                                    goto _inline_end262
-                                end
-                            elseif tx ~= "number" then
-                                if tx == "table" and right.meta.table.tonumber then
-                                    local meta = right.meta.table.tonumber
-                                    local params = {}
-                                    local _ret123
-                                    do
-                                        table.insert (vm.chunk.callstack, {chunk = vm.chunk, macro = meta, ip = vm.ip})
-                                        if #vm.chunk.callstack <= 1000 then
-                                            local success, callResult, cip, source = vm.plume.run (meta, params)
-                                            if success then
-                                                table.remove (vm.chunk.callstack)
-                                                _ret123 = callResult
-                                                goto _inline_end264
-                                            else
-                                                do
-                                                    vm.serr = {callResult, cip, (source or meta)}
-                                                end
-                                            end
-                                        else
-                                            do
-                                                vm.err = "stack overflow"
-                                            end
-                                        end
-                                    end
-                                    ::_inline_end264::
-                                    _ret120, _ret121 = _ret123
-                                    goto _inline_end262
-                                else
-                                    _ret120, _ret121 = right, "Cannot do comparison or arithmetic with " .. tostring (tx) .. " value."
-                                    goto _inline_end262
-                                end
-                            end
-                            _ret120, _ret121 = right
-                            goto _inline_end262
-                        end
-                        ::_inline_end262::
-                        right, rerr = _ret120, _ret121
-                        local _ret124, _ret125
-                        do
-                            local _ret126
-                            do
-                                _ret126 = type (left) == "table" and (left == vm.empty or left.type) or type (left)
-                                goto _inline_end268
-                            end
-                            ::_inline_end268::
-                            local tx = _ret126
-                            if tx == "string" then
-                                left = tonumber (left)
-                                if not left then
-                                    _ret124, _ret125 = left, "Cannot convert the string value to a number."
-                                    goto _inline_end267
-                                end
-                            elseif tx ~= "number" then
-                                if tx == "table" and left.meta.table.tonumber then
-                                    local meta = left.meta.table.tonumber
-                                    local params = {}
-                                    local _ret127
-                                    do
-                                        table.insert (vm.chunk.callstack, {chunk = vm.chunk, macro = meta, ip = vm.ip})
-                                        if #vm.chunk.callstack <= 1000 then
-                                            local success, callResult, cip, source = vm.plume.run (meta, params)
-                                            if success then
-                                                table.remove (vm.chunk.callstack)
-                                                _ret127 = callResult
-                                                goto _inline_end269
-                                            else
-                                                do
-                                                    vm.serr = {callResult, cip, (source or meta)}
-                                                end
-                                            end
-                                        else
-                                            do
-                                                vm.err = "stack overflow"
-                                            end
-                                        end
-                                    end
-                                    ::_inline_end269::
-                                    _ret124, _ret125 = _ret127
-                                    goto _inline_end267
-                                else
-                                    _ret124, _ret125 = left, "Cannot do comparison or arithmetic with " .. tostring (tx) .. " value."
-                                    goto _inline_end267
-                                end
-                            end
-                            _ret124, _ret125 = left
-                            goto _inline_end267
-                        end
-                        ::_inline_end267::
-                        left, lerr = _ret124, _ret125
-                        if lerr or rerr then
-                            local _ret128, _ret129
-                            do
-                                local meta, params
-                                local _ret130
-                                do
-                                    _ret130 = type (left) == "table" and (left == vm.empty or left.type) or type (left)
-                                    goto _inline_end273
-                                end
-                                ::_inline_end273::
-                                local tleft = _ret130
-                                local _ret131
-                                do
-                                    _ret131 = type (right) == "table" and (right == vm.empty or right.type) or type (right)
-                                    goto _inline_end274
-                                end
-                                ::_inline_end274::
-                                local tright = _ret131
-                                if tleft == "table" and left.meta and left.meta.table["mul" .. "r"] then
-                                    meta = left.meta.table["mul" .. "r"]
-                                    params = {right, left}
-                                elseif tright == "table" and right.meta and right.meta.table["mul" .. "l"] then
-                                    meta = right.meta.table["mul" .. "l"]
-                                    params = {left, right}
-                                elseif tleft == "table" and left.meta and left.meta.table.mul then
-                                    meta = left.meta.table.mul
-                                    params = {left, right, left}
-                                elseif tright == "table" and right.meta and right.meta.table.mul then
-                                    meta = right.meta.table.mul
-                                    params = {left, right, right}
-                                end
-                                if not meta then
-                                    _ret128 = false
-                                    goto _inline_end272
-                                end
-                                local _ret132
+                        elseif tx ~= "number" then
+                            if tx == "table" and right.meta.table.tonumber then
+                                local meta = right.meta.table.tonumber
+                                local params = {}
+                                local _ret123
                                 do
                                     table.insert (vm.chunk.callstack, {chunk = vm.chunk, macro = meta, ip = vm.ip})
                                     if #vm.chunk.callstack <= 1000 then
                                         local success, callResult, cip, source = vm.plume.run (meta, params)
                                         if success then
                                             table.remove (vm.chunk.callstack)
-                                            _ret132 = callResult
-                                            goto _inline_end275
+                                            _ret123 = callResult
+                                            goto _inline_end264
                                         else
                                             do
                                                 vm.serr = {callResult, cip, (source or meta)}
@@ -2107,203 +1666,201 @@ return function (plume)
                                         end
                                     end
                                 end
-                                ::_inline_end275::
-                                _ret128, _ret129 = true, _ret132
+                                ::_inline_end264::
+                                _ret120, _ret121 = _ret123
+                                goto _inline_end262
+                            else
+                                _ret120, _ret121 = right, "Cannot do comparison or arithmetic with " .. tostring (tx) .. " value."
+                                goto _inline_end262
+                            end
+                        end
+                        _ret120, _ret121 = right
+                        goto _inline_end262
+                    end
+                    ::_inline_end262::
+                    right, rerr = _ret120, _ret121
+                    local _ret124, _ret125
+                    do
+                        local _ret126
+                        do
+                            _ret126 = type (left) == "table" and (left == vm.empty or left.type) or type (left)
+                            goto _inline_end268
+                        end
+                        ::_inline_end268::
+                        local tx = _ret126
+                        if tx == "string" then
+                            left = tonumber (left)
+                            if not left then
+                                _ret124, _ret125 = left, "Cannot convert the string value to a number."
+                                goto _inline_end267
+                            end
+                        elseif tx ~= "number" then
+                            if tx == "table" and left.meta.table.tonumber then
+                                local meta = left.meta.table.tonumber
+                                local params = {}
+                                local _ret127
+                                do
+                                    table.insert (vm.chunk.callstack, {chunk = vm.chunk, macro = meta, ip = vm.ip})
+                                    if #vm.chunk.callstack <= 1000 then
+                                        local success, callResult, cip, source = vm.plume.run (meta, params)
+                                        if success then
+                                            table.remove (vm.chunk.callstack)
+                                            _ret127 = callResult
+                                            goto _inline_end269
+                                        else
+                                            do
+                                                vm.serr = {callResult, cip, (source or meta)}
+                                            end
+                                        end
+                                    else
+                                        do
+                                            vm.err = "stack overflow"
+                                        end
+                                    end
+                                end
+                                ::_inline_end269::
+                                _ret124, _ret125 = _ret127
+                                goto _inline_end267
+                            else
+                                _ret124, _ret125 = left, "Cannot do comparison or arithmetic with " .. tostring (tx) .. " value."
+                                goto _inline_end267
+                            end
+                        end
+                        _ret124, _ret125 = left
+                        goto _inline_end267
+                    end
+                    ::_inline_end267::
+                    left, lerr = _ret124, _ret125
+                    if lerr or rerr then
+                        local _ret128, _ret129
+                        do
+                            local meta, params
+                            local _ret130
+                            do
+                                _ret130 = type (left) == "table" and (left == vm.empty or left.type) or type (left)
+                                goto _inline_end273
+                            end
+                            ::_inline_end273::
+                            local tleft = _ret130
+                            local _ret131
+                            do
+                                _ret131 = type (right) == "table" and (right == vm.empty or right.type) or type (right)
+                                goto _inline_end274
+                            end
+                            ::_inline_end274::
+                            local tright = _ret131
+                            if tleft == "table" and left.meta and left.meta.table["mul" .. "r"] then
+                                meta = left.meta.table["mul" .. "r"]
+                                params = {right, left}
+                            elseif tright == "table" and right.meta and right.meta.table["mul" .. "l"] then
+                                meta = right.meta.table["mul" .. "l"]
+                                params = {left, right}
+                            elseif tleft == "table" and left.meta and left.meta.table.mul then
+                                meta = left.meta.table.mul
+                                params = {left, right, left}
+                            elseif tright == "table" and right.meta and right.meta.table.mul then
+                                meta = right.meta.table.mul
+                                params = {left, right, right}
+                            end
+                            if not meta then
+                                _ret128 = false
                                 goto _inline_end272
                             end
-                            ::_inline_end272::
-                            success, result = _ret128, _ret129
-                        else
-                            success = true
-                            local _ret133
+                            local _ret132
                             do
-                                _ret133 = left * right
-                                goto _inline_end278
+                                table.insert (vm.chunk.callstack, {chunk = vm.chunk, macro = meta, ip = vm.ip})
+                                if #vm.chunk.callstack <= 1000 then
+                                    local success, callResult, cip, source = vm.plume.run (meta, params)
+                                    if success then
+                                        table.remove (vm.chunk.callstack)
+                                        _ret132 = callResult
+                                        goto _inline_end275
+                                    else
+                                        do
+                                            vm.serr = {callResult, cip, (source or meta)}
+                                        end
+                                    end
+                                else
+                                    do
+                                        vm.err = "stack overflow"
+                                    end
+                                end
                             end
-                            ::_inline_end278::
-                            result = _ret133
+                            ::_inline_end275::
+                            _ret128, _ret129 = true, _ret132
+                            goto _inline_end272
                         end
-                        if success then
-                            do
-                                vm.mainStack.pointer = vm.mainStack.pointer + 1
-                                vm.mainStack[vm.mainStack.pointer] = result
-                            end
-                        else
-                            do
-                                vm.err = lerr or rerr
-                            end
+                        ::_inline_end272::
+                        success, result = _ret128, _ret129
+                    else
+                        success = true
+                        local _ret133
+                        do
+                            _ret133 = left * right
+                            goto _inline_end278
+                        end
+                        ::_inline_end278::
+                        result = _ret133
+                    end
+                    if success then
+                        do
+                            vm.mainStack.pointer = vm.mainStack.pointer + 1
+                            vm.mainStack[vm.mainStack.pointer] = result
+                        end
+                    else
+                        do
+                            vm.err = lerr or rerr
                         end
                     end
                 end
                 goto DISPATCH
             ::OPP_SUB::
                 do
+                    local _ret134
                     do
-                        local _ret134
+                        vm.mainStack.pointer = vm.mainStack.pointer - 1
+                        _ret134 = vm.mainStack[vm.mainStack.pointer + 1]
+                        goto _inline_end283
+                    end
+                    ::_inline_end283::
+                    local right = _ret134
+                    local _ret135
+                    do
+                        vm.mainStack.pointer = vm.mainStack.pointer - 1
+                        _ret135 = vm.mainStack[vm.mainStack.pointer + 1]
+                        goto _inline_end284
+                    end
+                    ::_inline_end284::
+                    local left = _ret135
+                    local rerr, lerr, success, result
+                    local _ret136, _ret137
+                    do
+                        local _ret138
                         do
-                            vm.mainStack.pointer = vm.mainStack.pointer - 1
-                            _ret134 = vm.mainStack[vm.mainStack.pointer + 1]
-                            goto _inline_end283
+                            _ret138 = type (right) == "table" and (right == vm.empty or right.type) or type (right)
+                            goto _inline_end286
                         end
-                        ::_inline_end283::
-                        local right = _ret134
-                        local _ret135
-                        do
-                            vm.mainStack.pointer = vm.mainStack.pointer - 1
-                            _ret135 = vm.mainStack[vm.mainStack.pointer + 1]
-                            goto _inline_end284
-                        end
-                        ::_inline_end284::
-                        local left = _ret135
-                        local rerr, lerr, success, result
-                        local _ret136, _ret137
-                        do
-                            local _ret138
-                            do
-                                _ret138 = type (right) == "table" and (right == vm.empty or right.type) or type (right)
-                                goto _inline_end286
+                        ::_inline_end286::
+                        local tx = _ret138
+                        if tx == "string" then
+                            right = tonumber (right)
+                            if not right then
+                                _ret136, _ret137 = right, "Cannot convert the string value to a number."
+                                goto _inline_end285
                             end
-                            ::_inline_end286::
-                            local tx = _ret138
-                            if tx == "string" then
-                                right = tonumber (right)
-                                if not right then
-                                    _ret136, _ret137 = right, "Cannot convert the string value to a number."
-                                    goto _inline_end285
-                                end
-                            elseif tx ~= "number" then
-                                if tx == "table" and right.meta.table.tonumber then
-                                    local meta = right.meta.table.tonumber
-                                    local params = {}
-                                    local _ret139
-                                    do
-                                        table.insert (vm.chunk.callstack, {chunk = vm.chunk, macro = meta, ip = vm.ip})
-                                        if #vm.chunk.callstack <= 1000 then
-                                            local success, callResult, cip, source = vm.plume.run (meta, params)
-                                            if success then
-                                                table.remove (vm.chunk.callstack)
-                                                _ret139 = callResult
-                                                goto _inline_end287
-                                            else
-                                                do
-                                                    vm.serr = {callResult, cip, (source or meta)}
-                                                end
-                                            end
-                                        else
-                                            do
-                                                vm.err = "stack overflow"
-                                            end
-                                        end
-                                    end
-                                    ::_inline_end287::
-                                    _ret136, _ret137 = _ret139
-                                    goto _inline_end285
-                                else
-                                    _ret136, _ret137 = right, "Cannot do comparison or arithmetic with " .. tostring (tx) .. " value."
-                                    goto _inline_end285
-                                end
-                            end
-                            _ret136, _ret137 = right
-                            goto _inline_end285
-                        end
-                        ::_inline_end285::
-                        right, rerr = _ret136, _ret137
-                        local _ret140, _ret141
-                        do
-                            local _ret142
-                            do
-                                _ret142 = type (left) == "table" and (left == vm.empty or left.type) or type (left)
-                                goto _inline_end291
-                            end
-                            ::_inline_end291::
-                            local tx = _ret142
-                            if tx == "string" then
-                                left = tonumber (left)
-                                if not left then
-                                    _ret140, _ret141 = left, "Cannot convert the string value to a number."
-                                    goto _inline_end290
-                                end
-                            elseif tx ~= "number" then
-                                if tx == "table" and left.meta.table.tonumber then
-                                    local meta = left.meta.table.tonumber
-                                    local params = {}
-                                    local _ret143
-                                    do
-                                        table.insert (vm.chunk.callstack, {chunk = vm.chunk, macro = meta, ip = vm.ip})
-                                        if #vm.chunk.callstack <= 1000 then
-                                            local success, callResult, cip, source = vm.plume.run (meta, params)
-                                            if success then
-                                                table.remove (vm.chunk.callstack)
-                                                _ret143 = callResult
-                                                goto _inline_end292
-                                            else
-                                                do
-                                                    vm.serr = {callResult, cip, (source or meta)}
-                                                end
-                                            end
-                                        else
-                                            do
-                                                vm.err = "stack overflow"
-                                            end
-                                        end
-                                    end
-                                    ::_inline_end292::
-                                    _ret140, _ret141 = _ret143
-                                    goto _inline_end290
-                                else
-                                    _ret140, _ret141 = left, "Cannot do comparison or arithmetic with " .. tostring (tx) .. " value."
-                                    goto _inline_end290
-                                end
-                            end
-                            _ret140, _ret141 = left
-                            goto _inline_end290
-                        end
-                        ::_inline_end290::
-                        left, lerr = _ret140, _ret141
-                        if lerr or rerr then
-                            local _ret144, _ret145
-                            do
-                                local meta, params
-                                local _ret146
-                                do
-                                    _ret146 = type (left) == "table" and (left == vm.empty or left.type) or type (left)
-                                    goto _inline_end296
-                                end
-                                ::_inline_end296::
-                                local tleft = _ret146
-                                local _ret147
-                                do
-                                    _ret147 = type (right) == "table" and (right == vm.empty or right.type) or type (right)
-                                    goto _inline_end297
-                                end
-                                ::_inline_end297::
-                                local tright = _ret147
-                                if tleft == "table" and left.meta and left.meta.table["sub" .. "r"] then
-                                    meta = left.meta.table["sub" .. "r"]
-                                    params = {right, left}
-                                elseif tright == "table" and right.meta and right.meta.table["sub" .. "l"] then
-                                    meta = right.meta.table["sub" .. "l"]
-                                    params = {left, right}
-                                elseif tleft == "table" and left.meta and left.meta.table.sub then
-                                    meta = left.meta.table.sub
-                                    params = {left, right, left}
-                                elseif tright == "table" and right.meta and right.meta.table.sub then
-                                    meta = right.meta.table.sub
-                                    params = {left, right, right}
-                                end
-                                if not meta then
-                                    _ret144 = false
-                                    goto _inline_end295
-                                end
-                                local _ret148
+                        elseif tx ~= "number" then
+                            if tx == "table" and right.meta.table.tonumber then
+                                local meta = right.meta.table.tonumber
+                                local params = {}
+                                local _ret139
                                 do
                                     table.insert (vm.chunk.callstack, {chunk = vm.chunk, macro = meta, ip = vm.ip})
                                     if #vm.chunk.callstack <= 1000 then
                                         local success, callResult, cip, source = vm.plume.run (meta, params)
                                         if success then
                                             table.remove (vm.chunk.callstack)
-                                            _ret148 = callResult
-                                            goto _inline_end298
+                                            _ret139 = callResult
+                                            goto _inline_end287
                                         else
                                             do
                                                 vm.serr = {callResult, cip, (source or meta)}
@@ -2315,203 +1872,201 @@ return function (plume)
                                         end
                                     end
                                 end
-                                ::_inline_end298::
-                                _ret144, _ret145 = true, _ret148
+                                ::_inline_end287::
+                                _ret136, _ret137 = _ret139
+                                goto _inline_end285
+                            else
+                                _ret136, _ret137 = right, "Cannot do comparison or arithmetic with " .. tostring (tx) .. " value."
+                                goto _inline_end285
+                            end
+                        end
+                        _ret136, _ret137 = right
+                        goto _inline_end285
+                    end
+                    ::_inline_end285::
+                    right, rerr = _ret136, _ret137
+                    local _ret140, _ret141
+                    do
+                        local _ret142
+                        do
+                            _ret142 = type (left) == "table" and (left == vm.empty or left.type) or type (left)
+                            goto _inline_end291
+                        end
+                        ::_inline_end291::
+                        local tx = _ret142
+                        if tx == "string" then
+                            left = tonumber (left)
+                            if not left then
+                                _ret140, _ret141 = left, "Cannot convert the string value to a number."
+                                goto _inline_end290
+                            end
+                        elseif tx ~= "number" then
+                            if tx == "table" and left.meta.table.tonumber then
+                                local meta = left.meta.table.tonumber
+                                local params = {}
+                                local _ret143
+                                do
+                                    table.insert (vm.chunk.callstack, {chunk = vm.chunk, macro = meta, ip = vm.ip})
+                                    if #vm.chunk.callstack <= 1000 then
+                                        local success, callResult, cip, source = vm.plume.run (meta, params)
+                                        if success then
+                                            table.remove (vm.chunk.callstack)
+                                            _ret143 = callResult
+                                            goto _inline_end292
+                                        else
+                                            do
+                                                vm.serr = {callResult, cip, (source or meta)}
+                                            end
+                                        end
+                                    else
+                                        do
+                                            vm.err = "stack overflow"
+                                        end
+                                    end
+                                end
+                                ::_inline_end292::
+                                _ret140, _ret141 = _ret143
+                                goto _inline_end290
+                            else
+                                _ret140, _ret141 = left, "Cannot do comparison or arithmetic with " .. tostring (tx) .. " value."
+                                goto _inline_end290
+                            end
+                        end
+                        _ret140, _ret141 = left
+                        goto _inline_end290
+                    end
+                    ::_inline_end290::
+                    left, lerr = _ret140, _ret141
+                    if lerr or rerr then
+                        local _ret144, _ret145
+                        do
+                            local meta, params
+                            local _ret146
+                            do
+                                _ret146 = type (left) == "table" and (left == vm.empty or left.type) or type (left)
+                                goto _inline_end296
+                            end
+                            ::_inline_end296::
+                            local tleft = _ret146
+                            local _ret147
+                            do
+                                _ret147 = type (right) == "table" and (right == vm.empty or right.type) or type (right)
+                                goto _inline_end297
+                            end
+                            ::_inline_end297::
+                            local tright = _ret147
+                            if tleft == "table" and left.meta and left.meta.table["sub" .. "r"] then
+                                meta = left.meta.table["sub" .. "r"]
+                                params = {right, left}
+                            elseif tright == "table" and right.meta and right.meta.table["sub" .. "l"] then
+                                meta = right.meta.table["sub" .. "l"]
+                                params = {left, right}
+                            elseif tleft == "table" and left.meta and left.meta.table.sub then
+                                meta = left.meta.table.sub
+                                params = {left, right, left}
+                            elseif tright == "table" and right.meta and right.meta.table.sub then
+                                meta = right.meta.table.sub
+                                params = {left, right, right}
+                            end
+                            if not meta then
+                                _ret144 = false
                                 goto _inline_end295
                             end
-                            ::_inline_end295::
-                            success, result = _ret144, _ret145
-                        else
-                            success = true
-                            local _ret149
+                            local _ret148
                             do
-                                _ret149 = left - right
-                                goto _inline_end301
+                                table.insert (vm.chunk.callstack, {chunk = vm.chunk, macro = meta, ip = vm.ip})
+                                if #vm.chunk.callstack <= 1000 then
+                                    local success, callResult, cip, source = vm.plume.run (meta, params)
+                                    if success then
+                                        table.remove (vm.chunk.callstack)
+                                        _ret148 = callResult
+                                        goto _inline_end298
+                                    else
+                                        do
+                                            vm.serr = {callResult, cip, (source or meta)}
+                                        end
+                                    end
+                                else
+                                    do
+                                        vm.err = "stack overflow"
+                                    end
+                                end
                             end
-                            ::_inline_end301::
-                            result = _ret149
+                            ::_inline_end298::
+                            _ret144, _ret145 = true, _ret148
+                            goto _inline_end295
                         end
-                        if success then
-                            do
-                                vm.mainStack.pointer = vm.mainStack.pointer + 1
-                                vm.mainStack[vm.mainStack.pointer] = result
-                            end
-                        else
-                            do
-                                vm.err = lerr or rerr
-                            end
+                        ::_inline_end295::
+                        success, result = _ret144, _ret145
+                    else
+                        success = true
+                        local _ret149
+                        do
+                            _ret149 = left - right
+                            goto _inline_end301
+                        end
+                        ::_inline_end301::
+                        result = _ret149
+                    end
+                    if success then
+                        do
+                            vm.mainStack.pointer = vm.mainStack.pointer + 1
+                            vm.mainStack[vm.mainStack.pointer] = result
+                        end
+                    else
+                        do
+                            vm.err = lerr or rerr
                         end
                     end
                 end
                 goto DISPATCH
             ::OPP_DIV::
                 do
+                    local _ret150
                     do
-                        local _ret150
+                        vm.mainStack.pointer = vm.mainStack.pointer - 1
+                        _ret150 = vm.mainStack[vm.mainStack.pointer + 1]
+                        goto _inline_end306
+                    end
+                    ::_inline_end306::
+                    local right = _ret150
+                    local _ret151
+                    do
+                        vm.mainStack.pointer = vm.mainStack.pointer - 1
+                        _ret151 = vm.mainStack[vm.mainStack.pointer + 1]
+                        goto _inline_end307
+                    end
+                    ::_inline_end307::
+                    local left = _ret151
+                    local rerr, lerr, success, result
+                    local _ret152, _ret153
+                    do
+                        local _ret154
                         do
-                            vm.mainStack.pointer = vm.mainStack.pointer - 1
-                            _ret150 = vm.mainStack[vm.mainStack.pointer + 1]
-                            goto _inline_end306
+                            _ret154 = type (right) == "table" and (right == vm.empty or right.type) or type (right)
+                            goto _inline_end309
                         end
-                        ::_inline_end306::
-                        local right = _ret150
-                        local _ret151
-                        do
-                            vm.mainStack.pointer = vm.mainStack.pointer - 1
-                            _ret151 = vm.mainStack[vm.mainStack.pointer + 1]
-                            goto _inline_end307
-                        end
-                        ::_inline_end307::
-                        local left = _ret151
-                        local rerr, lerr, success, result
-                        local _ret152, _ret153
-                        do
-                            local _ret154
-                            do
-                                _ret154 = type (right) == "table" and (right == vm.empty or right.type) or type (right)
-                                goto _inline_end309
+                        ::_inline_end309::
+                        local tx = _ret154
+                        if tx == "string" then
+                            right = tonumber (right)
+                            if not right then
+                                _ret152, _ret153 = right, "Cannot convert the string value to a number."
+                                goto _inline_end308
                             end
-                            ::_inline_end309::
-                            local tx = _ret154
-                            if tx == "string" then
-                                right = tonumber (right)
-                                if not right then
-                                    _ret152, _ret153 = right, "Cannot convert the string value to a number."
-                                    goto _inline_end308
-                                end
-                            elseif tx ~= "number" then
-                                if tx == "table" and right.meta.table.tonumber then
-                                    local meta = right.meta.table.tonumber
-                                    local params = {}
-                                    local _ret155
-                                    do
-                                        table.insert (vm.chunk.callstack, {chunk = vm.chunk, macro = meta, ip = vm.ip})
-                                        if #vm.chunk.callstack <= 1000 then
-                                            local success, callResult, cip, source = vm.plume.run (meta, params)
-                                            if success then
-                                                table.remove (vm.chunk.callstack)
-                                                _ret155 = callResult
-                                                goto _inline_end310
-                                            else
-                                                do
-                                                    vm.serr = {callResult, cip, (source or meta)}
-                                                end
-                                            end
-                                        else
-                                            do
-                                                vm.err = "stack overflow"
-                                            end
-                                        end
-                                    end
-                                    ::_inline_end310::
-                                    _ret152, _ret153 = _ret155
-                                    goto _inline_end308
-                                else
-                                    _ret152, _ret153 = right, "Cannot do comparison or arithmetic with " .. tostring (tx) .. " value."
-                                    goto _inline_end308
-                                end
-                            end
-                            _ret152, _ret153 = right
-                            goto _inline_end308
-                        end
-                        ::_inline_end308::
-                        right, rerr = _ret152, _ret153
-                        local _ret156, _ret157
-                        do
-                            local _ret158
-                            do
-                                _ret158 = type (left) == "table" and (left == vm.empty or left.type) or type (left)
-                                goto _inline_end314
-                            end
-                            ::_inline_end314::
-                            local tx = _ret158
-                            if tx == "string" then
-                                left = tonumber (left)
-                                if not left then
-                                    _ret156, _ret157 = left, "Cannot convert the string value to a number."
-                                    goto _inline_end313
-                                end
-                            elseif tx ~= "number" then
-                                if tx == "table" and left.meta.table.tonumber then
-                                    local meta = left.meta.table.tonumber
-                                    local params = {}
-                                    local _ret159
-                                    do
-                                        table.insert (vm.chunk.callstack, {chunk = vm.chunk, macro = meta, ip = vm.ip})
-                                        if #vm.chunk.callstack <= 1000 then
-                                            local success, callResult, cip, source = vm.plume.run (meta, params)
-                                            if success then
-                                                table.remove (vm.chunk.callstack)
-                                                _ret159 = callResult
-                                                goto _inline_end315
-                                            else
-                                                do
-                                                    vm.serr = {callResult, cip, (source or meta)}
-                                                end
-                                            end
-                                        else
-                                            do
-                                                vm.err = "stack overflow"
-                                            end
-                                        end
-                                    end
-                                    ::_inline_end315::
-                                    _ret156, _ret157 = _ret159
-                                    goto _inline_end313
-                                else
-                                    _ret156, _ret157 = left, "Cannot do comparison or arithmetic with " .. tostring (tx) .. " value."
-                                    goto _inline_end313
-                                end
-                            end
-                            _ret156, _ret157 = left
-                            goto _inline_end313
-                        end
-                        ::_inline_end313::
-                        left, lerr = _ret156, _ret157
-                        if lerr or rerr then
-                            local _ret160, _ret161
-                            do
-                                local meta, params
-                                local _ret162
-                                do
-                                    _ret162 = type (left) == "table" and (left == vm.empty or left.type) or type (left)
-                                    goto _inline_end319
-                                end
-                                ::_inline_end319::
-                                local tleft = _ret162
-                                local _ret163
-                                do
-                                    _ret163 = type (right) == "table" and (right == vm.empty or right.type) or type (right)
-                                    goto _inline_end320
-                                end
-                                ::_inline_end320::
-                                local tright = _ret163
-                                if tleft == "table" and left.meta and left.meta.table["div" .. "r"] then
-                                    meta = left.meta.table["div" .. "r"]
-                                    params = {right, left}
-                                elseif tright == "table" and right.meta and right.meta.table["div" .. "l"] then
-                                    meta = right.meta.table["div" .. "l"]
-                                    params = {left, right}
-                                elseif tleft == "table" and left.meta and left.meta.table.div then
-                                    meta = left.meta.table.div
-                                    params = {left, right, left}
-                                elseif tright == "table" and right.meta and right.meta.table.div then
-                                    meta = right.meta.table.div
-                                    params = {left, right, right}
-                                end
-                                if not meta then
-                                    _ret160 = false
-                                    goto _inline_end318
-                                end
-                                local _ret164
+                        elseif tx ~= "number" then
+                            if tx == "table" and right.meta.table.tonumber then
+                                local meta = right.meta.table.tonumber
+                                local params = {}
+                                local _ret155
                                 do
                                     table.insert (vm.chunk.callstack, {chunk = vm.chunk, macro = meta, ip = vm.ip})
                                     if #vm.chunk.callstack <= 1000 then
                                         local success, callResult, cip, source = vm.plume.run (meta, params)
                                         if success then
                                             table.remove (vm.chunk.callstack)
-                                            _ret164 = callResult
-                                            goto _inline_end321
+                                            _ret155 = callResult
+                                            goto _inline_end310
                                         else
                                             do
                                                 vm.serr = {callResult, cip, (source or meta)}
@@ -2523,126 +2078,193 @@ return function (plume)
                                         end
                                     end
                                 end
-                                ::_inline_end321::
-                                _ret160, _ret161 = true, _ret164
+                                ::_inline_end310::
+                                _ret152, _ret153 = _ret155
+                                goto _inline_end308
+                            else
+                                _ret152, _ret153 = right, "Cannot do comparison or arithmetic with " .. tostring (tx) .. " value."
+                                goto _inline_end308
+                            end
+                        end
+                        _ret152, _ret153 = right
+                        goto _inline_end308
+                    end
+                    ::_inline_end308::
+                    right, rerr = _ret152, _ret153
+                    local _ret156, _ret157
+                    do
+                        local _ret158
+                        do
+                            _ret158 = type (left) == "table" and (left == vm.empty or left.type) or type (left)
+                            goto _inline_end314
+                        end
+                        ::_inline_end314::
+                        local tx = _ret158
+                        if tx == "string" then
+                            left = tonumber (left)
+                            if not left then
+                                _ret156, _ret157 = left, "Cannot convert the string value to a number."
+                                goto _inline_end313
+                            end
+                        elseif tx ~= "number" then
+                            if tx == "table" and left.meta.table.tonumber then
+                                local meta = left.meta.table.tonumber
+                                local params = {}
+                                local _ret159
+                                do
+                                    table.insert (vm.chunk.callstack, {chunk = vm.chunk, macro = meta, ip = vm.ip})
+                                    if #vm.chunk.callstack <= 1000 then
+                                        local success, callResult, cip, source = vm.plume.run (meta, params)
+                                        if success then
+                                            table.remove (vm.chunk.callstack)
+                                            _ret159 = callResult
+                                            goto _inline_end315
+                                        else
+                                            do
+                                                vm.serr = {callResult, cip, (source or meta)}
+                                            end
+                                        end
+                                    else
+                                        do
+                                            vm.err = "stack overflow"
+                                        end
+                                    end
+                                end
+                                ::_inline_end315::
+                                _ret156, _ret157 = _ret159
+                                goto _inline_end313
+                            else
+                                _ret156, _ret157 = left, "Cannot do comparison or arithmetic with " .. tostring (tx) .. " value."
+                                goto _inline_end313
+                            end
+                        end
+                        _ret156, _ret157 = left
+                        goto _inline_end313
+                    end
+                    ::_inline_end313::
+                    left, lerr = _ret156, _ret157
+                    if lerr or rerr then
+                        local _ret160, _ret161
+                        do
+                            local meta, params
+                            local _ret162
+                            do
+                                _ret162 = type (left) == "table" and (left == vm.empty or left.type) or type (left)
+                                goto _inline_end319
+                            end
+                            ::_inline_end319::
+                            local tleft = _ret162
+                            local _ret163
+                            do
+                                _ret163 = type (right) == "table" and (right == vm.empty or right.type) or type (right)
+                                goto _inline_end320
+                            end
+                            ::_inline_end320::
+                            local tright = _ret163
+                            if tleft == "table" and left.meta and left.meta.table["div" .. "r"] then
+                                meta = left.meta.table["div" .. "r"]
+                                params = {right, left}
+                            elseif tright == "table" and right.meta and right.meta.table["div" .. "l"] then
+                                meta = right.meta.table["div" .. "l"]
+                                params = {left, right}
+                            elseif tleft == "table" and left.meta and left.meta.table.div then
+                                meta = left.meta.table.div
+                                params = {left, right, left}
+                            elseif tright == "table" and right.meta and right.meta.table.div then
+                                meta = right.meta.table.div
+                                params = {left, right, right}
+                            end
+                            if not meta then
+                                _ret160 = false
                                 goto _inline_end318
                             end
-                            ::_inline_end318::
-                            success, result = _ret160, _ret161
-                        else
-                            success = true
-                            local _ret165
+                            local _ret164
                             do
-                                _ret165 = left / right
-                                goto _inline_end324
+                                table.insert (vm.chunk.callstack, {chunk = vm.chunk, macro = meta, ip = vm.ip})
+                                if #vm.chunk.callstack <= 1000 then
+                                    local success, callResult, cip, source = vm.plume.run (meta, params)
+                                    if success then
+                                        table.remove (vm.chunk.callstack)
+                                        _ret164 = callResult
+                                        goto _inline_end321
+                                    else
+                                        do
+                                            vm.serr = {callResult, cip, (source or meta)}
+                                        end
+                                    end
+                                else
+                                    do
+                                        vm.err = "stack overflow"
+                                    end
+                                end
                             end
-                            ::_inline_end324::
-                            result = _ret165
+                            ::_inline_end321::
+                            _ret160, _ret161 = true, _ret164
+                            goto _inline_end318
                         end
-                        if success then
-                            do
-                                vm.mainStack.pointer = vm.mainStack.pointer + 1
-                                vm.mainStack[vm.mainStack.pointer] = result
-                            end
-                        else
-                            do
-                                vm.err = lerr or rerr
-                            end
+                        ::_inline_end318::
+                        success, result = _ret160, _ret161
+                    else
+                        success = true
+                        local _ret165
+                        do
+                            _ret165 = left / right
+                            goto _inline_end324
+                        end
+                        ::_inline_end324::
+                        result = _ret165
+                    end
+                    if success then
+                        do
+                            vm.mainStack.pointer = vm.mainStack.pointer + 1
+                            vm.mainStack[vm.mainStack.pointer] = result
+                        end
+                    else
+                        do
+                            vm.err = lerr or rerr
                         end
                     end
                 end
                 goto DISPATCH
             ::OPP_NEG::
                 do
+                    local _ret166
                     do
-                        local _ret166
+                        vm.mainStack.pointer = vm.mainStack.pointer - 1
+                        _ret166 = vm.mainStack[vm.mainStack.pointer + 1]
+                        goto _inline_end329
+                    end
+                    ::_inline_end329::
+                    local x = _ret166
+                    local err
+                    local _ret167, _ret168
+                    do
+                        local _ret169
                         do
-                            vm.mainStack.pointer = vm.mainStack.pointer - 1
-                            _ret166 = vm.mainStack[vm.mainStack.pointer + 1]
-                            goto _inline_end329
+                            _ret169 = type (x) == "table" and (x == vm.empty or x.type) or type (x)
+                            goto _inline_end331
                         end
-                        ::_inline_end329::
-                        local x = _ret166
-                        local err
-                        local _ret167, _ret168
-                        do
-                            local _ret169
-                            do
-                                _ret169 = type (x) == "table" and (x == vm.empty or x.type) or type (x)
-                                goto _inline_end331
+                        ::_inline_end331::
+                        local tx = _ret169
+                        if tx == "string" then
+                            x = tonumber (x)
+                            if not x then
+                                _ret167, _ret168 = x, "Cannot convert the string value to a number."
+                                goto _inline_end330
                             end
-                            ::_inline_end331::
-                            local tx = _ret169
-                            if tx == "string" then
-                                x = tonumber (x)
-                                if not x then
-                                    _ret167, _ret168 = x, "Cannot convert the string value to a number."
-                                    goto _inline_end330
-                                end
-                            elseif tx ~= "number" then
-                                if tx == "table" and x.meta.table.tonumber then
-                                    local meta = x.meta.table.tonumber
-                                    local params = {}
-                                    local _ret170
-                                    do
-                                        table.insert (vm.chunk.callstack, {chunk = vm.chunk, macro = meta, ip = vm.ip})
-                                        if #vm.chunk.callstack <= 1000 then
-                                            local success, callResult, cip, source = vm.plume.run (meta, params)
-                                            if success then
-                                                table.remove (vm.chunk.callstack)
-                                                _ret170 = callResult
-                                                goto _inline_end332
-                                            else
-                                                do
-                                                    vm.serr = {callResult, cip, (source or meta)}
-                                                end
-                                            end
-                                        else
-                                            do
-                                                vm.err = "stack overflow"
-                                            end
-                                        end
-                                    end
-                                    ::_inline_end332::
-                                    _ret167, _ret168 = _ret170
-                                    goto _inline_end330
-                                else
-                                    _ret167, _ret168 = x, "Cannot do comparison or arithmetic with " .. tostring (tx) .. " value."
-                                    goto _inline_end330
-                                end
-                            end
-                            _ret167, _ret168 = x
-                            goto _inline_end330
-                        end
-                        ::_inline_end330::
-                        x, err = _ret167, _ret168
-                        if err then
-                            local _ret171, _ret172
-                            do
-                                local meta
-                                local params = {x}
-                                local _ret173
-                                do
-                                    _ret173 = type (x) == "table" and (x == vm.empty or x.type) or type (x)
-                                    goto _inline_end336
-                                end
-                                ::_inline_end336::
-                                if _ret173 == "table" and x.meta and x.meta.table.minus then
-                                    meta = x.meta.table.minus
-                                end
-                                if not meta then
-                                    _ret171 = false
-                                    goto _inline_end335
-                                end
-                                local _ret174
+                        elseif tx ~= "number" then
+                            if tx == "table" and x.meta.table.tonumber then
+                                local meta = x.meta.table.tonumber
+                                local params = {}
+                                local _ret170
                                 do
                                     table.insert (vm.chunk.callstack, {chunk = vm.chunk, macro = meta, ip = vm.ip})
                                     if #vm.chunk.callstack <= 1000 then
                                         local success, callResult, cip, source = vm.plume.run (meta, params)
                                         if success then
                                             table.remove (vm.chunk.callstack)
-                                            _ret174 = callResult
-                                            goto _inline_end337
+                                            _ret170 = callResult
+                                            goto _inline_end332
                                         else
                                             do
                                                 vm.serr = {callResult, cip, (source or meta)}
@@ -2654,203 +2276,132 @@ return function (plume)
                                         end
                                     end
                                 end
-                                ::_inline_end337::
-                                _ret171, _ret172 = true, _ret174
+                                ::_inline_end332::
+                                _ret167, _ret168 = _ret170
+                                goto _inline_end330
+                            else
+                                _ret167, _ret168 = x, "Cannot do comparison or arithmetic with " .. tostring (tx) .. " value."
+                                goto _inline_end330
+                            end
+                        end
+                        _ret167, _ret168 = x
+                        goto _inline_end330
+                    end
+                    ::_inline_end330::
+                    x, err = _ret167, _ret168
+                    if err then
+                        local _ret171, _ret172
+                        do
+                            local meta
+                            local params = {x}
+                            local _ret173
+                            do
+                                _ret173 = type (x) == "table" and (x == vm.empty or x.type) or type (x)
+                                goto _inline_end336
+                            end
+                            ::_inline_end336::
+                            if _ret173 == "table" and x.meta and x.meta.table.minus then
+                                meta = x.meta.table.minus
+                            end
+                            if not meta then
+                                _ret171 = false
                                 goto _inline_end335
                             end
-                            ::_inline_end335::
-                            success, result = _ret171, _ret172
-                        else
-                            success = true
-                            local _ret175
+                            local _ret174
                             do
-                                _ret175 = -x
-                                goto _inline_end340
+                                table.insert (vm.chunk.callstack, {chunk = vm.chunk, macro = meta, ip = vm.ip})
+                                if #vm.chunk.callstack <= 1000 then
+                                    local success, callResult, cip, source = vm.plume.run (meta, params)
+                                    if success then
+                                        table.remove (vm.chunk.callstack)
+                                        _ret174 = callResult
+                                        goto _inline_end337
+                                    else
+                                        do
+                                            vm.serr = {callResult, cip, (source or meta)}
+                                        end
+                                    end
+                                else
+                                    do
+                                        vm.err = "stack overflow"
+                                    end
+                                end
                             end
-                            ::_inline_end340::
-                            result = _ret175
+                            ::_inline_end337::
+                            _ret171, _ret172 = true, _ret174
+                            goto _inline_end335
                         end
-                        if success then
-                            do
-                                vm.mainStack.pointer = vm.mainStack.pointer + 1
-                                vm.mainStack[vm.mainStack.pointer] = result
-                            end
-                        else
-                            do
-                                vm.err = err
-                            end
+                        ::_inline_end335::
+                        success, result = _ret171, _ret172
+                    else
+                        success = true
+                        local _ret175
+                        do
+                            _ret175 = -x
+                            goto _inline_end340
+                        end
+                        ::_inline_end340::
+                        result = _ret175
+                    end
+                    if success then
+                        do
+                            vm.mainStack.pointer = vm.mainStack.pointer + 1
+                            vm.mainStack[vm.mainStack.pointer] = result
+                        end
+                    else
+                        do
+                            vm.err = err
                         end
                     end
                 end
                 goto DISPATCH
             ::OPP_MOD::
                 do
+                    local _ret176
                     do
-                        local _ret176
+                        vm.mainStack.pointer = vm.mainStack.pointer - 1
+                        _ret176 = vm.mainStack[vm.mainStack.pointer + 1]
+                        goto _inline_end345
+                    end
+                    ::_inline_end345::
+                    local right = _ret176
+                    local _ret177
+                    do
+                        vm.mainStack.pointer = vm.mainStack.pointer - 1
+                        _ret177 = vm.mainStack[vm.mainStack.pointer + 1]
+                        goto _inline_end346
+                    end
+                    ::_inline_end346::
+                    local left = _ret177
+                    local rerr, lerr, success, result
+                    local _ret178, _ret179
+                    do
+                        local _ret180
                         do
-                            vm.mainStack.pointer = vm.mainStack.pointer - 1
-                            _ret176 = vm.mainStack[vm.mainStack.pointer + 1]
-                            goto _inline_end345
+                            _ret180 = type (right) == "table" and (right == vm.empty or right.type) or type (right)
+                            goto _inline_end348
                         end
-                        ::_inline_end345::
-                        local right = _ret176
-                        local _ret177
-                        do
-                            vm.mainStack.pointer = vm.mainStack.pointer - 1
-                            _ret177 = vm.mainStack[vm.mainStack.pointer + 1]
-                            goto _inline_end346
-                        end
-                        ::_inline_end346::
-                        local left = _ret177
-                        local rerr, lerr, success, result
-                        local _ret178, _ret179
-                        do
-                            local _ret180
-                            do
-                                _ret180 = type (right) == "table" and (right == vm.empty or right.type) or type (right)
-                                goto _inline_end348
+                        ::_inline_end348::
+                        local tx = _ret180
+                        if tx == "string" then
+                            right = tonumber (right)
+                            if not right then
+                                _ret178, _ret179 = right, "Cannot convert the string value to a number."
+                                goto _inline_end347
                             end
-                            ::_inline_end348::
-                            local tx = _ret180
-                            if tx == "string" then
-                                right = tonumber (right)
-                                if not right then
-                                    _ret178, _ret179 = right, "Cannot convert the string value to a number."
-                                    goto _inline_end347
-                                end
-                            elseif tx ~= "number" then
-                                if tx == "table" and right.meta.table.tonumber then
-                                    local meta = right.meta.table.tonumber
-                                    local params = {}
-                                    local _ret181
-                                    do
-                                        table.insert (vm.chunk.callstack, {chunk = vm.chunk, macro = meta, ip = vm.ip})
-                                        if #vm.chunk.callstack <= 1000 then
-                                            local success, callResult, cip, source = vm.plume.run (meta, params)
-                                            if success then
-                                                table.remove (vm.chunk.callstack)
-                                                _ret181 = callResult
-                                                goto _inline_end349
-                                            else
-                                                do
-                                                    vm.serr = {callResult, cip, (source or meta)}
-                                                end
-                                            end
-                                        else
-                                            do
-                                                vm.err = "stack overflow"
-                                            end
-                                        end
-                                    end
-                                    ::_inline_end349::
-                                    _ret178, _ret179 = _ret181
-                                    goto _inline_end347
-                                else
-                                    _ret178, _ret179 = right, "Cannot do comparison or arithmetic with " .. tostring (tx) .. " value."
-                                    goto _inline_end347
-                                end
-                            end
-                            _ret178, _ret179 = right
-                            goto _inline_end347
-                        end
-                        ::_inline_end347::
-                        right, rerr = _ret178, _ret179
-                        local _ret182, _ret183
-                        do
-                            local _ret184
-                            do
-                                _ret184 = type (left) == "table" and (left == vm.empty or left.type) or type (left)
-                                goto _inline_end353
-                            end
-                            ::_inline_end353::
-                            local tx = _ret184
-                            if tx == "string" then
-                                left = tonumber (left)
-                                if not left then
-                                    _ret182, _ret183 = left, "Cannot convert the string value to a number."
-                                    goto _inline_end352
-                                end
-                            elseif tx ~= "number" then
-                                if tx == "table" and left.meta.table.tonumber then
-                                    local meta = left.meta.table.tonumber
-                                    local params = {}
-                                    local _ret185
-                                    do
-                                        table.insert (vm.chunk.callstack, {chunk = vm.chunk, macro = meta, ip = vm.ip})
-                                        if #vm.chunk.callstack <= 1000 then
-                                            local success, callResult, cip, source = vm.plume.run (meta, params)
-                                            if success then
-                                                table.remove (vm.chunk.callstack)
-                                                _ret185 = callResult
-                                                goto _inline_end354
-                                            else
-                                                do
-                                                    vm.serr = {callResult, cip, (source or meta)}
-                                                end
-                                            end
-                                        else
-                                            do
-                                                vm.err = "stack overflow"
-                                            end
-                                        end
-                                    end
-                                    ::_inline_end354::
-                                    _ret182, _ret183 = _ret185
-                                    goto _inline_end352
-                                else
-                                    _ret182, _ret183 = left, "Cannot do comparison or arithmetic with " .. tostring (tx) .. " value."
-                                    goto _inline_end352
-                                end
-                            end
-                            _ret182, _ret183 = left
-                            goto _inline_end352
-                        end
-                        ::_inline_end352::
-                        left, lerr = _ret182, _ret183
-                        if lerr or rerr then
-                            local _ret186, _ret187
-                            do
-                                local meta, params
-                                local _ret188
-                                do
-                                    _ret188 = type (left) == "table" and (left == vm.empty or left.type) or type (left)
-                                    goto _inline_end358
-                                end
-                                ::_inline_end358::
-                                local tleft = _ret188
-                                local _ret189
-                                do
-                                    _ret189 = type (right) == "table" and (right == vm.empty or right.type) or type (right)
-                                    goto _inline_end359
-                                end
-                                ::_inline_end359::
-                                local tright = _ret189
-                                if tleft == "table" and left.meta and left.meta.table["mod" .. "r"] then
-                                    meta = left.meta.table["mod" .. "r"]
-                                    params = {right, left}
-                                elseif tright == "table" and right.meta and right.meta.table["mod" .. "l"] then
-                                    meta = right.meta.table["mod" .. "l"]
-                                    params = {left, right}
-                                elseif tleft == "table" and left.meta and left.meta.table.mod then
-                                    meta = left.meta.table.mod
-                                    params = {left, right, left}
-                                elseif tright == "table" and right.meta and right.meta.table.mod then
-                                    meta = right.meta.table.mod
-                                    params = {left, right, right}
-                                end
-                                if not meta then
-                                    _ret186 = false
-                                    goto _inline_end357
-                                end
-                                local _ret190
+                        elseif tx ~= "number" then
+                            if tx == "table" and right.meta.table.tonumber then
+                                local meta = right.meta.table.tonumber
+                                local params = {}
+                                local _ret181
                                 do
                                     table.insert (vm.chunk.callstack, {chunk = vm.chunk, macro = meta, ip = vm.ip})
                                     if #vm.chunk.callstack <= 1000 then
                                         local success, callResult, cip, source = vm.plume.run (meta, params)
                                         if success then
                                             table.remove (vm.chunk.callstack)
-                                            _ret190 = callResult
-                                            goto _inline_end360
+                                            _ret181 = callResult
+                                            goto _inline_end349
                                         else
                                             do
                                                 vm.serr = {callResult, cip, (source or meta)}
@@ -2862,203 +2413,201 @@ return function (plume)
                                         end
                                     end
                                 end
-                                ::_inline_end360::
-                                _ret186, _ret187 = true, _ret190
+                                ::_inline_end349::
+                                _ret178, _ret179 = _ret181
+                                goto _inline_end347
+                            else
+                                _ret178, _ret179 = right, "Cannot do comparison or arithmetic with " .. tostring (tx) .. " value."
+                                goto _inline_end347
+                            end
+                        end
+                        _ret178, _ret179 = right
+                        goto _inline_end347
+                    end
+                    ::_inline_end347::
+                    right, rerr = _ret178, _ret179
+                    local _ret182, _ret183
+                    do
+                        local _ret184
+                        do
+                            _ret184 = type (left) == "table" and (left == vm.empty or left.type) or type (left)
+                            goto _inline_end353
+                        end
+                        ::_inline_end353::
+                        local tx = _ret184
+                        if tx == "string" then
+                            left = tonumber (left)
+                            if not left then
+                                _ret182, _ret183 = left, "Cannot convert the string value to a number."
+                                goto _inline_end352
+                            end
+                        elseif tx ~= "number" then
+                            if tx == "table" and left.meta.table.tonumber then
+                                local meta = left.meta.table.tonumber
+                                local params = {}
+                                local _ret185
+                                do
+                                    table.insert (vm.chunk.callstack, {chunk = vm.chunk, macro = meta, ip = vm.ip})
+                                    if #vm.chunk.callstack <= 1000 then
+                                        local success, callResult, cip, source = vm.plume.run (meta, params)
+                                        if success then
+                                            table.remove (vm.chunk.callstack)
+                                            _ret185 = callResult
+                                            goto _inline_end354
+                                        else
+                                            do
+                                                vm.serr = {callResult, cip, (source or meta)}
+                                            end
+                                        end
+                                    else
+                                        do
+                                            vm.err = "stack overflow"
+                                        end
+                                    end
+                                end
+                                ::_inline_end354::
+                                _ret182, _ret183 = _ret185
+                                goto _inline_end352
+                            else
+                                _ret182, _ret183 = left, "Cannot do comparison or arithmetic with " .. tostring (tx) .. " value."
+                                goto _inline_end352
+                            end
+                        end
+                        _ret182, _ret183 = left
+                        goto _inline_end352
+                    end
+                    ::_inline_end352::
+                    left, lerr = _ret182, _ret183
+                    if lerr or rerr then
+                        local _ret186, _ret187
+                        do
+                            local meta, params
+                            local _ret188
+                            do
+                                _ret188 = type (left) == "table" and (left == vm.empty or left.type) or type (left)
+                                goto _inline_end358
+                            end
+                            ::_inline_end358::
+                            local tleft = _ret188
+                            local _ret189
+                            do
+                                _ret189 = type (right) == "table" and (right == vm.empty or right.type) or type (right)
+                                goto _inline_end359
+                            end
+                            ::_inline_end359::
+                            local tright = _ret189
+                            if tleft == "table" and left.meta and left.meta.table["mod" .. "r"] then
+                                meta = left.meta.table["mod" .. "r"]
+                                params = {right, left}
+                            elseif tright == "table" and right.meta and right.meta.table["mod" .. "l"] then
+                                meta = right.meta.table["mod" .. "l"]
+                                params = {left, right}
+                            elseif tleft == "table" and left.meta and left.meta.table.mod then
+                                meta = left.meta.table.mod
+                                params = {left, right, left}
+                            elseif tright == "table" and right.meta and right.meta.table.mod then
+                                meta = right.meta.table.mod
+                                params = {left, right, right}
+                            end
+                            if not meta then
+                                _ret186 = false
                                 goto _inline_end357
                             end
-                            ::_inline_end357::
-                            success, result = _ret186, _ret187
-                        else
-                            success = true
-                            local _ret191
+                            local _ret190
                             do
-                                _ret191 = left % right
-                                goto _inline_end363
+                                table.insert (vm.chunk.callstack, {chunk = vm.chunk, macro = meta, ip = vm.ip})
+                                if #vm.chunk.callstack <= 1000 then
+                                    local success, callResult, cip, source = vm.plume.run (meta, params)
+                                    if success then
+                                        table.remove (vm.chunk.callstack)
+                                        _ret190 = callResult
+                                        goto _inline_end360
+                                    else
+                                        do
+                                            vm.serr = {callResult, cip, (source or meta)}
+                                        end
+                                    end
+                                else
+                                    do
+                                        vm.err = "stack overflow"
+                                    end
+                                end
                             end
-                            ::_inline_end363::
-                            result = _ret191
+                            ::_inline_end360::
+                            _ret186, _ret187 = true, _ret190
+                            goto _inline_end357
                         end
-                        if success then
-                            do
-                                vm.mainStack.pointer = vm.mainStack.pointer + 1
-                                vm.mainStack[vm.mainStack.pointer] = result
-                            end
-                        else
-                            do
-                                vm.err = lerr or rerr
-                            end
+                        ::_inline_end357::
+                        success, result = _ret186, _ret187
+                    else
+                        success = true
+                        local _ret191
+                        do
+                            _ret191 = left % right
+                            goto _inline_end363
+                        end
+                        ::_inline_end363::
+                        result = _ret191
+                    end
+                    if success then
+                        do
+                            vm.mainStack.pointer = vm.mainStack.pointer + 1
+                            vm.mainStack[vm.mainStack.pointer] = result
+                        end
+                    else
+                        do
+                            vm.err = lerr or rerr
                         end
                     end
                 end
                 goto DISPATCH
             ::OPP_POW::
                 do
+                    local _ret192
                     do
-                        local _ret192
+                        vm.mainStack.pointer = vm.mainStack.pointer - 1
+                        _ret192 = vm.mainStack[vm.mainStack.pointer + 1]
+                        goto _inline_end368
+                    end
+                    ::_inline_end368::
+                    local right = _ret192
+                    local _ret193
+                    do
+                        vm.mainStack.pointer = vm.mainStack.pointer - 1
+                        _ret193 = vm.mainStack[vm.mainStack.pointer + 1]
+                        goto _inline_end369
+                    end
+                    ::_inline_end369::
+                    local left = _ret193
+                    local rerr, lerr, success, result
+                    local _ret194, _ret195
+                    do
+                        local _ret196
                         do
-                            vm.mainStack.pointer = vm.mainStack.pointer - 1
-                            _ret192 = vm.mainStack[vm.mainStack.pointer + 1]
-                            goto _inline_end368
+                            _ret196 = type (right) == "table" and (right == vm.empty or right.type) or type (right)
+                            goto _inline_end371
                         end
-                        ::_inline_end368::
-                        local right = _ret192
-                        local _ret193
-                        do
-                            vm.mainStack.pointer = vm.mainStack.pointer - 1
-                            _ret193 = vm.mainStack[vm.mainStack.pointer + 1]
-                            goto _inline_end369
-                        end
-                        ::_inline_end369::
-                        local left = _ret193
-                        local rerr, lerr, success, result
-                        local _ret194, _ret195
-                        do
-                            local _ret196
-                            do
-                                _ret196 = type (right) == "table" and (right == vm.empty or right.type) or type (right)
-                                goto _inline_end371
+                        ::_inline_end371::
+                        local tx = _ret196
+                        if tx == "string" then
+                            right = tonumber (right)
+                            if not right then
+                                _ret194, _ret195 = right, "Cannot convert the string value to a number."
+                                goto _inline_end370
                             end
-                            ::_inline_end371::
-                            local tx = _ret196
-                            if tx == "string" then
-                                right = tonumber (right)
-                                if not right then
-                                    _ret194, _ret195 = right, "Cannot convert the string value to a number."
-                                    goto _inline_end370
-                                end
-                            elseif tx ~= "number" then
-                                if tx == "table" and right.meta.table.tonumber then
-                                    local meta = right.meta.table.tonumber
-                                    local params = {}
-                                    local _ret197
-                                    do
-                                        table.insert (vm.chunk.callstack, {chunk = vm.chunk, macro = meta, ip = vm.ip})
-                                        if #vm.chunk.callstack <= 1000 then
-                                            local success, callResult, cip, source = vm.plume.run (meta, params)
-                                            if success then
-                                                table.remove (vm.chunk.callstack)
-                                                _ret197 = callResult
-                                                goto _inline_end372
-                                            else
-                                                do
-                                                    vm.serr = {callResult, cip, (source or meta)}
-                                                end
-                                            end
-                                        else
-                                            do
-                                                vm.err = "stack overflow"
-                                            end
-                                        end
-                                    end
-                                    ::_inline_end372::
-                                    _ret194, _ret195 = _ret197
-                                    goto _inline_end370
-                                else
-                                    _ret194, _ret195 = right, "Cannot do comparison or arithmetic with " .. tostring (tx) .. " value."
-                                    goto _inline_end370
-                                end
-                            end
-                            _ret194, _ret195 = right
-                            goto _inline_end370
-                        end
-                        ::_inline_end370::
-                        right, rerr = _ret194, _ret195
-                        local _ret198, _ret199
-                        do
-                            local _ret200
-                            do
-                                _ret200 = type (left) == "table" and (left == vm.empty or left.type) or type (left)
-                                goto _inline_end376
-                            end
-                            ::_inline_end376::
-                            local tx = _ret200
-                            if tx == "string" then
-                                left = tonumber (left)
-                                if not left then
-                                    _ret198, _ret199 = left, "Cannot convert the string value to a number."
-                                    goto _inline_end375
-                                end
-                            elseif tx ~= "number" then
-                                if tx == "table" and left.meta.table.tonumber then
-                                    local meta = left.meta.table.tonumber
-                                    local params = {}
-                                    local _ret201
-                                    do
-                                        table.insert (vm.chunk.callstack, {chunk = vm.chunk, macro = meta, ip = vm.ip})
-                                        if #vm.chunk.callstack <= 1000 then
-                                            local success, callResult, cip, source = vm.plume.run (meta, params)
-                                            if success then
-                                                table.remove (vm.chunk.callstack)
-                                                _ret201 = callResult
-                                                goto _inline_end377
-                                            else
-                                                do
-                                                    vm.serr = {callResult, cip, (source or meta)}
-                                                end
-                                            end
-                                        else
-                                            do
-                                                vm.err = "stack overflow"
-                                            end
-                                        end
-                                    end
-                                    ::_inline_end377::
-                                    _ret198, _ret199 = _ret201
-                                    goto _inline_end375
-                                else
-                                    _ret198, _ret199 = left, "Cannot do comparison or arithmetic with " .. tostring (tx) .. " value."
-                                    goto _inline_end375
-                                end
-                            end
-                            _ret198, _ret199 = left
-                            goto _inline_end375
-                        end
-                        ::_inline_end375::
-                        left, lerr = _ret198, _ret199
-                        if lerr or rerr then
-                            local _ret202, _ret203
-                            do
-                                local meta, params
-                                local _ret204
-                                do
-                                    _ret204 = type (left) == "table" and (left == vm.empty or left.type) or type (left)
-                                    goto _inline_end381
-                                end
-                                ::_inline_end381::
-                                local tleft = _ret204
-                                local _ret205
-                                do
-                                    _ret205 = type (right) == "table" and (right == vm.empty or right.type) or type (right)
-                                    goto _inline_end382
-                                end
-                                ::_inline_end382::
-                                local tright = _ret205
-                                if tleft == "table" and left.meta and left.meta.table["pow" .. "r"] then
-                                    meta = left.meta.table["pow" .. "r"]
-                                    params = {right, left}
-                                elseif tright == "table" and right.meta and right.meta.table["pow" .. "l"] then
-                                    meta = right.meta.table["pow" .. "l"]
-                                    params = {left, right}
-                                elseif tleft == "table" and left.meta and left.meta.table.pow then
-                                    meta = left.meta.table.pow
-                                    params = {left, right, left}
-                                elseif tright == "table" and right.meta and right.meta.table.pow then
-                                    meta = right.meta.table.pow
-                                    params = {left, right, right}
-                                end
-                                if not meta then
-                                    _ret202 = false
-                                    goto _inline_end380
-                                end
-                                local _ret206
+                        elseif tx ~= "number" then
+                            if tx == "table" and right.meta.table.tonumber then
+                                local meta = right.meta.table.tonumber
+                                local params = {}
+                                local _ret197
                                 do
                                     table.insert (vm.chunk.callstack, {chunk = vm.chunk, macro = meta, ip = vm.ip})
                                     if #vm.chunk.callstack <= 1000 then
                                         local success, callResult, cip, source = vm.plume.run (meta, params)
                                         if success then
                                             table.remove (vm.chunk.callstack)
-                                            _ret206 = callResult
-                                            goto _inline_end383
+                                            _ret197 = callResult
+                                            goto _inline_end372
                                         else
                                             do
                                                 vm.serr = {callResult, cip, (source or meta)}
@@ -3070,203 +2619,201 @@ return function (plume)
                                         end
                                     end
                                 end
-                                ::_inline_end383::
-                                _ret202, _ret203 = true, _ret206
+                                ::_inline_end372::
+                                _ret194, _ret195 = _ret197
+                                goto _inline_end370
+                            else
+                                _ret194, _ret195 = right, "Cannot do comparison or arithmetic with " .. tostring (tx) .. " value."
+                                goto _inline_end370
+                            end
+                        end
+                        _ret194, _ret195 = right
+                        goto _inline_end370
+                    end
+                    ::_inline_end370::
+                    right, rerr = _ret194, _ret195
+                    local _ret198, _ret199
+                    do
+                        local _ret200
+                        do
+                            _ret200 = type (left) == "table" and (left == vm.empty or left.type) or type (left)
+                            goto _inline_end376
+                        end
+                        ::_inline_end376::
+                        local tx = _ret200
+                        if tx == "string" then
+                            left = tonumber (left)
+                            if not left then
+                                _ret198, _ret199 = left, "Cannot convert the string value to a number."
+                                goto _inline_end375
+                            end
+                        elseif tx ~= "number" then
+                            if tx == "table" and left.meta.table.tonumber then
+                                local meta = left.meta.table.tonumber
+                                local params = {}
+                                local _ret201
+                                do
+                                    table.insert (vm.chunk.callstack, {chunk = vm.chunk, macro = meta, ip = vm.ip})
+                                    if #vm.chunk.callstack <= 1000 then
+                                        local success, callResult, cip, source = vm.plume.run (meta, params)
+                                        if success then
+                                            table.remove (vm.chunk.callstack)
+                                            _ret201 = callResult
+                                            goto _inline_end377
+                                        else
+                                            do
+                                                vm.serr = {callResult, cip, (source or meta)}
+                                            end
+                                        end
+                                    else
+                                        do
+                                            vm.err = "stack overflow"
+                                        end
+                                    end
+                                end
+                                ::_inline_end377::
+                                _ret198, _ret199 = _ret201
+                                goto _inline_end375
+                            else
+                                _ret198, _ret199 = left, "Cannot do comparison or arithmetic with " .. tostring (tx) .. " value."
+                                goto _inline_end375
+                            end
+                        end
+                        _ret198, _ret199 = left
+                        goto _inline_end375
+                    end
+                    ::_inline_end375::
+                    left, lerr = _ret198, _ret199
+                    if lerr or rerr then
+                        local _ret202, _ret203
+                        do
+                            local meta, params
+                            local _ret204
+                            do
+                                _ret204 = type (left) == "table" and (left == vm.empty or left.type) or type (left)
+                                goto _inline_end381
+                            end
+                            ::_inline_end381::
+                            local tleft = _ret204
+                            local _ret205
+                            do
+                                _ret205 = type (right) == "table" and (right == vm.empty or right.type) or type (right)
+                                goto _inline_end382
+                            end
+                            ::_inline_end382::
+                            local tright = _ret205
+                            if tleft == "table" and left.meta and left.meta.table["pow" .. "r"] then
+                                meta = left.meta.table["pow" .. "r"]
+                                params = {right, left}
+                            elseif tright == "table" and right.meta and right.meta.table["pow" .. "l"] then
+                                meta = right.meta.table["pow" .. "l"]
+                                params = {left, right}
+                            elseif tleft == "table" and left.meta and left.meta.table.pow then
+                                meta = left.meta.table.pow
+                                params = {left, right, left}
+                            elseif tright == "table" and right.meta and right.meta.table.pow then
+                                meta = right.meta.table.pow
+                                params = {left, right, right}
+                            end
+                            if not meta then
+                                _ret202 = false
                                 goto _inline_end380
                             end
-                            ::_inline_end380::
-                            success, result = _ret202, _ret203
-                        else
-                            success = true
-                            local _ret207
+                            local _ret206
                             do
-                                _ret207 = left ^ right
-                                goto _inline_end386
+                                table.insert (vm.chunk.callstack, {chunk = vm.chunk, macro = meta, ip = vm.ip})
+                                if #vm.chunk.callstack <= 1000 then
+                                    local success, callResult, cip, source = vm.plume.run (meta, params)
+                                    if success then
+                                        table.remove (vm.chunk.callstack)
+                                        _ret206 = callResult
+                                        goto _inline_end383
+                                    else
+                                        do
+                                            vm.serr = {callResult, cip, (source or meta)}
+                                        end
+                                    end
+                                else
+                                    do
+                                        vm.err = "stack overflow"
+                                    end
+                                end
                             end
-                            ::_inline_end386::
-                            result = _ret207
+                            ::_inline_end383::
+                            _ret202, _ret203 = true, _ret206
+                            goto _inline_end380
                         end
-                        if success then
-                            do
-                                vm.mainStack.pointer = vm.mainStack.pointer + 1
-                                vm.mainStack[vm.mainStack.pointer] = result
-                            end
-                        else
-                            do
-                                vm.err = lerr or rerr
-                            end
+                        ::_inline_end380::
+                        success, result = _ret202, _ret203
+                    else
+                        success = true
+                        local _ret207
+                        do
+                            _ret207 = left ^ right
+                            goto _inline_end386
+                        end
+                        ::_inline_end386::
+                        result = _ret207
+                    end
+                    if success then
+                        do
+                            vm.mainStack.pointer = vm.mainStack.pointer + 1
+                            vm.mainStack[vm.mainStack.pointer] = result
+                        end
+                    else
+                        do
+                            vm.err = lerr or rerr
                         end
                     end
                 end
                 goto DISPATCH
             ::OPP_LT::
                 do
+                    local _ret208
                     do
-                        local _ret208
+                        vm.mainStack.pointer = vm.mainStack.pointer - 1
+                        _ret208 = vm.mainStack[vm.mainStack.pointer + 1]
+                        goto _inline_end391
+                    end
+                    ::_inline_end391::
+                    local right = _ret208
+                    local _ret209
+                    do
+                        vm.mainStack.pointer = vm.mainStack.pointer - 1
+                        _ret209 = vm.mainStack[vm.mainStack.pointer + 1]
+                        goto _inline_end392
+                    end
+                    ::_inline_end392::
+                    local left = _ret209
+                    local rerr, lerr, success, result
+                    local _ret210, _ret211
+                    do
+                        local _ret212
                         do
-                            vm.mainStack.pointer = vm.mainStack.pointer - 1
-                            _ret208 = vm.mainStack[vm.mainStack.pointer + 1]
-                            goto _inline_end391
+                            _ret212 = type (right) == "table" and (right == vm.empty or right.type) or type (right)
+                            goto _inline_end394
                         end
-                        ::_inline_end391::
-                        local right = _ret208
-                        local _ret209
-                        do
-                            vm.mainStack.pointer = vm.mainStack.pointer - 1
-                            _ret209 = vm.mainStack[vm.mainStack.pointer + 1]
-                            goto _inline_end392
-                        end
-                        ::_inline_end392::
-                        local left = _ret209
-                        local rerr, lerr, success, result
-                        local _ret210, _ret211
-                        do
-                            local _ret212
-                            do
-                                _ret212 = type (right) == "table" and (right == vm.empty or right.type) or type (right)
-                                goto _inline_end394
+                        ::_inline_end394::
+                        local tx = _ret212
+                        if tx == "string" then
+                            right = tonumber (right)
+                            if not right then
+                                _ret210, _ret211 = right, "Cannot convert the string value to a number."
+                                goto _inline_end393
                             end
-                            ::_inline_end394::
-                            local tx = _ret212
-                            if tx == "string" then
-                                right = tonumber (right)
-                                if not right then
-                                    _ret210, _ret211 = right, "Cannot convert the string value to a number."
-                                    goto _inline_end393
-                                end
-                            elseif tx ~= "number" then
-                                if tx == "table" and right.meta.table.tonumber then
-                                    local meta = right.meta.table.tonumber
-                                    local params = {}
-                                    local _ret213
-                                    do
-                                        table.insert (vm.chunk.callstack, {chunk = vm.chunk, macro = meta, ip = vm.ip})
-                                        if #vm.chunk.callstack <= 1000 then
-                                            local success, callResult, cip, source = vm.plume.run (meta, params)
-                                            if success then
-                                                table.remove (vm.chunk.callstack)
-                                                _ret213 = callResult
-                                                goto _inline_end395
-                                            else
-                                                do
-                                                    vm.serr = {callResult, cip, (source or meta)}
-                                                end
-                                            end
-                                        else
-                                            do
-                                                vm.err = "stack overflow"
-                                            end
-                                        end
-                                    end
-                                    ::_inline_end395::
-                                    _ret210, _ret211 = _ret213
-                                    goto _inline_end393
-                                else
-                                    _ret210, _ret211 = right, "Cannot do comparison or arithmetic with " .. tostring (tx) .. " value."
-                                    goto _inline_end393
-                                end
-                            end
-                            _ret210, _ret211 = right
-                            goto _inline_end393
-                        end
-                        ::_inline_end393::
-                        right, rerr = _ret210, _ret211
-                        local _ret214, _ret215
-                        do
-                            local _ret216
-                            do
-                                _ret216 = type (left) == "table" and (left == vm.empty or left.type) or type (left)
-                                goto _inline_end399
-                            end
-                            ::_inline_end399::
-                            local tx = _ret216
-                            if tx == "string" then
-                                left = tonumber (left)
-                                if not left then
-                                    _ret214, _ret215 = left, "Cannot convert the string value to a number."
-                                    goto _inline_end398
-                                end
-                            elseif tx ~= "number" then
-                                if tx == "table" and left.meta.table.tonumber then
-                                    local meta = left.meta.table.tonumber
-                                    local params = {}
-                                    local _ret217
-                                    do
-                                        table.insert (vm.chunk.callstack, {chunk = vm.chunk, macro = meta, ip = vm.ip})
-                                        if #vm.chunk.callstack <= 1000 then
-                                            local success, callResult, cip, source = vm.plume.run (meta, params)
-                                            if success then
-                                                table.remove (vm.chunk.callstack)
-                                                _ret217 = callResult
-                                                goto _inline_end400
-                                            else
-                                                do
-                                                    vm.serr = {callResult, cip, (source or meta)}
-                                                end
-                                            end
-                                        else
-                                            do
-                                                vm.err = "stack overflow"
-                                            end
-                                        end
-                                    end
-                                    ::_inline_end400::
-                                    _ret214, _ret215 = _ret217
-                                    goto _inline_end398
-                                else
-                                    _ret214, _ret215 = left, "Cannot do comparison or arithmetic with " .. tostring (tx) .. " value."
-                                    goto _inline_end398
-                                end
-                            end
-                            _ret214, _ret215 = left
-                            goto _inline_end398
-                        end
-                        ::_inline_end398::
-                        left, lerr = _ret214, _ret215
-                        if lerr or rerr then
-                            local _ret218, _ret219
-                            do
-                                local meta, params
-                                local _ret220
-                                do
-                                    _ret220 = type (left) == "table" and (left == vm.empty or left.type) or type (left)
-                                    goto _inline_end404
-                                end
-                                ::_inline_end404::
-                                local tleft = _ret220
-                                local _ret221
-                                do
-                                    _ret221 = type (right) == "table" and (right == vm.empty or right.type) or type (right)
-                                    goto _inline_end405
-                                end
-                                ::_inline_end405::
-                                local tright = _ret221
-                                if tleft == "table" and left.meta and left.meta.table["lt" .. "r"] then
-                                    meta = left.meta.table["lt" .. "r"]
-                                    params = {right, left}
-                                elseif tright == "table" and right.meta and right.meta.table["lt" .. "l"] then
-                                    meta = right.meta.table["lt" .. "l"]
-                                    params = {left, right}
-                                elseif tleft == "table" and left.meta and left.meta.table.lt then
-                                    meta = left.meta.table.lt
-                                    params = {left, right, left}
-                                elseif tright == "table" and right.meta and right.meta.table.lt then
-                                    meta = right.meta.table.lt
-                                    params = {left, right, right}
-                                end
-                                if not meta then
-                                    _ret218 = false
-                                    goto _inline_end403
-                                end
-                                local _ret222
+                        elseif tx ~= "number" then
+                            if tx == "table" and right.meta.table.tonumber then
+                                local meta = right.meta.table.tonumber
+                                local params = {}
+                                local _ret213
                                 do
                                     table.insert (vm.chunk.callstack, {chunk = vm.chunk, macro = meta, ip = vm.ip})
                                     if #vm.chunk.callstack <= 1000 then
                                         local success, callResult, cip, source = vm.plume.run (meta, params)
                                         if success then
                                             table.remove (vm.chunk.callstack)
-                                            _ret222 = callResult
-                                            goto _inline_end406
+                                            _ret213 = callResult
+                                            goto _inline_end395
                                         else
                                             do
                                                 vm.serr = {callResult, cip, (source or meta)}
@@ -3278,31 +2825,150 @@ return function (plume)
                                         end
                                     end
                                 end
-                                ::_inline_end406::
-                                _ret218, _ret219 = true, _ret222
+                                ::_inline_end395::
+                                _ret210, _ret211 = _ret213
+                                goto _inline_end393
+                            else
+                                _ret210, _ret211 = right, "Cannot do comparison or arithmetic with " .. tostring (tx) .. " value."
+                                goto _inline_end393
+                            end
+                        end
+                        _ret210, _ret211 = right
+                        goto _inline_end393
+                    end
+                    ::_inline_end393::
+                    right, rerr = _ret210, _ret211
+                    local _ret214, _ret215
+                    do
+                        local _ret216
+                        do
+                            _ret216 = type (left) == "table" and (left == vm.empty or left.type) or type (left)
+                            goto _inline_end399
+                        end
+                        ::_inline_end399::
+                        local tx = _ret216
+                        if tx == "string" then
+                            left = tonumber (left)
+                            if not left then
+                                _ret214, _ret215 = left, "Cannot convert the string value to a number."
+                                goto _inline_end398
+                            end
+                        elseif tx ~= "number" then
+                            if tx == "table" and left.meta.table.tonumber then
+                                local meta = left.meta.table.tonumber
+                                local params = {}
+                                local _ret217
+                                do
+                                    table.insert (vm.chunk.callstack, {chunk = vm.chunk, macro = meta, ip = vm.ip})
+                                    if #vm.chunk.callstack <= 1000 then
+                                        local success, callResult, cip, source = vm.plume.run (meta, params)
+                                        if success then
+                                            table.remove (vm.chunk.callstack)
+                                            _ret217 = callResult
+                                            goto _inline_end400
+                                        else
+                                            do
+                                                vm.serr = {callResult, cip, (source or meta)}
+                                            end
+                                        end
+                                    else
+                                        do
+                                            vm.err = "stack overflow"
+                                        end
+                                    end
+                                end
+                                ::_inline_end400::
+                                _ret214, _ret215 = _ret217
+                                goto _inline_end398
+                            else
+                                _ret214, _ret215 = left, "Cannot do comparison or arithmetic with " .. tostring (tx) .. " value."
+                                goto _inline_end398
+                            end
+                        end
+                        _ret214, _ret215 = left
+                        goto _inline_end398
+                    end
+                    ::_inline_end398::
+                    left, lerr = _ret214, _ret215
+                    if lerr or rerr then
+                        local _ret218, _ret219
+                        do
+                            local meta, params
+                            local _ret220
+                            do
+                                _ret220 = type (left) == "table" and (left == vm.empty or left.type) or type (left)
+                                goto _inline_end404
+                            end
+                            ::_inline_end404::
+                            local tleft = _ret220
+                            local _ret221
+                            do
+                                _ret221 = type (right) == "table" and (right == vm.empty or right.type) or type (right)
+                                goto _inline_end405
+                            end
+                            ::_inline_end405::
+                            local tright = _ret221
+                            if tleft == "table" and left.meta and left.meta.table["lt" .. "r"] then
+                                meta = left.meta.table["lt" .. "r"]
+                                params = {right, left}
+                            elseif tright == "table" and right.meta and right.meta.table["lt" .. "l"] then
+                                meta = right.meta.table["lt" .. "l"]
+                                params = {left, right}
+                            elseif tleft == "table" and left.meta and left.meta.table.lt then
+                                meta = left.meta.table.lt
+                                params = {left, right, left}
+                            elseif tright == "table" and right.meta and right.meta.table.lt then
+                                meta = right.meta.table.lt
+                                params = {left, right, right}
+                            end
+                            if not meta then
+                                _ret218 = false
                                 goto _inline_end403
                             end
-                            ::_inline_end403::
-                            success, result = _ret218, _ret219
-                        else
-                            success = true
-                            local _ret223
+                            local _ret222
                             do
-                                _ret223 = left < right
-                                goto _inline_end409
+                                table.insert (vm.chunk.callstack, {chunk = vm.chunk, macro = meta, ip = vm.ip})
+                                if #vm.chunk.callstack <= 1000 then
+                                    local success, callResult, cip, source = vm.plume.run (meta, params)
+                                    if success then
+                                        table.remove (vm.chunk.callstack)
+                                        _ret222 = callResult
+                                        goto _inline_end406
+                                    else
+                                        do
+                                            vm.serr = {callResult, cip, (source or meta)}
+                                        end
+                                    end
+                                else
+                                    do
+                                        vm.err = "stack overflow"
+                                    end
+                                end
                             end
-                            ::_inline_end409::
-                            result = _ret223
+                            ::_inline_end406::
+                            _ret218, _ret219 = true, _ret222
+                            goto _inline_end403
                         end
-                        if success then
-                            do
-                                vm.mainStack.pointer = vm.mainStack.pointer + 1
-                                vm.mainStack[vm.mainStack.pointer] = result
-                            end
-                        else
-                            do
-                                vm.err = lerr or rerr
-                            end
+                        ::_inline_end403::
+                        success, result = _ret218, _ret219
+                    else
+                        success = true
+                        local _ret223
+                        do
+                            _ret223 = left < right
+                            goto _inline_end409
+                        end
+                        ::_inline_end409::
+                        result = _ret223
+                    end
+                    if success then
+                        do
+                            vm.mainStack.pointer = vm.mainStack.pointer + 1
+                            vm.mainStack[vm.mainStack.pointer] = result
+                        end
+                    else
+                        do
+                            vm.err = lerr or rerr
                         end
                     end
                 end
@@ -3310,36 +2976,28 @@ return function (plume)
             ::OPP_EQ::
                 do
                     local _ret224
-                    do
-                        vm.mainStack.pointer = vm.mainStack.pointer - 1
-                        _ret224 = vm.mainStack[vm.mainStack.pointer + 1]
-                        goto _inline_end413
-                    end
+                    vm.mainStack.pointer = vm.mainStack.pointer - 1
+                    _ret224 = vm.mainStack[vm.mainStack.pointer + 1]
+                    goto _inline_end413
                     ::_inline_end413::
                     local right = _ret224
                     local _ret225
-                    do
-                        vm.mainStack.pointer = vm.mainStack.pointer - 1
-                        _ret225 = vm.mainStack[vm.mainStack.pointer + 1]
-                        goto _inline_end414
-                    end
+                    vm.mainStack.pointer = vm.mainStack.pointer - 1
+                    _ret225 = vm.mainStack[vm.mainStack.pointer + 1]
+                    goto _inline_end414
                     ::_inline_end414::
                     local left = _ret225
                     local _ret226, _ret227
                     do
                         local meta, params
                         local _ret228
-                        do
-                            _ret228 = type (left) == "table" and (left == vm.empty or left.type) or type (left)
-                            goto _inline_end416
-                        end
+                        _ret228 = type (left) == "table" and (left == vm.empty or left.type) or type (left)
+                        goto _inline_end416
                         ::_inline_end416::
                         local tleft = _ret228
                         local _ret229
-                        do
-                            _ret229 = type (right) == "table" and (right == vm.empty or right.type) or type (right)
-                            goto _inline_end417
-                        end
+                        _ret229 = type (right) == "table" and (right == vm.empty or right.type) or type (right)
+                        goto _inline_end417
                         ::_inline_end417::
                         local tright = _ret229
                         if tleft == "table" and left.meta and left.meta.table["eq" .. "r"] then
@@ -3360,23 +3018,21 @@ return function (plume)
                             goto _inline_end415
                         end
                         local _ret230
-                        do
-                            table.insert (vm.chunk.callstack, {chunk = vm.chunk, macro = meta, ip = vm.ip})
-                            if #vm.chunk.callstack <= 1000 then
-                                local success, callResult, cip, source = vm.plume.run (meta, params)
-                                if success then
-                                    table.remove (vm.chunk.callstack)
-                                    _ret230 = callResult
-                                    goto _inline_end418
-                                else
-                                    do
-                                        vm.serr = {callResult, cip, (source or meta)}
-                                    end
-                                end
+                        table.insert (vm.chunk.callstack, {chunk = vm.chunk, macro = meta, ip = vm.ip})
+                        if #vm.chunk.callstack <= 1000 then
+                            local success, callResult, cip, source = vm.plume.run (meta, params)
+                            if success then
+                                table.remove (vm.chunk.callstack)
+                                _ret230 = callResult
+                                goto _inline_end418
                             else
                                 do
-                                    vm.err = "stack overflow"
+                                    vm.serr = {callResult, cip, (source or meta)}
                                 end
+                            end
+                        else
+                            do
+                                vm.err = "stack overflow"
                             end
                         end
                         ::_inline_end418::
@@ -3388,203 +3044,181 @@ return function (plume)
                     if not success then
                         result = left == right or tonumber (left) and tonumber (left) == tonumber (right)
                     end
-                    do
-                        vm.mainStack.pointer = vm.mainStack.pointer + 1
-                        vm.mainStack[vm.mainStack.pointer] = result
-                    end
+                    vm.mainStack.pointer = vm.mainStack.pointer + 1
+                    vm.mainStack[vm.mainStack.pointer] = result
                 end
                 goto DISPATCH
             ::OPP_AND::
                 do
+                    local _ret231
                     do
-                        local _ret231
-                        do
-                            vm.mainStack.pointer = vm.mainStack.pointer - 1
-                            _ret231 = vm.mainStack[vm.mainStack.pointer + 1]
-                            goto _inline_end424
-                        end
-                        ::_inline_end424::
-                        local right = _ret231
-                        local _ret232
-                        do
-                            vm.mainStack.pointer = vm.mainStack.pointer - 1
-                            _ret232 = vm.mainStack[vm.mainStack.pointer + 1]
-                            goto _inline_end425
-                        end
-                        ::_inline_end425::
-                        local left = _ret232
-                        local _ret233
-                        do
-                            if right == vm.empty then
-                                _ret233 = false
-                                goto _inline_end426
-                            end
-                            _ret233 = right
+                        vm.mainStack.pointer = vm.mainStack.pointer - 1
+                        _ret231 = vm.mainStack[vm.mainStack.pointer + 1]
+                        goto _inline_end424
+                    end
+                    ::_inline_end424::
+                    local right = _ret231
+                    local _ret232
+                    do
+                        vm.mainStack.pointer = vm.mainStack.pointer - 1
+                        _ret232 = vm.mainStack[vm.mainStack.pointer + 1]
+                        goto _inline_end425
+                    end
+                    ::_inline_end425::
+                    local left = _ret232
+                    local _ret233
+                    do
+                        if right == vm.empty then
+                            _ret233 = false
                             goto _inline_end426
                         end
-                        ::_inline_end426::
-                        right = _ret233
-                        local _ret234
-                        do
-                            if left == vm.empty then
-                                _ret234 = false
-                                goto _inline_end427
-                            end
-                            _ret234 = left
+                        _ret233 = right
+                        goto _inline_end426
+                    end
+                    ::_inline_end426::
+                    right = _ret233
+                    local _ret234
+                    do
+                        if left == vm.empty then
+                            _ret234 = false
                             goto _inline_end427
                         end
-                        ::_inline_end427::
-                        left = _ret234
-                        local _ret235
-                        do
-                            _ret235 = right and left
-                            goto _inline_end428
-                        end
-                        ::_inline_end428::
-                        do
-                            vm.mainStack.pointer = vm.mainStack.pointer + 1
-                            vm.mainStack[vm.mainStack.pointer] = _ret235
-                        end
+                        _ret234 = left
+                        goto _inline_end427
+                    end
+                    ::_inline_end427::
+                    left = _ret234
+                    local _ret235
+                    do
+                        _ret235 = right and left
+                        goto _inline_end428
+                    end
+                    ::_inline_end428::
+                    do
+                        vm.mainStack.pointer = vm.mainStack.pointer + 1
+                        vm.mainStack[vm.mainStack.pointer] = _ret235
                     end
                 end
                 goto DISPATCH
             ::OPP_NOT::
                 do
+                    local _ret236
                     do
-                        local _ret236
-                        do
-                            vm.mainStack.pointer = vm.mainStack.pointer - 1
-                            _ret236 = vm.mainStack[vm.mainStack.pointer + 1]
-                            goto _inline_end432
-                        end
-                        ::_inline_end432::
-                        local x = _ret236
-                        local _ret237
-                        do
-                            if x == vm.empty then
-                                _ret237 = false
-                                goto _inline_end433
-                            end
-                            _ret237 = x
+                        vm.mainStack.pointer = vm.mainStack.pointer - 1
+                        _ret236 = vm.mainStack[vm.mainStack.pointer + 1]
+                        goto _inline_end432
+                    end
+                    ::_inline_end432::
+                    local x = _ret236
+                    local _ret237
+                    do
+                        if x == vm.empty then
+                            _ret237 = false
                             goto _inline_end433
                         end
-                        ::_inline_end433::
-                        x = _ret237
-                        local _ret238
-                        do
-                            _ret238 = not x
-                            goto _inline_end434
-                        end
-                        ::_inline_end434::
-                        do
-                            vm.mainStack.pointer = vm.mainStack.pointer + 1
-                            vm.mainStack[vm.mainStack.pointer] = _ret238
-                        end
+                        _ret237 = x
+                        goto _inline_end433
+                    end
+                    ::_inline_end433::
+                    x = _ret237
+                    local _ret238
+                    do
+                        _ret238 = not x
+                        goto _inline_end434
+                    end
+                    ::_inline_end434::
+                    do
+                        vm.mainStack.pointer = vm.mainStack.pointer + 1
+                        vm.mainStack[vm.mainStack.pointer] = _ret238
                     end
                 end
                 goto DISPATCH
             ::OPP_OR::
                 do
+                    local _ret239
                     do
-                        local _ret239
-                        do
-                            vm.mainStack.pointer = vm.mainStack.pointer - 1
-                            _ret239 = vm.mainStack[vm.mainStack.pointer + 1]
-                            goto _inline_end438
-                        end
-                        ::_inline_end438::
-                        local right = _ret239
-                        local _ret240
-                        do
-                            vm.mainStack.pointer = vm.mainStack.pointer - 1
-                            _ret240 = vm.mainStack[vm.mainStack.pointer + 1]
-                            goto _inline_end439
-                        end
-                        ::_inline_end439::
-                        local left = _ret240
-                        local _ret241
-                        do
-                            if right == vm.empty then
-                                _ret241 = false
-                                goto _inline_end440
-                            end
-                            _ret241 = right
+                        vm.mainStack.pointer = vm.mainStack.pointer - 1
+                        _ret239 = vm.mainStack[vm.mainStack.pointer + 1]
+                        goto _inline_end438
+                    end
+                    ::_inline_end438::
+                    local right = _ret239
+                    local _ret240
+                    do
+                        vm.mainStack.pointer = vm.mainStack.pointer - 1
+                        _ret240 = vm.mainStack[vm.mainStack.pointer + 1]
+                        goto _inline_end439
+                    end
+                    ::_inline_end439::
+                    local left = _ret240
+                    local _ret241
+                    do
+                        if right == vm.empty then
+                            _ret241 = false
                             goto _inline_end440
                         end
-                        ::_inline_end440::
-                        right = _ret241
-                        local _ret242
-                        do
-                            if left == vm.empty then
-                                _ret242 = false
-                                goto _inline_end441
-                            end
-                            _ret242 = left
+                        _ret241 = right
+                        goto _inline_end440
+                    end
+                    ::_inline_end440::
+                    right = _ret241
+                    local _ret242
+                    do
+                        if left == vm.empty then
+                            _ret242 = false
                             goto _inline_end441
                         end
-                        ::_inline_end441::
-                        left = _ret242
-                        local _ret243
-                        do
-                            _ret243 = right or left
-                            goto _inline_end442
-                        end
-                        ::_inline_end442::
-                        do
-                            vm.mainStack.pointer = vm.mainStack.pointer + 1
-                            vm.mainStack[vm.mainStack.pointer] = _ret243
-                        end
+                        _ret242 = left
+                        goto _inline_end441
+                    end
+                    ::_inline_end441::
+                    left = _ret242
+                    local _ret243
+                    do
+                        _ret243 = right or left
+                        goto _inline_end442
+                    end
+                    ::_inline_end442::
+                    do
+                        vm.mainStack.pointer = vm.mainStack.pointer + 1
+                        vm.mainStack[vm.mainStack.pointer] = _ret243
                     end
                 end
                 goto DISPATCH
             ::DUPLICATE::
                 do
                     local _ret244
-                    do
-                        _ret244 = vm.mainStack[nil or vm.mainStack.pointer]
-                        goto _inline_end445
-                    end
+                    _ret244 = vm.mainStack[nil or vm.mainStack.pointer]
+                    goto _inline_end445
                     ::_inline_end445::
-                    do
-                        vm.mainStack.pointer = vm.mainStack.pointer + 1
-                        vm.mainStack[vm.mainStack.pointer] = _ret244
-                    end
+                    vm.mainStack.pointer = vm.mainStack.pointer + 1
+                    vm.mainStack[vm.mainStack.pointer] = _ret244
                 end
                 goto DISPATCH
             ::SWITCH::
                 do
                     local _ret245
-                    do
-                        vm.mainStack.pointer = vm.mainStack.pointer - 1
-                        _ret245 = vm.mainStack[vm.mainStack.pointer + 1]
-                        goto _inline_end448
-                    end
+                    vm.mainStack.pointer = vm.mainStack.pointer - 1
+                    _ret245 = vm.mainStack[vm.mainStack.pointer + 1]
+                    goto _inline_end448
                     ::_inline_end448::
                     local x = _ret245
                     local _ret246
-                    do
-                        vm.mainStack.pointer = vm.mainStack.pointer - 1
-                        _ret246 = vm.mainStack[vm.mainStack.pointer + 1]
-                        goto _inline_end449
-                    end
+                    vm.mainStack.pointer = vm.mainStack.pointer - 1
+                    _ret246 = vm.mainStack[vm.mainStack.pointer + 1]
+                    goto _inline_end449
                     ::_inline_end449::
                     local y = _ret246
-                    do
-                        vm.mainStack.pointer = vm.mainStack.pointer + 1
-                        vm.mainStack[vm.mainStack.pointer] = x
-                    end
-                    do
-                        vm.mainStack.pointer = vm.mainStack.pointer + 1
-                        vm.mainStack[vm.mainStack.pointer] = y
-                    end
+                    vm.mainStack.pointer = vm.mainStack.pointer + 1
+                    vm.mainStack[vm.mainStack.pointer] = x
+                    vm.mainStack.pointer = vm.mainStack.pointer + 1
+                    vm.mainStack[vm.mainStack.pointer] = y
                 end
                 goto DISPATCH
             ::END::
             local _ret247
-            do
-                _ret247 = vm.mainStack[nil or vm.mainStack.pointer]
-                goto _inline_end452
-            end
+            _ret247 = vm.mainStack[nil or vm.mainStack.pointer]
+            goto _inline_end452
             ::_inline_end452::
             return true, _ret247
         end
