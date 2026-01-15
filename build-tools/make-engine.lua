@@ -58,18 +58,17 @@ import = table.concat(import)
 local init = [[
 	
 		-- Creates stacks, handle arguments
-		local vm = _VM_INIT(plume, chunk, arguments)
+		local vm =  --! to-remove
+			_VM_INIT(plume, chunk, arguments)
 		
-		local op, arg1, arg2
+		local op, arg1, arg2, vmerr, vmserr
 		::DISPATCH::
-			-- !begin-to-remove
 			if vm.err then 
 				return false, vm.err, vm.ip, vm.chunk
 			end
 			if vm.serr then
 				return false, unpack(vm.serr)
 			end
-			-- !end-to-remove
 
 			-- Handle jump and incremente IP
 			_VM_TICK(vm)
