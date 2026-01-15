@@ -13,6 +13,7 @@ You should have received a copy of the GNU General Public License along with Plu
 If not, see <https://www.gnu.org/licenses/>.
 ]]
 
+--! inline
 function GET_ITER (vm, arg1, arg2)
     --- Unstack 1 iterable object
     --- Stack 1 iterator object
@@ -42,6 +43,7 @@ function GET_ITER (vm, arg1, arg2)
     end 
 end
 
+--! inline
 function FOR_ITER (vm, arg1, arg2)
     --- Unstack 1 iterator object
     --- Stack 1 next call result OR jump to for end

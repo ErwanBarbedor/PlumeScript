@@ -13,6 +13,7 @@ You should have received a copy of the GNU General Public License along with Plu
 If not, see <https://www.gnu.org/licenses/>.
 ]]
 
+--! inline
 function ACC_CALL (vm, arg1, arg2)
     --- Unstack 1 (the macro)
     --- Unstack until frame begin + 1 (all positionals arguments)
