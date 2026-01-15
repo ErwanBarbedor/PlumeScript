@@ -98,7 +98,7 @@
 <body>
 <div class="container">
     
-<h1>Global: <span style="font-weight: normal;">283 passed out of 283 tests</span></h1>
+<h1>Global: <span style="font-weight: normal;">284 passed out of 284 tests</span></h1>
 <div class="progress-bar"><div class="progress-success" style="width: 100.00%"></div><div class="progress-fail" style="width: 0.00%"></div></div>
 <h2>arithmetic: <span style="font-weight: normal;">30 passed out of 30 tests</span></h2>
 <div class="progress-bar"><div class="progress-success" style="width: 100.00%"></div><div class="progress-fail" style="width: 0.00%"></div></div>
@@ -2145,8 +2145,8 @@ blue quill
 <div>
 <h4>Code</h4>
 <pre><code class="language-plume">
-let write = 1 // string
-$(write+1) // 1 is a number
+let _write = 1 // string
+$(_write+1) // 1 is a number
 
 </code></pre>
 </div>
@@ -2154,10 +2154,10 @@ $(write+1) // 1 is a number
 <h4>Bytecode</h4>
 <pre><code class="language-bytecode"><span class="bc-line-num">001</span> <span class="bc-opcode">ENTER_SCOPE     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; l</span>
 <span class="bc-line-num">002</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 1</span> <span class="bc-info">; 1</span>
-<span class="bc-line-num">003</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; write</span>
-<span class="bc-line-num">004</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 1</span> <span class="bc-info">; write</span>
+<span class="bc-line-num">003</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; _write</span>
+<span class="bc-line-num">004</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 1</span> <span class="bc-info">; _write</span>
 <span class="bc-line-num">005</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 1</span> <span class="bc-info">; 1</span>
-<span class="bc-line-num">006</span> <span class="bc-opcode">OPP_ADD         </span> <span class="bc-arg">0 0</span> <span class="bc-info">; write+1</span>
+<span class="bc-line-num">006</span> <span class="bc-opcode">OPP_ADD         </span> <span class="bc-arg">0 0</span> <span class="bc-info">; _write+1</span>
 <span class="bc-line-num">007</span> <span class="bc-opcode">END             </span> <span class="bc-arg">0 0</span></code></pre>
 </div>
 </div>
@@ -2176,9 +2176,9 @@ $(write+1) // 1 is a number
 <div>
 <h4>Code</h4>
 <pre><code class="language-plume">
-let write = 1 // string
+let _write = 1 // string
 let paint = 1 // string
-$(write+paint)
+$(_write+paint)
 
 </code></pre>
 </div>
@@ -2186,12 +2186,12 @@ $(write+paint)
 <h4>Bytecode</h4>
 <pre><code class="language-bytecode"><span class="bc-line-num">001</span> <span class="bc-opcode">ENTER_SCOPE     </span> <span class="bc-arg">0 2</span> <span class="bc-info">; l</span>
 <span class="bc-line-num">002</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 1</span> <span class="bc-info">; 1</span>
-<span class="bc-line-num">003</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; write</span>
+<span class="bc-line-num">003</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; _write</span>
 <span class="bc-line-num">004</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 1</span> <span class="bc-info">; 1</span>
 <span class="bc-line-num">005</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">0 2</span> <span class="bc-info">; paint</span>
-<span class="bc-line-num">006</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 1</span> <span class="bc-info">; write</span>
+<span class="bc-line-num">006</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 1</span> <span class="bc-info">; _write</span>
 <span class="bc-line-num">007</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 2</span> <span class="bc-info">; paint</span>
-<span class="bc-line-num">008</span> <span class="bc-opcode">OPP_ADD         </span> <span class="bc-arg">0 0</span> <span class="bc-info">; write+paint</span>
+<span class="bc-line-num">008</span> <span class="bc-opcode">OPP_ADD         </span> <span class="bc-arg">0 0</span> <span class="bc-info">; _write+paint</span>
 <span class="bc-line-num">009</span> <span class="bc-opcode">END             </span> <span class="bc-arg">0 0</span></code></pre>
 </div>
 </div>
@@ -2210,8 +2210,8 @@ $(write+paint)
 <div>
 <h4>Code</h4>
 <pre><code class="language-plume">
-let write = $table()
-$type($write)
+let _write = $table()
+$type($_write)
 
 </code></pre>
 </div>
@@ -2222,12 +2222,12 @@ $type($write)
 <span class="bc-line-num">003</span> <span class="bc-opcode">TABLE_NEW       </span> <span class="bc-arg">0 0</span>
 <span class="bc-line-num">004</span> <span class="bc-opcode">LOAD_STATIC     </span> <span class="bc-arg">0 15</span> <span class="bc-info">; table</span>
 <span class="bc-line-num">005</span> <span class="bc-opcode">ACC_CALL        </span> <span class="bc-arg">0 0</span> <span class="bc-info">; table()</span>
-<span class="bc-line-num">006</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; write</span>
+<span class="bc-line-num">006</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; _write</span>
 <span class="bc-line-num">007</span> <span class="bc-opcode">BEGIN_ACC       </span> <span class="bc-arg">0 0</span>
 <span class="bc-line-num">008</span> <span class="bc-opcode">TABLE_NEW       </span> <span class="bc-arg">0 0</span>
-<span class="bc-line-num">009</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 1</span> <span class="bc-info">; write</span>
+<span class="bc-line-num">009</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 1</span> <span class="bc-info">; _write</span>
 <span class="bc-line-num">010</span> <span class="bc-opcode">LOAD_STATIC     </span> <span class="bc-arg">0 18</span> <span class="bc-info">; type</span>
-<span class="bc-line-num">011</span> <span class="bc-opcode">ACC_CALL        </span> <span class="bc-arg">0 0</span> <span class="bc-info">; type($write)</span>
+<span class="bc-line-num">011</span> <span class="bc-opcode">ACC_CALL        </span> <span class="bc-arg">0 0</span> <span class="bc-info">; type($_write)</span>
 <span class="bc-line-num">012</span> <span class="bc-opcode">END             </span> <span class="bc-arg">0 0</span></code></pre>
 </div>
 </div>
@@ -2246,12 +2246,12 @@ table
 <div>
 <h4>Code</h4>
 <pre><code class="language-plume">
-let write = if 2==1+1
+let _write = if 2==1+1
 	$table()
 else
 	$table(write)
 end
-$type($write)
+$type($_write)
 
 </code></pre>
 </div>
@@ -2275,12 +2275,12 @@ $type($write)
 <span class="bc-line-num">016</span> <span class="bc-opcode">LOAD_STATIC     </span> <span class="bc-arg">0 15</span> <span class="bc-info">; table</span>
 <span class="bc-line-num">017</span> <span class="bc-opcode">ACC_CALL        </span> <span class="bc-arg">0 0</span> <span class="bc-info">; table(write)</span>
 <span class="bc-line-num">018</span> <span class="bc-opcode">JUMP            </span> <span class="bc-arg">0 19</span>
-<span class="bc-line-num">019</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; write</span>
+<span class="bc-line-num">019</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; _write</span>
 <span class="bc-line-num">020</span> <span class="bc-opcode">BEGIN_ACC       </span> <span class="bc-arg">0 0</span>
 <span class="bc-line-num">021</span> <span class="bc-opcode">TABLE_NEW       </span> <span class="bc-arg">0 0</span>
-<span class="bc-line-num">022</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 1</span> <span class="bc-info">; write</span>
+<span class="bc-line-num">022</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 1</span> <span class="bc-info">; _write</span>
 <span class="bc-line-num">023</span> <span class="bc-opcode">LOAD_STATIC     </span> <span class="bc-arg">0 18</span> <span class="bc-info">; type</span>
-<span class="bc-line-num">024</span> <span class="bc-opcode">ACC_CALL        </span> <span class="bc-arg">0 0</span> <span class="bc-info">; type($write)</span>
+<span class="bc-line-num">024</span> <span class="bc-opcode">ACC_CALL        </span> <span class="bc-arg">0 0</span> <span class="bc-info">; type($_write)</span>
 <span class="bc-line-num">025</span> <span class="bc-opcode">END             </span> <span class="bc-arg">0 0</span></code></pre>
 </div>
 </div>
@@ -6269,13 +6269,13 @@ quill quill quill quill
 <div>
 <h4>Code</h4>
 <pre><code class="language-plume">
-let write = 5
+let _write = 5
 macro f()
-  let write = 3
-  $write
+  let _write = 3
+  $_write
 end
 $f()\n
-$write
+$_write
 
 </code></pre>
 </div>
@@ -6288,15 +6288,15 @@ $write
 </div>
 <div id="bc_tabs_29_content_1" class="tab-content" style="display: block;">
 <pre><code class="language-bytecode"><span class="bc-line-num">001</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 3</span> <span class="bc-info">; 3</span>
-<span class="bc-line-num">002</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">0 2</span> <span class="bc-info">; write</span>
-<span class="bc-line-num">003</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 2</span> <span class="bc-info">; write</span>
+<span class="bc-line-num">002</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">0 2</span> <span class="bc-info">; _write</span>
+<span class="bc-line-num">003</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 2</span> <span class="bc-info">; _write</span>
 <span class="bc-line-num">004</span> <span class="bc-opcode">END             </span> <span class="bc-arg">0 0</span></code></pre>
 </div>
 <div id="bc_tabs_29_content_2" class="tab-content" style="display: none;">
 <pre><code class="language-bytecode"><span class="bc-line-num">001</span> <span class="bc-opcode">ENTER_SCOPE     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; l</span>
 <span class="bc-line-num">002</span> <span class="bc-opcode">BEGIN_ACC       </span> <span class="bc-arg">0 0</span> <span class="bc-info">; l</span>
 <span class="bc-line-num">003</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 1</span> <span class="bc-info">; 5</span>
-<span class="bc-line-num">004</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; write</span>
+<span class="bc-line-num">004</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; _write</span>
 <span class="bc-line-num">005</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 2</span> <span class="bc-info">; f</span>
 <span class="bc-line-num">006</span> <span class="bc-opcode">STORE_STATIC    </span> <span class="bc-arg">0 20</span> <span class="bc-info">; f</span>
 <span class="bc-line-num">007</span> <span class="bc-opcode">BEGIN_ACC       </span> <span class="bc-arg">0 0</span>
@@ -6305,8 +6305,8 @@ $write
 <span class="bc-line-num">010</span> <span class="bc-opcode">ACC_CALL        </span> <span class="bc-arg">0 0</span> <span class="bc-info">; f()</span>
 <span class="bc-line-num">011</span> <span class="bc-opcode">ACC_CHECK_TEXT  </span> <span class="bc-arg">0 0</span> <span class="bc-info">; f()</span>
 <span class="bc-line-num">012</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 4</span>
-<span class="bc-line-num">013</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 1</span> <span class="bc-info">; write</span>
-<span class="bc-line-num">014</span> <span class="bc-opcode">ACC_CHECK_TEXT  </span> <span class="bc-arg">0 0</span> <span class="bc-info">; write</span>
+<span class="bc-line-num">013</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 1</span> <span class="bc-info">; _write</span>
+<span class="bc-line-num">014</span> <span class="bc-opcode">ACC_CHECK_TEXT  </span> <span class="bc-arg">0 0</span> <span class="bc-info">; _write</span>
 <span class="bc-line-num">015</span> <span class="bc-opcode">ACC_TEXT        </span> <span class="bc-arg">0 0</span>
 <span class="bc-line-num">016</span> <span class="bc-opcode">END             </span> <span class="bc-arg">0 0</span></code></pre>
 </div>
@@ -11533,12 +11533,12 @@ File &#39;already exists 2&#39;, line 2: let static nib
 <div>
 <h4>Code</h4>
 <pre><code class="language-plume">
-let write = if 1==1
+let _write = if 1==1
 	5
 else
 	3
 end
-$write
+$_write
 
 </code></pre>
 </div>
@@ -11553,8 +11553,8 @@ $write
 <span class="bc-line-num">007</span> <span class="bc-opcode">JUMP            </span> <span class="bc-arg">0 10</span>
 <span class="bc-line-num">008</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 3</span> <span class="bc-info">; 3</span>
 <span class="bc-line-num">009</span> <span class="bc-opcode">JUMP            </span> <span class="bc-arg">0 10</span>
-<span class="bc-line-num">010</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; write</span>
-<span class="bc-line-num">011</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 1</span> <span class="bc-info">; write</span>
+<span class="bc-line-num">010</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; _write</span>
+<span class="bc-line-num">011</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 1</span> <span class="bc-info">; _write</span>
 <span class="bc-line-num">012</span> <span class="bc-opcode">END             </span> <span class="bc-arg">0 0</span></code></pre>
 </div>
 </div>
@@ -11573,12 +11573,12 @@ $write
 <div>
 <h4>Code</h4>
 <pre><code class="language-plume">
-let write = if 1==2
+let _write = if 1==2
 	5
 else
 	3
 end
-$write
+$_write
 
 </code></pre>
 </div>
@@ -11593,8 +11593,8 @@ $write
 <span class="bc-line-num">007</span> <span class="bc-opcode">JUMP            </span> <span class="bc-arg">0 10</span>
 <span class="bc-line-num">008</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 4</span> <span class="bc-info">; 3</span>
 <span class="bc-line-num">009</span> <span class="bc-opcode">JUMP            </span> <span class="bc-arg">0 10</span>
-<span class="bc-line-num">010</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; write</span>
-<span class="bc-line-num">011</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 1</span> <span class="bc-info">; write</span>
+<span class="bc-line-num">010</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; _write</span>
+<span class="bc-line-num">011</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 1</span> <span class="bc-info">; _write</span>
 <span class="bc-line-num">012</span> <span class="bc-opcode">END             </span> <span class="bc-arg">0 0</span></code></pre>
 </div>
 </div>
@@ -11614,11 +11614,11 @@ $write
 <h4>Code</h4>
 <pre><code class="language-plume">
 let i = 0
-let write = while i&lt;5
+let _write = while i&lt;5
 	$i
 	set i = $(i+1)
 end
-$write
+$_write
 
 </code></pre>
 </div>
@@ -11640,8 +11640,8 @@ $write
 <span class="bc-line-num">014</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; i</span>
 <span class="bc-line-num">015</span> <span class="bc-opcode">JUMP            </span> <span class="bc-arg">0 5</span>
 <span class="bc-line-num">016</span> <span class="bc-opcode">ACC_TEXT        </span> <span class="bc-arg">0 0</span>
-<span class="bc-line-num">017</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">0 2</span> <span class="bc-info">; write</span>
-<span class="bc-line-num">018</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 2</span> <span class="bc-info">; write</span>
+<span class="bc-line-num">017</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">0 2</span> <span class="bc-info">; _write</span>
+<span class="bc-line-num">018</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 2</span> <span class="bc-info">; _write</span>
 <span class="bc-line-num">019</span> <span class="bc-opcode">END             </span> <span class="bc-arg">0 0</span></code></pre>
 </div>
 </div>
@@ -11757,11 +11757,11 @@ end
 <div>
 <h4>Code</h4>
 <pre><code class="language-plume">
-let write = 1
+let _write = 1
 if 1==1
-	set write = 2
+	set _write = 2
 end
-$write
+$_write
 
 </code></pre>
 </div>
@@ -11769,15 +11769,15 @@ $write
 <h4>Bytecode</h4>
 <pre><code class="language-bytecode"><span class="bc-line-num">001</span> <span class="bc-opcode">ENTER_SCOPE     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; l</span>
 <span class="bc-line-num">002</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 1</span> <span class="bc-info">; 1</span>
-<span class="bc-line-num">003</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; write</span>
+<span class="bc-line-num">003</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; _write</span>
 <span class="bc-line-num">004</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 1</span> <span class="bc-info">; 1</span>
 <span class="bc-line-num">005</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 1</span> <span class="bc-info">; 1</span>
 <span class="bc-line-num">006</span> <span class="bc-opcode">OPP_EQ          </span> <span class="bc-arg">0 0</span> <span class="bc-info">; 1==1</span>
 <span class="bc-line-num">007</span> <span class="bc-opcode">JUMP_IF_NOT     </span> <span class="bc-arg">0 11</span>
 <span class="bc-line-num">008</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 2</span> <span class="bc-info">; 2</span>
-<span class="bc-line-num">009</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; write</span>
+<span class="bc-line-num">009</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; _write</span>
 <span class="bc-line-num">010</span> <span class="bc-opcode">JUMP            </span> <span class="bc-arg">0 11</span>
-<span class="bc-line-num">011</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 1</span> <span class="bc-info">; write</span>
+<span class="bc-line-num">011</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 1</span> <span class="bc-info">; _write</span>
 <span class="bc-line-num">012</span> <span class="bc-opcode">END             </span> <span class="bc-arg">0 0</span></code></pre>
 </div>
 </div>
@@ -11796,11 +11796,11 @@ $write
 <div>
 <h4>Code</h4>
 <pre><code class="language-plume">
-let write = 1
+let _write = 1
 if 1==1
-	let write = 2
+	let _write = 2
 end
-$write
+$_write
 
 </code></pre>
 </div>
@@ -11808,17 +11808,17 @@ $write
 <h4>Bytecode</h4>
 <pre><code class="language-bytecode"><span class="bc-line-num">001</span> <span class="bc-opcode">ENTER_SCOPE     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; l</span>
 <span class="bc-line-num">002</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 1</span> <span class="bc-info">; 1</span>
-<span class="bc-line-num">003</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; write</span>
+<span class="bc-line-num">003</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; _write</span>
 <span class="bc-line-num">004</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 1</span> <span class="bc-info">; 1</span>
 <span class="bc-line-num">005</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 1</span> <span class="bc-info">; 1</span>
 <span class="bc-line-num">006</span> <span class="bc-opcode">OPP_EQ          </span> <span class="bc-arg">0 0</span> <span class="bc-info">; 1==1</span>
 <span class="bc-line-num">007</span> <span class="bc-opcode">JUMP_IF_NOT     </span> <span class="bc-arg">0 13</span>
 <span class="bc-line-num">008</span> <span class="bc-opcode">ENTER_SCOPE     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; [...]</span>
 <span class="bc-line-num">009</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 2</span> <span class="bc-info">; 2</span>
-<span class="bc-line-num">010</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; write</span>
+<span class="bc-line-num">010</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; _write</span>
 <span class="bc-line-num">011</span> <span class="bc-opcode">LEAVE_SCOPE     </span> <span class="bc-arg">0 0</span>
 <span class="bc-line-num">012</span> <span class="bc-opcode">JUMP            </span> <span class="bc-arg">0 13</span>
-<span class="bc-line-num">013</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 1</span> <span class="bc-info">; write</span>
+<span class="bc-line-num">013</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 1</span> <span class="bc-info">; _write</span>
 <span class="bc-line-num">014</span> <span class="bc-opcode">END             </span> <span class="bc-arg">0 0</span></code></pre>
 </div>
 </div>
@@ -11837,7 +11837,7 @@ $write
 <div>
 <h4>Code</h4>
 <pre><code class="language-plume">
-let write = quill
+let _write = quill
 
 </code></pre>
 </div>
@@ -11845,7 +11845,7 @@ let write = quill
 <h4>Bytecode</h4>
 <pre><code class="language-bytecode"><span class="bc-line-num">001</span> <span class="bc-opcode">ENTER_SCOPE     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; l</span>
 <span class="bc-line-num">002</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 1</span> <span class="bc-info">; quill</span>
-<span class="bc-line-num">003</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; write</span>
+<span class="bc-line-num">003</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; _write</span>
 <span class="bc-line-num">004</span> <span class="bc-opcode">LOAD_EMPTY      </span> <span class="bc-arg">0 0</span>
 <span class="bc-line-num">005</span> <span class="bc-opcode">END             </span> <span class="bc-arg">0 0</span></code></pre>
 </div>
@@ -11865,8 +11865,8 @@ let write = quill
 <div>
 <h4>Code</h4>
 <pre><code class="language-plume">
-let write = quill
-$write
+let _write = quill
+$_write
 
 </code></pre>
 </div>
@@ -11874,8 +11874,8 @@ $write
 <h4>Bytecode</h4>
 <pre><code class="language-bytecode"><span class="bc-line-num">001</span> <span class="bc-opcode">ENTER_SCOPE     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; l</span>
 <span class="bc-line-num">002</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 1</span> <span class="bc-info">; quill</span>
-<span class="bc-line-num">003</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; write</span>
-<span class="bc-line-num">004</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 1</span> <span class="bc-info">; write</span>
+<span class="bc-line-num">003</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; _write</span>
+<span class="bc-line-num">004</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 1</span> <span class="bc-info">; _write</span>
 <span class="bc-line-num">005</span> <span class="bc-opcode">END             </span> <span class="bc-arg">0 0</span></code></pre>
 </div>
 </div>
@@ -12054,7 +12054,7 @@ File &#39;wrong indentifier&#39;, line 1: let if = 5
 </code></pre>
 </div>
 </details>
-<h2>z_issues: <span style="font-weight: normal;">30 passed out of 30 tests</span></h2>
+<h2>z_issues: <span style="font-weight: normal;">31 passed out of 31 tests</span></h2>
 <div class="progress-bar"><div class="progress-success" style="width: 100.00%"></div><div class="progress-fail" style="width: 0.00%"></div></div>
 <details>
 <summary>
@@ -13574,6 +13574,33 @@ a
 <h4>Output</h4>
 <pre><code>
 a
+</code></pre>
+</div>
+</details>
+<details>
+<summary>
+<span class="status-icon status-pass">✓</span> #239 <em style='font-weight: normal'></em>
+</summary>
+<div class="test-content">
+<div class="code-grid">
+<div>
+<h4>Code</h4>
+<pre><code class="language-plume">
+let x = 5
+let static x = 5
+
+</code></pre>
+</div>
+<div>
+<h4>Bytecode</h4>
+<pre><code class="language-bytecode"><span class="no-bytecode">Bytecode not generated or unavailable.</span></code></pre>
+</div>
+</div>
+<h4>Error</h4>
+<pre><code>
+Compilation error: Cannot define static variable &#39;x&#39;, it already exists in the current file scope.
+File &#39;#239&#39;, line 2: let static x = 5
+                     ^^^^^^^^^^^^^^^^
 </code></pre>
 </div>
 </details>

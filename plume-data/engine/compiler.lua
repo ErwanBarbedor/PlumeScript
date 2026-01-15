@@ -69,6 +69,18 @@ return function(plume)
 				scope = scopes[#scopes]
 			end
 
+			-- To avoid conflicts between static variables
+			-- and non-static variables declared at the root
+			if isStatic then
+				if #scopes > 0 and scopes[1][name] then
+					return nil
+				end
+			elseif #scopes == 1 then
+				if static[name] then
+					return nil
+				end
+			end 
+
 			if scope[name] then
 				return nil
 			end
