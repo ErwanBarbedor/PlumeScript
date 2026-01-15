@@ -18,16 +18,14 @@ function _GET_TYPE(vm, x)
     return type(x) == "table" and (x == vm.empty or x.type) or type(x)
 end
 
---! inline
+--! inline-keepret
 function _ERROR (vm, msg)
-    vm.err = msg -- !to-remove
-    -- !to-add return false, msg, vm.ip, vm.chunk
+    vm.err = msg
 end
 
---! inline
+--! inline-keepret
 function _SPECIAL_ERROR (vm, msg, ip, chunk)
-    vm.serr = {msg, ip, chunk}-- !to-remove
-    -- !to-add return false, msg, vm.ip, vm.chunk
+    vm.serr = {msg, ip, chunk}
 end
 
 --! inline

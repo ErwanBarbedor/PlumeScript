@@ -78,16 +78,30 @@ local function findAnchor(node)
 	end
 	return insertPoint, assignPoint
 end
+
 local functionsToInline = {}
+local indexToInline = {}
 
 local function applyCommands(code)
-	for name in code:gmatch('%-%-! inline\n%s*function%s+([a-zA-Z_0-9]*)') do
-		functionsToInline[name] = true
+	for optn, name in code:gmatch('%-%-! inline([^\n]*)\n%s*function%s+([a-zA-Z_0-9]*)') do
+		local optns = {}
+		for k in optn:gmatch('[^-]+') do
+			optns[k] = true
+		end
+		functionsToInline[name] = optns
+	end
+
+	for value, rpl in code:gmatch('%-%-! index%-to%-inline ([^%s]+) ?([^\n]*)') do
+		local expr, key = value:match('(.-)%.(.*)')
+		rpl = rpl~=""and rpl or expr..key:sub(1, 1):upper()..key:sub(2, -1)
+		table.insert(indexToInline, {expr=expr, key=key, rpl=rpl})
 	end
 
 	code = code:gsub('%-%-! to%-remove%-begin.-%-%-! to%-remove%-end', '')
+	code = code:gsub('[^\n]+%-%-! to%-remove', '')
+	code = code:gsub('%-%-! to%-add ([^\n]+)', '%1')
 	for command in code:gmatch('%-%-! ([^\n]*)') do
-		if command ~= "inline" then
+		if not command:match("^inline") and not command:match("^index%-to%-inline") then
 			print("Error: unknow command '" .. command .. "'.")
 		end
 	end
@@ -136,20 +150,22 @@ local function inlineFunctions(node)
 
 			local labend = getulabend()
 			local rets = {}
-			body:traverse(function(node)
-				if node.type == "return" then
-					for i=1, #node.exprs do
-						if #rets<i then
-							table.insert(rets, ast._var(geturet()))
+			if not f.optn.keepret then
+				body:traverse(function(node)
+					if node.type == "return" then
+						for i=1, #node.exprs do
+							if #rets<i then
+								table.insert(rets, ast._var(geturet()))
+							end
 						end
+						return ast._block(
+							ast._assign(rets, node.exprs),
+							ast._goto(labend)
+						)
 					end
-					return ast._block(
-						ast._assign(rets, node.exprs),
-						ast._goto(labend)
-					)
-				end
-				return node
-			end)
+					return node
+				end)
+			end
 
 			local init
 			if #rets>0 then
@@ -159,6 +175,9 @@ local function inlineFunctions(node)
 			body:traverse(nil, inlineFunctions)
 
 			local parent = ast._do
+			if f.optn['nodo'] then
+				parent = ast._block
+			end
 			
 			local result = parent(unpack(body))
 			if init then
@@ -194,7 +213,48 @@ local function inlineFunctions(node)
 	return node
 end
 
-local function applyInsertBefore  (node)
+local inlined = {}
+local function inlineIndex (node)
+	if node.type == "index" then
+		if node.expr.type == "var" and node.key.type == "string" then
+			for _, inlineInfos in ipairs(indexToInline) do
+				if node.expr.name == inlineInfos.expr then
+					if node.key.value == inlineInfos.key or inlineInfos.key == "*" then
+						local rpl
+
+						if inlineInfos.key == "*" then
+							local value = node.key.value
+							if inlineInfos.rpl:sub(1, 1) ~= "*" then
+								value = value:sub(1, 1):upper() .. value:sub(2, -1)
+							end
+							rpl = inlineInfos.rpl:gsub('%*', value)
+							
+						else
+							rpl = inlineInfos.rpl
+						end
+						if not inlined[rpl] then
+							inlined[rpl] = true
+							-- must be an assign
+							node.parent.tolocal = true
+						end
+						return ast._var(rpl)
+					end
+				end
+			end
+		end
+	end
+	return node
+end
+
+local function tolocal(node)
+	if node.type == "assign" and node.parent.type ~= "local" and node.tolocal then
+		node.tolocal = nil
+		return ast._local({node})
+	end
+	return node
+end
+
+local function applyInsertBefore (node)
 	if node.insertBefore then
 		local before = node.insertBefore
 		node.insertBefore = nil
@@ -205,7 +265,7 @@ local function applyInsertBefore  (node)
 	return node
 end
 
-local function applyInsertExprs  (node)
+local function applyInsertExprs (node)
 	if node.insertExprs then
 		local exprs = node.insertExprs
 		node.insertExprs = nil
@@ -226,7 +286,8 @@ return {
 			if functionsToInline[name] then
 				functionsToInline[name] = {
 					body = node,
-					params = node.args
+					params = node.args,
+					optn = functionsToInline[name],
 				}
 				return ast._block()
 			end
@@ -234,6 +295,8 @@ return {
 		return node
 	end,
 	inlineFunctions = inlineFunctions,
+	inlineIndex = inlineIndex,
+	tolocal = tolocal,
 	inlineRequire = function (node)
 		if node.type == "call" and node.func.name == "require" then
 			local path = node.args[1].value .. ".lua"
