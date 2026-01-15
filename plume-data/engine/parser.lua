@@ -367,8 +367,8 @@ return function (plume)
             textnp = (escaped + eval + V"comment" + V"rawtextnp")^1,
             textic = (escaped + eval + V"comment" + V"rawtextic")^1,
 
-            comment   = P"//" * C("COMMENT", NOT(S"\n")^0),
-            rawtext   = C("TEXT", NOT(S"$\n\\" + P"//")^1),
+            comment   = os * P"//" * C("COMMENT", NOT(S"\n")^0),
+            rawtext   = C("TEXT", NOT(os * S"\n" + S"$\\" + os * P"//")^1),
             rawtextns = C("TEXT", NOT(S"$\n\\" + P"//" + s)^1),
             rawtextnp = C("TEXT", NOT(S"$\n)\\"+ P"//")^1),
             rawtextic = C("TEXT", NOT(S"$\n,)\\"+ P"//")^1),
