@@ -16,14 +16,10 @@ If not, see <https://www.gnu.org/licenses/>.
 return function(plume)
 	
 	function plume.compileFile(code, filename, chunk)
-		local static  = {}
-		local scopes  = {}
-		local concats = {}
-		local roots   = {}
+		local context = plume.newCompilationContext(chunk)
+		
 		local loops   = {}
-		local chunks  = {chunk}
 
-		local constants = chunk.constants
 		local ops = plume.ops
 
 		local uid = 0
@@ -32,76 +28,14 @@ return function(plume)
 			return uid
 		end
 
-		local function registerOP(node, op, arg1, arg2)
-			assert(op)
-			local current = chunks[#chunks].instructions
-			table.insert(current, {op, arg1, arg2, mapsto=node})
-		end
-
-		local function registerLabel(node, name)
-			local current = chunks[#chunks].instructions
-			current[#current+1] = {label=name, mapsto=node}
-		end
-		local function registerGoto(node, name, jump)
-			local current = chunks[#chunks].instructions
-			current[#current+1] = {_goto=name, jump=jump or "JUMP", mapsto=node}
-		end
-		local function registerMacroLink(node, offset)
-			local current = chunks[#chunks].instructions
-			current[#current+1] = {link=offset, mapsto=node}
-		end
-
-		local function registerConstant(value)
-			local key = tostring(value) -- for numeric keys
-			if not constants[key] then
-				table.insert(constants, value)
-				constants[key] = #constants
-			end
-			return constants[key]
-		end
-
-		local function registerVariable(name, isStatic, isConst, isParam, staticValue, source)
-			local scope
-			if isStatic then
-				scope = static
-				table.insert(chunk.static, staticValue or plume.obj.empty)
-			else
-				scope = scopes[#scopes]
-			end
-
-			-- To avoid conflicts between static variables
-			-- and non-static variables declared at the root
-			if isStatic then
-				if #scopes > 0 and scopes[1][name] then
-					return nil
-				end
-			elseif #scopes == 1 then
-				if static[name] then
-					return nil
-				end
-			end 
-
-			if scope[name] then
-				return nil
-			end
-			
-			table.insert(scope, {scope[name]})
-			scope[name] = {offset = #scope, isStatic = isStatic, isConst = isConst, source = source}
-
-			if isParam then
-				chunk.namedParamCount = chunk.namedParamCount+1
-				chunk.namedParamOffset[name] = #scope
-			end
-
-			return scope[name]
-		end
+		
 
 		local function getNameSource(name, isStatic)
 			local scope
 			if isStatic then
-				scope = static
+				scope = context.static
 			else
-				scope = scopes[#scopes]
+				scope = context.getCurrentScope()
 			end
 
 			if scope[name] then
@@ -118,34 +52,12 @@ return function(plume)
 			table.sort(keys)
 
 			for _, key in ipairs(keys) do
-				registerVariable(key, true, false, false, plume.std[key])
+				context.registerVariable(key, true, false, false, plume.std[key])
 			end
 		end
 
 		local function getLabel(name)
 			return name
-		end
-
-		local function getVariable(name)
-			for i=#scopes, roots[#roots], -1 do
-				local current = scopes[i]
-				if current[name] then
-					local variable = current[name]
-					return {
-						frameOffset = #scopes-i,
-						offset   = variable.offset,
-						isConst  = variable.isConst,	
-					}
-				end
-			end
-			if static[name] then
-				local variable = static[name]
-				return {
-					offset   = variable.offset,
-					isConst  = variable.isConst,
-					isStatic = variable.isStatic	
-				}
-			end
 		end
 
 		local nodeHandlerTable = {}
@@ -164,8 +76,8 @@ return function(plume)
 		end
 
 		local function _accTableInit()
-			registerOP(nil, ops.BEGIN_ACC, 0, 0)
-			registerOP(nil, ops.TABLE_NEW, 0, 0)
+			context.registerOP(nil, ops.BEGIN_ACC, 0, 0)
+			context.registerOP(nil, ops.TABLE_NEW, 0, 0)
 		end
 
 		local function _accTable(node)
@@ -183,39 +95,39 @@ return function(plume)
 			f = f or childrenHandler
 			return function (node, label)
 				if node.type == "TEXT" then
-					table.insert(concats, true)
-					registerOP(node, ops.BEGIN_ACC, 0, 0)
+					table.insert(context.concats, true)
+					context.registerOP(node, ops.BEGIN_ACC, 0, 0)
 					f(node)
 					if label then
-						registerLabel(node, label)
+						context.registerLabel(node, label)
 					end
-					registerOP(nil, ops.ACC_TEXT, 0, 0)
+					context.registerOP(nil, ops.ACC_TEXT, 0, 0)
 				else
-					table.insert(concats, false)
+					table.insert(context.concats, false)
 					-- More or less a TEXT block with 1 element
 					if node.type == "VALUE" then
 						f(node)
 						if label then
-							registerLabel(node, label)
+							context.registerLabel(node, label)
 						end
 					-- Handled by block in most cases
 					elseif node.type == "TABLE" then
 						_accTableInit()
 						f(node)
 						if label then
-							registerLabel(node, label)
+							context.registerLabel(node, label)
 						end
-						registerOP(nil, ops.ACC_TABLE, 0, 0)
+						context.registerOP(nil, ops.ACC_TABLE, 0, 0)
 					elseif node.type == "EMPTY" then
 						-- Exactly same behavior as BEGIN_ACC (nothing) ACC_TEXT
 						f(node)
 						if label then
-							registerLabel(node, label)
+							context.registerLabel(node, label)
 						end
-						registerOP(nil, ops.LOAD_EMPTY, 0, 0)
+						context.registerOP(nil, ops.LOAD_EMPTY, 0, 0)
 					end
 				end
-				table.remove(concats)
+				table.remove(context.concats)
 			end		
 		end
 
@@ -224,11 +136,11 @@ return function(plume)
 			return function (node)
 				local lets = #plume.ast.getAll(node, "LET") + (internVar or 0)
 				if lets>0 or forced then
-					registerOP(node, ops.ENTER_SCOPE, 0, lets)
-					table.insert(scopes, {})
+					context.registerOP(node, ops.ENTER_SCOPE, 0, lets)
+					table.insert(context.scopes, {})
 					f(node)
-					table.remove(scopes)
-					registerOP(nil, ops.LEAVE_SCOPE, 0, 0)
+					table.remove(context.scopes)
+					context.registerOP(nil, ops.LEAVE_SCOPE, 0, 0)
 				else
 					f(node)
 				end
@@ -238,23 +150,23 @@ return function(plume)
 		local function file(f)
 			f = f or childrenHandler
 			return function (node)
-				table.insert(roots, #scopes+1)
+				table.insert(context.roots, #context.scopes+1)
 				f(node)
-				table.remove(roots)
+				table.remove(context.roots)
 			end		
 		end
 
 		local function opLoadVar(node, varName)
-			local var = getVariable(varName)
+			local var = context.getVariable(varName)
 			if not var then
 				plume.error.useUnknowVariableError(node, varName)
 			end
 			if var.isStatic then
-				registerOP(node, ops.LOAD_STATIC, 0, var.offset)
+				context.registerOP(node, ops.LOAD_STATIC, 0, var.offset)
 			elseif var.frameOffset > 0 then
-				registerOP(node, ops.LOAD_LOCAL, var.frameOffset, var.offset)
+				context.registerOP(node, ops.LOAD_LOCAL, var.frameOffset, var.offset)
 			else
-				registerOP(node, ops.LOAD_LOCAL, 0, var.offset)
+				context.registerOP(node, ops.LOAD_LOCAL, 0, var.offset)
 			end
 		end
 
@@ -263,10 +175,10 @@ return function(plume)
 		-----------
 		nodeHandlerTable.FILE = file(function(node)
 			local lets = #plume.ast.getAll(node, "LET")
-			registerOP(node, ops.ENTER_SCOPE, 0, lets)
-			table.insert(scopes, {})
+			context.registerOP(node, ops.ENTER_SCOPE, 0, lets)
+			table.insert(context.scopes, {})
 			accBlock()(node, "macro_end")
-			table.remove(scopes)
+			table.remove(context.scopes)
 			-- LEAVE_SCOPE handled by RETURN
 		end)
 
@@ -274,7 +186,7 @@ return function(plume)
 			accBlock(function(node)
 				childrenHandler(node)
 			end)(node)
-			registerOP(node, ops.STORE_VOID, 0, 0)
+			context.registerOP(node, ops.STORE_VOID, 0, 0)
 		end
 
 		------------------
@@ -283,17 +195,17 @@ return function(plume)
 		nodeHandlerTable.COMMENT = function()end
 
 		nodeHandlerTable.TEXT = function(node)
-			local offset = registerConstant(node.content)
-			registerOP(node, ops.LOAD_CONSTANT, 0, offset)
+			local offset = context.registerConstant(node.content)
+			context.registerOP(node, ops.LOAD_CONSTANT, 0, offset)
 		end
 		nodeHandlerTable.NUMBER = function(node)
-			local offset = registerConstant(tonumber(node.content))
-			registerOP(node, ops.LOAD_CONSTANT, 0, offset)
+			local offset = context.registerConstant(tonumber(node.content))
+			context.registerOP(node, ops.LOAD_CONSTANT, 0, offset)
 		end
 		nodeHandlerTable.QUOTE = function(node)
 			local content = (node.children[1] and node.children[1].content) or ""
-			local offset = registerConstant(content)
-			registerOP(node, ops.LOAD_CONSTANT, 0, offset)
+			local offset = context.registerConstant(content)
+			context.registerOP(node, ops.LOAD_CONSTANT, 0, offset)
 		end
 
 		nodeHandlerTable.LIST_ITEM = accBlock()
@@ -303,23 +215,23 @@ return function(plume)
 			local body = plume.ast.get(node, "BODY")
 			local meta = plume.ast.get(node, "META")
 
-			local offset = registerConstant(identifier)
+			local offset = context.registerConstant(identifier)
 
 			accBlock()(body)
-			registerOP(node, ops.LOAD_CONSTANT, 0, offset)
+			context.registerOP(node, ops.LOAD_CONSTANT, 0, offset)
 
 			if meta then
-				registerOP(node, ops.TABLE_SET_ACC, 0, 1)
+				context.registerOP(node, ops.TABLE_SET_ACC, 0, 1)
 			else
-				registerOP(node, ops.TABLE_SET_ACC, 0, 0)
+				context.registerOP(node, ops.TABLE_SET_ACC, 0, 0)
 			end
 		end
 
 		nodeHandlerTable.EXPAND = function(node)
-			table.insert(concats, false)
+			table.insert(context.concats, false)
 			childrenHandler(node)
-			table.remove(concats)
-			registerOP(node, ops.TABLE_EXPAND, 0, 0)
+			table.remove(context.concats)
+			context.registerOP(node, ops.TABLE_EXPAND, 0, 0)
 		end
 
 		--------------
@@ -354,7 +266,7 @@ return function(plume)
 					local source = getNameSource(name, isStatic)
 
 					if isLet then
-						rvar = registerVariable(name, isStatic, isConst, isParam)
+						rvar = context.registerVariable(name, isStatic, isConst, isParam)
 						if not rvar then
 							if isStatic then
 								plume.error.letExistingStaticVariableError(node, name, source)
@@ -363,7 +275,7 @@ return function(plume)
 							end
 						end
 					else
-						rvar = getVariable(name)
+						rvar = context.getVariable(name)
 						if not rvar then
 							plume.error.setUnknowVariableError(node, name)
 						elseif rvar.isConst then
@@ -384,14 +296,14 @@ return function(plume)
 						rvar.ref = var.children
 						rvar.getKey = function()
 							if last.name == "DIRECT_INDEX" then
-								local key = registerConstant(last.children[1].content)
-								registerOP(node, ops.LOAD_CONSTANT, 0, key)
+								local key = context.registerConstant(last.children[1].content)
+								context.registerOP(node, ops.LOAD_CONSTANT, 0, key)
 							else
 								childrenHandler(last) -- key
 							end
-							table.insert(concats, false) -- prevent value to be checked against text type
+							table.insert(context.concats, false) -- prevent value to be checked against text type
 							nodeHandler(var) -- table
-							table.remove(concats)
+							table.remove(context.concats)
 						end
 					else
 						plume.error.cannotSetCallError(node)
@@ -415,66 +327,66 @@ return function(plume)
 				for i, var in ipairs(varlist) do
 					local uid = getUID()
 					if isParam then
-						registerOP(node, ops.LOAD_STATIC, 0, var.offset)
-						registerGoto(node, "param_end_"..uid, "JUMP_IF_PEEK")
-						registerOP(nil, ops.STORE_VOID, 0, 0)
+						context.registerOP(node, ops.LOAD_STATIC, 0, var.offset)
+						context.registerGoto(node, "param_end_"..uid, "JUMP_IF_PEEK")
+						context.registerOP(nil, ops.STORE_VOID, 0, 0)
 					end
 
 					if compound then
 						if var.getKey then
 							var.getKey()
-							registerOP(node, ops.TABLE_INDEX, 0, 0)
+							context.registerOP(node, ops.TABLE_INDEX, 0, 0)
 						else
 							nodeHandler(var.ref)
 						end
 						scope(accBlock())(body)
-						registerOP(var.ref, ops["OPP_" .. compound.children[1].name], 0, 0)
+						context.registerOP(var.ref, ops["OPP_" .. compound.children[1].name], 0, 0)
 					end
 
 					if isFrom then
 						if i < #varlist then
-							registerOP(nil, ops.DUPLICATE, 0, 0)
+							context.registerOP(nil, ops.DUPLICATE, 0, 0)
 						end
-						registerOP(var.ref, ops.LOAD_CONSTANT, 0, registerConstant(var.key))
-						registerOP(nil, ops.SWITCH, 0, 0)
+						context.registerOP(var.ref, ops.LOAD_CONSTANT, 0, context.registerConstant(var.key))
+						context.registerOP(nil, ops.SWITCH, 0, 0)
 						if var.default then
-							registerOP(nil, ops.TABLE_INDEX, 1, 0) -- 1 -> safemode
+							context.registerOP(nil, ops.TABLE_INDEX, 1, 0) -- 1 -> safemode
 							local uid = getUID()
-							registerGoto(node, "default_end_"..uid, "JUMP_IF_PEEK")
-							registerOP(nil, ops.STORE_VOID, 0, 0)
+							context.registerGoto(node, "default_end_"..uid, "JUMP_IF_PEEK")
+							context.registerOP(nil, ops.STORE_VOID, 0, 0)
 							scope(accBlock())(var.default)
-							registerLabel(node, "default_end_"..uid)
+							context.registerLabel(node, "default_end_"..uid)
 						else
-							registerOP(nil, ops.TABLE_INDEX, 0, 0)
+							context.registerOP(nil, ops.TABLE_INDEX, 0, 0)
 						end
 					elseif dest then
 						if i < #varlist then
-							registerOP(nil, ops.DUPLICATE, 0, 0)
+							context.registerOP(nil, ops.DUPLICATE, 0, 0)
 						end
-						registerOP(nil, ops.LOAD_CONSTANT, 0, registerConstant(i))
-						registerOP(nil, ops.SWITCH, 0, 0)
-						registerOP(nil, ops.TABLE_INDEX, 0, 0)
+						context.registerOP(nil, ops.LOAD_CONSTANT, 0, context.registerConstant(i))
+						context.registerOP(nil, ops.SWITCH, 0, 0)
+						context.registerOP(nil, ops.TABLE_INDEX, 0, 0)
 					end
 
 					if var.getKey then
 						var.getKey()
-						registerOP(node, ops.TABLE_SET, 0, 0)
+						context.registerOP(node, ops.TABLE_SET, 0, 0)
 					else
 						if var.isStatic then
-							registerOP(var.ref, ops.STORE_STATIC, 0, var.offset)
+							context.registerOP(var.ref, ops.STORE_STATIC, 0, var.offset)
 						elseif not isLet and var.frameOffset > 0 then
-							registerOP(var.ref, ops.STORE_LOCAL, var.frameOffset, var.offset)
+							context.registerOP(var.ref, ops.STORE_LOCAL, var.frameOffset, var.offset)
 						else
-							registerOP(var.ref, ops.STORE_LOCAL, 0, var.offset)
+							context.registerOP(var.ref, ops.STORE_LOCAL, 0, var.offset)
 						end
 					end
 
 					if isParam then
-						registerGoto(node, "param_end_skip_store"..uid)
-						registerLabel(node, "param_end_"..uid)
-						registerOP(nil, ops.STORE_VOID, 0, 0)
-						registerOP(nil, ops.STORE_VOID, 0, 0)
-						registerLabel(node, "param_end_skip_store"..uid)
+						context.registerGoto(node, "param_end_skip_store"..uid)
+						context.registerLabel(node, "param_end_"..uid)
+						context.registerOP(nil, ops.STORE_VOID, 0, 0)
+						context.registerOP(nil, ops.STORE_VOID, 0, 0)
+						context.registerLabel(node, "param_end_skip_store"..uid)
 					end
 				end
 			elseif isConst and isLet and not isParam then
@@ -525,13 +437,13 @@ return function(plume)
 				if node.children[2] then--only binary
 					nodeHandler(node.children[2])
 				end
-				registerOP(node, ops["OPP_" .. oppName], 0, 0)
+				context.registerOP(node, ops["OPP_" .. oppName], 0, 0)
 			end
 		end
 
 		nodeHandlerTable.NEQ = function(node)
 			nodeHandlerTable.EQ(node)
-			registerOP(node, ops.OPP_NOT, 0, 0)
+			context.registerOP(node, ops.OPP_NOT, 0, 0)
 		end
 
 		nodeHandlerTable.GT = function(node)
@@ -540,35 +452,35 @@ return function(plume)
 			if node.children[2] then
 				nodeHandler(node.children[1])
 			end
-			registerOP(node, ops.OPP_LT, 0, 0)
+			context.registerOP(node, ops.OPP_LT, 0, 0)
 		end
 
 		nodeHandlerTable.LTE = function(node)
 			nodeHandlerTable.GT(node)
-			registerOP(node, ops.OPP_NOT, 0, 0)
+			context.registerOP(node, ops.OPP_NOT, 0, 0)
 		end
 
 		nodeHandlerTable.GTE = function(node)
 			nodeHandlerTable.LT(node)
-			registerOP(node, ops.OPP_NOT, 0, 0)
+			context.registerOP(node, ops.OPP_NOT, 0, 0)
 		end
 
 		nodeHandlerTable.OR = function(node)
 			local uid = getUID()
 			nodeHandler(node.children[1])
-			registerGoto(node, "or_end_"..uid, "JUMP_IF_PEEK")
+			context.registerGoto(node, "or_end_"..uid, "JUMP_IF_PEEK")
 			nodeHandler(node.children[2])
-			registerOP(node, ops["OPP_OR"], 0, 0)
-			registerLabel(node, "or_end_"..uid)
+			context.registerOP(node, ops["OPP_OR"], 0, 0)
+			context.registerLabel(node, "or_end_"..uid)
 		end
 
 		nodeHandlerTable.AND = function(node)
 			local uid = getUID()
 			nodeHandler(node.children[1])
-			registerGoto(node, "and_end_"..uid, "JUMP_IF_NOT_PEEK")
+			context.registerGoto(node, "and_end_"..uid, "JUMP_IF_NOT_PEEK")
 			nodeHandler(node.children[2])
-			registerOP(node, ops["OPP_AND"], 0, 0)
-			registerLabel(node, "and_end_"..uid)
+			context.registerOP(node, ops["OPP_AND"], 0, 0)
+			context.registerLabel(node, "and_end_"..uid)
 		end
 
 		nodeHandlerTable.EXPR = childrenHandler
@@ -594,8 +506,8 @@ return function(plume)
 				elseif child.name == "DIRECT_INDEX" then
 					local index = plume.ast.get(child, "IDENTIFIER")
 					local name = index.content
-					local offset = registerConstant(name)
-					registerOP(index, ops.LOAD_CONSTANT, 0, offset)
+					local offset = context.registerConstant(name)
+					context.registerOP(index, ops.LOAD_CONSTANT, 0, offset)
 				end
 			end
 
@@ -606,18 +518,18 @@ return function(plume)
 			for i=2, #node.children do
 				local child = node.children[i]
 				if child.name == "CALL" or child.name == "BLOCK_CALL" then
-					registerOP(node, ops.ACC_CALL, 0, 0)
+					context.registerOP(node, ops.ACC_CALL, 0, 0)
 				elseif child.name == "INDEX" or child.name == "DIRECT_INDEX" then
 					if node.children[i+1] and (node.children[i+1].name == "CALL" or node.children[i+1].name == "BLOCK_CALL") then
-						registerOP(child, ops.TABLE_INDEX_ACC_SELF, 0, 0)
+						context.registerOP(child, ops.TABLE_INDEX_ACC_SELF, 0, 0)
 					else
-						registerOP(child, ops.TABLE_INDEX, 0, 0)
+						context.registerOP(child, ops.TABLE_INDEX, 0, 0)
 					end
 				end
 			end
 
-			if concats[#concats] then
-				registerOP(node, ops.ACC_CHECK_TEXT, 0, 0)
+			if context.concats[#context.concats] then
+				context.registerOP(node, ops.ACC_CHECK_TEXT, 0, 0)
 			end
 		end
 
@@ -639,15 +551,15 @@ return function(plume)
 		end
 
 		nodeHandlerTable.TRUE = function(node)
-			registerOP(node, ops.LOAD_TRUE, 0, 0)
+			context.registerOP(node, ops.LOAD_TRUE, 0, 0)
 		end
 
 		nodeHandlerTable.FALSE = function(node)
-			registerOP(node, ops.LOAD_FALSE, 0, 0)
+			context.registerOP(node, ops.LOAD_FALSE, 0, 0)
 		end
 
 		nodeHandlerTable.EMPTY = function(node)
-			registerOP(node, ops.LOAD_EMPTY, 0, 0)
+			context.registerOP(node, ops.LOAD_EMPTY, 0, 0)
 		end
 
 		-----------
@@ -658,16 +570,16 @@ return function(plume)
 			local body      = plume.ast.get(node, "BODY")
 			local uid = getUID()
 
-			registerLabel(node, "while_begin_"..uid)
+			context.registerLabel(node, "while_begin_"..uid)
 			childrenHandler(condition)
-			registerGoto(node, "while_end_"..uid, "JUMP_IF_NOT")
+			context.registerGoto(node, "while_end_"..uid, "JUMP_IF_NOT")
 
 			table.insert(loops, {begin_label="while_begin_"..uid, end_label="while_end_"..uid})
 			scope()(body)
 			table.remove(loops)
 
-			registerGoto(node, "while_begin_"..uid)
-			registerLabel(node, "while_end_"..uid)
+			context.registerGoto(node, "while_begin_"..uid)
+			context.registerLabel(node, "while_end_"..uid)
 		end
 
 		nodeHandlerTable.FOR = function(node)
@@ -676,22 +588,22 @@ return function(plume)
 			local body       = plume.ast.get(node, "BODY")
 			local uid = getUID()
 
-			local next = registerConstant("next")
-			local iter = registerConstant("iter")
+			local next = context.registerConstant("next")
+			local iter = context.registerConstant("iter")
 
-			table.insert(concats, false)
+			table.insert(context.concats, false)
 			childrenHandler(iterator)
-			table.remove(concats)
+			table.remove(context.concats)
 
-			registerOP(node, ops.GET_ITER, 0, 0)
-			registerOP(nil, ops.ENTER_SCOPE, 0, 1)
-			table.insert(scopes, {})
+			context.registerOP(node, ops.GET_ITER, 0, 0)
+			context.registerOP(nil, ops.ENTER_SCOPE, 0, 1)
+			table.insert(context.scopes, {})
 
-				registerOP(nil, ops.STORE_LOCAL, 0, 1)
+				context.registerOP(nil, ops.STORE_LOCAL, 0, 1)
 
-				registerLabel(nil, "for_begin_"..uid)
-				registerOP(nil, ops.LOAD_LOCAL, 0, 1)
-				registerGoto(nil, "for_end_"..uid, "FOR_ITER", 1)
+				context.registerLabel(nil, "for_begin_"..uid)
+				context.registerOP(nil, ops.LOAD_LOCAL, 0, 1)
+				context.registerGoto(nil, "for_end_"..uid, "FOR_ITER", 1)
 
 				scope(function(body)
 					affectation(node, varlist,
@@ -708,14 +620,14 @@ return function(plume)
 					table.insert(loops, {begin_label="for_loop_end_"..uid, end_label="for_end_"..uid})
 					childrenHandler(body)
 					table.remove(loops)
-					registerLabel(nil, "for_loop_end_"..uid)
+					context.registerLabel(nil, "for_loop_end_"..uid)
 				end, 1)(body)
 
-				registerGoto (nil, "for_begin_"..uid)
-				registerLabel(nil, "for_end_"..uid)
+				context.registerGoto (nil, "for_begin_"..uid)
+				context.registerLabel(nil, "for_end_"..uid)
 
-			table.remove(scopes)
-			registerOP(node, ops.LEAVE_SCOPE, 0, 0)	
+			table.remove(context.scopes)
+			context.registerOP(node, ops.LEAVE_SCOPE, 0, 0)	
 		end
 
 		nodeHandlerTable.CONTINUE = function(node)
@@ -723,7 +635,7 @@ return function(plume)
 			if not loop or not loop.begin_label then
 				plume.error.cannotUseBreakOutsideLoop(node)
 			end
-			registerGoto (node, loop.begin_label)
+			context.registerGoto (node, loop.begin_label)
 		end
 
 		nodeHandlerTable.BREAK = function(node)
@@ -731,7 +643,7 @@ return function(plume)
 			if not loop or not loop.end_label then
 				plume.error.cannotUseBreakOutsideLoop(node)
 			end
-			registerGoto (node, loop.end_label)
+			context.registerGoto (node, loop.end_label)
 		end
 
 		------------
@@ -779,10 +691,10 @@ return function(plume)
 			for i=1, #branchs, 2 do
 				local body = branchs[i]
 				local condition = branchs[i+1]
-				registerLabel(node, "branch_"..i.."_"..uid)
+				context.registerLabel(node, "branch_"..i.."_"..uid)
 				if condition then
 					childrenHandler(condition)
-					registerGoto(node, "branch_"..(i+2).."_"..uid, "JUMP_IF_NOT")
+					context.registerGoto(node, "branch_"..(i+2).."_"..uid, "JUMP_IF_NOT")
 				end
 				if body.type == "TEXT" then
 					scope(accBlock())(body)
@@ -790,13 +702,13 @@ return function(plume)
 					scope()(body)
 				end
 				if specialValueMode and body.type == "EMPTY" then
-					registerOP(node, ops.LOAD_EMPTY, 0, 0)
+					context.registerOP(node, ops.LOAD_EMPTY, 0, 0)
 				end
 
-				registerGoto(node, "branch_"..finalBranch.."_"..uid)
+				context.registerGoto(node, "branch_"..finalBranch.."_"..uid)
 			end
 
-			registerLabel(node, "branch_"..finalBranch.."_"..uid)
+			context.registerLabel(node, "branch_"..finalBranch.."_"..uid)
 
 		end
 
@@ -810,16 +722,16 @@ return function(plume)
 			local uid = getUID()
 
 			local macroObj     = plume.newPlumeExecutableChunk(false, chunk.state)
-			macroObj.static    = chunk.static
-			macroObj.constants = constants
-			local macroOffset  = registerConstant(macroObj)
+			macroObj.static    = context.chunk.static
+			macroObj.constants = context.constants
+			local macroOffset  = context.registerConstant(macroObj)
 			
-			registerOP(macroIdentifier, ops.LOAD_CONSTANT, 0, macroOffset)
+			context.registerOP(macroIdentifier, ops.LOAD_CONSTANT, 0, macroOffset)
 			
 			local macroName
 			if macroIdentifier then
 				macroName = macroIdentifier.content
-				local variable = registerVariable(
+				local variable = context.registerVariable(
 					macroName,
 					true -- static
 				)
@@ -827,28 +739,28 @@ return function(plume)
 					plume.error.letExistingStaticVariableError(node, macroName, getNameSource(macroName))
 				end
 				
-				registerOP(macroIdentifier, ops.STORE_STATIC, 0, variable.offset)
+				context.registerOP(macroIdentifier, ops.STORE_STATIC, 0, variable.offset)
 			end
 
 			macroObj.name = macroName or node.label
 
 			file(function ()
 				-- Each macro open a scope, but it is handled by ACC_CALL and RETURN.
-				table.insert(scopes, {})
+				table.insert(context.scopes, {})
 				table.insert(loops, {})
-				table.insert(chunks, macroObj)
+				table.insert(context.chunks, macroObj)
 				for i, param in ipairs(paramList.children) do
 					local paramName = plume.ast.get(param, "IDENTIFIER", 1, 2).content
 					local variadic  = plume.ast.get(param, "VARIADIC")
 					local paramBody = plume.ast.get(param, "BODY")
-					local param = registerVariable(paramName)
+					local param = context.registerVariable(paramName)
 
 					if paramBody then
-						registerOP(param, ops.LOAD_LOCAL, 0, i)
-						registerGoto(param, "macro_var_" .. i .. "_" .. uid, "JUMP_IF_NOT_EMPTY")
+						context.registerOP(param, ops.LOAD_LOCAL, 0, i)
+						context.registerGoto(param, "macro_var_" .. i .. "_" .. uid, "JUMP_IF_NOT_EMPTY")
 						accBlock()(paramBody)
-						registerOP(param, ops.STORE_LOCAL, 0, i)
-						registerLabel(param, "macro_var_" .. i .. "_" .. uid)
+						context.registerOP(param, ops.STORE_LOCAL, 0, i)
+						context.registerLabel(param, "macro_var_" .. i .. "_" .. uid)
 
 						macroObj.namedParamCount = macroObj.namedParamCount+1
 						macroObj.namedParamOffset[paramName] = param.offset
@@ -859,17 +771,17 @@ return function(plume)
 					end
 				end
 				-- always register self parameter
-				if not getVariable("self") then
-					local param = registerVariable("self")
+				if not context.getVariable("self") then
+					local param = context.registerVariable("self")
 					macroObj.namedParamCount = macroObj.namedParamCount+1
 					macroObj.namedParamOffset.self = param.offset
 				end
 
 				accBlock()(body, "macro_end")
-				macroObj.localsCount = #scopes[#scopes]
+				macroObj.localsCount = #context.getCurrentScope()
 				
-				table.remove(scopes)
-				table.remove(chunks)
+				table.remove(context.scopes)
+				table.remove(context.chunks)
 				
 			end) ()
 
@@ -878,7 +790,7 @@ return function(plume)
 		end
 
 		nodeHandlerTable.LEAVE = function(node)
-			registerGoto(node, "macro_end")
+			context.registerGoto(node, "macro_end")
 		end
 
 		----------------
@@ -903,7 +815,7 @@ return function(plume)
             end
 
             for _, key in ipairs(result.keys) do
-            	local var = registerVariable(key, true, true, false, result.table[key], path)
+            	local var = context.registerVariable(key, true, true, false, result.table[key], path)
 				if not var then
 					plume.error.useExistingStaticVariableError(node, key, path)
 				end
