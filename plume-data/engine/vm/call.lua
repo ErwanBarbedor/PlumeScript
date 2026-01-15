@@ -13,6 +13,7 @@ You should have received a copy of the GNU General Public License along with Plu
 If not, see <https://www.gnu.org/licenses/>.
 ]]
 
+--! inline
 function ACC_CALL (vm, arg1, arg2)
     --- Unstack 1 (the macro)
     --- Unstack until frame begin + 1 (all positionals arguments)
@@ -77,6 +78,7 @@ function ACC_CALL (vm, arg1, arg2)
     end
 end
 
+--! inline
 function _UNSTACK_POS (vm, macro, arguments, capture)
     local argcount = _STACK_POS(vm.mainStack) - _STACK_GET(vm.mainStack.frames)
     if argcount ~= macro.positionalParamCount and macro.variadicOffset==0 then
@@ -106,6 +108,7 @@ function _UNSTACK_POS (vm, macro, arguments, capture)
     _STACK_MOVE_FRAMED(vm.mainStack)
 end
 
+--! inline
 function _UNSTACK_NAMED (vm, macro, arguments, capture)
     local stack_bottom = _STACK_GET_FRAMED(vm.mainStack)
     local err
@@ -133,6 +136,7 @@ function _UNSTACK_NAMED (vm, macro, arguments, capture)
     end
 end
 
+--! inline
 function _CALL (vm, macro, arguments)
     table.insert(vm.chunk.callstack, {chunk=vm.chunk, macro=macro, ip=vm.ip})
     if #vm.chunk.callstack<=1000 then
