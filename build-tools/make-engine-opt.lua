@@ -79,14 +79,22 @@ end
 local function subVar(node, map)
 	if node.kind == "var" then
 		if map[node.name] then
-			return map[node.name]
+			return map[node.name], false
 		end
 	elseif node.kind == "call" then
-		if map[node.name] then
-			node.name = map[node.name].name or map[node.name].children[1].name
+		local src = map[node.name]
+		if src then
+			node.name = src.name
+			local i = 1
+			while not node.name and i <= #src.children do
+				if src.children[i].kind == "var" then
+					node.name = src.children[i].name
+				end
+				i = i + 1
+			end
 		end
 	end
-	return node, false
+	return node, true
 end
 
 local function handleReturn(node, returnVars)
@@ -178,12 +186,11 @@ end
 
 local base = [[
 --! inline
-function _STACK_GET(stack)
-    stack()
+function _BIN_OPP_BOOL (opp)
+    _STACK_PUSH(opp(right, left))
 end
 
-_STACK_GET(x)
-
+_BIN_OPP_BOOL (_AND)
 ]]
 
 -- local ast = lib.parse(base)
