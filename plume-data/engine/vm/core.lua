@@ -18,24 +18,31 @@ If not, see <https://www.gnu.org/licenses/>.
 --================--
 -- Initalization --
 --===============--
---! inline
+--! inline-nodo
 function _VM_INIT (plume, chunk, arguments)
     require("table.new")
 
-    --! table-to-remove vm
-    local vm = {} 
+    local vm = {} --! to-remove
     
     -- to avoid context injection
-    vm.plume = plume -- !to-remove
+    vm.plume = plume --! to-remove
 
     _VM_INIT_VARS(vm, chunk)
     _VM_INIT_ARGUMENTS(vm, chunk, arguments)
 
-    return vm
+    return vm --! to-remove
 end
 
---! inline
+--! inline-nodo
 function _VM_INIT_VARS(vm, chunk)
+    --! index-to-inline vm.err vmerr
+    --! index-to-inline vm.serr vmserr
+    --! index-to-inline vm.* *
+    --! index-to-inline mainStack.*
+    --! index-to-inline variableStack.*
+    --! index-to-inline mainStackFrames.*
+    --! index-to-inline variableStackFrames.*
+
     vm.chunk = chunk
     vm.bytecode  = chunk.bytecode
     vm.constants = chunk.constants
@@ -48,13 +55,13 @@ function _VM_INIT_VARS(vm, chunk)
 
     vm.mainStack                = table.new(2^14, 0)
     vm.mainStack.frames         = table.new(2^8, 0)
-    vm.mainStack.pointer        = 0 -- !index-to-inline
-    vm.mainStack.frames.pointer = 0 -- !index-to-inline
+    vm.mainStack.pointer        = 0
+    vm.mainStack.frames.pointer = 0
 
     vm.variableStack                = table.new(2^10, 0)
     vm.variableStack.frames         = table.new(2^8, 0)
-    vm.variableStack.pointer        = 0  -- !index-to-inline
-    vm.variableStack.frames.pointer = 0 -- !index-to-inline
+    vm.variableStack.pointer        = 0
+    vm.variableStack.frames.pointer = 0 
 
     -- easier debuging than setting vm.ip
     vm.jump    = 0
