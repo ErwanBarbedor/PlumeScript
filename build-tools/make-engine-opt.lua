@@ -106,6 +106,9 @@ local function findAnchor(node)
 			else
 				insertPoint = node
 			end
+		-- missing case where min or max should be replaced
+		elseif node.parent.type == "foreq" then
+			insertPoint = node
 		-- Break lazy if-else strategy
 		elseif node.parent.type == "elseif" then
 			if node == node.parent.cond then

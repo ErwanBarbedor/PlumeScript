@@ -18,6 +18,7 @@ function _STACK_GET(stack, index)
     return stack[index or stack.pointer]
 end
 
+--! inline
 function _STACK_GET_OFFSET(stack, offset)
     return stack[stack.pointer + offset]
 end
@@ -75,6 +76,6 @@ end
 function _STACK_GET_FRAMED(stack, offset, frameOffset)
     return _STACK_GET(
         stack,
-        _STACK_GET_OFFSET(stack.frames, frameOffset or 0) + (offset or 0)
+        _STACK_GET_OFFSET(stack.frames, (frameOffset or 0)) + (offset or 0)
     )
 end
