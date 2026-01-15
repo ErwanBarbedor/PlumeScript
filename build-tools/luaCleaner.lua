@@ -36,15 +36,16 @@ local function hasLocals(node)
 	return false
 end
 
-return {
-	removeUselessDo = function(node)
+local function removeUselessDo(node)
 		if node.type == "do" then
 			if isEmpty(node) then
 				return ast._block()
 			elseif not hasLocals(node) then
-				return ast._block(unpack(node))
+				return ast._block(unpack(node)):traverse(removeUselessDo)
 			end
 		end
 		return node
 	end
+return {
+	removeUselessDo = removeUselessDo
 }
