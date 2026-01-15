@@ -58,10 +58,13 @@ tree:traverse(optimizer.inlineIndex)
 tree:traverse(optimizer.tolocal)
 
 tree = optimizer.loadCode(beautifier(tree), false)
-tree:traverse(cleaner.removeUselessDo)
 for i=1, 5 do
 	tree:traverse(cleaner.constantFolding)
 end
+tree:traverse(cleaner.removeUselessDo)
+tree = optimizer.loadCode(beautifier(tree), false)
+cleaner.removeUselessGoto(tree)
+
 local finalCode = beautifier(tree)
 if debug then
 	print(finalCode)
