@@ -35,7 +35,10 @@ local tree
 
 if debug then
 	tree = optimizer.loadCode([[
---! to-add foo()
+do
+    mainStackPointer = mainStackPointer + 1
+    mainStack[mainStackPointer] = constants[arg2]
+end
 ]], false)
 else
 	tree = optimizer.loadCode('plume-data/engine/engine.lua', true)
