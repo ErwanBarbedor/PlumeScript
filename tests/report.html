@@ -5734,10 +5734,10 @@ $index($t, red)
 <span class="bc-line-num">017</span> <span class="bc-opcode">ENTER_SCOPE     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; [...]</span>
 <span class="bc-line-num">018</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; i</span>
 <span class="bc-line-num">019</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 1</span> <span class="bc-info">; i</span>
-<span class="bc-line-num">020</span> <span class="bc-opcode">LOAD_LEXICAL    </span> <span class="bc-arg">2 1</span> <span class="bc-info">; t</span>
+<span class="bc-line-num">020</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">2 1</span> <span class="bc-info">; t</span>
 <span class="bc-line-num">021</span> <span class="bc-opcode">TABLE_INDEX     </span> <span class="bc-arg">0 0</span> <span class="bc-info">; [i]</span>
 <span class="bc-line-num">022</span> <span class="bc-opcode">ACC_CHECK_TEXT  </span> <span class="bc-arg">0 0</span> <span class="bc-info">; t[i]</span>
-<span class="bc-line-num">023</span> <span class="bc-opcode">LOAD_LEXICAL    </span> <span class="bc-arg">2 2</span> <span class="bc-info">; y</span>
+<span class="bc-line-num">023</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">2 2</span> <span class="bc-info">; y</span>
 <span class="bc-line-num">024</span> <span class="bc-opcode">OPP_EQ          </span> <span class="bc-arg">0 0</span> <span class="bc-info">; t[i] == y</span>
 <span class="bc-line-num">025</span> <span class="bc-opcode">JUMP_IF_NOT     </span> <span class="bc-arg">0 30</span>
 <span class="bc-line-num">026</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 1</span> <span class="bc-info">; i</span>
@@ -11678,7 +11678,7 @@ end
 <span class="bc-line-num">006</span> <span class="bc-opcode">ENTER_SCOPE     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; [...]</span>
 <span class="bc-line-num">007</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 1</span> <span class="bc-info">; 0</span>
 <span class="bc-line-num">008</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; y</span>
-<span class="bc-line-num">009</span> <span class="bc-opcode">LOAD_LEXICAL    </span> <span class="bc-arg">1 1</span> <span class="bc-info">; x</span>
+<span class="bc-line-num">009</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">1 1</span> <span class="bc-info">; x</span>
 <span class="bc-line-num">010</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 1</span> <span class="bc-info">; y</span>
 <span class="bc-line-num">011</span> <span class="bc-opcode">OPP_ADD         </span> <span class="bc-arg">0 0</span> <span class="bc-info">; x+y</span>
 <span class="bc-line-num">012</span> <span class="bc-opcode">LEAVE_SCOPE     </span> <span class="bc-arg">0 0</span>
@@ -11728,8 +11728,8 @@ end
 <span class="bc-line-num">011</span> <span class="bc-opcode">ENTER_SCOPE     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; [...]</span>
 <span class="bc-line-num">012</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 1</span> <span class="bc-info">; 0</span>
 <span class="bc-line-num">013</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; z</span>
-<span class="bc-line-num">014</span> <span class="bc-opcode">LOAD_LEXICAL    </span> <span class="bc-arg">2 1</span> <span class="bc-info">; x</span>
-<span class="bc-line-num">015</span> <span class="bc-opcode">LOAD_LEXICAL    </span> <span class="bc-arg">1 1</span> <span class="bc-info">; y</span>
+<span class="bc-line-num">014</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">2 1</span> <span class="bc-info">; x</span>
+<span class="bc-line-num">015</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">1 1</span> <span class="bc-info">; y</span>
 <span class="bc-line-num">016</span> <span class="bc-opcode">OPP_ADD         </span> <span class="bc-arg">0 0</span> <span class="bc-info">; x+y</span>
 <span class="bc-line-num">017</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 1</span> <span class="bc-info">; z</span>
 <span class="bc-line-num">018</span> <span class="bc-opcode">OPP_ADD         </span> <span class="bc-arg">0 0</span> <span class="bc-info">; x+y+z</span>
@@ -12091,7 +12091,7 @@ end
 <span class="bc-line-num">015</span> <span class="bc-opcode">FOR_ITER        </span> <span class="bc-arg">0 24</span>
 <span class="bc-line-num">016</span> <span class="bc-opcode">ENTER_SCOPE     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; [...]</span>
 <span class="bc-line-num">017</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; y</span>
-<span class="bc-line-num">018</span> <span class="bc-opcode">LOAD_LEXICAL    </span> <span class="bc-arg">2 1</span> <span class="bc-info">; x</span>
+<span class="bc-line-num">018</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">2 1</span> <span class="bc-info">; x</span>
 <span class="bc-line-num">019</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 1</span> <span class="bc-info">; y</span>
 <span class="bc-line-num">020</span> <span class="bc-opcode">OPP_ADD         </span> <span class="bc-arg">0 0</span> <span class="bc-info">; x+y</span>
 <span class="bc-line-num">021</span> <span class="bc-opcode">ACC_CHECK_TEXT  </span> <span class="bc-arg">0 0</span> <span class="bc-info">; (x+y)</span>
@@ -12238,11 +12238,11 @@ end
 <span class="bc-line-num">009</span> <span class="bc-opcode">FOR_ITER        </span> <span class="bc-arg">0 24</span>
 <span class="bc-line-num">010</span> <span class="bc-opcode">ENTER_SCOPE     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; [...]</span>
 <span class="bc-line-num">011</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; item</span>
-<span class="bc-line-num">012</span> <span class="bc-opcode">LOAD_LEXICAL    </span> <span class="bc-arg">2 3</span> <span class="bc-info">; count</span>
+<span class="bc-line-num">012</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">2 3</span> <span class="bc-info">; count</span>
 <span class="bc-line-num">013</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 5</span> <span class="bc-info">; 1</span>
 <span class="bc-line-num">014</span> <span class="bc-opcode">OPP_ADD         </span> <span class="bc-arg">0 0</span> <span class="bc-info">; count</span>
-<span class="bc-line-num">015</span> <span class="bc-opcode">STORE_LEXICAL   </span> <span class="bc-arg">2 3</span> <span class="bc-info">; count</span>
-<span class="bc-line-num">016</span> <span class="bc-opcode">LOAD_LEXICAL    </span> <span class="bc-arg">2 3</span> <span class="bc-info">; count</span>
+<span class="bc-line-num">015</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">2 3</span> <span class="bc-info">; count</span>
+<span class="bc-line-num">016</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">2 3</span> <span class="bc-info">; count</span>
 <span class="bc-line-num">017</span> <span class="bc-opcode">ACC_CHECK_TEXT  </span> <span class="bc-arg">0 0</span> <span class="bc-info">; count</span>
 <span class="bc-line-num">018</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 6</span> <span class="bc-info">; )</span>
 <span class="bc-line-num">019</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 1</span> <span class="bc-info">; item</span>
@@ -12442,7 +12442,7 @@ end
 <span class="bc-line-num">039</span> <span class="bc-opcode">FOR_ITER        </span> <span class="bc-arg">0 46</span>
 <span class="bc-line-num">040</span> <span class="bc-opcode">ENTER_SCOPE     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; [...]</span>
 <span class="bc-line-num">041</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; k</span>
-<span class="bc-line-num">042</span> <span class="bc-opcode">LOAD_LEXICAL    </span> <span class="bc-arg">4 1</span> <span class="bc-info">; i</span>
+<span class="bc-line-num">042</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">4 1</span> <span class="bc-info">; i</span>
 <span class="bc-line-num">043</span> <span class="bc-opcode">ACC_CHECK_TEXT  </span> <span class="bc-arg">0 0</span> <span class="bc-info">; i</span>
 <span class="bc-line-num">044</span> <span class="bc-opcode">LEAVE_SCOPE     </span> <span class="bc-arg">0 0</span>
 <span class="bc-line-num">045</span> <span class="bc-opcode">JUMP            </span> <span class="bc-arg">0 38</span>
@@ -12498,10 +12498,10 @@ $nex
 <span class="bc-line-num">014</span> <span class="bc-opcode">FOR_ITER        </span> <span class="bc-arg">0 23</span>
 <span class="bc-line-num">015</span> <span class="bc-opcode">ENTER_SCOPE     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; [...]</span>
 <span class="bc-line-num">016</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; j</span>
-<span class="bc-line-num">017</span> <span class="bc-opcode">LOAD_LEXICAL    </span> <span class="bc-arg">2 1</span> <span class="bc-info">; nex</span>
+<span class="bc-line-num">017</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">2 1</span> <span class="bc-info">; nex</span>
 <span class="bc-line-num">018</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 4</span> <span class="bc-info">; 1</span>
 <span class="bc-line-num">019</span> <span class="bc-opcode">OPP_ADD         </span> <span class="bc-arg">0 0</span> <span class="bc-info">; nex</span>
-<span class="bc-line-num">020</span> <span class="bc-opcode">STORE_LEXICAL   </span> <span class="bc-arg">2 1</span> <span class="bc-info">; nex</span>
+<span class="bc-line-num">020</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">2 1</span> <span class="bc-info">; nex</span>
 <span class="bc-line-num">021</span> <span class="bc-opcode">LEAVE_SCOPE     </span> <span class="bc-arg">0 0</span>
 <span class="bc-line-num">022</span> <span class="bc-opcode">JUMP            </span> <span class="bc-arg">0 13</span>
 <span class="bc-line-num">023</span> <span class="bc-opcode">LEAVE_SCOPE     </span> <span class="bc-arg">0 0</span> <span class="bc-info">; for j in seq(1, 2)[...]</span>
@@ -12572,7 +12572,7 @@ end
 <span class="bc-line-num">020</span> <span class="bc-opcode">FOR_ITER        </span> <span class="bc-arg">0 27</span>
 <span class="bc-line-num">021</span> <span class="bc-opcode">ENTER_SCOPE     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; [...]</span>
 <span class="bc-line-num">022</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; k</span>
-<span class="bc-line-num">023</span> <span class="bc-opcode">LOAD_LEXICAL    </span> <span class="bc-arg">2 1</span> <span class="bc-info">; nex</span>
+<span class="bc-line-num">023</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">2 1</span> <span class="bc-info">; nex</span>
 <span class="bc-line-num">024</span> <span class="bc-opcode">ACC_CHECK_TEXT  </span> <span class="bc-arg">0 0</span> <span class="bc-info">; nex</span>
 <span class="bc-line-num">025</span> <span class="bc-opcode">LEAVE_SCOPE     </span> <span class="bc-arg">0 0</span>
 <span class="bc-line-num">026</span> <span class="bc-opcode">JUMP            </span> <span class="bc-arg">0 19</span>
