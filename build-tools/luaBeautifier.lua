@@ -14,6 +14,7 @@ If not, see <https://www.gnu.org/licenses/>.
 ]]
 
 local patterns = {
+    {"label-end", "::END::"},
     {"label", "::[a-zA-Z_][a-zA-Z_0-9]*::"},
     {"goto-dispatch", "goto DISPATCH"},
     {"word", "[a-zA-Z_][a-zA-Z_0-9%.:]*"},
@@ -95,6 +96,9 @@ local function beautifier(code)
                 if element.name == "label" then
                     newline()
                     indent = indent + 1
+                elseif element.name == "label-end" then
+                    newline()
+                    indent = indent - 1
                 elseif element.name == "word" and element.value == "function" then
                     newline()
                 end
