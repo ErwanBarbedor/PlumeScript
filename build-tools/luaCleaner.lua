@@ -77,7 +77,41 @@ local function constantFolding(node)
 	return node
 end
 
+local function removeUselessGoto(tree)
+	local count = {}
+	tree:traverse(function(node)
+		for pos, child in ipairs(node) do
+			if child.type == "goto" then
+				if count[child.name] then
+					count[child.name] = count[child.name] + 1 
+				else
+					count[child.name] = 1 
+				end
+				if node[pos+1] and node[pos+1].type == "label" and node[pos+1].name == child.name then
+					child.adj = true
+					node[pos+1].adj = true
+				end
+			end
+		end
+		return node
+	end)
+	
+	tree:traverse(function(node)
+		if node.type == "label" or node.type == "goto" then
+			if count[node.name] then
+				local unic = count[node.name] == 1
+				if node.adj and (unic or node.type == "goto") then
+					return ast._block()
+				end
+			end
+		end
+		return node
+	end)
+	return node
+end
+
 return {
 	removeUselessDo = removeUselessDo,
+	removeUselessGoto = removeUselessGoto,
 	constantFolding = constantFolding
 }
