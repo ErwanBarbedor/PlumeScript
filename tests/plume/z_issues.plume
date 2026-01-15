@@ -263,10 +263,11 @@ macro Wing(...s, ?optn)
        false
     end
 end
-$Wing(?optn)
+$Wing(?optn)\n
 $Wing( ?optn)
 /// Output
-true true
+true
+true
 /// End
 
 /// Test #189
@@ -299,4 +300,19 @@ end
 $(quill(?flag))
 /// Output
 
+/// End
+
+/// Test #236-1
+let t = $table() //note the ending space
+a
+/// Output
+a
+/// End
+
+/// Test #236-2
+// Space after "table", but no comment
+let t = $table() 
+a
+/// Output
+a
 /// End
