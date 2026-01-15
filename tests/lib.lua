@@ -137,98 +137,112 @@ function lib.executeTests(allTests, plumeEngine)
     for filename, tests in pairs(allTests) do
         if not tests.error then
             for testName, testData in pairs(tests) do
-                
-                -- Timeout implementation
-                local start_time = os.clock()
-                local function timeout_hook()
-                    if os.clock() - start_time > TIMEOUT_SECONDS then
-                        debug.sethook() -- Disable hook before erroring
-                        error("timeout")
+                for mode=1, 2 do
+                    -- Timeout implementation
+                    local start_time = os.clock()
+                    local function timeout_hook()
+                        if os.clock() - start_time > TIMEOUT_SECONDS then
+                            debug.sethook() -- Disable hook before erroring
+                            error("timeout")
+                        end
                     end
-                end
-                
-                -- Set hook to run every 1,000,000 instructions
-                debug.sethook(timeout_hook, "", 1000000)
-                plumeEngine.callstack = {}
-                plumeEngine.cache = {}
-                plumeEngine.env.plume_path = ""
-                local chunk = plumeEngine.newPlumeExecutableChunk(true)
-                chunk.name = "main"
-                local x, y, z = pcall(
-                    plumeEngine.execute,
-                    testData.input,
-                    testName,
-                    chunk
-                )
-                
-                -- CRITICAL: Always disable the hook after the pcall completes
-                debug.sethook()
+                    
+                    -- Set hook to run every 1,000,000 instructions
+                    debug.sethook(timeout_hook, "", 1000000)
+                    plumeEngine.callstack = {}
+                    plumeEngine.cache = {}
+                    plumeEngine.env.plume_path = ""
 
-                if not x and y == "timeout" then
-                    -- The test timed out
-                    testData.obtained = {
-                        output = string.format("TIMEOUT: Execution exceeded %d second(s).", TIMEOUT_SECONDS),
-                        bytecode = nil,
-                        error = true,
-                    }
-                else
-                    -- Standard execution path (success or other error)
-                    local success, result
-                    if x then
-                        success = y
-                        result = z
-                    else
-                        success = false
-                        result = y
-                    end
+                    local chunk = plumeEngine.newPlumeExecutableChunk(true)
+                    chunk.name = "main"
 
-                    if success then
-                        result = plumeEngine.std.tostring.callable({table={result}})
-                    end
+                    plumeEngine.runDevFlag = mode==1
+                    testData.opt = mode==2
 
-                    -- Process bytecode state for single or multiple chunks
-                    local bytecode_info
-                    local numChunks = 0
-                    if chunk and chunk.state then
-                        numChunks = #chunk.state
-                    end
+                    local x, y, z = pcall(
+                        plumeEngine.execute,
+                        testData.input,
+                        testName,
+                        chunk
+                    )
+                    
+                    -- CRITICAL: Always disable the hook after the pcall completes
+                    debug.sethook()
 
-                    if numChunks <= 1 then
-                        bytecode_info = {
-                            is_multi = false,
-                            grid = chunk.bytecode and plumeEngine.debug.bytecodeGrid(chunk)
+                    
+
+                    if not x and y == "timeout" then
+                        -- The test timed out
+                        testData.obtained = {
+                            output = string.format("TIMEOUT: Execution exceeded %d second(s).", TIMEOUT_SECONDS),
+                            bytecode = nil,
+                            error = true
                         }
                     else
-                        local chunks_list = {}
-                        for _, subChunk in ipairs(chunk.state) do
-                            if subChunk.bytecode and #subChunk.bytecode > 0 then
-                                table.insert(chunks_list, {
-                                    name = subChunk.name or "???",
-                                    grid = plumeEngine.debug.bytecodeGrid(subChunk)
-                                })
-                            end
+                        -- Standard execution path (success or other error)
+                        local success, result
+                        if x then
+                            success = y
+                            result = z
+                        else
+                            success = false
+                            result = y
                         end
-                        
-                        table.sort(chunks_list, function(a, b) return a.name < b.name end)
 
-                        if #chunks_list <= 1 then
-                             bytecode_info = {
+                        if success then
+                            result = plumeEngine.std.tostring.callable({table={result}})
+                        end
+
+                        -- Process bytecode state for single or multiple chunks
+                        local bytecode_info
+                        local numChunks = 0
+                        if chunk and chunk.state then
+                            numChunks = #chunk.state
+                        end
+
+                        if numChunks <= 1 then
+                            bytecode_info = {
                                 is_multi = false,
-                                grid = chunks_list[1] and chunks_list[1].grid or nil
+                                grid = chunk.bytecode and plumeEngine.debug.bytecodeGrid(chunk)
                             }
                         else
-                            bytecode_info = {
-                                is_multi = true,
-                                chunks = chunks_list
-                            }
+                            local chunks_list = {}
+                            for _, subChunk in ipairs(chunk.state) do
+                                if subChunk.bytecode and #subChunk.bytecode > 0 then
+                                    table.insert(chunks_list, {
+                                        name = subChunk.name or "???",
+                                        grid = plumeEngine.debug.bytecodeGrid(subChunk)
+                                    })
+                                end
+                            end
+                            
+                            table.sort(chunks_list, function(a, b) return a.name < b.name end)
+
+                            if #chunks_list <= 1 then
+                                 bytecode_info = {
+                                    is_multi = false,
+                                    grid = chunks_list[1] and chunks_list[1].grid or nil
+                                }
+                            else
+                                bytecode_info = {
+                                    is_multi = true,
+                                    chunks = chunks_list
+                                }
+                            end
                         end
+
+                        testData.obtained = {
+                            output = normalizeOutput(result),
+                            bytecode = bytecode_info,
+                            error = not success,
+                        }
                     end
 
-                    testData.obtained = {
-                        output = normalizeOutput(result),
-                        bytecode = bytecode_info,
-                        error = not success,
-                    }
+                    if mode == 1 then
+                        if testData.expected.error ~= testData.obtained.error or testData.expected.output ~= testData.obtained.output then
+                            break
+                        end
+                    end
                 end
             end
         end
@@ -454,12 +468,19 @@ function lib.generateTestBlockHtml(testName, testData)
     local summaryClass = isFail and "status-fail" or "status-pass"
     local summaryIcon = isFail and "✗" or "✓"
     
+    local failInfo = ""
+    if isFail then
+        if testData.opt then
+            failInfo = "(Successful in development mode, but failed in optimized mode)"
+        end
+    end
+
     table.insert(htmlParts, detailsTag)
     
     table.insert(htmlParts, "<summary>")
     table.insert(htmlParts, string.format(
-        "<span class=\"status-icon %s\">%s</span> %s",
-        summaryClass, summaryIcon, escapeHtml(testName)
+        "<span class=\"status-icon %s\">%s</span> %s <em style='font-weight: normal'>%s</em>",
+        summaryClass, summaryIcon, escapeHtml(testName), failInfo
     ))
     table.insert(htmlParts, "</summary>")
     

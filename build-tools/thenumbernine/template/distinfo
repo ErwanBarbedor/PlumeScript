@@ -1,0 +1,13 @@
+name = "template"
+files = {
+	["LICENSE"] = "template/LICENSE",
+	["README.md"] = "template/README.md",
+	["output.lua"] = "template/output.lua",
+	["showcode.lua"] = "template/showcode.lua",
+	["template-dev-1.rockspec"] = "template/template-dev-1.rockspec",
+	["template.lua"] = "template/template.lua",
+	["run.lua"] = "template/run.lua",
+}
+deps = {
+	"ext",
+}

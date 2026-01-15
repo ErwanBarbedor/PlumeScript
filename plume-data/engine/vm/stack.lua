@@ -13,36 +13,44 @@ You should have received a copy of the GNU General Public License along with Plu
 If not, see <https://www.gnu.org/licenses/>.
 ]]
 
+--! inline
 function _STACK_GET(stack, index)
     return stack[index or stack.pointer]
 end
 
+--! inline
 function _STACK_GET_OFFSET(stack, offset)
     return stack[stack.pointer + offset]
 end
 
+--! inline
 function _STACK_SET(stack, index, value)
     stack[index] = value
 end
 
+--! inline
 function _STACK_POS(stack)
     return stack.pointer
 end
 
+--! inline
 function _STACK_POP(stack)
     stack.pointer = stack.pointer - 1
     return stack[stack.pointer + 1]
 end
 
+--! inline
 function _STACK_PUSH(stack, value)
     stack.pointer = stack.pointer + 1
     stack[stack.pointer] = value
 end
 
+--! inline
 function _STACK_MOVE(stack, value)
     stack.pointer = value
 end
 
+--! inline
 function _STACK_MOVE_FRAMED(stack)
      _STACK_MOVE(
         stack,
@@ -50,10 +58,12 @@ function _STACK_MOVE_FRAMED(stack)
     )
 end
 
+--! inline
 function _STACK_POP_FRAME(stack)
     _STACK_MOVE(stack, _STACK_POP(stack.frames)-1)
 end
 
+--! inline
 function _STACK_SET_FRAMED(stack, offset, frameOffset, value)
     _STACK_SET(
         stack,
@@ -62,9 +72,10 @@ function _STACK_SET_FRAMED(stack, offset, frameOffset, value)
     )
 end
 
+--! inline
 function _STACK_GET_FRAMED(stack, offset, frameOffset)
     return _STACK_GET(
         stack,
-        _STACK_GET_OFFSET(stack.frames, frameOffset or 0) + (offset or 0)
+        _STACK_GET_OFFSET(stack.frames, (frameOffset or 0)) + (offset or 0)
     )
 end

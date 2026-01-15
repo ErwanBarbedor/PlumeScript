@@ -14,7 +14,7 @@ If not, see <https://www.gnu.org/licenses/>.
 ]]
 
 -- Create the core big-dispatch-loop
--- Called by makevm.lua
+-- Called by make-engine-opt.lua
 
 local plume = {}
 require"plume-data/engine/utils"(plume)
@@ -43,33 +43,32 @@ If not, see <https://www.gnu.org/licenses/>.
 
 -- Add all needed functions are loaded as globals
 return function (plume)
+	function plume._run_dev (chunk, arguments)
 ]=]
 
 local import = {}
 for file in lfs.dir("plume-data/engine/vm") do
 	if file:match('%.lua$') then
 		file = file:gsub('%.lua$', '')
-		table.insert(import, string.format("\trequire \"plume-data/engine/vm/%s\"\n", file))
+		table.insert(import, string.format("\t\trequire \"plume-data/engine/vm/%s\"\n", file))
 	end
 end
 import = table.concat(import)
 
 local init = [[
-
-	function plume.run (chunk, arguments)
+	
 		-- Creates stacks, handle arguments
-		local vm = _VM_INIT(plume, chunk, arguments)
+		local vm =  --! to-remove
+			_VM_INIT(plume, chunk, arguments)
 		
-		local op, arg1, arg2
+		local op, arg1, arg2, vmerr, vmserr
 		::DISPATCH::
-			-- !begin-to-remove
 			if vm.err then 
 				return false, vm.err, vm.ip, vm.chunk
 			end
 			if vm.serr then
 				return false, unpack(vm.serr)
 			end
-			-- !end-to-remove
 
 			-- Handle jump and incremente IP
 			_VM_TICK(vm)
@@ -105,4 +104,6 @@ local footer = "\t\t::END::\n\t\treturn true, _STACK_GET(vm.mainStack)\n\tend\ne
 local result = {header, import, init, dispatch, labels, footer}
 
 
-io.open("plume-data/engine/engine.lua", "w"):write(table.concat( result, ""))
+local f = io.open("plume-data/engine/engine.lua", "w")
+	f:write(table.concat( result, ""))
+f:close()

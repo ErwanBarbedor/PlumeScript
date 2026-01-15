@@ -13,38 +13,36 @@ You should have received a copy of the GNU General Public License along with Plu
 If not, see <https://www.gnu.org/licenses/>.
 ]]
 
---=====================--
--- Instruction format --
---=====================--
-local bit = require("bit")
-local OP_BITS   = 7
-local ARG1_BITS = 5
-local ARG2_BITS = 20
-local ARG1_SHIFT = ARG2_BITS
-local OP_SHIFT   = ARG1_BITS + ARG2_BITS
-local MASK_OP   = bit.lshift(1, OP_BITS) - 1
-local MASK_ARG1 = bit.lshift(1, ARG1_BITS) - 1
-local MASK_ARG2 = bit.lshift(1, ARG2_BITS) - 1
+
 
 --================--
 -- Initalization --
 --===============--
+--! inline-nodo
 function _VM_INIT (plume, chunk, arguments)
     require("table.new")
 
-    local vm = {} -- !table-to-remove
+    local vm = {} --! to-remove
     
     -- to avoid context injection
-    vm.plume = plume -- !to-remove
-    -- !alias vm.plume plume
+    vm.plume = plume --! to-remove
 
     _VM_INIT_VARS(vm, chunk)
     _VM_INIT_ARGUMENTS(vm, chunk, arguments)
 
-    return vm
+    return vm --! to-remove
 end
 
+--! inline-nodo
 function _VM_INIT_VARS(vm, chunk)
+    --! index-to-inline vm.err vmerr
+    --! index-to-inline vm.serr vmserr
+    --! index-to-inline vm.* *
+    --! index-to-inline mainStack.*
+    --! index-to-inline variableStack.*
+    --! index-to-inline mainStackFrames.*
+    --! index-to-inline variableStackFrames.*
+
     vm.chunk = chunk
     vm.bytecode  = chunk.bytecode
     vm.constants = chunk.constants
@@ -57,13 +55,13 @@ function _VM_INIT_VARS(vm, chunk)
 
     vm.mainStack                = table.new(2^14, 0)
     vm.mainStack.frames         = table.new(2^8, 0)
-    vm.mainStack.pointer        = 0 -- !index-to-inline
-    vm.mainStack.frames.pointer = 0 -- !index-to-inline
+    vm.mainStack.pointer        = 0
+    vm.mainStack.frames.pointer = 0
 
     vm.variableStack                = table.new(2^10, 0)
     vm.variableStack.frames         = table.new(2^8, 0)
-    vm.variableStack.pointer        = 0  -- !index-to-inline
-    vm.variableStack.frames.pointer = 0 -- !index-to-inline
+    vm.variableStack.pointer        = 0
+    vm.variableStack.frames.pointer = 0 
 
     -- easier debuging than setting vm.ip
     vm.jump    = 0
@@ -72,6 +70,7 @@ function _VM_INIT_VARS(vm, chunk)
     vm.empty = vm.plume.obj.empty
 end
 
+--! inline
 function _VM_INIT_ARGUMENTS(vm, chunk, arguments)
     if arguments then
         if chunk.isFile then
@@ -97,8 +96,9 @@ function _VM_INIT_ARGUMENTS(vm, chunk, arguments)
     end
 end
 
+--! inline
 function _VM_TICK (vm)
-    -- !to-remove-begin
+    --! to-remove-begin
     if vm.plume.hook then
         if vm.ip>0 then 
             local instr, op, arg1, arg2
@@ -125,7 +125,7 @@ function _VM_TICK (vm)
             )
         end       
     end  
-    -- !to-remove-end
+    --! to-remove-end
 
     if vm.jump>0 then
         vm.ip = vm.jump
@@ -136,7 +136,21 @@ function _VM_TICK (vm)
     vm.tic = vm.tic+1
 end
 
+--! inline
 function _VM_DECODE_CURRENT_INSTRUCTION(vm)
+    --=====================--
+    -- Instruction format --
+    --=====================--
+    local bit = require("bit")
+    local OP_BITS   = 7
+    local ARG1_BITS = 5
+    local ARG2_BITS = 20
+    local ARG1_SHIFT = ARG2_BITS
+    local OP_SHIFT   = ARG1_BITS + ARG2_BITS
+    local MASK_OP   = bit.lshift(1, OP_BITS) - 1
+    local MASK_ARG1 = bit.lshift(1, ARG1_BITS) - 1
+    local MASK_ARG2 = bit.lshift(1, ARG2_BITS) - 1
+
     local instr, op, arg1, arg2
     instr = vm.bytecode[vm.ip]
     op    = bit.band(bit.rshift(instr, OP_SHIFT), MASK_OP)
