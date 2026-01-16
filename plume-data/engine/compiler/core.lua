@@ -44,7 +44,7 @@ return function(plume)
 		context.constants = chunk.constants
 
 		require 'plume-data/engine/compiler/labels'    (plume, context)
-		require 'plume-data/engine/compiler/scopes'    (plume, context)
+		require 'plume-data/engine/compiler/wrappers'  (plume, context)
 		require 'plume-data/engine/compiler/utils'     (plume, context)
 		require 'plume-data/engine/compiler/variables' (plume, context)
 

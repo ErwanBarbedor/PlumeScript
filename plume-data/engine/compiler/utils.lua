@@ -47,4 +47,10 @@ return function (plume, context)
 		local current = context.getLast("chunks").instructions
 		table.insert(current, {op, arg1, arg2, mapsto=node})
 	end
+
+	--- Return the last scope of context.scopes
+    --- @return table
+    function context.getCurrentScope()  
+        return context.scopes[#context.scopes]  
+    end  
 end

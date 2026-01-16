@@ -40,7 +40,7 @@ return function (plume, context, nodeHandlerTable)
 
 		context.scope(function()
 			if argList then
-				context.accTable(argList)
+				context.childrenHandler(argList)
 			end
 
 			if node.type == "TABLE" then
