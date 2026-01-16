@@ -20,10 +20,10 @@ return function (plume, context, nodeHandlerTable)
 			local child = node.children[i]
 
 			if child.name == "CALL" then
-				context.accTableInit()
+				context.accTableInit(node)
 				context.childrenHandler(child)
 			elseif child.name == "BLOCK_CALL" then
-				context.accTableInit()
+				context.accTableInit(node)
 				context.nodeHandler(child)
 			elseif child.name == "INDEX" then
 				context.childrenHandler(child)
