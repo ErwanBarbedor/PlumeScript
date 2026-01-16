@@ -14,7 +14,37 @@ If not, see <https://www.gnu.org/licenses/>.
 ]]
 
 return function (plume, context)
+	--- @param key string
+	--- @return any last element of context[key]
 	function context.getLast(key)
 		return context[key][#context[key]]
+	end
+
+	local uid = 0
+	--- Return each time an unique number
+	--- Used to name labels
+	---@return number
+	function context.getUID()
+		uid = uid+1
+		return uid
+	end
+
+	-- All lua std function are stored as static variables
+	function context.loadSTD()
+		local keys = {}
+		for key, f in pairs(plume.std) do
+			table.insert(keys, key)
+		end
+		table.sort(keys)
+
+		for _, key in ipairs(keys) do
+			context.registerVariable(key, true, false, false, plume.std[key])
+		end
+	end
+
+	function context.registerOP(node, op, arg1, arg2)
+		assert(op) -- Guard against opcode typo
+		local current = context.getLast("chunks").instructions
+		table.insert(current, {op, arg1, arg2, mapsto=node})
 	end
 end
