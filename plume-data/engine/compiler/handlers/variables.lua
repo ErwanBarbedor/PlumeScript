@@ -121,31 +121,31 @@ return function (plume, context, nodeHandlerTable)
 				if isParam then
 					context.registerOP(node, plume.ops.LOAD_STATIC, 0, var.offset)
 					context.registerGoto(node, "param_end_"..uid, "JUMP_IF_PEEK")
-					context.registerOP(nil, plume.ops.STORE_VOID, 0, 0)
+					context.registerOP(nil, plume.ops.STORE_VOID)
 				end
 
 				if compound then
 					if var.getKey then
 						var.getKey()
-						context.registerOP(node, plume.ops.TABLE_INDEX, 0, 0)
+						context.registerOP(node, plume.ops.TABLE_INDEX)
 					else
 						context.nodeHandler(var.ref)
 					end
 					context.scope(context.accBlock())(body)
-					context.registerOP(var.ref, plume.ops["OPP_" .. compound.children[1].name], 0, 0)
+					context.registerOP(var.ref, plume.ops["OPP_" .. compound.children[1].name])
 				end
 
 				if isFrom then
 					if i < #varlist then
-						context.registerOP(nil, plume.ops.DUPLICATE, 0, 0)
+						context.registerOP(nil, plume.ops.DUPLICATE)
 					end
 					context.registerOP(var.ref, plume.ops.LOAD_CONSTANT, 0, context.registerConstant(var.key))
-					context.registerOP(nil, plume.ops.SWITCH, 0, 0)
+					context.registerOP(nil, plume.ops.SWITCH)
 					if var.default then
 						context.registerOP(nil, plume.ops.TABLE_INDEX, 1, 0) -- 1 -> safemode
 						local uid = context.getUID()
 						context.registerGoto(node, "default_end_"..uid, "JUMP_IF_PEEK")
-						context.registerOP(nil, plume.ops.STORE_VOID, 0, 0)
+						context.registerOP(nil, plume.ops.STORE_VOID)
 						context.scope(context.accBlock())(var.default)
 						context.registerLabel(node, "default_end_"..uid)
 					else
@@ -157,7 +157,7 @@ return function (plume, context, nodeHandlerTable)
 					end
 					context.registerOP(nil, plume.ops.LOAD_CONSTANT, 0, context.registerConstant(i))
 					context.registerOP(nil, plume.ops.SWITCH, 0, 0)
-					context.registerOP(nil, plume.ops.TABLE_INDEX, 0, 0)
+					context.registerOP(nil, plume.ops.TABLE_INDEX)
 				end
 
 				if var.getKey then
@@ -176,8 +176,8 @@ return function (plume, context, nodeHandlerTable)
 				if isParam then
 					context.registerGoto(node, "param_end_skip_store"..uid)
 					context.registerLabel(node, "param_end_"..uid)
-					context.registerOP(nil, plume.ops.STORE_VOID, 0, 0)
-					context.registerOP(nil, plume.ops.STORE_VOID, 0, 0)
+					context.registerOP(nil, plume.ops.STORE_VOID)
+					context.registerOP(nil, plume.ops.STORE_VOID)
 					context.registerLabel(node, "param_end_skip_store"..uid)
 				end
 			end

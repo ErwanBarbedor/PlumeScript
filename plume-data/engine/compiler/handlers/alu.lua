@@ -45,15 +45,15 @@ return function (plume, context, nodeHandlerTable)
 				context.registerOP(node, plume.ops.ACC_CALL, 0, 0)
 			elseif child.name == "INDEX" or child.name == "DIRECT_INDEX" then
 				if node.children[i+1] and (node.children[i+1].name == "CALL" or node.children[i+1].name == "BLOCK_CALL") then
-					context.registerOP(child, plume.ops.TABLE_INDEX_ACC_SELF, 0, 0)
+					context.registerOP(child, plume.ops.TABLE_INDEX_ACC_SELF)
 				else
-					context.registerOP(child, plume.ops.TABLE_INDEX, 0, 0)
+					context.registerOP(child, plume.ops.TABLE_INDEX)
 				end
 			end
 		end
 
 		if context.concats[#context.concats] then
-			context.registerOP(node, plume.ops.ACC_CHECK_TEXT, 0, 0)
+			context.registerOP(node, plume.ops.ACC_CHECK_TEXT)
 		end
 	end
 
@@ -65,13 +65,13 @@ return function (plume, context, nodeHandlerTable)
 			if node.children[2] then--only binary
 				context.nodeHandler(node.children[2])
 			end
-			context.registerOP(node, plume.ops["OPP_" .. oppName], 0, 0)
+			context.registerOP(node, plume.ops["OPP_" .. oppName])
 		end
 	end
 
 	nodeHandlerTable.NEQ = function(node)
 		nodeHandlerTable.EQ(node)
-		context.registerOP(node, plume.ops.OPP_NOT, 0, 0)
+		context.registerOP(node, plume.ops.OPP_NOT)
 	end
 
 	nodeHandlerTable.GT = function(node)
@@ -80,17 +80,17 @@ return function (plume, context, nodeHandlerTable)
 		if node.children[2] then
 			context.nodeHandler(node.children[1])
 		end
-		context.registerOP(node, plume.ops.OPP_LT, 0, 0)
+		context.registerOP(node, plume.ops.OPP_LT)
 	end
 
 	nodeHandlerTable.LTE = function(node)
 		nodeHandlerTable.GT(node)
-		context.registerOP(node, plume.ops.OPP_NOT, 0, 0)
+		context.registerOP(node, plume.ops.OPP_NOT)
 	end
 
 	nodeHandlerTable.GTE = function(node)
 		nodeHandlerTable.LT(node)
-		context.registerOP(node, plume.ops.OPP_NOT, 0, 0)
+		context.registerOP(node, plume.ops.OPP_NOT)
 	end
 
 	nodeHandlerTable.OR = function(node)
@@ -98,7 +98,7 @@ return function (plume, context, nodeHandlerTable)
 		context.nodeHandler(node.children[1])
 		context.registerGoto(node, "or_end_"..uid, "JUMP_IF_PEEK")
 		context.nodeHandler(node.children[2])
-		context.registerOP(node, plume.ops["OPP_OR"], 0, 0)
+		context.registerOP(node, plume.ops["OPP_OR"])
 		context.registerLabel(node, "or_end_"..uid)
 	end
 
@@ -107,7 +107,7 @@ return function (plume, context, nodeHandlerTable)
 		context.nodeHandler(node.children[1])
 		context.registerGoto(node, "and_end_"..uid, "JUMP_IF_NOT_PEEK")
 		context.nodeHandler(node.children[2])
-		context.registerOP(node, plume.ops["OPP_AND"], 0, 0)
+		context.registerOP(node, plume.ops["OPP_AND"])
 		context.registerLabel(node, "and_end_"..uid)
 	end
 

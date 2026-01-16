@@ -31,7 +31,7 @@ return function (plume, context, nodeHandlerTable)
 		context.accBlock(function(node)
 			context.childrenHandler(node)
 		end)(node)
-		context.registerOP(node, plume.ops.STORE_VOID, 0, 0)
+		context.registerOP(node, plume.ops.STORE_VOID)
 	end
 
 	nodeHandlerTable.BLOCK_CALL = function(node)
