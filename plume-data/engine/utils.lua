@@ -198,6 +198,8 @@ return function (plume)
 		elseif node.name == "FOR"
 			or node.name == "WHILE"
 			or node.name == "IF"
+			or node.name == "ELSE"
+			or node.name == "ELSEIF"
 			or node.name == "BODY" then
 			return node.type
 		elseif node.name == "MACRO" then
