@@ -18,10 +18,12 @@ return function (plume, context)
 		local current = context.getLast("chunks").instructions
 		current[#current+1] = {label=name, mapsto=node}
 	end
+	
 	function context.registerGoto(node, name, jump)
 		local current = context.getLast("chunks").instructions
 		current[#current+1] = {_goto=name, jump=jump or "JUMP", mapsto=node}
 	end
+
 	function context.registerMacroLink(node, offset)
 		local current = context.getLast("chunks").instructions
 		current[#current+1] = {link=offset, mapsto=node}
