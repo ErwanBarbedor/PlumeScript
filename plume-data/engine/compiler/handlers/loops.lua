@@ -45,7 +45,7 @@ return function (plume, context, nodeHandlerTable)
 		context.childrenHandler(iterator)
 		table.remove(context.concats)
 
-		context.registerOP(node, plume.ops.GET_ITER, 0, 0)
+		context.registerOP(node, plume.ops.GET_ITER)
 		context.registerOP(nil, plume.ops.ENTER_SCOPE, 0, 1)
 		table.insert(context.scopes, {})
 
@@ -77,7 +77,7 @@ return function (plume, context, nodeHandlerTable)
 			context.registerLabel(nil, "for_end_"..uid)
 
 		table.remove(context.scopes)
-		context.registerOP(node, plume.ops.LEAVE_SCOPE, 0, 0)	
+		context.registerOP(node, plume.ops.LEAVE_SCOPE)	
 	end
 
 	nodeHandlerTable.CONTINUE = function(node)

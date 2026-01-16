@@ -14,23 +14,33 @@ If not, see <https://www.gnu.org/licenses/>.
 ]]
 
 return function(plume)
+	--- Compile a sourcefile into an executable bytecode
+	--- @param code string The sourcecode
+	--- @param filename string Unique name associated with the source code
+	--- @param chunk chunk The table to store all sourcecode informations
+	--- (bytecode, static table, parameters names and number...)
+	--- @return nil (instructions are writted directly into the chunk)
 	function plume.compileFile(code, filename, chunk)
 		local context = plume.newCompilationContext(chunk)
 
 		-- Cache system disabled
 		-- if not plume.copyExecutableChunckFromCache(filename, chunk) then
-			context.loadSTD()
-
-			local ast = plume.parse(code, filename)
-			context.nodeHandler(ast)
-			plume.finalize(chunk)
-
+			-- Add std function to the chunck static table
+			context.loadSTD() 
+			-- Make the ast from source code
+			local ast = plume.parse(code, filename) 
+			-- Call, for each ast node, a function to emit bytecode
+			context.nodeHandler(ast) 
+			-- Encode OP, compute goto offsets
+			plume.finalize(chunk) 
 			-- plume.saveExecutableChunckToCache(filename, chunk)
 		-- end
 
 		return true
 	end
 
+	--- @param chunk chunk
+	--- @return nil
 	function plume.newCompilationContext(chunk)
 		local context = {}
 

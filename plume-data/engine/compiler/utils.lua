@@ -21,7 +21,7 @@ return function (plume, context)
 	end
 
 	local uid = 0
-	--- Return each time an unique number
+	--- Return each time a unique number
 	--- Used to name labels
 	---@return number
 	function context.getUID()
@@ -29,7 +29,10 @@ return function (plume, context)
 		return uid
 	end
 
-	-- All lua std function are stored as static variables
+	--- Load all std function and store them as static variable
+	--- Don't check for registerVariable returning "nil" (mean: variable already exists)
+	--- But loadSTD is called first.
+	--- @return nil
 	function context.loadSTD()
 		local keys = {}
 		for key, f in pairs(plume.std) do
@@ -42,10 +45,15 @@ return function (plume, context)
 		end
 	end
 
+	--- Register an opcode in the current chunk
+	--- @param node node The source node to link the op with
+	--- @param op number opcode constant, should be plume.op.SOMETHING
+	--- @param arg1 number|nil First argument to give to the opcode. Default to 0.
+	--- @param arg2 number|nil Second argument to give to the opcode. Default to 0.
 	function context.registerOP(node, op, arg1, arg2)
 		assert(op) -- Guard against opcode typo
 		local current = context.getLast("chunks").instructions
-		table.insert(current, {op, arg1, arg2, mapsto=node})
+		table.insert(current, {op, arg1 or 0, arg2 or 0, mapsto=node})
 	end
 
 	--- Return the last scope of context.scopes

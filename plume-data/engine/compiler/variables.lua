@@ -14,6 +14,11 @@ If not, see <https://www.gnu.org/licenses/>.
 ]]
 
 return function (plume, context)
+	--- Return the source filename, if exists and differents from processing one, of an imported variable. 
+	--- Used when name conflict between file variables and variables imported via `use`.
+	--- @param name string Name of the variable
+	--- @param isStatic bool
+	--- @return string|nil
 	function context.getNameSource(name, isStatic)
 		local scope
 		if isStatic then
@@ -25,8 +30,12 @@ return function (plume, context)
 		if scope[name] then
 			return scope[name].source
 		end
-		end
-		
+	end
+	
+	--- Get informations about a variable by it's name.
+	--- Return nil if the variable hasn't be registered
+	--- @param name string The name of the variable
+	--- @return table|nil {frameOffset?, offset, isConst, isStatic}
 	function context.getVariable(name)
 		for i=#context.scopes, context.roots[#context.roots], -1 do
 			local current = context.scopes[i]
@@ -49,6 +58,9 @@ return function (plume, context)
 		end
 	end
 
+	--- Add a constant (raw strings or number found in the sourcecode) to the constant table.
+	--- @param value any The value to register.
+	--- @return number Offset of the constant, used by the opcode LOAD_CONSTANT
 	function context.registerConstant(value)
 		local key = tostring(value) -- for numeric keys
 		if not context.constants[key] then

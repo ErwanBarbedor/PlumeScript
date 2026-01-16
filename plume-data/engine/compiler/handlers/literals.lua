@@ -16,15 +16,15 @@ If not, see <https://www.gnu.org/licenses/>.
 return function (plume, context, nodeHandlerTable)
 	-- Stack constants
 	nodeHandlerTable.TRUE = function(node)
-		context.registerOP(node, plume.ops.LOAD_TRUE, 0, 0)
+		context.registerOP(node, plume.ops.LOAD_TRUE)
 	end
 
 	nodeHandlerTable.FALSE = function(node)
-		context.registerOP(node, plume.ops.LOAD_FALSE, 0, 0)
+		context.registerOP(node, plume.ops.LOAD_FALSE)
 	end
 
 	nodeHandlerTable.EMPTY = function(node)
-		context.registerOP(node, plume.ops.LOAD_EMPTY, 0, 0)
+		context.registerOP(node, plume.ops.LOAD_EMPTY)
 	end
 
 	nodeHandlerTable.COMMENT = function()end
