@@ -325,3 +325,25 @@ Compilation error: Cannot define static variable 'x', it already exists in the c
 File '#239', line 2: let static x = 5
                      ^^^^^^^^^^^^^^^^
 /// End
+
+/// Test #288-1
+let t = @table
+  if false
+  else
+    - item
+  end
+end
+
+$len($t)
+/// Output
+1
+/// End
+
+/// Test #288-2
+let x = if true
+end
+
+$(x==empty)
+/// Output
+true
+/// End
