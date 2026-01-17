@@ -67,7 +67,7 @@ return function (plume)
 			elseif op == 10 then goto TABLE_NEW
 			elseif op == 11 then goto TABLE_SET
 			elseif op == 12 then goto TABLE_INDEX
-			elseif op == 13 then goto TABLE_INDEX_ACC_SELF
+			elseif op == 13 then goto TABLE_REGISTER_SELF
 			elseif op == 14 then goto TABLE_SET_META
 			elseif op == 15 then goto TABLE_SET_ACC
 			elseif op == 16 then goto TABLE_EXPAND
@@ -87,18 +87,18 @@ return function (plume)
 			elseif op == 30 then goto JUMP_IF_NOT_PEEK
 			elseif op == 31 then goto GET_ITER
 			elseif op == 32 then goto FOR_ITER
-			elseif op == 33 then goto OPP_ADD
-			elseif op == 34 then goto OPP_MUL
-			elseif op == 35 then goto OPP_SUB
-			elseif op == 36 then goto OPP_DIV
-			elseif op == 37 then goto OPP_NEG
-			elseif op == 38 then goto OPP_MOD
-			elseif op == 39 then goto OPP_POW
-			elseif op == 40 then goto OPP_LT
-			elseif op == 41 then goto OPP_EQ
-			elseif op == 42 then goto OPP_AND
-			elseif op == 43 then goto OPP_NOT
-			elseif op == 44 then goto OPP_OR
+			elseif op == 33 then goto OP_ADD
+			elseif op == 34 then goto OP_MUL
+			elseif op == 35 then goto OP_SUB
+			elseif op == 36 then goto OP_DIV
+			elseif op == 37 then goto OP_NEG
+			elseif op == 38 then goto OP_MOD
+			elseif op == 39 then goto OP_POW
+			elseif op == 40 then goto OP_LT
+			elseif op == 41 then goto OP_EQ
+			elseif op == 42 then goto OP_AND
+			elseif op == 43 then goto OP_NOT
+			elseif op == 44 then goto OP_OR
 			elseif op == 45 then goto DUPLICATE
 			elseif op == 46 then goto SWITCH
 			elseif op == 47 then goto END
@@ -140,8 +140,8 @@ return function (plume)
 			::TABLE_INDEX::
 				TABLE_INDEX(vm, arg1, arg2)
 				goto DISPATCH
-			::TABLE_INDEX_ACC_SELF::
-				TABLE_INDEX_ACC_SELF(vm, arg1, arg2)
+			::TABLE_REGISTER_SELF::
+				TABLE_REGISTER_SELF(vm, arg1, arg2)
 				goto DISPATCH
 			::TABLE_SET_META::
 				TABLE_SET_META(vm, arg1, arg2)
@@ -200,41 +200,41 @@ return function (plume)
 			::FOR_ITER::
 				FOR_ITER(vm, arg1, arg2)
 				goto DISPATCH
-			::OPP_ADD::
-				OPP_ADD(vm, arg1, arg2)
+			::OP_ADD::
+				OP_ADD(vm, arg1, arg2)
 				goto DISPATCH
-			::OPP_MUL::
-				OPP_MUL(vm, arg1, arg2)
+			::OP_MUL::
+				OP_MUL(vm, arg1, arg2)
 				goto DISPATCH
-			::OPP_SUB::
-				OPP_SUB(vm, arg1, arg2)
+			::OP_SUB::
+				OP_SUB(vm, arg1, arg2)
 				goto DISPATCH
-			::OPP_DIV::
-				OPP_DIV(vm, arg1, arg2)
+			::OP_DIV::
+				OP_DIV(vm, arg1, arg2)
 				goto DISPATCH
-			::OPP_NEG::
-				OPP_NEG(vm, arg1, arg2)
+			::OP_NEG::
+				OP_NEG(vm, arg1, arg2)
 				goto DISPATCH
-			::OPP_MOD::
-				OPP_MOD(vm, arg1, arg2)
+			::OP_MOD::
+				OP_MOD(vm, arg1, arg2)
 				goto DISPATCH
-			::OPP_POW::
-				OPP_POW(vm, arg1, arg2)
+			::OP_POW::
+				OP_POW(vm, arg1, arg2)
 				goto DISPATCH
-			::OPP_LT::
-				OPP_LT(vm, arg1, arg2)
+			::OP_LT::
+				OP_LT(vm, arg1, arg2)
 				goto DISPATCH
-			::OPP_EQ::
-				OPP_EQ(vm, arg1, arg2)
+			::OP_EQ::
+				OP_EQ(vm, arg1, arg2)
 				goto DISPATCH
-			::OPP_AND::
-				OPP_AND(vm, arg1, arg2)
+			::OP_AND::
+				OP_AND(vm, arg1, arg2)
 				goto DISPATCH
-			::OPP_NOT::
-				OPP_NOT(vm, arg1, arg2)
+			::OP_NOT::
+				OP_NOT(vm, arg1, arg2)
 				goto DISPATCH
-			::OPP_OR::
-				OPP_OR(vm, arg1, arg2)
+			::OP_OR::
+				OP_OR(vm, arg1, arg2)
 				goto DISPATCH
 			::DUPLICATE::
 				DUPLICATE(vm, arg1, arg2)

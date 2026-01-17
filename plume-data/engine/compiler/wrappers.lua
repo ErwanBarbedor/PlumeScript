@@ -34,7 +34,7 @@ return function (plume, context)
         --- @return nil
         return function (node, label)  
             if node.type == "TEXT" then  
-                table.insert(context.concats, true)  
+                context.toggleConcatOn()
                 context.registerOP(node, plume.ops.BEGIN_ACC, 0, 0)  
                 f(node)  
                 if label then  
@@ -42,7 +42,7 @@ return function (plume, context)
                 end  
                 context.registerOP(nil, plume.ops.ACC_TEXT, 0, 0)  
             else  
-                table.insert(context.concats, false)
+                context.toggleConcatOff()
                 -- More or less a TEXT block with 1 element.
                 -- Don't use ACC_TEXT to prevent conversion to string
                 if node.type == "VALUE" then  
@@ -67,7 +67,7 @@ return function (plume, context)
                     context.registerOP(nil, plume.ops.LOAD_EMPTY, 0, 0)  
                 end  
             end  
-            table.remove(context.concats)  
+            context.toggleConcatPop()
         end          
     end  
     

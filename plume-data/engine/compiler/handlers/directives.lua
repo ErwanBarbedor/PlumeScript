@@ -14,8 +14,12 @@ If not, see <https://www.gnu.org/licenses/>.
 ]]
 
 return function (plume, context, nodeHandlerTable)
+	--- `use` directive execute a file that must return a table,
+	--- and load all keys as constants into the current file static table.
 	nodeHandlerTable.USE = function(node)
 		local path = node.content
+
+		-- Same path resolver as `import`
 		local filename, searchPaths = plume.getFilenameFromPath(path, false, context.chunk)
 
 		if not filename then
@@ -33,7 +37,14 @@ return function (plume, context, nodeHandlerTable)
         end
 
         for _, key in ipairs(result.keys) do
-        	local var = context.registerVariable(key, true, true, false, result.table[key], path)
+        	local var = context.registerVariable(
+        		key,                -- name
+        		true,               -- isStatic,
+        		true,               -- isConst,
+        		false,              -- isParam
+        		result.table[key],  -- staticValue
+        		path                -- source
+        	)
 			if not var then
 				plume.error.useExistingStaticVariableError(node, key, path)
 			end

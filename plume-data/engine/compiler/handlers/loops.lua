@@ -41,9 +41,10 @@ return function (plume, context, nodeHandlerTable)
 		local next = context.registerConstant("next")
 		local iter = context.registerConstant("iter")
 
-		table.insert(context.concats, false)
+		
+		context.toggleConcatOff()
 		context.childrenHandler(iterator)
-		table.remove(context.concats)
+		context.toggleConcatPop()
 
 		context.registerOP(node, plume.ops.GET_ITER)
 		context.registerOP(nil, plume.ops.ENTER_SCOPE, 0, 1)
