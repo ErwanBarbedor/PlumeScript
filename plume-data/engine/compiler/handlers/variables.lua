@@ -258,7 +258,7 @@ return function (plume, context, nodeHandlerTable)
   
 		-- Validation check for empty constants  
 		if isConst and isLet and not isParam and not (body or isBodyStacked) then  
-			plume.error.letEmptyConstantError(node)  
+			plume.error.letEmptyConstantError(node)
 		end  
 	end  
   

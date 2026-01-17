@@ -48,7 +48,7 @@ return function(plume)
 	end
 
 	function plume.error.letEmptyConstantError(node)
-		local message = string.format("Cannot define an empty constant variable.", varName)
+		local message = string.format("Cannot define an empty constant variable.")
 		throwCompilationError(node, message)
 	end
 
