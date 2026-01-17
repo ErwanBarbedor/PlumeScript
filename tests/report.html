@@ -2540,8 +2540,8 @@ end
 <span class="bc-line-num">020</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 1</span> <span class="bc-info">; t</span>
 <span class="bc-line-num">021</span> <span class="bc-opcode">GET_ITER        </span> <span class="bc-arg">0 0</span> <span class="bc-info">; for a, b in t[...]</span>
 <span class="bc-line-num">022</span> <span class="bc-opcode">ENTER_SCOPE     </span> <span class="bc-arg">0 1</span>
-<span class="bc-line-num">023</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">0 1</span>
-<span class="bc-line-num">024</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 1</span>
+<span class="bc-line-num">023</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; for a, b in t[...]</span>
+<span class="bc-line-num">024</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 1</span> <span class="bc-info">; for a, b in t[...]</span>
 <span class="bc-line-num">025</span> <span class="bc-opcode">FOR_ITER        </span> <span class="bc-arg">0 44</span>
 <span class="bc-line-num">026</span> <span class="bc-opcode">ENTER_SCOPE     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; [...]</span>
 <span class="bc-line-num">027</span> <span class="bc-opcode">DUPLICATE       </span> <span class="bc-arg">0 0</span>
@@ -3837,8 +3837,8 @@ end
 <span class="bc-line-num">002</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 3</span> <span class="bc-info">; 1</span>
 <span class="bc-line-num">003</span> <span class="bc-opcode">GET_ITER        </span> <span class="bc-arg">0 0</span> <span class="bc-info">; for x in 1[...]</span>
 <span class="bc-line-num">004</span> <span class="bc-opcode">ENTER_SCOPE     </span> <span class="bc-arg">0 1</span>
-<span class="bc-line-num">005</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">0 1</span>
-<span class="bc-line-num">006</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 1</span>
+<span class="bc-line-num">005</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; for x in 1[...]</span>
+<span class="bc-line-num">006</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 1</span> <span class="bc-info">; for x in 1[...]</span>
 <span class="bc-line-num">007</span> <span class="bc-opcode">FOR_ITER        </span> <span class="bc-arg">0 12</span>
 <span class="bc-line-num">008</span> <span class="bc-opcode">ENTER_SCOPE     </span> <span class="bc-arg">0 1</span>
 <span class="bc-line-num">009</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; x</span>
@@ -4234,8 +4234,8 @@ end
 <span class="bc-line-num">011</span> <span class="bc-opcode">ACC_CALL        </span> <span class="bc-arg">0 0</span> <span class="bc-info">; seq(1, 10)</span>
 <span class="bc-line-num">012</span> <span class="bc-opcode">GET_ITER        </span> <span class="bc-arg">0 0</span> <span class="bc-info">; for i in seq(1, 10)[...]</span>
 <span class="bc-line-num">013</span> <span class="bc-opcode">ENTER_SCOPE     </span> <span class="bc-arg">0 1</span>
-<span class="bc-line-num">014</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">0 1</span>
-<span class="bc-line-num">015</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 1</span>
+<span class="bc-line-num">014</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; for i in seq(1, 10)[...]</span>
+<span class="bc-line-num">015</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 1</span> <span class="bc-info">; for i in seq(1, 10)[...]</span>
 <span class="bc-line-num">016</span> <span class="bc-opcode">FOR_ITER        </span> <span class="bc-arg">0 22</span>
 <span class="bc-line-num">017</span> <span class="bc-opcode">ENTER_SCOPE     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; [...]</span>
 <span class="bc-line-num">018</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; i</span>
@@ -4291,8 +4291,8 @@ end
 <span class="bc-line-num">011</span> <span class="bc-opcode">ACC_CALL        </span> <span class="bc-arg">0 0</span> <span class="bc-info">; seq(1, 10)</span>
 <span class="bc-line-num">012</span> <span class="bc-opcode">GET_ITER        </span> <span class="bc-arg">0 0</span> <span class="bc-info">; for i in seq(1, 10)[...]</span>
 <span class="bc-line-num">013</span> <span class="bc-opcode">ENTER_SCOPE     </span> <span class="bc-arg">0 1</span>
-<span class="bc-line-num">014</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">0 1</span>
-<span class="bc-line-num">015</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 1</span>
+<span class="bc-line-num">014</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; for i in seq(1, 10)[...]</span>
+<span class="bc-line-num">015</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 1</span> <span class="bc-info">; for i in seq(1, 10)[...]</span>
 <span class="bc-line-num">016</span> <span class="bc-opcode">FOR_ITER        </span> <span class="bc-arg">0 24</span>
 <span class="bc-line-num">017</span> <span class="bc-opcode">ENTER_SCOPE     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; [...]</span>
 <span class="bc-line-num">018</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; i</span>
@@ -4443,8 +4443,8 @@ end
 <span class="bc-line-num">022</span> <span class="bc-opcode">ACC_CALL        </span> <span class="bc-arg">0 0</span> <span class="bc-info">; enumerate(t, legacy: true)</span>
 <span class="bc-line-num">023</span> <span class="bc-opcode">GET_ITER        </span> <span class="bc-arg">0 0</span> <span class="bc-info">; for item in enumerate(t, legacy: true)[...]</span>
 <span class="bc-line-num">024</span> <span class="bc-opcode">ENTER_SCOPE     </span> <span class="bc-arg">0 1</span>
-<span class="bc-line-num">025</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">0 1</span>
-<span class="bc-line-num">026</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 1</span>
+<span class="bc-line-num">025</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; for item in enumerate(t, legacy: true)[...]</span>
+<span class="bc-line-num">026</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 1</span> <span class="bc-info">; for item in enumerate(t, legacy: true)[...]</span>
 <span class="bc-line-num">027</span> <span class="bc-opcode">FOR_ITER        </span> <span class="bc-arg">0 45</span>
 <span class="bc-line-num">028</span> <span class="bc-opcode">ENTER_SCOPE     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; [...]</span>
 <span class="bc-line-num">029</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; item</span>
@@ -4527,8 +4527,8 @@ end
 <span class="bc-line-num">028</span> <span class="bc-opcode">ACC_CALL        </span> <span class="bc-arg">0 0</span> <span class="bc-info">; items(t, legacy: true)</span>
 <span class="bc-line-num">029</span> <span class="bc-opcode">GET_ITER        </span> <span class="bc-arg">0 0</span> <span class="bc-info">; for item in items(t, legacy: true)[...]</span>
 <span class="bc-line-num">030</span> <span class="bc-opcode">ENTER_SCOPE     </span> <span class="bc-arg">0 1</span>
-<span class="bc-line-num">031</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">0 1</span>
-<span class="bc-line-num">032</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 1</span>
+<span class="bc-line-num">031</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; for item in items(t, legacy: true)[...]</span>
+<span class="bc-line-num">032</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 1</span> <span class="bc-info">; for item in items(t, legacy: true)[...]</span>
 <span class="bc-line-num">033</span> <span class="bc-opcode">FOR_ITER        </span> <span class="bc-arg">0 51</span>
 <span class="bc-line-num">034</span> <span class="bc-opcode">ENTER_SCOPE     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; [...]</span>
 <span class="bc-line-num">035</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; item</span>
@@ -4793,8 +4793,8 @@ end
 <span class="bc-line-num">008</span> <span class="bc-opcode">ACC_CALL        </span> <span class="bc-arg">0 0</span> <span class="bc-info">; seq(1, 10)</span>
 <span class="bc-line-num">009</span> <span class="bc-opcode">GET_ITER        </span> <span class="bc-arg">0 0</span> <span class="bc-info">; for i in seq(1, 10)[...]</span>
 <span class="bc-line-num">010</span> <span class="bc-opcode">ENTER_SCOPE     </span> <span class="bc-arg">0 1</span>
-<span class="bc-line-num">011</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">0 1</span>
-<span class="bc-line-num">012</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 1</span>
+<span class="bc-line-num">011</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; for i in seq(1, 10)[...]</span>
+<span class="bc-line-num">012</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 1</span> <span class="bc-info">; for i in seq(1, 10)[...]</span>
 <span class="bc-line-num">013</span> <span class="bc-opcode">FOR_ITER        </span> <span class="bc-arg">0 22</span>
 <span class="bc-line-num">014</span> <span class="bc-opcode">ENTER_SCOPE     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; [...]</span>
 <span class="bc-line-num">015</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; i</span>
@@ -4918,7 +4918,7 @@ end
 </div>
 <h4>Error</h4>
 <pre><code>
-Compilation error: Cannot use break keyword outside a loop.
+Compilation error: Cannot use continue keyword outside a loop.
 File &#39;continue cutted from loops by macro&#39;, line 3: continue
                                                     ^^^^^^^^
 </code></pre>
@@ -4954,8 +4954,8 @@ end
 <span class="bc-line-num">008</span> <span class="bc-opcode">ACC_CALL        </span> <span class="bc-arg">0 0</span> <span class="bc-info">; seq(1, 3)</span>
 <span class="bc-line-num">009</span> <span class="bc-opcode">GET_ITER        </span> <span class="bc-arg">0 0</span> <span class="bc-info">; for i in seq(1, 3)[...]</span>
 <span class="bc-line-num">010</span> <span class="bc-opcode">ENTER_SCOPE     </span> <span class="bc-arg">0 1</span>
-<span class="bc-line-num">011</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">0 1</span>
-<span class="bc-line-num">012</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 1</span>
+<span class="bc-line-num">011</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; for i in seq(1, 3)[...]</span>
+<span class="bc-line-num">012</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 1</span> <span class="bc-info">; for i in seq(1, 3)[...]</span>
 <span class="bc-line-num">013</span> <span class="bc-opcode">FOR_ITER        </span> <span class="bc-arg">0 26</span>
 <span class="bc-line-num">014</span> <span class="bc-opcode">ENTER_SCOPE     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; [...]</span>
 <span class="bc-line-num">015</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; i</span>
@@ -5000,7 +5000,7 @@ continue
 </div>
 <h4>Error</h4>
 <pre><code>
-Compilation error: Cannot use break keyword outside a loop.
+Compilation error: Cannot use continue keyword outside a loop.
 File &#39;continue outside loop&#39;, line 1: continue
                                       ^^^^^^^^
 </code></pre>
@@ -5038,8 +5038,8 @@ end
 <span class="bc-line-num">011</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 1</span> <span class="bc-info">; t</span>
 <span class="bc-line-num">012</span> <span class="bc-opcode">GET_ITER        </span> <span class="bc-arg">0 0</span> <span class="bc-info">; for write in t[...]</span>
 <span class="bc-line-num">013</span> <span class="bc-opcode">ENTER_SCOPE     </span> <span class="bc-arg">0 1</span>
-<span class="bc-line-num">014</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">0 1</span>
-<span class="bc-line-num">015</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 1</span>
+<span class="bc-line-num">014</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; for write in t[...]</span>
+<span class="bc-line-num">015</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 1</span> <span class="bc-info">; for write in t[...]</span>
 <span class="bc-line-num">016</span> <span class="bc-opcode">FOR_ITER        </span> <span class="bc-arg">0 24</span>
 <span class="bc-line-num">017</span> <span class="bc-opcode">ENTER_SCOPE     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; [...]</span>
 <span class="bc-line-num">018</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; write</span>
@@ -5097,8 +5097,8 @@ end
 <span class="bc-line-num">015</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 1</span> <span class="bc-info">; t</span>
 <span class="bc-line-num">016</span> <span class="bc-opcode">GET_ITER        </span> <span class="bc-arg">0 0</span> <span class="bc-info">; for write in t[...]</span>
 <span class="bc-line-num">017</span> <span class="bc-opcode">ENTER_SCOPE     </span> <span class="bc-arg">0 1</span>
-<span class="bc-line-num">018</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">0 1</span>
-<span class="bc-line-num">019</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 1</span>
+<span class="bc-line-num">018</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; for write in t[...]</span>
+<span class="bc-line-num">019</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 1</span> <span class="bc-info">; for write in t[...]</span>
 <span class="bc-line-num">020</span> <span class="bc-opcode">FOR_ITER        </span> <span class="bc-arg">0 31</span>
 <span class="bc-line-num">021</span> <span class="bc-opcode">ENTER_SCOPE     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; [...]</span>
 <span class="bc-line-num">022</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; write</span>
@@ -5213,8 +5213,8 @@ end
 <span class="bc-line-num">011</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 1</span> <span class="bc-info">; first5</span>
 <span class="bc-line-num">012</span> <span class="bc-opcode">GET_ITER        </span> <span class="bc-arg">0 0</span> <span class="bc-info">; for i in first5[...]</span>
 <span class="bc-line-num">013</span> <span class="bc-opcode">ENTER_SCOPE     </span> <span class="bc-arg">0 1</span>
-<span class="bc-line-num">014</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">0 1</span>
-<span class="bc-line-num">015</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 1</span>
+<span class="bc-line-num">014</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; for i in first5[...]</span>
+<span class="bc-line-num">015</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 1</span> <span class="bc-info">; for i in first5[...]</span>
 <span class="bc-line-num">016</span> <span class="bc-opcode">FOR_ITER        </span> <span class="bc-arg">0 23</span>
 <span class="bc-line-num">017</span> <span class="bc-opcode">ENTER_SCOPE     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; [...]</span>
 <span class="bc-line-num">018</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; i</span>
@@ -5323,8 +5323,8 @@ end
 <span class="bc-line-num">010</span> <span class="bc-opcode">ACC_CALL        </span> <span class="bc-arg">0 0</span> <span class="bc-info">; seq(1, 5)</span>
 <span class="bc-line-num">011</span> <span class="bc-opcode">GET_ITER        </span> <span class="bc-arg">0 0</span> <span class="bc-info">; for i in seq(1, 5)[...]</span>
 <span class="bc-line-num">012</span> <span class="bc-opcode">ENTER_SCOPE     </span> <span class="bc-arg">0 1</span>
-<span class="bc-line-num">013</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">0 1</span>
-<span class="bc-line-num">014</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 1</span>
+<span class="bc-line-num">013</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; for i in seq(1, 5)[...]</span>
+<span class="bc-line-num">014</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 1</span> <span class="bc-info">; for i in seq(1, 5)[...]</span>
 <span class="bc-line-num">015</span> <span class="bc-opcode">FOR_ITER        </span> <span class="bc-arg">0 22</span>
 <span class="bc-line-num">016</span> <span class="bc-opcode">ENTER_SCOPE     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; [...]</span>
 <span class="bc-line-num">017</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; i</span>
@@ -5751,8 +5751,8 @@ $index($t, red)
 <span class="bc-line-num">011</span> <span class="bc-opcode">ACC_CALL        </span> <span class="bc-arg">0 0</span> <span class="bc-info">; seq(1, len(t))</span>
 <span class="bc-line-num">012</span> <span class="bc-opcode">GET_ITER        </span> <span class="bc-arg">0 0</span> <span class="bc-info">; for i in seq(1, len(t))[...]</span>
 <span class="bc-line-num">013</span> <span class="bc-opcode">ENTER_SCOPE     </span> <span class="bc-arg">0 1</span>
-<span class="bc-line-num">014</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">0 1</span>
-<span class="bc-line-num">015</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 1</span>
+<span class="bc-line-num">014</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; for i in seq(1, len(t))[...]</span>
+<span class="bc-line-num">015</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 1</span> <span class="bc-info">; for i in seq(1, len(t))[...]</span>
 <span class="bc-line-num">016</span> <span class="bc-opcode">FOR_ITER        </span> <span class="bc-arg">0 34</span>
 <span class="bc-line-num">017</span> <span class="bc-opcode">ENTER_SCOPE     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; [...]</span>
 <span class="bc-line-num">018</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; i</span>
@@ -5867,8 +5867,8 @@ $write(write, paint, song, ink: quill, wing: mark)
 <span class="bc-line-num">031</span> <span class="bc-opcode">ACC_CALL        </span> <span class="bc-arg">0 0</span> <span class="bc-info">; items(args)</span>
 <span class="bc-line-num">032</span> <span class="bc-opcode">GET_ITER        </span> <span class="bc-arg">0 0</span> <span class="bc-info">; for key, value in items(args)[...]</span>
 <span class="bc-line-num">033</span> <span class="bc-opcode">ENTER_SCOPE     </span> <span class="bc-arg">0 1</span>
-<span class="bc-line-num">034</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">0 1</span>
-<span class="bc-line-num">035</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 1</span>
+<span class="bc-line-num">034</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; for key, value in items(args)[...]</span>
+<span class="bc-line-num">035</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 1</span> <span class="bc-info">; for key, value in items(args)[...]</span>
 <span class="bc-line-num">036</span> <span class="bc-opcode">FOR_ITER        </span> <span class="bc-arg">0 56</span>
 <span class="bc-line-num">037</span> <span class="bc-opcode">ENTER_SCOPE     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; [...]</span>
 <span class="bc-line-num">038</span> <span class="bc-opcode">DUPLICATE       </span> <span class="bc-arg">0 0</span>
@@ -8987,8 +8987,8 @@ end
 <span class="bc-line-num">019</span> <span class="bc-opcode">ACC_CALL        </span> <span class="bc-arg">0 0</span> <span class="bc-info">; enumerate(t)</span>
 <span class="bc-line-num">020</span> <span class="bc-opcode">GET_ITER        </span> <span class="bc-arg">0 0</span> <span class="bc-info">; for index, value in enumerate(t)[...]</span>
 <span class="bc-line-num">021</span> <span class="bc-opcode">ENTER_SCOPE     </span> <span class="bc-arg">0 1</span>
-<span class="bc-line-num">022</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">0 1</span>
-<span class="bc-line-num">023</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 1</span>
+<span class="bc-line-num">022</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; for index, value in enumerate(t)[...]</span>
+<span class="bc-line-num">023</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 1</span> <span class="bc-info">; for index, value in enumerate(t)[...]</span>
 <span class="bc-line-num">024</span> <span class="bc-opcode">FOR_ITER        </span> <span class="bc-arg">0 46</span>
 <span class="bc-line-num">025</span> <span class="bc-opcode">ENTER_SCOPE     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; [...]</span>
 <span class="bc-line-num">026</span> <span class="bc-opcode">DUPLICATE       </span> <span class="bc-arg">0 0</span>
@@ -9302,8 +9302,8 @@ end
 <span class="bc-line-num">025</span> <span class="bc-opcode">ACC_CALL        </span> <span class="bc-arg">0 0</span> <span class="bc-info">; items(t)</span>
 <span class="bc-line-num">026</span> <span class="bc-opcode">GET_ITER        </span> <span class="bc-arg">0 0</span> <span class="bc-info">; for key, value in items(t)[...]</span>
 <span class="bc-line-num">027</span> <span class="bc-opcode">ENTER_SCOPE     </span> <span class="bc-arg">0 1</span>
-<span class="bc-line-num">028</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">0 1</span>
-<span class="bc-line-num">029</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 1</span>
+<span class="bc-line-num">028</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; for key, value in items(t)[...]</span>
+<span class="bc-line-num">029</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 1</span> <span class="bc-info">; for key, value in items(t)[...]</span>
 <span class="bc-line-num">030</span> <span class="bc-opcode">FOR_ITER        </span> <span class="bc-arg">0 52</span>
 <span class="bc-line-num">031</span> <span class="bc-opcode">ENTER_SCOPE     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; [...]</span>
 <span class="bc-line-num">032</span> <span class="bc-opcode">DUPLICATE       </span> <span class="bc-arg">0 0</span>
@@ -9527,8 +9527,8 @@ end
 <span class="bc-line-num">008</span> <span class="bc-opcode">ACC_CALL        </span> <span class="bc-arg">0 0</span> <span class="bc-info">; seq(1, 5)</span>
 <span class="bc-line-num">009</span> <span class="bc-opcode">GET_ITER        </span> <span class="bc-arg">0 0</span> <span class="bc-info">; for write in seq(1, 5)[...]</span>
 <span class="bc-line-num">010</span> <span class="bc-opcode">ENTER_SCOPE     </span> <span class="bc-arg">0 1</span>
-<span class="bc-line-num">011</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">0 1</span>
-<span class="bc-line-num">012</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 1</span>
+<span class="bc-line-num">011</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; for write in seq(1, 5)[...]</span>
+<span class="bc-line-num">012</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 1</span> <span class="bc-info">; for write in seq(1, 5)[...]</span>
 <span class="bc-line-num">013</span> <span class="bc-opcode">FOR_ITER        </span> <span class="bc-arg">0 20</span>
 <span class="bc-line-num">014</span> <span class="bc-opcode">ENTER_SCOPE     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; [...]</span>
 <span class="bc-line-num">015</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; write</span>
@@ -9573,8 +9573,8 @@ end
 <span class="bc-line-num">007</span> <span class="bc-opcode">ACC_CALL        </span> <span class="bc-arg">0 0</span> <span class="bc-info">; seq(3)</span>
 <span class="bc-line-num">008</span> <span class="bc-opcode">GET_ITER        </span> <span class="bc-arg">0 0</span> <span class="bc-info">; for write in seq(3)[...]</span>
 <span class="bc-line-num">009</span> <span class="bc-opcode">ENTER_SCOPE     </span> <span class="bc-arg">0 1</span>
-<span class="bc-line-num">010</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">0 1</span>
-<span class="bc-line-num">011</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 1</span>
+<span class="bc-line-num">010</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; for write in seq(3)[...]</span>
+<span class="bc-line-num">011</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 1</span> <span class="bc-info">; for write in seq(3)[...]</span>
 <span class="bc-line-num">012</span> <span class="bc-opcode">FOR_ITER        </span> <span class="bc-arg">0 19</span>
 <span class="bc-line-num">013</span> <span class="bc-opcode">ENTER_SCOPE     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; [...]</span>
 <span class="bc-line-num">014</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; write</span>
@@ -12121,8 +12121,8 @@ end
 <span class="bc-line-num">010</span> <span class="bc-opcode">ACC_CALL        </span> <span class="bc-arg">0 0</span> <span class="bc-info">; seq(1, 10)</span>
 <span class="bc-line-num">011</span> <span class="bc-opcode">GET_ITER        </span> <span class="bc-arg">0 0</span> <span class="bc-info">; for y in seq(1, 10)[...]</span>
 <span class="bc-line-num">012</span> <span class="bc-opcode">ENTER_SCOPE     </span> <span class="bc-arg">0 1</span>
-<span class="bc-line-num">013</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">0 1</span>
-<span class="bc-line-num">014</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 1</span>
+<span class="bc-line-num">013</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; for y in seq(1, 10)[...]</span>
+<span class="bc-line-num">014</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 1</span> <span class="bc-info">; for y in seq(1, 10)[...]</span>
 <span class="bc-line-num">015</span> <span class="bc-opcode">FOR_ITER        </span> <span class="bc-arg">0 24</span>
 <span class="bc-line-num">016</span> <span class="bc-opcode">ENTER_SCOPE     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; [...]</span>
 <span class="bc-line-num">017</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; y</span>
@@ -12196,8 +12196,8 @@ end
 <span class="bc-line-num">005</span> <span class="bc-opcode">ACC_CALL        </span> <span class="bc-arg">0 0</span> <span class="bc-info">; items(style)</span>
 <span class="bc-line-num">006</span> <span class="bc-opcode">GET_ITER        </span> <span class="bc-arg">0 0</span> <span class="bc-info">; for item in items(style)[...]</span>
 <span class="bc-line-num">007</span> <span class="bc-opcode">ENTER_SCOPE     </span> <span class="bc-arg">0 1</span>
-<span class="bc-line-num">008</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">0 1</span>
-<span class="bc-line-num">009</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 1</span>
+<span class="bc-line-num">008</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; for item in items(style)[...]</span>
+<span class="bc-line-num">009</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 1</span> <span class="bc-info">; for item in items(style)[...]</span>
 <span class="bc-line-num">010</span> <span class="bc-opcode">FOR_ITER        </span> <span class="bc-arg">0 15</span>
 <span class="bc-line-num">011</span> <span class="bc-opcode">ENTER_SCOPE     </span> <span class="bc-arg">0 1</span>
 <span class="bc-line-num">012</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; item</span>
@@ -12268,8 +12268,8 @@ end
 <span class="bc-line-num">004</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 1</span> <span class="bc-info">; items</span>
 <span class="bc-line-num">005</span> <span class="bc-opcode">GET_ITER        </span> <span class="bc-arg">0 0</span> <span class="bc-info">; for item in items[...]</span>
 <span class="bc-line-num">006</span> <span class="bc-opcode">ENTER_SCOPE     </span> <span class="bc-arg">0 1</span>
-<span class="bc-line-num">007</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">0 1</span>
-<span class="bc-line-num">008</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 1</span>
+<span class="bc-line-num">007</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; for item in items[...]</span>
+<span class="bc-line-num">008</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 1</span> <span class="bc-info">; for item in items[...]</span>
 <span class="bc-line-num">009</span> <span class="bc-opcode">FOR_ITER        </span> <span class="bc-arg">0 24</span>
 <span class="bc-line-num">010</span> <span class="bc-opcode">ENTER_SCOPE     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; [...]</span>
 <span class="bc-line-num">011</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; item</span>
@@ -12446,8 +12446,8 @@ end
 <span class="bc-line-num">008</span> <span class="bc-opcode">ACC_CALL        </span> <span class="bc-arg">0 0</span> <span class="bc-info">; seq(1, 2)</span>
 <span class="bc-line-num">009</span> <span class="bc-opcode">GET_ITER        </span> <span class="bc-arg">0 0</span> <span class="bc-info">; for i in seq(1, 2)[...]</span>
 <span class="bc-line-num">010</span> <span class="bc-opcode">ENTER_SCOPE     </span> <span class="bc-arg">0 1</span>
-<span class="bc-line-num">011</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">0 1</span>
-<span class="bc-line-num">012</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 1</span>
+<span class="bc-line-num">011</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; for i in seq(1, 2)[...]</span>
+<span class="bc-line-num">012</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 1</span> <span class="bc-info">; for i in seq(1, 2)[...]</span>
 <span class="bc-line-num">013</span> <span class="bc-opcode">FOR_ITER        </span> <span class="bc-arg">0 52</span>
 <span class="bc-line-num">014</span> <span class="bc-opcode">ENTER_SCOPE     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; [...]</span>
 <span class="bc-line-num">015</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; i</span>
@@ -12459,8 +12459,8 @@ end
 <span class="bc-line-num">021</span> <span class="bc-opcode">ACC_CALL        </span> <span class="bc-arg">0 0</span> <span class="bc-info">; seq(1, 2)</span>
 <span class="bc-line-num">022</span> <span class="bc-opcode">GET_ITER        </span> <span class="bc-arg">0 0</span> <span class="bc-info">; for j in seq(1, 2)[...]</span>
 <span class="bc-line-num">023</span> <span class="bc-opcode">ENTER_SCOPE     </span> <span class="bc-arg">0 1</span>
-<span class="bc-line-num">024</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">0 1</span>
-<span class="bc-line-num">025</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 1</span>
+<span class="bc-line-num">024</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; for j in seq(1, 2)[...]</span>
+<span class="bc-line-num">025</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 1</span> <span class="bc-info">; for j in seq(1, 2)[...]</span>
 <span class="bc-line-num">026</span> <span class="bc-opcode">FOR_ITER        </span> <span class="bc-arg">0 49</span>
 <span class="bc-line-num">027</span> <span class="bc-opcode">ENTER_SCOPE     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; [...]</span>
 <span class="bc-line-num">028</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; j</span>
@@ -12472,8 +12472,8 @@ end
 <span class="bc-line-num">034</span> <span class="bc-opcode">ACC_CALL        </span> <span class="bc-arg">0 0</span> <span class="bc-info">; seq(1, 2)</span>
 <span class="bc-line-num">035</span> <span class="bc-opcode">GET_ITER        </span> <span class="bc-arg">0 0</span> <span class="bc-info">; for k in seq(1, 2)[...]</span>
 <span class="bc-line-num">036</span> <span class="bc-opcode">ENTER_SCOPE     </span> <span class="bc-arg">0 1</span>
-<span class="bc-line-num">037</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">0 1</span>
-<span class="bc-line-num">038</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 1</span>
+<span class="bc-line-num">037</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; for k in seq(1, 2)[...]</span>
+<span class="bc-line-num">038</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 1</span> <span class="bc-info">; for k in seq(1, 2)[...]</span>
 <span class="bc-line-num">039</span> <span class="bc-opcode">FOR_ITER        </span> <span class="bc-arg">0 46</span>
 <span class="bc-line-num">040</span> <span class="bc-opcode">ENTER_SCOPE     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; [...]</span>
 <span class="bc-line-num">041</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; k</span>
@@ -12528,8 +12528,8 @@ $nex
 <span class="bc-line-num">009</span> <span class="bc-opcode">ACC_CALL        </span> <span class="bc-arg">0 0</span> <span class="bc-info">; seq(1, 2)</span>
 <span class="bc-line-num">010</span> <span class="bc-opcode">GET_ITER        </span> <span class="bc-arg">0 0</span> <span class="bc-info">; for j in seq(1, 2)[...]</span>
 <span class="bc-line-num">011</span> <span class="bc-opcode">ENTER_SCOPE     </span> <span class="bc-arg">0 1</span>
-<span class="bc-line-num">012</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">0 1</span>
-<span class="bc-line-num">013</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 1</span>
+<span class="bc-line-num">012</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; for j in seq(1, 2)[...]</span>
+<span class="bc-line-num">013</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 1</span> <span class="bc-info">; for j in seq(1, 2)[...]</span>
 <span class="bc-line-num">014</span> <span class="bc-opcode">FOR_ITER        </span> <span class="bc-arg">0 23</span>
 <span class="bc-line-num">015</span> <span class="bc-opcode">ENTER_SCOPE     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; [...]</span>
 <span class="bc-line-num">016</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; j</span>
@@ -12602,8 +12602,8 @@ end
 <span class="bc-line-num">015</span> <span class="bc-opcode">ACC_CALL        </span> <span class="bc-arg">0 0</span> <span class="bc-info">; seq(1, 1)</span>
 <span class="bc-line-num">016</span> <span class="bc-opcode">GET_ITER        </span> <span class="bc-arg">0 0</span> <span class="bc-info">; for k in seq(1, 1)[...]</span>
 <span class="bc-line-num">017</span> <span class="bc-opcode">ENTER_SCOPE     </span> <span class="bc-arg">0 1</span>
-<span class="bc-line-num">018</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">0 1</span>
-<span class="bc-line-num">019</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 1</span>
+<span class="bc-line-num">018</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; for k in seq(1, 1)[...]</span>
+<span class="bc-line-num">019</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 1</span> <span class="bc-info">; for k in seq(1, 1)[...]</span>
 <span class="bc-line-num">020</span> <span class="bc-opcode">FOR_ITER        </span> <span class="bc-arg">0 27</span>
 <span class="bc-line-num">021</span> <span class="bc-opcode">ENTER_SCOPE     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; [...]</span>
 <span class="bc-line-num">022</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; k</span>
@@ -12712,8 +12712,8 @@ end
 <span class="bc-line-num">008</span> <span class="bc-opcode">ACC_CALL        </span> <span class="bc-arg">0 0</span> <span class="bc-info">; seq(1, 1.5)</span>
 <span class="bc-line-num">009</span> <span class="bc-opcode">GET_ITER        </span> <span class="bc-arg">0 0</span> <span class="bc-info">; for i in seq(1, 1.5)[...]</span>
 <span class="bc-line-num">010</span> <span class="bc-opcode">ENTER_SCOPE     </span> <span class="bc-arg">0 1</span>
-<span class="bc-line-num">011</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">0 1</span>
-<span class="bc-line-num">012</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 1</span>
+<span class="bc-line-num">011</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; for i in seq(1, 1.5)[...]</span>
+<span class="bc-line-num">012</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 1</span> <span class="bc-info">; for i in seq(1, 1.5)[...]</span>
 <span class="bc-line-num">013</span> <span class="bc-opcode">FOR_ITER        </span> <span class="bc-arg">0 20</span>
 <span class="bc-line-num">014</span> <span class="bc-opcode">ENTER_SCOPE     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; [...]</span>
 <span class="bc-line-num">015</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; i</span>
@@ -12762,8 +12762,8 @@ end
 <span class="bc-line-num">010</span> <span class="bc-opcode">ACC_CALL        </span> <span class="bc-arg">0 0</span> <span class="bc-info">; seq(1, x)</span>
 <span class="bc-line-num">011</span> <span class="bc-opcode">GET_ITER        </span> <span class="bc-arg">0 0</span> <span class="bc-info">; for i in seq(1, x)[...]</span>
 <span class="bc-line-num">012</span> <span class="bc-opcode">ENTER_SCOPE     </span> <span class="bc-arg">0 1</span>
-<span class="bc-line-num">013</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">0 1</span>
-<span class="bc-line-num">014</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 1</span>
+<span class="bc-line-num">013</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; for i in seq(1, x)[...]</span>
+<span class="bc-line-num">014</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 1</span> <span class="bc-info">; for i in seq(1, x)[...]</span>
 <span class="bc-line-num">015</span> <span class="bc-opcode">FOR_ITER        </span> <span class="bc-arg">0 22</span>
 <span class="bc-line-num">016</span> <span class="bc-opcode">ENTER_SCOPE     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; [...]</span>
 <span class="bc-line-num">017</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; i</span>
@@ -12901,8 +12901,8 @@ end
 <span class="bc-line-num">010</span> <span class="bc-opcode">ACC_CALL        </span> <span class="bc-arg">0 0</span> <span class="bc-info">; seq(x, 2)</span>
 <span class="bc-line-num">011</span> <span class="bc-opcode">GET_ITER        </span> <span class="bc-arg">0 0</span> <span class="bc-info">; for i in seq(x, 2)[...]</span>
 <span class="bc-line-num">012</span> <span class="bc-opcode">ENTER_SCOPE     </span> <span class="bc-arg">0 1</span>
-<span class="bc-line-num">013</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">0 1</span>
-<span class="bc-line-num">014</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 1</span>
+<span class="bc-line-num">013</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; for i in seq(x, 2)[...]</span>
+<span class="bc-line-num">014</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 1</span> <span class="bc-info">; for i in seq(x, 2)[...]</span>
 <span class="bc-line-num">015</span> <span class="bc-opcode">FOR_ITER        </span> <span class="bc-arg">0 22</span>
 <span class="bc-line-num">016</span> <span class="bc-opcode">ENTER_SCOPE     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; [...]</span>
 <span class="bc-line-num">017</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; i</span>
