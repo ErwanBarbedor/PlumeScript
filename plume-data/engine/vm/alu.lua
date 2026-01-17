@@ -202,7 +202,8 @@ function OP_EQ (vm, arg1, arg2)
     local success, result = _HANDLE_META_BIN (vm, left, right, "eq")
 
     if not success then
-        result = left == right or tonumber(left) and tonumber(left) == tonumber(right)
+        -- (false) instead of false preventing make-engine-opt optimization
+        result = left == right or tonumber(left) and tonumber(left) == tonumber(right) or (false)
     end
 
     _STACK_PUSH(vm.mainStack, result)  
