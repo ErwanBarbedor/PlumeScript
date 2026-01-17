@@ -77,7 +77,7 @@ return function (plume, context, nodeHandlerTable)
 		for i=2, #node.children do
 			local child = node.children[i]
 			if child.name == "CALL" or child.name == "BLOCK_CALL" then
-				context.registerOP(node, plume.ops.ACC_CALL, 0, 0)
+				context.registerOP(node, plume.ops.CONCAT_CALL)
 			elseif child.name == "INDEX" or child.name == "DIRECT_INDEX" then
 				local nextChild = node.children[i+1]
 				local nextChildIsCall = nextChild and (nextChild.name == "CALL" or nextChild.name == "BLOCK_CALL")
@@ -92,7 +92,7 @@ return function (plume, context, nodeHandlerTable)
 
 		-- In inside a TEXT block, check the type of value returned by eval
 		if context.checkIfCanConcat() then
-			context.registerOP(node, plume.ops.ACC_CHECK_TEXT)
+			context.registerOP(node, plume.ops.CHECK_IS_TEXT)
 		end
 	end
 
