@@ -74,34 +74,33 @@ return function (plume)
 			elseif op == 17 then goto ENTER_SCOPE
 			elseif op == 18 then goto LEAVE_SCOPE
 			elseif op == 19 then goto BEGIN_ACC
-			elseif op == 20 then goto ACC_TABLE
-			elseif op == 21 then goto ACC_TEXT
-			elseif op == 22 then goto ACC_EMPTY
-			elseif op == 23 then goto ACC_CALL
-			elseif op == 24 then goto ACC_CHECK_TEXT
-			elseif op == 25 then goto JUMP_IF
-			elseif op == 26 then goto JUMP_IF_NOT
-			elseif op == 27 then goto JUMP_IF_NOT_EMPTY
-			elseif op == 28 then goto JUMP
-			elseif op == 29 then goto JUMP_IF_PEEK
-			elseif op == 30 then goto JUMP_IF_NOT_PEEK
-			elseif op == 31 then goto GET_ITER
-			elseif op == 32 then goto FOR_ITER
-			elseif op == 33 then goto OP_ADD
-			elseif op == 34 then goto OP_MUL
-			elseif op == 35 then goto OP_SUB
-			elseif op == 36 then goto OP_DIV
-			elseif op == 37 then goto OP_NEG
-			elseif op == 38 then goto OP_MOD
-			elseif op == 39 then goto OP_POW
-			elseif op == 40 then goto OP_LT
-			elseif op == 41 then goto OP_EQ
-			elseif op == 42 then goto OP_AND
-			elseif op == 43 then goto OP_NOT
-			elseif op == 44 then goto OP_OR
-			elseif op == 45 then goto DUPLICATE
-			elseif op == 46 then goto SWITCH
-			elseif op == 47 then goto END
+			elseif op == 20 then goto CONCAT_TABLE
+			elseif op == 21 then goto CONCAT_TEXT
+			elseif op == 22 then goto CONCAT_CALL
+			elseif op == 23 then goto CHECK_IS_TEXT
+			elseif op == 24 then goto JUMP_IF
+			elseif op == 25 then goto JUMP_IF_NOT
+			elseif op == 26 then goto JUMP_IF_NOT_EMPTY
+			elseif op == 27 then goto JUMP
+			elseif op == 28 then goto JUMP_IF_PEEK
+			elseif op == 29 then goto JUMP_IF_NOT_PEEK
+			elseif op == 30 then goto GET_ITER
+			elseif op == 31 then goto FOR_ITER
+			elseif op == 32 then goto OP_ADD
+			elseif op == 33 then goto OP_MUL
+			elseif op == 34 then goto OP_SUB
+			elseif op == 35 then goto OP_DIV
+			elseif op == 36 then goto OP_NEG
+			elseif op == 37 then goto OP_MOD
+			elseif op == 38 then goto OP_POW
+			elseif op == 39 then goto OP_LT
+			elseif op == 40 then goto OP_EQ
+			elseif op == 41 then goto OP_AND
+			elseif op == 42 then goto OP_NOT
+			elseif op == 43 then goto OP_OR
+			elseif op == 44 then goto DUPLICATE
+			elseif op == 45 then goto SWITCH
+			elseif op == 46 then goto END
 			end
 
 			::LOAD_CONSTANT::
@@ -161,20 +160,17 @@ return function (plume)
 			::BEGIN_ACC::
 				BEGIN_ACC(vm, arg1, arg2)
 				goto DISPATCH
-			::ACC_TABLE::
-				ACC_TABLE(vm, arg1, arg2)
+			::CONCAT_TABLE::
+				CONCAT_TABLE(vm, arg1, arg2)
 				goto DISPATCH
-			::ACC_TEXT::
-				ACC_TEXT(vm, arg1, arg2)
+			::CONCAT_TEXT::
+				CONCAT_TEXT(vm, arg1, arg2)
 				goto DISPATCH
-			::ACC_EMPTY::
-				ACC_EMPTY(vm, arg1, arg2)
+			::CONCAT_CALL::
+				CONCAT_CALL(vm, arg1, arg2)
 				goto DISPATCH
-			::ACC_CALL::
-				ACC_CALL(vm, arg1, arg2)
-				goto DISPATCH
-			::ACC_CHECK_TEXT::
-				ACC_CHECK_TEXT(vm, arg1, arg2)
+			::CHECK_IS_TEXT::
+				CHECK_IS_TEXT(vm, arg1, arg2)
 				goto DISPATCH
 			::JUMP_IF::
 				JUMP_IF(vm, arg1, arg2)

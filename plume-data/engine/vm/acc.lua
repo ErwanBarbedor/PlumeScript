@@ -12,24 +12,21 @@ See the GNU General Public License for more details.
 You should have received a copy of the GNU General Public License along with Plume🪶.
 If not, see <https://www.gnu.org/licenses/>.
 ]]
+
+--- Create a new accumulation frame
 --! inline
 function BEGIN_ACC(vm, arg1, arg2)
-    --- Stack 1 to main stack frame, the current msp
-    --- arg1: -
-    --- arg2: -
     _STACK_PUSH(
         vm.mainStack.frames,
         vm.mainStack.pointer+1
     )
 end
 
+--- Concat all element in the current frame.
+--- Unstack all element in current frame, remove the last frame
+--- and stack the concatenation for theses elements
 --! inline
-function ACC_TEXT (vm, arg1, arg2)
-    --- Unstack all until main stack frame begin
-    --- Concat and main stack the result
-    --- Unstack main stack frame
-    --- arg1: -
-    --- arg2: -
+function CONCAT_TEXT (vm, arg1, arg2)
     local start = _STACK_GET(vm.mainStack.frames)
     local stop  = _STACK_POS(vm.mainStack)
     for i = start, stop do
@@ -44,31 +41,26 @@ function ACC_TEXT (vm, arg1, arg2)
     _END_ACC(vm)
 end
 
+--- Make a table from elements of the current frame
+--- Unstack all element in current frame, remove the last frame.
+--- Make a new table
+--- First unstacked element must be a table, containing in order key, value, ismeta to insert in the new table
+--- All following elements are appended to the new table.
 --! inline
-function ACC_TABLE (vm, arg1, arg2)
-    --- Unstack all until main stack frame begin
-    --- Make a table from it
-    --- Unstack 1, a hash table
-    --- Add keys to the table
-    --- Stack the table
-    --- Unstack main stack frame
-    --- arg1: -
-    --- arg2: -
-
-    -- Count items
-    local limit = _STACK_GET(vm.mainStack.frames)+1
+function CONCAT_TABLE (vm, arg1, arg2)
+    local limit = _STACK_GET(vm.mainStack.frames)+1 -- Frame beggining
     local current = _STACK_POS(vm.mainStack)
-    local t = _STACK_GET(vm.mainStack, limit-1)
-    local keyCount = #t / 2
+    local keyTable = _STACK_GET(vm.mainStack, limit-1)
+    local keyCount = #keyTable / 3
     local args = vm.plume.obj.table(current-limit+1, keyCount)
     for i=1, current-limit+1 do -- dump items
         args.table[i] = _STACK_GET(vm.mainStack, limit+i-1)
     end
-    for i=1, #t, 3 do --dump keys 
-        if t[i+2] then -- meta
-            _TABLE_META_SET (vm, args, t[i], t[i+1])
+    for i=1, #keyTable, 3 do --dump keys 
+        if keyTable[i+2] then -- meta
+            _TABLE_META_SET (vm, args, keyTable[i], keyTable[i+1])
         else
-            _TABLE_SET (vm, args, t[i], t[i+1])
+            _TABLE_SET (vm, args, keyTable[i], keyTable[i+1])
         end
     end
     _STACK_MOVE(vm.mainStack, limit-2)
@@ -77,9 +69,11 @@ function ACC_TABLE (vm, arg1, arg2)
     _END_ACC(vm)
 end
 
+--- Check if stack top can be concatened
+--- Get stack top. If neither empty, number or string, try
+--- to convert it, else throw an error.
 --! inline
-function ACC_CHECK_TEXT (vm, arg1, arg2)
-    --- Check if stack top can be concatened
+function CHECK_IS_TEXT (vm, arg1, arg2)
     local value = _STACK_GET(vm.mainStack)
     local t     = _GET_TYPE(vm, value)
     if t ~= "number" and t ~= "string" and value ~= vm.empty then
@@ -93,18 +87,8 @@ function ACC_CHECK_TEXT (vm, arg1, arg2)
     end
 end
 
+--- Close the current frame
 --! inline
 function _END_ACC (vm)
     _STACK_POP(vm.mainStack.frames)
 end
-
---! inline
-function ACC_EMPTY (vm, arg1, arg2)
-    --- Stack 1 constant empty
-    --- Unstack main stack frame
-    --- arg1: -
-    --- arg2: -
-    _STACK_PUSH(vm.mainStack, vm.empty)
-    _END_ACC(vm)
-end
-

@@ -40,7 +40,7 @@ return function (plume, context)
                 if label then  
                     context.registerLabel(node, label)  
                 end  
-                context.registerOP(nil, plume.ops.ACC_TEXT, 0, 0)  
+                context.registerOP(nil, plume.ops.CONCAT_TEXT, 0, 0)  
             else  
                 context.toggleConcatOff()
                 -- More or less a TEXT block with 1 element.
@@ -57,7 +57,7 @@ return function (plume, context)
                     if label then  
                         context.registerLabel(node, label)  
                     end  
-                    context.registerOP(nil, plume.ops.ACC_TABLE, 0, 0)  
+                    context.registerOP(nil, plume.ops.CONCAT_TABLE, 0, 0)  
                 -- Exactly same behavior as BEGIN_ACC (nothing) ACC_TEXT  
                 elseif node.type == "EMPTY" then  
                     f(node)  
