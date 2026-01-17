@@ -34,9 +34,9 @@ return function (plume, context, nodeHandlerTable)
 	end
 
 	nodeHandlerTable.EXPAND = function(node)
-		table.insert(context.concats, false)
+		context.toggleConcatOff()
 		context.childrenHandler(node)
-		table.remove(context.concats)
+		context.toggleConcatPop()
 		context.registerOP(node, plume.ops.TABLE_EXPAND, 0, 0)
 	end
 end

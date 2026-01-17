@@ -14,7 +14,11 @@ If not, see <https://www.gnu.org/licenses/>.
 ]]
 
 return function (plume, context, nodeHandlerTable)
-	-- Stack constants
+	-------------------------------------
+	--- Register constant, and emit
+	--- bytecode to put them on the stack
+	-------------------------------------
+
 	nodeHandlerTable.TRUE = function(node)
 		context.registerOP(node, plume.ops.LOAD_TRUE)
 	end
@@ -34,11 +38,13 @@ return function (plume, context, nodeHandlerTable)
 		context.registerOP(node, plume.ops.LOAD_CONSTANT, 0, offset)
 	end
 
+	--- String are converted to number
 	nodeHandlerTable.NUMBER = function(node)
 		local offset = context.registerConstant(tonumber(node.content))
 		context.registerOP(node, plume.ops.LOAD_CONSTANT, 0, offset)
 	end
 
+	--- If no content, load an empty string
 	nodeHandlerTable.QUOTE = function(node)
 		local content = (node.children[1] and node.children[1].content) or ""
 		local offset = context.registerConstant(content)

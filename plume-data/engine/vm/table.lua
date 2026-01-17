@@ -108,7 +108,7 @@ function TABLE_INDEX (vm, arg1, arg2)
 end
 
 --! inline
-function TABLE_INDEX_ACC_SELF (vm, arg1, arg2)
+function TABLE_REGISTER_SELF (vm, arg1, arg2)
     --- Unstack 2, in order: table, key
     --- Add current table as self key for current
     --- call table.
@@ -119,7 +119,6 @@ function TABLE_INDEX_ACC_SELF (vm, arg1, arg2)
     table.insert(t, "self")
     table.insert(t, _STACK_GET(vm.mainStack))
     table.insert(t, false)
-    TABLE_INDEX(vm, 0, 0)
 end
 
 --! inline

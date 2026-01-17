@@ -60,5 +60,19 @@ return function (plume, context)
     --- @return table
     function context.getCurrentScope()  
         return context.scopes[#context.scopes]  
-    end  
+    end
+
+    --- Utils to set/check if the current block is a TEXT one
+    function context.toggleConcatOn()
+    	table.insert(context.concats, true)
+    end
+    function context.toggleConcatOff()
+    	table.insert(context.concats, false)
+    end
+    function context.toggleConcatPop()
+    	table.remove(context.concats)
+    end
+    function context.checkIfCanConcat()
+    	return context.getLast"concats"
+    end
 end

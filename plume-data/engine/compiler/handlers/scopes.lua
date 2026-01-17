@@ -33,21 +33,4 @@ return function (plume, context, nodeHandlerTable)
 		end)(node)
 		context.registerOP(node, plume.ops.STORE_VOID)
 	end
-
-	nodeHandlerTable.BLOCK_CALL = function(node)
-		local argList = plume.ast.get(node, "CALL")
-		local body    = plume.ast.get(node, "BODY")
-
-		context.scope(function()
-			if argList then
-				context.childrenHandler(argList)
-			end
-
-			if node.type == "TABLE" then
-				context.childrenHandler(body)
-			else
-				context.accBlock()(body)
-			end
-		end)(body)
-	end
 end

@@ -93,9 +93,9 @@ return function (plume, context, nodeHandlerTable)
 						else
 							context.childrenHandler(last) -- key
 						end
-						table.insert(context.concats, false) -- prevent value to be checked against text type
+						context.toggleConcatOff() -- prevent value to be checked against text type
 						context.nodeHandler(var) -- table
-						table.remove(context.concats)
+						context.toggleConcatPop()
 					end
 				else
 					plume.error.cannotSetCallError(node)
@@ -132,7 +132,7 @@ return function (plume, context, nodeHandlerTable)
 						context.nodeHandler(var.ref)
 					end
 					context.scope(context.accBlock())(body)
-					context.registerOP(var.ref, plume.ops["OPP_" .. compound.children[1].name])
+					context.registerOP(var.ref, plume.ops["OP_" .. compound.children[1].name])
 				end
 
 				if isFrom then
