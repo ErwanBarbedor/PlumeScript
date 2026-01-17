@@ -230,4 +230,8 @@ return function(plume)
 	function plume.error.unregisteredKey(key)
 		return string.format("Unregistered key '%s'.",  key)
 	end
+
+	function plume.error.unknowParameter(parameterName, macroName)
+		return string.format("Unknow named parameter '%s' for macro '%s'.", parameterName, macroName)
+	end
 end

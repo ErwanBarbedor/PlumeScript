@@ -13,6 +13,7 @@ You should have received a copy of the GNU General Public License along with Plu
 If not, see <https://www.gnu.org/licenses/>.
 ]]
 
+--- @opcode
 --- Take the stack top to call, with all elements of the current frame as parameters.
 --- Stack the call result (or empty if nil)
 --- Handle macros and luaFunctions
@@ -73,6 +74,11 @@ function CONCAT_CALL (vm, arg1, arg2)
     end
 end
 
+--- Collect postionnals argument from the current stack
+--- @param macro macro Used for debug message
+--- @param arguments table Table to store arguments
+--- @param capture table Table to store leftover arguments
+--- @return nil
 --! inline
 function _UNSTACK_POS (vm, macro, arguments, capture)
     local argcount = _STACK_POS(vm.mainStack) - _STACK_GET(vm.mainStack.frames)
@@ -101,7 +107,12 @@ function _UNSTACK_POS (vm, macro, arguments, capture)
     _STACK_MOVE_FRAMED(vm.mainStack)
 end
 
+--- Collect named argument from the current stack
 --- Use the same rules as CONCAT_TABLE
+--- @param macro macro Used for debug message
+--- @param arguments table Table to store named arguments
+--- @param capture table Table to store meta and leftover arguments
+--- @return nil
 --! inline
 function _UNSTACK_NAMED (vm, macro, arguments, capture)
     local stack_bottom = _STACK_GET_FRAMED(vm.mainStack)
@@ -119,7 +130,7 @@ function _UNSTACK_NAMED (vm, macro, arguments, capture)
             _TABLE_SET (vm, capture, k, v)
         else
             local name = macro.name or "???"
-            err =  "Unknow named parameter '" .. k .."' for macro '" .. name .."'."
+            err =  vm.plume.error.unknowParameter(k, name)
         end
     end
 
@@ -132,6 +143,9 @@ end
 
 --- Call a given macro, keep trace of execution in callstack, and return the result.
 --- Throw stack overflow errors if callstack is too big.
+--- @param macro macro The macro to call
+--- @param arguments table Arguments for the call
+--- @return any Call result
 --! inline
 function _CALL (vm, macro, arguments)
     table.insert(vm.chunk.callstack, {chunk=vm.chunk, macro=macro, ip=vm.ip})

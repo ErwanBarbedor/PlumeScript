@@ -13,6 +13,7 @@ You should have received a copy of the GNU General Public License along with Plu
 If not, see <https://www.gnu.org/licenses/>.
 ]]
 
+--- @opcode
 --- Create a new accumulation frame
 --! inline
 function BEGIN_ACC(vm, arg1, arg2)
@@ -22,6 +23,7 @@ function BEGIN_ACC(vm, arg1, arg2)
     )
 end
 
+--- @opcode
 --- Concat all element in the current frame.
 --- Unstack all element in current frame, remove the last frame
 --- and stack the concatenation for theses elements
@@ -41,6 +43,7 @@ function CONCAT_TEXT (vm, arg1, arg2)
     _END_ACC(vm)
 end
 
+--- @opcode
 --- Make a table from elements of the current frame
 --- Unstack all element in current frame, remove the last frame.
 --- Make a new table
@@ -69,6 +72,7 @@ function CONCAT_TABLE (vm, arg1, arg2)
     _END_ACC(vm)
 end
 
+--- @opcode
 --- Check if stack top can be concatened
 --- Get stack top. If neither empty, number or string, try
 --- to convert it, else throw an error.

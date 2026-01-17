@@ -700,7 +700,7 @@ return function (plume)
                                     end
                                 else
                                     local name = tocall.name or "???"
-                                    err = "Unknow named parameter '" .. k .. "' for macro '" .. name .. "'."
+                                    err = plume.error.unknowParameter (k, name)
                                 end
                             end
                             if err then

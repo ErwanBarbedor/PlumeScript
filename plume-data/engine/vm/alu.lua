@@ -13,6 +13,10 @@ You should have received a copy of the GNU General Public License along with Plu
 If not, see <https://www.gnu.org/licenses/>.
 ]]
 
+--- Try to convert any value into number.
+--- Via tonumber, or try to call the metafield tonumber.
+--- @param x any
+--- @return number|nil, string The converted value, or nil + an error message
 --! inline
 function _CHECK_NUMBER_META (vm, x)
     local tx = _GET_TYPE(vm, x)
@@ -33,6 +37,12 @@ function _CHECK_NUMBER_META (vm, x)
     return x
 end
 
+--- For a given operation name, try to find a meta macro to do the operation.
+--- If find one, call it.
+--- @param left any
+--- @param right any
+--- @param name string Operation name
+--- @return false|true, any(call result)
 --! inline
 function _HANDLE_META_BIN (vm, left, right, name)
     local meta, params
@@ -60,6 +70,11 @@ function _HANDLE_META_BIN (vm, left, right, name)
     return true, _CALL (vm, meta, params)
 end
 
+--- For a given operation name, try to find a meta macro to do the operation.
+--- If find one, call it.
+--- @param x any The value to process
+--- @param name string Operation name
+--- @return false|true, any(call result)
 --! inline
 function _HANDLE_META_UN (vm, x, name)
     local meta
@@ -75,26 +90,39 @@ function _HANDLE_META_UN (vm, x, name)
     return true, _CALL (vm, meta, params)
 end
 
+--- Unstack 2 value, apply an boolean operation, stack the result.
+--- If an value is `empty`, act like it was false.
+--- @param op function Operation to apply
 --! inline
-function _BIN_OP_BOOL (vm, opp)
+function _BIN_OP_BOOL (vm, op)
     local right = _STACK_POP(vm.mainStack)
     local left  = _STACK_POP(vm.mainStack)
 
     right = _CHECK_BOOL (vm, right)
     left  = _CHECK_BOOL (vm, left)
 
-    _STACK_PUSH(vm.mainStack, opp(right, left))
+    _STACK_PUSH(vm.mainStack, op(right, left))
 end
 
+--- Unstack 1 value, apply an boolean operation, stack the result.
+--- If the value is `empty`, act like it was false.
+--- @param op function Operation to apply
 --! inline
-function _UN_OP_BOOL (vm, opp)
+function _UN_OP_BOOL (vm, op)
     local x = _STACK_POP(vm.mainStack)
     x = _CHECK_BOOL (vm, x)
-    _STACK_PUSH(vm.mainStack, opp(x))
+    _STACK_PUSH(vm.mainStack, op(x))
 end
 
+--- _BIN_OP_NUMBER isn't an opcode, but tag as opcode for be integrated in the documentation.
+--- @opcode
+--- Unstack 2 value, apply an operation, stack the result.
+--- Try to convert values to number.
+--- If cannot, try to call meta macro based on operator name
+--- @param op function Operation to apply
+--- @param name string Name used to find meta macro and debug messages
 --! inline
-function _BIN_OP_NUMBER (vm, opp, name)
+function _BIN_OP_NUMBER (vm, op, name)
     local right = _STACK_POP(vm.mainStack)
     local left  = _STACK_POP(vm.mainStack)
 
@@ -107,7 +135,7 @@ function _BIN_OP_NUMBER (vm, opp, name)
         success, result = _HANDLE_META_BIN (vm, left, right, name)
     else
         success = true
-        result = opp(left, right)
+        result = op(left, right)
     end
 
     if success then
@@ -117,8 +145,11 @@ function _BIN_OP_NUMBER (vm, opp, name)
     end    
 end
 
+--- Unstack 1 value, apply an operation, stack the result.
+--- @param op function Operation to apply
+--- @param name string Name used to find meta macro and debug messages
 --! inline
-function _UN_OP_NUMBER (vm, opp, name)
+function _UN_OP_NUMBER (vm, op, name)
     local x = _STACK_POP(vm.mainStack)
     local err
 
@@ -128,7 +159,7 @@ function _UN_OP_NUMBER (vm, opp, name)
         success, result = _HANDLE_META_UN (vm, x, name)
     else
         success = true
-        result = opp(x)
+        result = op(x)
     end
 
     if success then
@@ -138,7 +169,10 @@ function _UN_OP_NUMBER (vm, opp, name)
     end  
 end
 
+----------------
 --- Arithmetics
+----------------
+
 --! inline
 function _ADD(x, y) return x+y end
 --! inline
@@ -154,24 +188,53 @@ function _POW(x, y) return x^y end
 --! inline
 function _NEG(x)    return -x end
 
+--- @opcode
+--- Add two stack top value and stack the result based on _BIN_OP_NUMBER.
 --! inline
-function OP_ADD (vm, arg1, arg2) _BIN_OP_NUMBER (vm, _ADD,   "add")   end
+function OP_ADD (vm, arg1, arg2)
+    _BIN_OP_NUMBER (vm, _ADD,   "add")  
+end
+--- @opcode
+--- Multiply two stack top value and stack the result based on _BIN_OP_NUMBER.
 --! inline
-function OP_MUL (vm, arg1, arg2) _BIN_OP_NUMBER (vm, _MUL,   "mul")   end
+function OP_MUL (vm, arg1, arg2)
+    _BIN_OP_NUMBER (vm, _MUL,   "mul")  
+end
+--- @opcode
+--- Substract two stack top value and stack the result based on _BIN_OP_NUMBER.
 --! inline
-function OP_SUB (vm, arg1, arg2) _BIN_OP_NUMBER (vm, _SUB,   "sub")   end
+function OP_SUB (vm, arg1, arg2)
+    _BIN_OP_NUMBER (vm, _SUB,   "sub")  
+end
+--- @opcode
+--- Divide two stack top value and stack the result based on _BIN_OP_NUMBER.
 --! inline
-function OP_DIV (vm, arg1, arg2) _BIN_OP_NUMBER (vm, _DIV,   "div")   end
+function OP_DIV (vm, arg1, arg2)
+    _BIN_OP_NUMBER (vm, _DIV,   "div")  
+end
+--- @opcode
+--- Take the modulo of stack top value and stack the result based on _BIN_OP_NUMBER.
 --! inline
-function OP_MOD (vm, arg1, arg2) _BIN_OP_NUMBER (vm, _MOD,   "mod")   end
+function OP_MOD (vm, arg1, arg2)
+    _BIN_OP_NUMBER (vm, _MOD,   "mod")  
+end
+--- @opcode
+--- Take the power of two stack top value and stack the result based on _BIN_OP_NUMBER.
 --! inline
-function OP_POW (vm, arg1, arg2) _BIN_OP_NUMBER (vm, _POW,   "pow")   end
+function OP_POW (vm, arg1, arg2)
+    _BIN_OP_NUMBER (vm, _POW,   "pow")  
+end
+--- @opcode
+--- Give opposite of a value 
 --! inline
-function OP_NEG (vm, arg1, arg2) _UN_OP_NUMBER  (vm, _NEG,   "minus") end
+function OP_NEG (vm, arg1, arg2)
+    _UN_OP_NUMBER  (vm, _NEG,   "minus")
+end
 
-
-
+---------
 --- Bool
+---------
+
 --! inline
 function _AND(x, y) return x and y end
 --! inline
@@ -179,21 +242,46 @@ function _OR(x, y)  return x or y end
 --! inline
 function _NOT(x)    return not x end
 
+--- @opcode
+--- Do boolean `and` between two stack top values based on _BIN_OP_BOOL.
 --! inline
-function OP_AND (vm, arg1, arg2) _BIN_OP_BOOL (vm, _AND) end
+function OP_AND (vm, arg1, arg2)
+    _BIN_OP_BOOL (vm, _AND)
+end
+--- @opcode
+--- Do boolean `or` between two stack top values based on _BIN_OP_BOOL.
 --! inline
-function OP_OR  (vm, arg1, arg2) _BIN_OP_BOOL (vm, _OR) end
+function OP_OR  (vm, arg1, arg2)
+    _BIN_OP_BOOL (vm, _OR)
+end
+--- @opcode
+--- Do boolean `not` between stack top value based on _BIN_OP_BOOL.
 --! inline
-function OP_NOT (vm, arg1, arg2) _UN_OP_BOOL  (vm, _NOT) end
+function OP_NOT (vm, arg1, arg2)
+    _UN_OP_BOOL  (vm, _NOT)
+end
 
-
+---------------
 --- Comparison
+---------------
+
+--- Do comparison `<` between two stack top values based on _BIN_OP_NUMBER.
+--- @param x left value
+--- @param y right value
 --! inline
 function _LT(x, y) return x < y end
 
+--- @opcode
+--- Do comparison `<` between two stack top values based on _BIN_OP_NUMBER.
 --! inline
-function OP_LT (vm, arg1, arg2) _BIN_OP_NUMBER (vm, _LT, "lt") end
+function OP_LT (vm, arg1, arg2)
+    _BIN_OP_NUMBER (vm, _LT, "lt")
+end
 
+--- @opcode
+--- Do comparison `==` between two values.
+--- If both value are string representations of number,
+--- return the comparison between theses two numbers.
 --! inline
 function OP_EQ (vm, arg1, arg2)
     local right = _STACK_POP(vm.mainStack)
