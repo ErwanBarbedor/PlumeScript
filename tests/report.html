@@ -3693,7 +3693,7 @@ let t = 1
 </div>
 <h4>Error</h4>
 <pre><code>
-Runtime error: Try to expand a &#39;string&#39; value.
+Runtime error: Cannot expand a non-table &#39;string&#39; value.
 
 Traceback (most recent call first):
   File &#39;Expand non-table&#39;, line 2: ...t
@@ -3728,7 +3728,7 @@ $t[3]
 </div>
 <h4>Error</h4>
 <pre><code>
-Runtime error: Try to index a &#39;string&#39; value.
+Runtime error: Cannot index a non-table &#39;string&#39; value.
 
 Traceback (most recent call first):
   File &#39;Index non-table&#39;, line 2: $t[3]
@@ -3851,7 +3851,7 @@ end
 </div>
 <h4>Error</h4>
 <pre><code>
-Runtime error: Try to iterate over a non-table &#39;number&#39; value.
+Runtime error: Cannot iterate over a non-table &#39;number&#39; value.
 
 Traceback (most recent call first):
   File &#39;Iterate over non table&#39;, line 1: for x in 1
@@ -6416,7 +6416,7 @@ $(1)()
 </div>
 <h4>Error</h4>
 <pre><code>
-Runtime error: Try to call a &#39;number&#39; value
+Runtime error: Cannot call a &#39;number&#39; value.
 
 Traceback (most recent call first):
   File &#39;call a non-macro&#39;, line 1: $(1)()
@@ -6708,7 +6708,7 @@ $mark()
 </div>
 <h4>Error</h4>
 <pre><code>
-Runtime error: stack overflow
+Runtime error: Stack overflow
 
 Traceback (most recent call first):
   File &#39;stack overflow&#39;, line 5: $mark()
@@ -8688,7 +8688,7 @@ $(t+1)
 </div>
 <h4>Error</h4>
 <pre><code>
-Runtime error: stack overflow
+Runtime error: Stack overflow
 
 Traceback (most recent call first):
   File &#39;stack overflow&#39;, line 3: $(self+1)

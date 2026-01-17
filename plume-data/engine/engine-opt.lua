@@ -240,7 +240,7 @@ return function (plume)
                                     vmserr = {callResult, cip, (source or meta)}
                                 end
                             else
-                                vmerr = "stack overflow"
+                                vmerr = plume.error.stackOverflow ()
                             end
                             ::_inline_end40::
                             value = _ret14
@@ -266,7 +266,7 @@ return function (plume)
                             mainStackPointer = mainStackPointer + 1
                             mainStack[mainStackPointer] = empty
                         else
-                            vmerr = "Cannot use empty as key."
+                            vmerr = plume.error.cannotUseEmptyAsKey ()
                         end
                     else
                         local _ret18
@@ -279,7 +279,7 @@ return function (plume)
                                 mainStackPointer = mainStackPointer + 1
                                 mainStack[mainStackPointer] = empty
                             else
-                                vmerr = "Try to index a '" .. tt .. "' value."
+                                vmerr = plume.error.cannotIndexValue (tt)
                             end
                         else
                             local value = t.table[key]
@@ -305,7 +305,7 @@ return function (plume)
                                             vmserr = {callResult, cip, (source or meta)}
                                         end
                                     else
-                                        vmerr = "stack overflow"
+                                        vmerr = plume.error.stackOverflow ()
                                     end
                                     ::_inline_end55::
                                     mainStackPointer = mainStackPointer + 1
@@ -313,9 +313,9 @@ return function (plume)
                                 else
                                     if tonumber (key)
                                      then
-                                        vmerr = "Invalid index '" .. key .. "'."
+                                        vmerr = plume.error.invalidKey (key)
                                     else
-                                        vmerr = "Unregistered key '" .. key .. "'."
+                                        vmerr = plume.error.unregisteredKey (key)
                                     end
                                 end
                             end
@@ -417,7 +417,7 @@ return function (plume)
                             table.insert (ft, false)
                         end
                     else
-                        vmerr = "Try to expand a '" .. tt .. "' value."
+                        vmerr = plume.error.cannotExpandValue (tt)
                     end
                 end
                 goto DISPATCH
@@ -607,7 +607,7 @@ return function (plume)
                                 if not name then
                                     name = tocall.name or "???"
                                 end
-                                vmerr = "Wrong number of positionnal arguments for macro '" .. name .. "', " .. argcount .. " instead of " .. tocall.positionalParamCount .. "."
+                                vmerr = plume.error.wrongArgsCount (name, argcount, tocall.positionalParamCount)
                             end
                             for i = 1, tocall.positionalParamCount do
                                 local _ret54
@@ -746,7 +746,7 @@ return function (plume)
                                 vmserr = {callResult, cip, (source or tocall)}
                             end
                         else
-                            vmerr = "stack overflow"
+                            vmerr = plume.error.stackOverflow ()
                         end
                         ::_inline_end145::
                         mainStackPointer = mainStackPointer + 1
@@ -862,7 +862,7 @@ return function (plume)
                             vmerr = result
                         end
                     else
-                        vmerr = "Try to call a '" .. t .. "' value"
+                        vmerr = plume.error.cannotCallValue (t)
                     end
                 end
                 goto DISPATCH
@@ -890,14 +890,14 @@ return function (plume)
                                     vmserr = {callResult, cip, (source or meta)}
                                 end
                             else
-                                vmerr = "stack overflow"
+                                vmerr = plume.error.stackOverflow ()
                             end
                             ::_inline_end170::
                             local _ret77
                             _ret77 = mainStackPointer
                             mainStack[_ret77] = _ret76
                         else
-                            vmerr = "Cannot concat a '" .. t .. "' value."
+                            vmerr = plume.error.cannotConcatValue (t)
                         end
                     end
                 end
@@ -1020,7 +1020,7 @@ return function (plume)
                                     vmserr = {callResult, cip, (source or iter)}
                                 end
                             else
-                                vmerr = "stack overflow"
+                                vmerr = plume.error.stackOverflow ()
                             end
                             ::_inline_end194::
                             value = _ret89
@@ -1028,7 +1028,7 @@ return function (plume)
                         mainStackPointer = mainStackPointer + 1
                         mainStack[mainStackPointer] = value
                     else
-                        vmerr = "Try to iterate over a non-table '" .. tobj .. "' value."
+                        vmerr = plume.error.cannotIterateValue (tobj)
                     end
                 end
                 goto DISPATCH
@@ -1055,7 +1055,7 @@ return function (plume)
                                 vmserr = {callResult, cip, (source or iter)}
                             end
                         else
-                            vmerr = "stack overflow"
+                            vmerr = plume.error.stackOverflow ()
                         end
                         ::_inline_end201::
                         result = _ret91
@@ -1106,7 +1106,7 @@ return function (plume)
                                         vmserr = {callResult, cip, (source or meta)}
                                     end
                                 else
-                                    vmerr = "stack overflow"
+                                    vmerr = plume.error.stackOverflow ()
                                 end
                                 ::_inline_end212::
                                 _ret94, _ret95 = _ret97
@@ -1148,7 +1148,7 @@ return function (plume)
                                         vmserr = {callResult, cip, (source or meta)}
                                     end
                                 else
-                                    vmerr = "stack overflow"
+                                    vmerr = plume.error.stackOverflow ()
                                 end
                                 ::_inline_end217::
                                 _ret98, _ret99 = _ret101
@@ -1202,7 +1202,7 @@ return function (plume)
                                     vmserr = {callResult, cip, (source or meta)}
                                 end
                             else
-                                vmerr = "stack overflow"
+                                vmerr = plume.error.stackOverflow ()
                             end
                             ::_inline_end223::
                             _ret102, _ret103 = true, _ret106
@@ -1264,7 +1264,7 @@ return function (plume)
                                         vmserr = {callResult, cip, (source or meta)}
                                     end
                                 else
-                                    vmerr = "stack overflow"
+                                    vmerr = plume.error.stackOverflow ()
                                 end
                                 ::_inline_end235::
                                 _ret110, _ret111 = _ret113
@@ -1306,7 +1306,7 @@ return function (plume)
                                         vmserr = {callResult, cip, (source or meta)}
                                     end
                                 else
-                                    vmerr = "stack overflow"
+                                    vmerr = plume.error.stackOverflow ()
                                 end
                                 ::_inline_end240::
                                 _ret114, _ret115 = _ret117
@@ -1360,7 +1360,7 @@ return function (plume)
                                     vmserr = {callResult, cip, (source or meta)}
                                 end
                             else
-                                vmerr = "stack overflow"
+                                vmerr = plume.error.stackOverflow ()
                             end
                             ::_inline_end246::
                             _ret118, _ret119 = true, _ret122
@@ -1422,7 +1422,7 @@ return function (plume)
                                         vmserr = {callResult, cip, (source or meta)}
                                     end
                                 else
-                                    vmerr = "stack overflow"
+                                    vmerr = plume.error.stackOverflow ()
                                 end
                                 ::_inline_end258::
                                 _ret126, _ret127 = _ret129
@@ -1464,7 +1464,7 @@ return function (plume)
                                         vmserr = {callResult, cip, (source or meta)}
                                     end
                                 else
-                                    vmerr = "stack overflow"
+                                    vmerr = plume.error.stackOverflow ()
                                 end
                                 ::_inline_end263::
                                 _ret130, _ret131 = _ret133
@@ -1518,7 +1518,7 @@ return function (plume)
                                     vmserr = {callResult, cip, (source or meta)}
                                 end
                             else
-                                vmerr = "stack overflow"
+                                vmerr = plume.error.stackOverflow ()
                             end
                             ::_inline_end269::
                             _ret134, _ret135 = true, _ret138
@@ -1580,7 +1580,7 @@ return function (plume)
                                         vmserr = {callResult, cip, (source or meta)}
                                     end
                                 else
-                                    vmerr = "stack overflow"
+                                    vmerr = plume.error.stackOverflow ()
                                 end
                                 ::_inline_end281::
                                 _ret142, _ret143 = _ret145
@@ -1622,7 +1622,7 @@ return function (plume)
                                         vmserr = {callResult, cip, (source or meta)}
                                     end
                                 else
-                                    vmerr = "stack overflow"
+                                    vmerr = plume.error.stackOverflow ()
                                 end
                                 ::_inline_end286::
                                 _ret146, _ret147 = _ret149
@@ -1676,7 +1676,7 @@ return function (plume)
                                     vmserr = {callResult, cip, (source or meta)}
                                 end
                             else
-                                vmerr = "stack overflow"
+                                vmerr = plume.error.stackOverflow ()
                             end
                             ::_inline_end292::
                             _ret150, _ret151 = true, _ret154
@@ -1734,7 +1734,7 @@ return function (plume)
                                         vmserr = {callResult, cip, (source or meta)}
                                     end
                                 else
-                                    vmerr = "stack overflow"
+                                    vmerr = plume.error.stackOverflow ()
                                 end
                                 ::_inline_end303::
                                 _ret157, _ret158 = _ret160
@@ -1775,7 +1775,7 @@ return function (plume)
                                     vmserr = {callResult, cip, (source or meta)}
                                 end
                             else
-                                vmerr = "stack overflow"
+                                vmerr = plume.error.stackOverflow ()
                             end
                             ::_inline_end308::
                             _ret161, _ret162 = true, _ret164
@@ -1837,7 +1837,7 @@ return function (plume)
                                         vmserr = {callResult, cip, (source or meta)}
                                     end
                                 else
-                                    vmerr = "stack overflow"
+                                    vmerr = plume.error.stackOverflow ()
                                 end
                                 ::_inline_end320::
                                 _ret168, _ret169 = _ret171
@@ -1879,7 +1879,7 @@ return function (plume)
                                         vmserr = {callResult, cip, (source or meta)}
                                     end
                                 else
-                                    vmerr = "stack overflow"
+                                    vmerr = plume.error.stackOverflow ()
                                 end
                                 ::_inline_end325::
                                 _ret172, _ret173 = _ret175
@@ -1933,7 +1933,7 @@ return function (plume)
                                     vmserr = {callResult, cip, (source or meta)}
                                 end
                             else
-                                vmerr = "stack overflow"
+                                vmerr = plume.error.stackOverflow ()
                             end
                             ::_inline_end331::
                             _ret176, _ret177 = true, _ret180
@@ -1995,7 +1995,7 @@ return function (plume)
                                         vmserr = {callResult, cip, (source or meta)}
                                     end
                                 else
-                                    vmerr = "stack overflow"
+                                    vmerr = plume.error.stackOverflow ()
                                 end
                                 ::_inline_end343::
                                 _ret184, _ret185 = _ret187
@@ -2037,7 +2037,7 @@ return function (plume)
                                         vmserr = {callResult, cip, (source or meta)}
                                     end
                                 else
-                                    vmerr = "stack overflow"
+                                    vmerr = plume.error.stackOverflow ()
                                 end
                                 ::_inline_end348::
                                 _ret188, _ret189 = _ret191
@@ -2091,7 +2091,7 @@ return function (plume)
                                     vmserr = {callResult, cip, (source or meta)}
                                 end
                             else
-                                vmerr = "stack overflow"
+                                vmerr = plume.error.stackOverflow ()
                             end
                             ::_inline_end354::
                             _ret192, _ret193 = true, _ret196
@@ -2153,7 +2153,7 @@ return function (plume)
                                         vmserr = {callResult, cip, (source or meta)}
                                     end
                                 else
-                                    vmerr = "stack overflow"
+                                    vmerr = plume.error.stackOverflow ()
                                 end
                                 ::_inline_end366::
                                 _ret200, _ret201 = _ret203
@@ -2195,7 +2195,7 @@ return function (plume)
                                         vmserr = {callResult, cip, (source or meta)}
                                     end
                                 else
-                                    vmerr = "stack overflow"
+                                    vmerr = plume.error.stackOverflow ()
                                 end
                                 ::_inline_end371::
                                 _ret204, _ret205 = _ret207
@@ -2249,7 +2249,7 @@ return function (plume)
                                     vmserr = {callResult, cip, (source or meta)}
                                 end
                             else
-                                vmerr = "stack overflow"
+                                vmerr = plume.error.stackOverflow ()
                             end
                             ::_inline_end377::
                             _ret208, _ret209 = true, _ret212
@@ -2321,7 +2321,7 @@ return function (plume)
                                 vmserr = {callResult, cip, (source or meta)}
                             end
                         else
-                            vmerr = "stack overflow"
+                            vmerr = plume.error.stackOverflow ()
                         end
                         ::_inline_end389::
                         _ret216, _ret217 = true, _ret220

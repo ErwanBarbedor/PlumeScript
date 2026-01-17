@@ -88,7 +88,7 @@ function ACC_CHECK_TEXT (vm, arg1, arg2)
             local args = {}
             _STACK_SET(vm.mainStack, _STACK_POS(vm.mainStack), _CALL (vm, meta, args))
         else
-            _ERROR (vm, "Cannot concat a '" ..t .. "' value.")
+            _ERROR (vm, vm.plume.error.cannotConcatValue(t))
         end
     end
 end

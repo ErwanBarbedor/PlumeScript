@@ -182,4 +182,52 @@ return function(plume)
 		local message = string.format("To be used, '%s' must return a table. Currently, it returns a %s.", path, t)
 		throwCompilationError(node, message)
 	end
+
+	-- Runtime
+	function plume.error.cannotConcatValue(t)
+		return string.format("Cannot concat a '%s' value.", t)
+	end
+
+	function plume.error.cannotCallValue(t)
+		return string.format("Cannot call a '%s' value.", t)
+	end
+
+	function plume.error.cannotIterateValue(t)
+		return string.format("Cannot iterate over a non-table '%s' value.", t)
+	end
+
+	function plume.error.cannotIndexValue(t)
+		return string.format("Cannot index a non-table '%s' value.", t)
+	end
+
+	function plume.error.cannotExpandValue(t)
+		return string.format("Cannot expand a non-table '%s' value.", t)
+	end
+
+	function plume.error.wrongArgsCount(macroName, argCount, expectedArgsCount)
+		return string.format(
+			"Wrong number of positionnal arguments for macro '%s', %s instead of %s.",
+			macroName, argCount, expectedArgsCount
+		)
+	end
+
+	function plume.error.stackOverflow()
+		return "Stack overflow"
+	end
+
+	function plume.error.cannotUseEmptyAsKey()
+		return "Cannot use empty as key."
+	end
+
+	function plume.error.invalidKey(key)
+		if tonumber(key) then
+			return string.format("Invalid index '%s'.",  key)
+		else
+			return string.format("Invalid key '%s'.",  key)
+		end
+	end
+
+	function plume.error.unregisteredKey(key)
+		return string.format("Unregistered key '%s'.",  key)
+	end
 end

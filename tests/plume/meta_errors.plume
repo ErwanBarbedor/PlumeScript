@@ -84,7 +84,7 @@ end
 
 $(t+1)
 /// Error
-Runtime error: stack overflow
+Runtime error: Stack overflow
 
 Traceback (most recent call first):
   File 'stack overflow', line 3: $(self+1)

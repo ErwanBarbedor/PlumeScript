@@ -77,7 +77,7 @@ Traceback (most recent call first):
 for x in 1
 end
 /// Error
-Runtime error: Try to iterate over a non-table 'number' value.
+Runtime error: Cannot iterate over a non-table 'number' value.
 
 Traceback (most recent call first):
   File 'Iterate over non table', line 1: for x in 1
@@ -121,7 +121,7 @@ Traceback (most recent call first):
 let t = 1
 $t[3]
 /// Error
-Runtime error: Try to index a 'string' value.
+Runtime error: Cannot index a non-table 'string' value.
 
 Traceback (most recent call first):
   File 'Index non-table', line 2: $t[3]
@@ -132,7 +132,7 @@ Traceback (most recent call first):
 let t = 1
 ...t
 /// Error
-Runtime error: Try to expand a 'string' value.
+Runtime error: Cannot expand a non-table 'string' value.
 
 Traceback (most recent call first):
   File 'Expand non-table', line 2: ...t
