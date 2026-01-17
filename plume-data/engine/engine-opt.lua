@@ -2330,7 +2330,7 @@ return function (plume)
                     ::_inline_end386::
                     local success, result = _ret216, _ret217
                     if not success then
-                        result = left == right or tonumber (left) and tonumber (left) == tonumber (right)
+                        result = left == right or tonumber (left) and tonumber (left) == tonumber (right) or (false)
                     end
                     mainStackPointer = mainStackPointer + 1
                     mainStack[mainStackPointer] = result

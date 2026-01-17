@@ -347,3 +347,10 @@ $(x==empty)
 /// Output
 true
 /// End
+
+/// Test #300
+let x
+$(x==2)
+/// Output
+false
+/// End
