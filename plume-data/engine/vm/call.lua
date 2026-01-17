@@ -74,7 +74,7 @@ function ACC_CALL (vm, arg1, arg2)
         end
         
     else
-        _ERROR (vm, "Try to call a '" .. t .. "' value")
+        _ERROR (vm, vm.plume.error.cannotCallValue(t))
     end
 end
 
@@ -94,7 +94,7 @@ function _UNSTACK_POS (vm, macro, arguments, capture)
             name = macro.name or "???"
         end
 
-        _ERROR (vm, "Wrong number of positionnal arguments for macro '" .. name .. "', " ..   argcount .. " instead of " .. macro.positionalParamCount .. ".")
+        _ERROR (vm, vm.plume.error.wrongArgsCount(name, argcount, macro.positionalParamCount))
     end
 
     for i=1, macro.positionalParamCount do
@@ -148,6 +148,6 @@ function _CALL (vm, macro, arguments)
             _SPECIAL_ERROR(vm, callResult, cip, (source or macro) )
         end
     else
-        _ERROR (vm, "stack overflow")
+        _ERROR (vm, vm.plume.error.stackOverflow())
     end
 end

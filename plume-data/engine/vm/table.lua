@@ -74,7 +74,7 @@ function TABLE_INDEX (vm, arg1, arg2)
         if arg1 == 1 then
             LOAD_EMPTY(vm)
         else
-            _ERROR (vm, "Cannot use empty as key.")
+            _ERROR (vm, vm.plume.error.cannotUseEmptyAsKey())
         end
     else
         local tt = _GET_TYPE (vm, t)
@@ -82,7 +82,7 @@ function TABLE_INDEX (vm, arg1, arg2)
             if arg1 == 1 then
                 LOAD_EMPTY(vm)
             else
-                _ERROR(vm, "Try to index a '" ..tt .."' value.")
+                _ERROR(vm, vm.plume.error.cannotIndexValue(tt))
             end
         else
             local value = t.table[key]
@@ -97,9 +97,9 @@ function TABLE_INDEX (vm, arg1, arg2)
                     _STACK_PUSH(vm.mainStack, _CALL (vm, meta, args))
                 else
                     if tonumber(key) then
-                        _ERROR (vm, "Invalid index '" .. key .."'.")
+                        _ERROR (vm, vm.plume.error.invalidKey(key))
                     else
-                        _ERROR (vm, "Unregistered key '" .. key .."'.")
+                        _ERROR (vm, vm.plume.error.unregisteredKey(key))
                     end
                 end
             end
@@ -174,6 +174,6 @@ function TABLE_EXPAND (vm, arg1, arg2)
             table.insert(ft, false)
         end
     else
-        _ERROR (vm, "Try to expand a '" .. tt .."' value.")
+        _ERROR (vm, vm.plume.error.cannotExpandValue(tt))
     end
 end

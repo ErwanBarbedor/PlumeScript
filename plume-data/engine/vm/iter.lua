@@ -39,7 +39,7 @@ function GET_ITER (vm, arg1, arg2)
         end
         _STACK_PUSH(vm.mainStack, value)
     else
-        _ERROR(vm, "Try to iterate over a non-table '" .. tobj .. "' value.")
+        _ERROR(vm, vm.plume.error.cannotIterateValue(tobj))
     end 
 end
 
