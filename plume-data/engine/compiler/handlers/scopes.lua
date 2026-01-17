@@ -24,7 +24,6 @@ return function (plume, context, nodeHandlerTable)
 		table.insert(context.scopes, {})
 		context.accBlock()(node, "macro_end")
 		table.remove(context.scopes)
-		-- LEAVE_SCOPE handled by RETURN
 	end)
 
 	nodeHandlerTable.DO = function(node)

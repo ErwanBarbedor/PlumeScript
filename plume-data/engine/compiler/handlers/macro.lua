@@ -20,13 +20,18 @@ return function (plume, context, nodeHandlerTable)
 		local paramList       = plume.ast.get(node, "PARAMLIST") or {children={}}
 		local uid = context.getUID()
 
+		-- Each macro has it's own execution chunk, like a whole file
 		local macroObj     = plume.newPlumeExecutableChunk(false, context.chunk.state)
+		-- But share declaration file static variables and constants
 		macroObj.static    = context.chunk.static
 		macroObj.constants = context.constants
+
+		-- Push the macro into stack
 		local macroOffset  = context.registerConstant(macroObj)
-		
 		context.registerOP(macroIdentifier, plume.ops.LOAD_CONSTANT, 0, macroOffset)
 		
+		-- If the macro is named, save them in a static variable:
+		-- `macro wing()` is a sugar for `let static wing = macro()`
 		local macroName
 		if macroIdentifier then
 			macroName = macroIdentifier.content
@@ -41,13 +46,19 @@ return function (plume, context, nodeHandlerTable)
 			context.registerOP(macroIdentifier, plume.ops.STORE_STATIC, 0, variable.offset)
 		end
 
+		-- Debug informations
 		macroObj.name = macroName or node.label
 
 		context.file(function ()
-			-- Each macro open a scope, but it is handled by ACC_CALL and RETURN.
+			-- Each macro open a scope, but it is handled by plume.run
 			table.insert(context.scopes, {})
 			table.insert(context.loops, {})
 			table.insert(context.chunks, macroObj)
+
+			-------------------------------------------------------------
+			--- Count arguments, save variadic offset
+			--- and evaluate default value when optionnal args are empty.
+			-------------------------------------------------------------
 			for i, param in ipairs(paramList.children) do
 				local paramName = plume.ast.get(param, "IDENTIFIER", 1, 2).content
 				local variadic  = plume.ast.get(param, "VARIADIC")
@@ -69,14 +80,18 @@ return function (plume, context, nodeHandlerTable)
 					macroObj.positionalParamCount = macroObj.positionalParamCount+1
 				end
 			end
-			-- always register self parameter
+			-- Always register self parameter.
+			-- If the macro is called as a table field, `self`
+			-- is a reference to this table.
+			-- Else is empty
 			if not context.getVariable("self") then
 				local param = context.registerVariable("self")
 				macroObj.namedParamCount = macroObj.namedParamCount+1
 				macroObj.namedParamOffset.self = param.offset
 			end
 
-			context.accBlock()(body, "macro_end")
+			context.accBlock()(body, "macro_end") -- Handle the macro body
+			
 			macroObj.localsCount = #context.getCurrentScope()
 			
 			table.remove(context.scopes)

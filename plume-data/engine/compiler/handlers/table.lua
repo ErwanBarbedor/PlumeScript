@@ -14,8 +14,10 @@ If not, see <https://www.gnu.org/licenses/>.
 ]]
 
 return function (plume, context, nodeHandlerTable)
+	--- `- item`
 	nodeHandlerTable.LIST_ITEM = context.accBlock()
 
+	--- `key: value` and `meta key: value`
 	nodeHandlerTable.HASH_ITEM = function(node)
 		local identifier = plume.ast.get(node, "IDENTIFIER").content
 		local body = plume.ast.get(node, "BODY")
@@ -33,6 +35,7 @@ return function (plume, context, nodeHandlerTable)
 		end
 	end
 
+	--- `...table`
 	nodeHandlerTable.EXPAND = function(node)
 		context.toggleConcatOff()
 		context.childrenHandler(node)

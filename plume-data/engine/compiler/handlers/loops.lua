@@ -14,7 +14,8 @@ If not, see <https://www.gnu.org/licenses/>.
 ]]
 
 return function (plume, context, nodeHandlerTable)
-	-- Stack constants
+	--- Nothing special to notice: while is translated with 2 label,
+	--- one before the check and one at the body end
 	nodeHandlerTable.WHILE = function(node)
 		local condition = plume.ast.get(node, "CONDITION")
 		local body      = plume.ast.get(node, "BODY")
@@ -24,7 +25,7 @@ return function (plume, context, nodeHandlerTable)
 		context.childrenHandler(condition)
 		context.registerGoto(node, "while_end_"..uid, "JUMP_IF_NOT")
 
-		table.insert(context.loops, {begin_label="while_begin_"..uid, end_label="while_end_"..uid})
+		table.insert(context.loops, {begin_label="while_begin_"..uid, end_label="while_end_"..uid}) -- Informations used by break/continue
 		context.scope()(body)
 		table.remove(context.loops)
 
@@ -32,6 +33,8 @@ return function (plume, context, nodeHandlerTable)
 		context.registerLabel(node, "while_end_"..uid)
 	end
 
+	--- For create two scopes: one that lives the iterator,
+	--- and another recreated at each iteration.
 	nodeHandlerTable.FOR = function(node)
 		local varlist = plume.ast.get(node, "VARLIST")
 		local iterator   = plume.ast.get(node, "ITERATOR")
@@ -40,24 +43,27 @@ return function (plume, context, nodeHandlerTable)
 
 		local next = context.registerConstant("next")
 		local iter = context.registerConstant("iter")
-
 		
-		context.toggleConcatOff()
-		context.childrenHandler(iterator)
+		context.toggleConcatOff() -- Prevent iterator to be converted to string
+		context.childrenHandler(iterator) -- Evaluate the iterator expression
 		context.toggleConcatPop()
 
-		context.registerOP(node, plume.ops.GET_ITER)
+		context.registerOP(node, plume.ops.GET_ITER) -- Get the iterator (meta method iter or default iterator)
+
+		-------------------------------------------------------
+		-- why don't use the wrapper context.scope()?
 		context.registerOP(nil, plume.ops.ENTER_SCOPE, 0, 1)
-		table.insert(context.scopes, {})
+		table.insert(context.scopes, {}) 
+		-------------------------------------------------------
 
-			context.registerOP(nil, plume.ops.STORE_LOCAL, 0, 1)
+			context.registerOP(node, plume.ops.STORE_LOCAL, 0, 1) -- Save the iterator
 
-			context.registerLabel(nil, "for_begin_"..uid)
-			context.registerOP(nil, plume.ops.LOAD_LOCAL, 0, 1)
-			context.registerGoto(nil, "for_end_"..uid, "FOR_ITER", 1)
+			context.registerLabel(node, "for_begin_"..uid)
+			context.registerOP(node, plume.ops.LOAD_LOCAL, 0, 1) -- Load the iterator
+			context.registerGoto(node, "for_end_"..uid, "FOR_ITER", 1) -- Call iterator to get next(s) value(s)
 
 			context.scope(function(body)
-				context.affectation(node, varlist,
+				context.affectation(node, varlist, -- Store returned value(s) into var(s)
 					nil,   -- body
 					true,  -- isLet
 					false, -- isConst
@@ -68,27 +74,32 @@ return function (plume, context, nodeHandlerTable)
 					true   -- isBodyStacked
 				)
 				
-				table.insert(context.loops, {begin_label="for_loop_end_"..uid, end_label="for_end_"..uid})
+				table.insert(context.loops, {begin_label="for_loop_end_"..uid, end_label="for_end_"..uid}) -- Informations used by break/continue
 				context.childrenHandler(body)
 				table.remove(context.loops)
-				context.registerLabel(nil, "for_loop_end_"..uid)
+				context.registerLabel(node, "for_loop_end_"..uid)
 			end, 1)(body)
 
-			context.registerGoto (nil, "for_begin_"..uid)
-			context.registerLabel(nil, "for_end_"..uid)
-
+			context.registerGoto (node, "for_begin_"..uid)
+			context.registerLabel(node, "for_end_"..uid)
+		
+		-------------------------------------------------------
+		-- why don't use the wrapper context.scope()?
 		table.remove(context.scopes)
-		context.registerOP(node, plume.ops.LEAVE_SCOPE)	
+		context.registerOP(node, plume.ops.LEAVE_SCOPE)
+		-------------------------------------------------------	
 	end
 
+	-----------------------------------------------------------	
+	--- BREAK/CONTINUE are just goto to the last loop end/begin
+	-----------------------------------------------------------	
 	nodeHandlerTable.CONTINUE = function(node)
 		local loop = context.getLast'loops'
 		if not loop or not loop.begin_label then
-			plume.error.cannotUseBreakOutsideLoop(node)
+			plume.error.cannotUseContinueOutsideLoop(node)
 		end
 		context.registerGoto (node, loop.begin_label)
 	end
-
 	nodeHandlerTable.BREAK = function(node)
 		local loop = context.getLast'loops'
 		if not loop or not loop.end_label then

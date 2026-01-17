@@ -14,6 +14,10 @@ If not, see <https://www.gnu.org/licenses/>.
 ]]
 
 return function (plume, context, nodeHandlerTable)
+	--- Nothing special to notice: if-elseif-else are translated into
+	--- a sequence of jumps.
+	--- A jump before the branch bodies if the condition is not verified
+	--- A jump after the bodies to go to the end
 	nodeHandlerTable.IF = function(node)
 		local condition = plume.ast.get(node, "CONDITION")
 		local body      = plume.ast.get(node, "BODY")
@@ -21,7 +25,9 @@ return function (plume, context, nodeHandlerTable)
 		local _else     = plume.ast.get(node, "ELSE")
 		local uid = context.getUID()
 
-		
+		--------------------------------------------
+		-- Special case: if inside a VALUE block,
+		-- create an ELSE branch to emit LOAD_EMPTY
 		local specialValueMode = (
 			node.parent.type == "VALUE"
 			and node.type ~= "EMPTY"
@@ -29,12 +35,11 @@ return function (plume, context, nodeHandlerTable)
 
 		local _else_body
 		if specialValueMode then
-			-- Special case: if inside a VALUE block,
-			-- create an ELSE branch to emit LOAD_EMPTY
 			if not _else then
 				_else_body = {type="EMPTY"}
 			end
 		end
+		--------------------------------------------
 
 		local branchs = {body, condition}
 		for _, child in ipairs(_elseif) do
@@ -74,6 +79,5 @@ return function (plume, context, nodeHandlerTable)
 		end
 
 		context.registerLabel(node, "branch_"..finalBranch.."_"..uid)
-
 	end
 end
