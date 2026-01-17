@@ -1,6 +1,0 @@
-Commands:
-
-```
---! inline
-function NAME ...
-```
