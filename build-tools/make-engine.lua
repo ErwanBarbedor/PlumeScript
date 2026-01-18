@@ -16,6 +16,8 @@ If not, see <https://www.gnu.org/licenses/>.
 -- Create the core big-dispatch-loop
 -- Called by make-engine-opt.lua
 
+require"build-tools/make-vmdoc"
+
 local plume = {}
 require"plume-data/engine/utils"(plume)
 local lfs = require "lfs"
