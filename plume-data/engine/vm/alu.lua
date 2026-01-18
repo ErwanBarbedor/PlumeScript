@@ -114,7 +114,7 @@ function _UN_OP_BOOL (vm, op)
     _STACK_PUSH(vm.mainStack, op(x))
 end
 
---- _BIN_OP_NUMBER isn't an opcode, but tag as opcode for be integrated in the documentation.
+--- `_BIN_OP_NUMBER` isn't an opcode, but tag as opcode for be integrated in the documentation.
 --- @opcode
 --- Unstack 2 value, apply an operation, stack the result.
 --- Try to convert values to number.
@@ -189,37 +189,37 @@ function _POW(x, y) return x^y end
 function _NEG(x)    return -x end
 
 --- @opcode
---- Add two stack top value and stack the result based on _BIN_OP_NUMBER.
+--- Add two stack top value and stack the result based on `_BIN_OP_NUMBER`.
 --! inline
 function OP_ADD (vm, arg1, arg2)
     _BIN_OP_NUMBER (vm, _ADD,   "add")  
 end
 --- @opcode
---- Multiply two stack top value and stack the result based on _BIN_OP_NUMBER.
+--- Multiply two stack top value and stack the result based on `_BIN_OP_NUMBER`.
 --! inline
 function OP_MUL (vm, arg1, arg2)
     _BIN_OP_NUMBER (vm, _MUL,   "mul")  
 end
 --- @opcode
---- Substract two stack top value and stack the result based on _BIN_OP_NUMBER.
+--- Substract two stack top value and stack the result based on `_BIN_OP_NUMBER`.
 --! inline
 function OP_SUB (vm, arg1, arg2)
     _BIN_OP_NUMBER (vm, _SUB,   "sub")  
 end
 --- @opcode
---- Divide two stack top value and stack the result based on _BIN_OP_NUMBER.
+--- Divide two stack top value and stack the result based on `_BIN_OP_NUMBER`.
 --! inline
 function OP_DIV (vm, arg1, arg2)
     _BIN_OP_NUMBER (vm, _DIV,   "div")  
 end
 --- @opcode
---- Take the modulo of stack top value and stack the result based on _BIN_OP_NUMBER.
+--- Take the modulo of stack top value and stack the result based on `_BIN_OP_NUMBER`.
 --! inline
 function OP_MOD (vm, arg1, arg2)
     _BIN_OP_NUMBER (vm, _MOD,   "mod")  
 end
 --- @opcode
---- Take the power of two stack top value and stack the result based on _BIN_OP_NUMBER.
+--- Take the power of two stack top value and stack the result based on `_BIN_OP_NUMBER`.
 --! inline
 function OP_POW (vm, arg1, arg2)
     _BIN_OP_NUMBER (vm, _POW,   "pow")  
@@ -243,19 +243,19 @@ function _OR(x, y)  return x or y end
 function _NOT(x)    return not x end
 
 --- @opcode
---- Do boolean `and` between two stack top values based on _BIN_OP_BOOL.
+--- Do boolean `and` between two stack top values based on `_BIN_OP_BOOL`.
 --! inline
 function OP_AND (vm, arg1, arg2)
     _BIN_OP_BOOL (vm, _AND)
 end
 --- @opcode
---- Do boolean `or` between two stack top values based on _BIN_OP_BOOL.
+--- Do boolean `or` between two stack top values based on `_BIN_OP_BOOL`.
 --! inline
 function OP_OR  (vm, arg1, arg2)
     _BIN_OP_BOOL (vm, _OR)
 end
 --- @opcode
---- Do boolean `not` between stack top value based on _BIN_OP_BOOL.
+--- Do boolean `not` between stack top value based on `_BIN_OP_BOOL`.
 --! inline
 function OP_NOT (vm, arg1, arg2)
     _UN_OP_BOOL  (vm, _NOT)
@@ -265,14 +265,14 @@ end
 --- Comparison
 ---------------
 
---- Do comparison `<` between two stack top values based on _BIN_OP_NUMBER.
+--- Do comparison `<` between two stack top values based on `_BIN_OP_NUMBER`.
 --- @param x left value
 --- @param y right value
 --! inline
 function _LT(x, y) return x < y end
 
 --- @opcode
---- Do comparison `<` between two stack top values based on _BIN_OP_NUMBER.
+--- Do comparison `<` between two stack top values based on `_BIN_OP_NUMBER`.
 --! inline
 function OP_LT (vm, arg1, arg2)
     _BIN_OP_NUMBER (vm, _LT, "lt")
