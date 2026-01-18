@@ -55,54 +55,194 @@ return function (plume)
 
 			op, arg1, arg2 = _VM_DECODE_CURRENT_INSTRUCTION(vm)
 
-			if op == 1 then goto LOAD_CONSTANT
-			elseif op == 2 then goto LOAD_TRUE
-			elseif op == 3 then goto LOAD_FALSE
-			elseif op == 4 then goto LOAD_EMPTY
-			elseif op == 5 then goto LOAD_LOCAL
-			elseif op == 6 then goto LOAD_STATIC
-			elseif op == 7 then goto STORE_LOCAL
-			elseif op == 8 then goto STORE_STATIC
-			elseif op == 9 then goto STORE_VOID
-			elseif op == 10 then goto TABLE_NEW
-			elseif op == 11 then goto TABLE_SET
-			elseif op == 12 then goto TABLE_INDEX
-			elseif op == 13 then goto TABLE_REGISTER_SELF
-			elseif op == 14 then goto TABLE_SET_META
-			elseif op == 15 then goto TABLE_SET_ACC
-			elseif op == 16 then goto TABLE_EXPAND
-			elseif op == 17 then goto ENTER_SCOPE
-			elseif op == 18 then goto LEAVE_SCOPE
-			elseif op == 19 then goto BEGIN_ACC
-			elseif op == 20 then goto CONCAT_TABLE
-			elseif op == 21 then goto CONCAT_TEXT
-			elseif op == 22 then goto CONCAT_CALL
-			elseif op == 23 then goto CHECK_IS_TEXT
-			elseif op == 24 then goto JUMP_IF
-			elseif op == 25 then goto JUMP_IF_NOT
-			elseif op == 26 then goto JUMP_IF_NOT_EMPTY
-			elseif op == 27 then goto JUMP
-			elseif op == 28 then goto JUMP_IF_PEEK
-			elseif op == 29 then goto JUMP_IF_NOT_PEEK
-			elseif op == 30 then goto GET_ITER
-			elseif op == 31 then goto FOR_ITER
-			elseif op == 32 then goto OP_ADD
-			elseif op == 33 then goto OP_MUL
-			elseif op == 34 then goto OP_SUB
-			elseif op == 35 then goto OP_DIV
-			elseif op == 36 then goto OP_NEG
-			elseif op == 37 then goto OP_MOD
-			elseif op == 38 then goto OP_POW
-			elseif op == 39 then goto OP_LT
-			elseif op == 40 then goto OP_EQ
-			elseif op == 41 then goto OP_AND
-			elseif op == 42 then goto OP_NOT
-			elseif op == 43 then goto OP_OR
-			elseif op == 44 then goto DUPLICATE
-			elseif op == 45 then goto SWITCH
-			elseif op == 46 then goto END
+			if op < 32 then
+				if op < 16 then
+					if op < 8 then
+						if op < 4 then
+							if op < 2 then
+								if op < 1 then
+								else
+									goto LOAD_CONSTANT
+								end
+							else
+								if op < 3 then
+									goto LOAD_TRUE
+								else
+									goto LOAD_FALSE
+								end
+							end
+						else
+							if op < 6 then
+								if op < 5 then
+									goto LOAD_EMPTY
+								else
+									goto LOAD_LOCAL
+								end
+							else
+								if op < 7 then
+									goto LOAD_STATIC
+								else
+									goto STORE_LOCAL
+								end
+							end
+						end
+					else
+						if op < 12 then
+							if op < 10 then
+								if op < 9 then
+									goto STORE_STATIC
+								else
+									goto STORE_VOID
+								end
+							else
+								if op < 11 then
+									goto TABLE_NEW
+								else
+									goto TABLE_SET
+								end
+							end
+						else
+							if op < 14 then
+								if op < 13 then
+									goto TABLE_INDEX
+								else
+									goto TABLE_REGISTER_SELF
+								end
+							else
+								if op < 15 then
+									goto TABLE_SET_META
+								else
+									goto TABLE_SET_ACC
+								end
+							end
+						end
+					end
+				else
+					if op < 24 then
+						if op < 20 then
+							if op < 18 then
+								if op < 17 then
+									goto TABLE_EXPAND
+								else
+									goto ENTER_SCOPE
+								end
+							else
+								if op < 19 then
+									goto LEAVE_SCOPE
+								else
+									goto BEGIN_ACC
+								end
+							end
+						else
+							if op < 22 then
+								if op < 21 then
+									goto CONCAT_TABLE
+								else
+									goto CONCAT_TEXT
+								end
+							else
+								if op < 23 then
+									goto CONCAT_CALL
+								else
+									goto CHECK_IS_TEXT
+								end
+							end
+						end
+					else
+						if op < 28 then
+							if op < 26 then
+								if op < 25 then
+									goto JUMP_IF
+								else
+									goto JUMP_IF_NOT
+								end
+							else
+								if op < 27 then
+									goto JUMP_IF_NOT_EMPTY
+								else
+									goto JUMP
+								end
+							end
+						else
+							if op < 30 then
+								if op < 29 then
+									goto JUMP_IF_PEEK
+								else
+									goto JUMP_IF_NOT_PEEK
+								end
+							else
+								if op < 31 then
+									goto GET_ITER
+								else
+									goto FOR_ITER
+								end
+							end
+						end
+					end
+				end
+			else
+				if op < 48 then
+					if op < 40 then
+						if op < 36 then
+							if op < 34 then
+								if op < 33 then
+									goto OP_ADD
+								else
+									goto OP_MUL
+								end
+							else
+								if op < 35 then
+									goto OP_SUB
+								else
+									goto OP_DIV
+								end
+							end
+						else
+							if op < 38 then
+								if op < 37 then
+									goto OP_NEG
+								else
+									goto OP_MOD
+								end
+							else
+								if op < 39 then
+									goto OP_POW
+								else
+									goto OP_LT
+								end
+							end
+						end
+					else
+						if op < 44 then
+							if op < 42 then
+								if op < 41 then
+									goto OP_EQ
+								else
+									goto OP_AND
+								end
+							else
+								if op < 43 then
+									goto OP_NOT
+								else
+									goto OP_OR
+								end
+							end
+						else
+							if op < 46 then
+								if op < 45 then
+									goto DUPLICATE
+								else
+									goto SWITCH
+								end
+							else
+								if op < 47 then
+									goto END
+								end
+							end
+						end
+					end
+				end
 			end
-
 			::LOAD_CONSTANT::
 				LOAD_CONSTANT(vm, arg1, arg2)
 				goto DISPATCH
