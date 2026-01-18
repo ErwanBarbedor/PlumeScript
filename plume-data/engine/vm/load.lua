@@ -13,6 +13,9 @@ You should have received a copy of the GNU General Public License along with Plu
 If not, see <https://www.gnu.org/licenses/>.
 ]]
 
+--- @opcode
+--- Stack 1 from the constants table
+--- @param arg2 Constant offset
 --! inline
 function LOAD_CONSTANT (vm, arg1, arg2)
     --- Stack 1 from constant
@@ -21,6 +24,10 @@ function LOAD_CONSTANT (vm, arg1, arg2)
     _STACK_PUSH(vm.mainStack, vm.constants[arg2])
 end
 
+--- @opcode
+--- Stack 1 variable value
+--- @param arg1 Scope offset
+--- @param arg2 Variable offset
 --! inline
 function LOAD_LOCAL (vm, arg1, arg2)
     --- Stack 1 from vs.
@@ -33,6 +40,9 @@ function LOAD_LOCAL (vm, arg1, arg2)
     )
 end
 
+--- @opcode
+--- Stack 1 from the static table
+--- @param arg2 static offset
 --! inline
 function LOAD_STATIC (vm, arg1, arg2)
     --- Stack 1 from static memory
@@ -46,6 +56,8 @@ function LOAD_STATIC (vm, arg1, arg2)
     )
 end
 
+--- @opcode
+--- Stack 1, `true`
 --! inline
 function LOAD_TRUE (vm, arg1, arg2)
     --- Stack 1 constant true
@@ -54,6 +66,8 @@ function LOAD_TRUE (vm, arg1, arg2)
     _STACK_PUSH(vm.mainStack, true)
 end
 
+--- @opcode
+--- Stack 1, `false`
 --! inline
 function LOAD_FALSE (vm, arg1, arg2)
     --- Stack 1 constant false
@@ -62,6 +76,8 @@ function LOAD_FALSE (vm, arg1, arg2)
     _STACK_PUSH(vm.mainStack, false)
 end
 
+--- @opcode
+--- Stack 1, `empty`
 --! inline
 function LOAD_EMPTY (vm, arg1, arg2)
     --- Stack 1 constant empty
