@@ -48,13 +48,13 @@ quill ink another value
 /// End
 
 /// Test macro scope
-let write = 5
+let _write = 5
 macro f()
-  let write = 3
-  $write
+  let _write = 3
+  $_write
 end
 $f()\n
-$write
+$_write
 /// Output
 3
 5

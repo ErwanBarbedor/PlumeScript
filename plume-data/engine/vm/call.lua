@@ -13,21 +13,17 @@ You should have received a copy of the GNU General Public License along with Plu
 If not, see <https://www.gnu.org/licenses/>.
 ]]
 
+--- @opcode
+--- Take the stack top to call, with all elements of the current frame as parameters.
+--- Stack the call result (or empty if nil)
+--- Handle macros and luaFunctions
 --! inline
-function ACC_CALL (vm, arg1, arg2)
-    --- Unstack 1 (the macro)
-    --- Unstack until frame begin + 1 (all positionals arguments)
-    --- Unstack 1 (table of named arguments)
-    --- Create a new scope
-    --- Stack all arguments to varstack
-    --- Set jump to macro offset
-    --- Stack current ip to calls
-    --- arg1: -
-    --- arg2: -
+function CONCAT_CALL (vm, arg1, arg2)
     local tocall = _STACK_POP(vm.mainStack)
     local t = _GET_TYPE(vm, tocall)
     local self
 
+    -- Table can be called with, if exists, the meta-field call
     if t == "table" then
         if tocall.meta and tocall.meta.table.call then
             self = tocall
@@ -43,12 +39,12 @@ function ACC_CALL (vm, arg1, arg2)
         _UNSTACK_POS   (vm, tocall, arguments, capture)
         _UNSTACK_NAMED (vm, tocall, arguments, capture)
 
-        -- Add self to params
+        -- Add self to params if the callable is a table
         if self then  
             table.insert(arguments, self)
         end
 
-        if tocall.variadicOffset>0 then -- variadic
+        if tocall.variadicOffset>0 then
             arguments[tocall.variadicOffset] = capture
         end
         _END_ACC(vm)
@@ -59,7 +55,7 @@ function ACC_CALL (vm, arg1, arg2)
         )
 
     elseif t == "luaFunction" then
-        ACC_TABLE(vm)
+        CONCAT_TABLE(vm)
         table.insert(vm.chunk.callstack, {chunk=vm.chunk, macro=tocall, ip=vm.ip})
         local success, result  =  pcall(tocall.callable, _STACK_GET(vm.mainStack), vm.chunk)
         if success then
@@ -74,18 +70,21 @@ function ACC_CALL (vm, arg1, arg2)
         end
         
     else
-        _ERROR (vm, "Try to call a '" .. t .. "' value")
+        _ERROR (vm, vm.plume.error.cannotCallValue(t))
     end
 end
 
+--- Collect postionnals argument from the current stack
+--- @param macro macro Used for debug message
+--- @param arguments table Table to store arguments
+--- @param capture table Table to store leftover arguments
+--- @return nil
 --! inline
 function _UNSTACK_POS (vm, macro, arguments, capture)
     local argcount = _STACK_POS(vm.mainStack) - _STACK_GET(vm.mainStack.frames)
     if argcount ~= macro.positionalParamCount and macro.variadicOffset==0 then
         local name
-
-        -- Last OP_CODE before call is loading the macro
-        -- by it's name
+        -- Last OP_CODE before call is loading the macro by it's name
         if vm.chunk.mapping[vm.ip-1] then
             name = vm.chunk.mapping[vm.ip-1].content
         end
@@ -94,7 +93,7 @@ function _UNSTACK_POS (vm, macro, arguments, capture)
             name = macro.name or "???"
         end
 
-        _ERROR (vm, "Wrong number of positionnal arguments for macro '" .. name .. "', " ..   argcount .. " instead of " .. macro.positionalParamCount .. ".")
+        _ERROR (vm, vm.plume.error.wrongArgsCount(name, argcount, macro.positionalParamCount))
     end
 
     for i=1, macro.positionalParamCount do
@@ -108,6 +107,12 @@ function _UNSTACK_POS (vm, macro, arguments, capture)
     _STACK_MOVE_FRAMED(vm.mainStack)
 end
 
+--- Collect named argument from the current stack
+--- Use the same rules as CONCAT_TABLE
+--- @param macro macro Used for debug message
+--- @param arguments table Table to store named arguments
+--- @param capture table Table to store meta and leftover arguments
+--- @return nil
 --! inline
 function _UNSTACK_NAMED (vm, macro, arguments, capture)
     local stack_bottom = _STACK_GET_FRAMED(vm.mainStack)
@@ -125,7 +130,7 @@ function _UNSTACK_NAMED (vm, macro, arguments, capture)
             _TABLE_SET (vm, capture, k, v)
         else
             local name = macro.name or "???"
-            err =  "Unknow named parameter '" .. k .."' for macro '" .. name .."'."
+            err =  vm.plume.error.unknowParameter(k, name)
         end
     end
 
@@ -136,6 +141,11 @@ function _UNSTACK_NAMED (vm, macro, arguments, capture)
     end
 end
 
+--- Call a given macro, keep trace of execution in callstack, and return the result.
+--- Throw stack overflow errors if callstack is too big.
+--- @param macro macro The macro to call
+--- @param arguments table Arguments for the call
+--- @return any Call result
 --! inline
 function _CALL (vm, macro, arguments)
     table.insert(vm.chunk.callstack, {chunk=vm.chunk, macro=macro, ip=vm.ip})
@@ -148,6 +158,6 @@ function _CALL (vm, macro, arguments)
             _SPECIAL_ERROR(vm, callResult, cip, (source or macro) )
         end
     else
-        _ERROR (vm, "stack overflow")
+        _ERROR (vm, vm.plume.error.stackOverflow())
     end
 end

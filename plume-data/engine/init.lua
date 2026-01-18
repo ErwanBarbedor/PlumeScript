@@ -1,5 +1,5 @@
 --[[
-Plume🪶 0.66
+Plume🪶 0.67
 Copyright (C) 2024-2025 Erwan Barbedor
 
 Check https://github.com/ErwanBarbedor/PlumeScript
@@ -27,7 +27,7 @@ require 'plume-data/engine/utils'         (plume)
 require 'plume-data/engine/objects'       (plume)
 require 'plume-data/engine/std'           (plume)
 require 'plume-data/engine/parser'        (plume)
-require 'plume-data/engine/compiler'      (plume)
+require 'plume-data/engine/compiler/core' (plume)
 require 'plume-data/engine/engine'        (plume)
 require 'plume-data/engine/engine-opt'    (plume)
 require 'plume-data/engine/finalizer'     (plume)

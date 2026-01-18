@@ -13,25 +13,23 @@ You should have received a copy of the GNU General Public License along with Plu
 If not, see <https://www.gnu.org/licenses/>.
 ]]
 
---- @opcode
---- Create a new frame and set all it's variable to empty
---- @param arg1 number Number of local variables already stacked
---- @param arg2 number Number of local variables
---! inline
-function ENTER_SCOPE (vm, arg1, arg2)
-    _STACK_PUSH(
-        vm.variableStack.frames,
-        _STACK_POS(vm.variableStack) + 1 - arg1
-    )
-    
-    for i = 1, arg2-arg1 do
-        _STACK_PUSH(vm.variableStack, vm.empty)
-    end
-end
+return function (plume, context, nodeHandlerTable)
+	nodeHandlerTable.LEAVE = function(node)
+		context.registerGoto(node, "macro_end")
+	end
 
---- @opcode
---- Close a frame
---! inline
-function LEAVE_SCOPE (vm, arg1, arg2)
-    _STACK_POP_FRAME(vm.variableStack)
+	nodeHandlerTable.FILE = context.file(function(node)
+		local lets = #plume.ast.getAll(node, "LET")
+		context.registerOP(node, plume.ops.ENTER_SCOPE, 0, lets)
+		table.insert(context.scopes, {})
+		context.accBlock()(node, "macro_end")
+		table.remove(context.scopes)
+	end)
+
+	nodeHandlerTable.DO = function(node)
+		context.accBlock(function(node)
+			context.childrenHandler(node)
+		end)(node)
+		context.registerOP(node, plume.ops.STORE_VOID)
+	end
 end

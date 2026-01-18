@@ -288,7 +288,13 @@ return function (plume)
         -- table
         len = function(args)
             local t = args.table[1]
-            return #t.table
+            if type(t) == "table" then
+                return #t.table
+            elseif type(t) == "string" then
+                return #t
+            else
+                error("Type '" .. type(t) .. "' has no len.")
+            end
         end,
 
         rawset = function(args)

@@ -89,7 +89,7 @@ Traceback (most recent call first):
 /// Test call a non-macro
 $(1)()
 /// Error
-Runtime error: Try to call a 'number' value
+Runtime error: Cannot call a 'number' value.
 
 Traceback (most recent call first):
   File 'call a non-macro', line 1: $(1)()
@@ -110,7 +110,7 @@ end
 
 $mark()
 /// Error
-Runtime error: stack overflow
+Runtime error: Stack overflow
 
 Traceback (most recent call first):
   File 'stack overflow', line 5: $mark()

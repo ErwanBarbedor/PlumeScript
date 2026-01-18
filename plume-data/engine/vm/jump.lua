@@ -13,26 +13,28 @@ You should have received a copy of the GNU General Public License along with Plu
 If not, see <https://www.gnu.org/licenses/>.
 ]]
 
+--- @opcode
+--- Jump to a given instruction
+--- @param arg2 jump offset
 --! inline
 function JUMP (vm, arg1, arg2)
-    --- Jump to offset
-    --- arg1: -
-    --- arg2: target offset
     vm.jump = arg2
 end
 
+--- @opcode
+--- Unstack 1, and jump to a given instruction if false
+--- @param arg2 jump offset
 --! inline
 function JUMP_IF_NOT (vm, arg1, arg2)
-    --- Unstack 1
-    --- Jump to offset if false
-    --- arg1: -
-    --- arg2: target offset
     local test = _STACK_POP(vm.mainStack)
     if not _CHECK_BOOL (vm, test) then
         vm.jump = arg2
     end
 end
 
+--- @opcode
+--- Unstack 1, and jump to a given instruction if true
+--- @param arg2 jump offset
 --! inline
 function JUMP_IF (vm, arg1, arg2)
     --- Unstack 1
@@ -45,6 +47,9 @@ function JUMP_IF (vm, arg1, arg2)
     end
 end
 
+--- @opcode
+--- Jump to a given instruction if stack top is true
+--- @param arg2 jump offset
 --! inline
 function JUMP_IF_PEEK (vm, arg1, arg2)
     --- Jump to offset if top is true, without unpacking
@@ -56,6 +61,9 @@ function JUMP_IF_PEEK (vm, arg1, arg2)
     end
 end
 
+--- @opcode
+--- Jump to a given instruction if stack top is false
+--- @param arg2 jump offset
 --! inline
 function JUMP_IF_NOT_PEEK (vm, arg1, arg2)
     --- Jump to offset if top is false, without unpacking
@@ -67,6 +75,9 @@ function JUMP_IF_NOT_PEEK (vm, arg1, arg2)
     end
 end
 
+--- @opcode
+--- Unstack 1, and jump to a given instruction if any different from empty
+--- @param arg2 jump offset
 --! inline
 function JUMP_IF_NOT_EMPTY (vm, arg1, arg2)
     --- Unstack 1

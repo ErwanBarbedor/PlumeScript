@@ -13,11 +13,10 @@ You should have received a copy of the GNU General Public License along with Plu
 If not, see <https://www.gnu.org/licenses/>.
 ]]
 
+--- @opcode
+--- Switch two top stack values
 --! inline
 function SWITCH (vm, arg1, arg2)
-    --- Unstack 2, stack 2 in reverse order
-    --- arg1: -
-    --- arg2: -
     local x = _STACK_POP(vm.mainStack)
     local y = _STACK_POP(vm.mainStack)
     _STACK_PUSH(vm.mainStack, x)
@@ -25,10 +24,9 @@ function SWITCH (vm, arg1, arg2)
     
 end
 
+--- @opcode
+--- Stack 1 more top stack value
 --! inline
 function DUPLICATE (vm, arg1, arg2)
-    --- Stack 1, current top
-    --- arg1: -
-    --- arg2: -
     _STACK_PUSH(vm.mainStack, _STACK_GET(vm.mainStack))
 end
