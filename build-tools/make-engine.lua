@@ -78,23 +78,45 @@ local init = [[
 ]]
 
 local dispatch, labels = {}, {}
-local count = 1
+local totalCount = 0
+local op_namesTable = {}
 for op_name in plume.ops_names:gmatch("%S+") do
-
-	table.insert(dispatch, "\t\t\t")
-
-	if count > 1 then
-		table.insert(dispatch, "else")
-	end
-
-	table.insert(dispatch, string.format("if op == %i then goto %s\n", count, op_name))
+	table.insert(op_namesTable, op_name)
 
 	if op_name ~= "END" then
 		table.insert(labels,string.format( "\t\t\t::%s::\n\t\t\t\t%s(vm, arg1, arg2)\n\t\t\t\tgoto DISPATCH\n", op_name, op_name))
 	end
-	count = count + 1
 end
-table.insert(dispatch, "\t\t\tend\n\n")
+
+-- Set to the nearest  2^n
+local totalCount = 2^(math.floor(0.5+math.log(#op_namesTable, 2)))
+
+local function handleChoice(limDown, limUp, indent)
+	indent = indent or "\t\t\t"
+	local middlePoint = math.floor((limDown + limUp) / 2)
+	
+	table.insert(dispatch, string.format(indent.."if op < %i then\n", middlePoint))
+	if middlePoint > 1 then
+		if limUp - limDown > 2 then
+			handleChoice(limDown, middlePoint, indent.."\t")
+		else
+			table.insert(dispatch, string.format(indent.."\tgoto %s\n", op_namesTable[middlePoint-1]))
+		end
+	end
+	
+	if middlePoint <= #op_namesTable then
+		table.insert(dispatch, indent.."else\n")
+		if limUp - limDown > 2 then
+			handleChoice(middlePoint+1, limUp, indent.."\t")
+		else
+			table.insert(dispatch, string.format(indent.."\tgoto %s\n", op_namesTable[middlePoint]))
+		end
+	end
+	table.insert(dispatch, indent.."end\n")
+end
+
+handleChoice(0, totalCount)
+
 dispatch = table.concat(dispatch)
 labels = table.concat(labels)
 
