@@ -12,22 +12,24 @@ See the GNU General Public License for more details.
 You should have received a copy of the GNU General Public License along with Plume🪶.
 If not, see <https://www.gnu.org/licenses/>.
 ]]
+
+--- @opcode
+--- Set a value in the static table
+--- Unstack 1, the value to set
+--- @param arg2 variable offset
 --! inline
 function STORE_STATIC (vm, arg1, arg2)
-    --- Unstack 1 static memory
-    --- memory[mp] is a pointer to the current
-    --- file intern memory
-    --- arg1: -
-    --- arg2: frame offset
     vm.static[arg2] = _STACK_POP(vm.mainStack)
 end
 
+--- @opcode
+--- Set a local value
+--- Unstack 1, the value to set
+--- @param arg1 frame offset
+--- @param arg2 variable offset
+--! inline
 --! inline
 function STORE_LOCAL (vm, arg1, arg2)
-    --- Unstack 1 to vs
-    --- Offset: the anth last frame + frame offset
-    --- arg1: frame offset
-    --- arg2: frame offset
     _STACK_SET_FRAMED(
         vm.variableStack,
         arg2-1,
@@ -36,10 +38,10 @@ function STORE_LOCAL (vm, arg1, arg2)
     )
 end
 
+--- @opcode
+--- Unstack 1, do nothing with it.
+--- Used to remove a value at stack top.
 --! inline
 function STORE_VOID (vm, arg1, arg2)
-    --- Unstack 1
-    --- arg1: -
-    --- arg2: frame offset
     _STACK_POP(vm.mainStack)
 end

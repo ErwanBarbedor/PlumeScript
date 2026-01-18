@@ -13,12 +13,14 @@ You should have received a copy of the GNU General Public License along with Plu
 If not, see <https://www.gnu.org/licenses/>.
 ]]
 
+--- @opcode
+--- Unstack 1 iterable object and stack 1 iterator.
+--- If object as a meta field `next`, it's already and iterator, and will be returned as it.
+--- If object as a meta field `iter`, call it.
+--- Else, stack the defaut iterator
+--- Raise an error if the object isn't a table.
 --! inline
 function GET_ITER (vm, arg1, arg2)
-    --- Unstack 1 iterable object
-    --- Stack 1 iterator object
-    --- arg1: -
-    --- arg2: -
     local obj = _STACK_POP(vm.mainStack)
     local tobj = _GET_TYPE(vm, obj)
     if tobj == "table" then
@@ -43,12 +45,12 @@ function GET_ITER (vm, arg1, arg2)
     end 
 end
 
+--- @opcode
+--- Unstack 1 iterator and call it
+--- If empty, jump to for loop end.
+--- @param arg2 number Offset of the loop end
 --! inline
 function FOR_ITER (vm, arg1, arg2)
-    --- Unstack 1 iterator object
-    --- Stack 1 next call result OR jump to for end
-    --- arg1: -
-    --- arg2: jump to end for
     local obj = _STACK_POP(vm.mainStack)
     local iter = obj.meta.table.next
     local result

@@ -13,14 +13,12 @@ You should have received a copy of the GNU General Public License along with Plu
 If not, see <https://www.gnu.org/licenses/>.
 ]]
 
+--- @opcode
+--- Create a new frame and set all it's variable to empty
+--- @param arg1 number Number of local variables already stacked
+--- @param arg2 number Number of local variables
 --! inline
 function ENTER_SCOPE (vm, arg1, arg2)
-    --- Reserve slots for locals variables and save scope begin offset
-    --- Stack 1 to frame
-    --- Stack 1 empty for each non already allocated variable
-    --- arg1: Number of local variables already stacked
-    --- arg2: Number of local variables
-
     _STACK_PUSH(
         vm.variableStack.frames,
         _STACK_POS(vm.variableStack) + 1 - arg1
@@ -31,11 +29,9 @@ function ENTER_SCOPE (vm, arg1, arg2)
     end
 end
 
+--- @opcode
+--- Close a frame
 --! inline
 function LEAVE_SCOPE (vm, arg1, arg2)
-    --- Unstack 1 from vsf
-    --- Remove all local variables
-    --- arg1: -
-    --- arg2: -
     _STACK_POP_FRAME(vm.variableStack)
 end
