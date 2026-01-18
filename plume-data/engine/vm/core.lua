@@ -13,11 +13,12 @@ You should have received a copy of the GNU General Public License along with Plu
 If not, see <https://www.gnu.org/licenses/>.
 ]]
 
-
-
 --================--
 -- Initalization --
 --===============--
+--- Initiialize the VM
+--- @param chunk pec The chunk to execute
+--- @param arguments table
 --! inline-nodo
 function _VM_INIT (plume, chunk, arguments)
     require("table.new")
@@ -33,6 +34,8 @@ function _VM_INIT (plume, chunk, arguments)
     return vm --! to-remove
 end
 
+--- Declare all vm variables
+--- @param chunk pec The chunk to execute
 --! inline-nodo
 function _VM_INIT_VARS(vm, chunk)
     --! index-to-inline vm.err vmerr
@@ -70,6 +73,7 @@ function _VM_INIT_VARS(vm, chunk)
     vm.empty = vm.plume.obj.empty
 end
 
+--- Initialize arguments
 --! inline
 function _VM_INIT_ARGUMENTS(vm, chunk, arguments)
     if arguments then
@@ -80,8 +84,7 @@ function _VM_INIT_ARGUMENTS(vm, chunk, arguments)
                     chunk.static[offset] = v
                 end
             end
-        -- macro
-        else 
+        else -- If not a file, it is a macro
             for i=1, chunk.localsCount do
                 if arguments[i] == nil then
                     _STACK_SET(vm.variableStack, i, vm.empty)
@@ -96,6 +99,8 @@ function _VM_INIT_ARGUMENTS(vm, chunk, arguments)
     end
 end
 
+--- Called at each instruction.
+--- Jump if needed and increment instruction counter
 --! inline
 function _VM_TICK (vm)
     --! to-remove-begin
@@ -136,6 +141,7 @@ function _VM_TICK (vm)
     vm.tic = vm.tic+1
 end
 
+--- Decoding opcode and arguments from instruction
 --! inline
 function _VM_DECODE_CURRENT_INSTRUCTION(vm)
     --=====================--

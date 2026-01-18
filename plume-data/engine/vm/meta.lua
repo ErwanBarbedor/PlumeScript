@@ -13,6 +13,10 @@ You should have received a copy of the GNU General Public License along with Plu
 If not, see <https://www.gnu.org/licenses/>.
 ]]
 
+--- Check for meta-macro args count.
+--- Should certainly be handled by the compilator, no?
+--- @param name string Operator's name
+--- @param macro macro
 --! inline
 function _META_CHECK (name, macro)
 	local comopps = "add mul div sub mod pow"

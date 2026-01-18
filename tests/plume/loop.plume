@@ -104,7 +104,7 @@ File 'break cutted from loops by macro', line 3: break
 /// Test continue outside loop
 continue
 /// Error
-Compilation error: Cannot use break keyword outside a loop.
+Compilation error: Cannot use continue keyword outside a loop.
 File 'continue outside loop', line 1: continue
                                       ^^^^^^^^
 /// End
@@ -117,7 +117,7 @@ for i in seq(1, 10)
   end
 end
 /// Error
-Compilation error: Cannot use break keyword outside a loop.
+Compilation error: Cannot use continue keyword outside a loop.
 File 'continue cutted from loops by macro', line 3: continue
                                                     ^^^^^^^^
 /// End
