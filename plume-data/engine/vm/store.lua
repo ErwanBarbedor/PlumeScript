@@ -28,7 +28,6 @@ end
 --- @param arg1 frame offset
 --- @param arg2 variable offset
 --! inline
---! inline
 function STORE_LOCAL (vm, arg1, arg2)
     _STACK_SET_FRAMED(
         vm.variableStack,
