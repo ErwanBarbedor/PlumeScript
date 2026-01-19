@@ -36,6 +36,17 @@ return function (plume)
         local injectionStackPointer = 0
         local jump = 0
         local empty = plume.obj.empty
+        local bit = require ("bit")
+        local OP_BITS = 7
+        local ARG1_BITS = 5
+        local ARG2_BITS = 20
+        local ARG1_SHIFT = ARG2_BITS
+        local OP_SHIFT = ARG1_BITS + ARG2_BITS
+        local MASK_OP = bit.lshift (1, OP_BITS) - 1
+        local MASK_ARG1 = bit.lshift (1, ARG1_BITS) - 1
+        local MASK_ARG2 = bit.lshift (1, ARG2_BITS) - 1
+        local band = bit.band
+        local rshift = bit.rshift
         if arguments then
             if chunk.isFile then
                 for k, v in pairs (arguments)
@@ -97,22 +108,13 @@ return function (plume)
                     ::_inline_end10::
                     op, arg1, arg2 = _ret4, _ret5, _ret6
                 else
-                    local bit = require ("bit")
-                    local OP_BITS = 7
-                    local ARG1_BITS = 5
-                    local ARG2_BITS = 20
-                    local ARG1_SHIFT = ARG2_BITS
-                    local OP_SHIFT = ARG1_BITS + ARG2_BITS
-                    local MASK_OP = bit.lshift (1, OP_BITS) - 1
-                    local MASK_ARG1 = bit.lshift (1, ARG1_BITS) - 1
-                    local MASK_ARG2 = bit.lshift (1, ARG2_BITS) - 1
                     local instr
                     instr = bytecode[ip]
-                    op = bit.band (bit.rshift (instr, OP_SHIFT)
+                    op = band (rshift (instr, OP_SHIFT)
                     , MASK_OP)
-                    arg1 = bit.band (bit.rshift (instr, ARG1_SHIFT)
+                    arg1 = band (rshift (instr, ARG1_SHIFT)
                     , MASK_ARG1)
-                    arg2 = bit.band (instr, MASK_ARG2)
+                    arg2 = band (instr, MASK_ARG2)
                 end
                 _ret1, _ret2, _ret3 = op, arg1, arg2
                 goto _inline_end9
