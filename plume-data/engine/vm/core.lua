@@ -75,6 +75,21 @@ function _VM_INIT_VARS(vm, chunk)
 
     -- local variables
     vm.empty = vm.plume.obj.empty
+
+    --=====================--
+    -- Instruction format --
+    --=====================--
+    vm.bit = require("bit")
+    vm.OP_BITS    = 7
+    vm.ARG1_BITS  = 5
+    vm.ARG2_BITS  = 20
+    vm.ARG1_SHIFT = vm.ARG2_BITS
+    vm.OP_SHIFT   = vm.ARG1_BITS + vm.ARG2_BITS
+    vm.MASK_OP    = vm.bit.lshift(1, vm.OP_BITS) - 1
+    vm.MASK_ARG1  = vm.bit.lshift(1, vm.ARG1_BITS) - 1
+    vm.MASK_ARG2  = vm.bit.lshift(1, vm.ARG2_BITS) - 1
+    vm.band       = vm.bit.band
+    vm.rshift     = vm.bit.rshift
 end
 
 --- Initialize arguments
@@ -156,21 +171,12 @@ function _VM_DECODE_CURRENT_INSTRUCTION(vm)
         --=====================--
         -- Instruction format --
         --=====================--
-        local bit = require("bit")
-        local OP_BITS   = 7
-        local ARG1_BITS = 5
-        local ARG2_BITS = 20
-        local ARG1_SHIFT = ARG2_BITS
-        local OP_SHIFT   = ARG1_BITS + ARG2_BITS
-        local MASK_OP   = bit.lshift(1, OP_BITS) - 1
-        local MASK_ARG1 = bit.lshift(1, ARG1_BITS) - 1
-        local MASK_ARG2 = bit.lshift(1, ARG2_BITS) - 1
 
         local instr
         instr = vm.bytecode[vm.ip]
-        op    = bit.band(bit.rshift(instr, OP_SHIFT), MASK_OP)
-        arg1  = bit.band(bit.rshift(instr, ARG1_SHIFT), MASK_ARG1)
-        arg2  = bit.band(instr, MASK_ARG2)
+        op    = vm.band(vm.rshift(instr, vm.OP_SHIFT), vm.MASK_OP)
+        arg1  = vm.band(vm.rshift(instr, vm.ARG1_SHIFT), vm.MASK_ARG1)
+        arg2  = vm.band(instr, vm.MASK_ARG2)
     end
 
     return op, arg1, arg2
