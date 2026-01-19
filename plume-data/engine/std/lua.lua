@@ -1,0 +1,295 @@
+--[[This file is part of Plume
+
+Plume🪶 is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, version 3 of the License.
+
+Plume🪶 is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+See the GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License along with Plume🪶.
+If not, see <https://www.gnu.org/licenses/>.
+]]
+
+return function (plume)
+    
+    local function callPlumeMacro(macro, args, chunk)
+        table.insert(chunk.callstack, {chunk=chunk, macro=macro})
+        if #chunk.callstack>1000 then
+            error("stack overflow", 0)
+        end
+
+        local success, callResult, cip, source  = plume.run(macro, args)
+        if not success then
+            error("Error running the macro.", 0)
+        end
+        table.remove(chunk.callstack)
+
+        return callResult
+    end
+
+    
+
+    plume.stdLua = {
+        print = function(args, chunk)
+            local result = {}
+            for _, x in ipairs(args.table) do
+                if x == plume.obj.empty then
+                elseif type(x) == "table" and x.type == "table" and x.meta.table.tostring then
+                    table.insert(result, callPlumeMacro(x.meta.table.tostring, {x}, chunk))
+                else
+                    table.insert(result, tostring(x))
+                end
+            end
+            print(table.unpack(result))
+        end,
+
+        type = function(args)
+            local value = args.table[1]
+            local t = type(value)
+            if t=="table" then
+                if value==plume.obj.empty then
+                    return "empty"
+                else
+                    return value.type
+                end
+            else
+                return t
+            end
+        end,
+
+        join = function(args)
+            local sep = args.table.sep
+            if sep == plume.obj.empty then
+                sep = ""
+            end
+            return table.concat(args.table, sep)
+        end,
+
+        -- temporary name
+        tostring = function(args, chunk)
+            local result = {}
+            for _, x in ipairs(args.table) do
+                if x == plume.obj.empty then
+                elseif type(x) == "table" and x.type == "table" and x.meta.table.tostring then
+                    table.insert(result, callPlumeMacro(x.meta.table.tostring, {x}, chunk))
+                else
+                    table.insert(result, tostring(x))
+                end
+            end
+            return table.concat(result)
+        end,
+
+        tonumber = function(args, chunk)
+            local x = args.table[1]
+            if x == plume.obj.empty then
+                error("Cannot convert empty into number", 0)
+            elseif type(x) == "number" then
+                return x
+            elseif type(x) == "table" and x.type == "table" and x.meta.table.tonumber then
+                return callPlumeMacro(x.meta.table.tonumber, {x}, chunk)
+            else
+               error(string.format("Cannot convert %s into number", type(x)), 0)
+            end
+            return table.concat(result)
+        end,
+
+        seq = function(args)
+            local start = args.table[1]
+            local stop  = args.table[2]
+
+            if not stop then
+                stop = start
+                start = 1
+            end
+
+            start = tonumber(start)
+            stop = tonumber(stop)
+
+            local iterator = plume.obj.table(1, 2)
+            iterator.table[1] = start-1
+            iterator.meta.table.next = plume.obj.luaFunction("next", function()
+                iterator.table[1]  = iterator.table[1] + 1
+                if iterator.table[1] > stop then
+                    return plume.obj.empty
+                else
+                    return iterator.table[1]
+                end
+            end)
+
+            iterator.meta.table.iter = plume.obj.luaFunction("iter", function()
+                return iterator
+            end)
+
+            return iterator
+        end,
+
+        enumerate = function(args)
+            local t = args.table[1]
+
+            local iterator = plume.obj.table(1, 2)
+            iterator.table[1] = 0
+            iterator.meta.table.next = plume.obj.luaFunction("next", function()
+                iterator.table[1]  = iterator.table[1] +1
+                local value = t.table[iterator.table[1]]
+                if not value then
+                    return plume.obj.empty
+                else
+                    ---------------------------------
+                    -- WILL BE REMOVED IN 1.0 (#230)
+                    ---------------------------------
+                    if args.table.legacy then
+                        local result = plume.obj.table(0, 2)
+                        result.table.index = iterator.table[1]
+                        result.table.value = value
+
+                        result.keys = {"index", "value"}
+                        return result
+                    ---------------------------------
+                    else
+                        local result = plume.obj.table(2, 0)
+                        result.table[1] = iterator.table[1]
+                        result.table[2] = value
+
+                        return result
+                    end
+                end
+            end)
+
+            iterator.meta.table.iter = plume.obj.luaFunction("iter", function()
+                return iterator
+            end)
+
+            return iterator
+        end,
+
+        items = function(args)
+            local t = args.table[1]
+
+            local iterator = plume.obj.table(1, 2)
+            iterator.table[1] = 0
+            iterator.meta.table.next = plume.obj.luaFunction("next", function()
+                iterator.table[1]  = iterator.table[1] +1
+                local key = t.keys[iterator.table[1]]
+                if not key then
+                    return plume.obj.empty
+                else
+                    ---------------------------------
+                    -- WILL BE REMOVED IN 1.0 (#230)
+                    ---------------------------------
+                    if args.table.legacy then
+                        local result = plume.obj.table(0, 2)
+                        result.table.key = key
+                        result.table.value = t.table[key]
+
+                        result.keys = {"key", "value"}
+                        return result
+                    ---------------------------------
+                    else
+                        local result = plume.obj.table(2, 0)
+                        result.table[1] = key
+                        result.table[2] = t.table[key]
+                        return result
+                    end
+                end
+            end)
+
+            iterator.meta.table.iter = plume.obj.luaFunction("iter", function()
+                return iterator
+            end)
+
+            return iterator
+        end,
+
+        -- If start by ./ or ../, search relativly to current file
+        -- Else, search from root file and dir from PLUME_PATH (separated by comma)
+        -- For a given path, search for path.plume and path/init.plume
+        import = function(args, chunk)
+            local filename, searchPaths = plume.getFilenameFromPath(
+                args.table[1],
+                ---------------------------------
+                -- WILL BE REMOVED IN 1.0 (#230)
+                ---------------------------------
+                args.table.lua,
+                ---------------------------------
+                chunk)
+            
+            if filename then
+                ---------------------------------
+                -- WILL BE REMOVED IN 1.0 (#230)
+                ---------------------------------
+                if args.table.lua then
+                    return dofile(filename)(plume) 
+                ---------------------------------
+                else
+                    table.remove(args.table)
+                    local success, result = plume.executeFile(filename, chunk.state, true, args.table)
+                    if not success then
+                        error(result, 0)
+                    end
+                    return result
+                end
+            else
+                msg = "Error: cannot open '" .. args.table[1] .. "'.\nPaths tried:\n\t" .. table.concat(searchPaths, '\n\t')
+                error(msg, 0)
+            end
+        end,
+
+        -- path
+        setPlumePath = function(args)
+            plume.env.plume_path = args.table[1]
+        end,
+
+        addToPlumePath = function(args)
+            plume.env.plume_path = (plume.env.plume_path or "") .. ";" .. args.table[1]
+        end,
+
+        -- io
+        write = function(args)
+            local filename = args.table[1]
+            local content = table.concat(args.table, 2,  #args.table)
+            local file = io.open(filename, "w")
+                if not file then
+                    error("Cannot write file '" .. filename .. "'.")
+                end
+                file:write(content)
+            file:close()
+        end,
+
+        read = function(args)
+            local filename = args.table[1]
+            local file = io.open(filename)
+                if not file then
+                    error("Cannot read file '" .. filename .. "'.")
+                end
+                local content = file:read("*a")
+            file:close()
+            return content
+        end,
+
+        -- table
+        len = function(args)
+            local t = args.table[1]
+            if type(t) == "table" then
+                return #t.table
+            elseif type(t) == "string" then
+                return #t
+            else
+                error("Type '" .. type(t) .. "' has no len.")
+            end
+        end,
+
+        rawset = function(args)
+            local obj   = args.table[1]
+            local key   = args.table[2]
+            local value = args.table[3]
+
+            if not obj.table[key] then
+                table.insert(obj.keys, key)
+            end
+            obj.table[key] = value
+        end
+    }
+end

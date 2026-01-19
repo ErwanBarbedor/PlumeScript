@@ -120,7 +120,7 @@ end
 
 --- Called at each instruction.
 --- Jump if needed and increment instruction counter
---! inline
+--! inline-nodo
 function _VM_TICK (vm)
     --! to-remove-begin
     if vm.plume.hook then
@@ -162,18 +162,14 @@ function _VM_TICK (vm)
 end
 
 --- Decoding opcode and arguments from instruction
---! inline
+--! inline-nodo
 function _VM_DECODE_CURRENT_INSTRUCTION(vm)
     local op, arg1, arg2
     if vm.injectionStack.pointer > 0 then
         op, arg1, arg2 = _INJECTION_POP(vm)
     else    
-        --=====================--
-        -- Instruction format --
-        --=====================--
-
-        local instr
-        instr = vm.bytecode[vm.ip]
+        _VM_TICK(vm)
+        local instr = vm.bytecode[vm.ip]
         op    = vm.band(vm.rshift(instr, vm.OP_SHIFT), vm.MASK_OP)
         arg1  = vm.band(vm.rshift(instr, vm.ARG1_SHIFT), vm.MASK_ARG1)
         arg2  = vm.band(instr, vm.MASK_ARG2)
