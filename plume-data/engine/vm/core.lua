@@ -45,6 +45,7 @@ function _VM_INIT_VARS(vm, chunk)
     --! index-to-inline variableStack.*
     --! index-to-inline mainStackFrames.*
     --! index-to-inline variableStackFrames.*
+    --! index-to-inline injectionStack.*
 
     vm.chunk = chunk
     vm.bytecode  = chunk.bytecode
@@ -64,7 +65,10 @@ function _VM_INIT_VARS(vm, chunk)
     vm.variableStack                = table.new(2^10, 0)
     vm.variableStack.frames         = table.new(2^8, 0)
     vm.variableStack.pointer        = 0
-    vm.variableStack.frames.pointer = 0 
+    vm.variableStack.frames.pointer = 0
+
+    vm.injectionStack         = table.new(64, 0)
+    vm.injectionStack.pointer = 0
 
     -- easier debuging than setting vm.ip
     vm.jump    = 0
@@ -108,6 +112,7 @@ function _VM_TICK (vm)
         if vm.ip>0 then 
             local instr, op, arg1, arg2
             instr = vm.bytecode[vm.ip]
+
             op, arg1, arg2 = _VM_DECODE_CURRENT_INSTRUCTION(vm)
 
             vm.plume.hook (
@@ -144,24 +149,29 @@ end
 --- Decoding opcode and arguments from instruction
 --! inline
 function _VM_DECODE_CURRENT_INSTRUCTION(vm)
-    --=====================--
-    -- Instruction format --
-    --=====================--
-    local bit = require("bit")
-    local OP_BITS   = 7
-    local ARG1_BITS = 5
-    local ARG2_BITS = 20
-    local ARG1_SHIFT = ARG2_BITS
-    local OP_SHIFT   = ARG1_BITS + ARG2_BITS
-    local MASK_OP   = bit.lshift(1, OP_BITS) - 1
-    local MASK_ARG1 = bit.lshift(1, ARG1_BITS) - 1
-    local MASK_ARG2 = bit.lshift(1, ARG2_BITS) - 1
+    local op, arg1, arg2
+    if vm.injectionStack.pointer > 0 then
+        op, arg1, arg2 = _INJECTION_POP(vm)
+    else    
+        --=====================--
+        -- Instruction format --
+        --=====================--
+        local bit = require("bit")
+        local OP_BITS   = 7
+        local ARG1_BITS = 5
+        local ARG2_BITS = 20
+        local ARG1_SHIFT = ARG2_BITS
+        local OP_SHIFT   = ARG1_BITS + ARG2_BITS
+        local MASK_OP   = bit.lshift(1, OP_BITS) - 1
+        local MASK_ARG1 = bit.lshift(1, ARG1_BITS) - 1
+        local MASK_ARG2 = bit.lshift(1, ARG2_BITS) - 1
 
-    local instr, op, arg1, arg2
-    instr = vm.bytecode[vm.ip]
-    op    = bit.band(bit.rshift(instr, OP_SHIFT), MASK_OP)
-    arg1  = bit.band(bit.rshift(instr, ARG1_SHIFT), MASK_ARG1)
-    arg2  = bit.band(instr, MASK_ARG2)
+        local instr
+        instr = vm.bytecode[vm.ip]
+        op    = bit.band(bit.rshift(instr, OP_SHIFT), MASK_OP)
+        arg1  = bit.band(bit.rshift(instr, ARG1_SHIFT), MASK_ARG1)
+        arg2  = bit.band(instr, MASK_ARG2)
+    end
 
     return op, arg1, arg2
 end

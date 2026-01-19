@@ -26,6 +26,7 @@ return function (plume)
 		require "plume-data/engine/vm/alu"
 		require "plume-data/engine/vm/call"
 		require "plume-data/engine/vm/core"
+		require "plume-data/engine/vm/injection"
 		require "plume-data/engine/vm/iter"
 		require "plume-data/engine/vm/jump"
 		require "plume-data/engine/vm/load"
