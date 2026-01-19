@@ -34,6 +34,7 @@ return function (plume)
 		require "plume-data/engine/vm/others"
 		require "plume-data/engine/vm/scope"
 		require "plume-data/engine/vm/stack"
+		require "plume-data/engine/vm/std"
 		require "plume-data/engine/vm/store"
 		require "plume-data/engine/vm/table"
 		require "plume-data/engine/vm/utils"
@@ -50,9 +51,6 @@ return function (plume)
 			if vm.serr then
 				return false, unpack(vm.serr)
 			end
-
-			-- Handle jump and incremente IP
-			_VM_TICK(vm)
 
 			op, arg1, arg2 = _VM_DECODE_CURRENT_INSTRUCTION(vm)
 
@@ -238,6 +236,18 @@ return function (plume)
 							else
 								if op < 47 then
 									goto END
+								else
+									goto STD_LEN
+								end
+							end
+						end
+					end
+				else
+					if op < 56 then
+						if op < 52 then
+							if op < 50 then
+								if op < 49 then
+									goto STD_TYPE
 								end
 							end
 						end
@@ -378,6 +388,12 @@ return function (plume)
 				goto DISPATCH
 			::SWITCH::
 				SWITCH(vm, arg1, arg2)
+				goto DISPATCH
+			::STD_LEN::
+				STD_LEN(vm, arg1, arg2)
+				goto DISPATCH
+			::STD_TYPE::
+				STD_TYPE(vm, arg1, arg2)
 				goto DISPATCH
 		::END::
 		return true, _STACK_GET(vm.mainStack)

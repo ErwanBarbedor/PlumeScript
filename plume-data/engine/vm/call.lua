@@ -68,7 +68,10 @@ function CONCAT_CALL (vm, arg1, arg2)
         else
             _ERROR(vm, result)
         end
-        
+
+    elseif t == "luaStdFunction" then
+        CONCAT_TABLE(vm)
+        _INJECTION_PUSH(vm, tocall.opcode, 0, 0)
     else
         _ERROR (vm, vm.plume.error.cannotCallValue(t))
     end
