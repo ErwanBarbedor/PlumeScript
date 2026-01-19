@@ -46,20 +46,6 @@ return function (plume)
             print(table.unpack(result))
         end,
 
-        type = function(args)
-            local value = args.table[1]
-            local t = type(value)
-            if t=="table" then
-                if value==plume.obj.empty then
-                    return "empty"
-                else
-                    return value.type
-                end
-            else
-                return t
-            end
-        end,
-
         join = function(args)
             local sep = args.table.sep
             if sep == plume.obj.empty then
@@ -267,18 +253,6 @@ return function (plume)
                 local content = file:read("*a")
             file:close()
             return content
-        end,
-
-        -- table
-        len = function(args)
-            local t = args.table[1]
-            if type(t) == "table" then
-                return #t.table
-            elseif type(t) == "string" then
-                return #t
-            else
-                error("Type '" .. type(t) .. "' has no len.")
-            end
         end,
 
         rawset = function(args)
