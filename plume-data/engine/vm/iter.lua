@@ -28,12 +28,11 @@ function GET_ITER (vm, arg1, arg2)
         if obj.meta.table.next then
             iter = obj
         else
-            iter = obj.meta.table.iter --or vm.plume.defaultMeta.iter
+            iter = obj.meta.table.iter
         end
 
-        local value, state
+        local value, flag
         if iter then
-            state = -1
             if iter.type == "luaFunction" then
                 value = iter.callable({obj})
             elseif iter.type == "table" then
@@ -43,10 +42,14 @@ function GET_ITER (vm, arg1, arg2)
             end
         else
             value = obj.table
-            state = 0
+            flag = vm.flag.ITER_LOOP
         end
-        _STACK_PUSH(vm.mainStack, state)
+
+        _STACK_PUSH(vm.mainStack, flag)
+        _STACK_PUSH(vm.mainStack, 0) -- state
         _STACK_PUSH(vm.mainStack, value)
+
+        -- GET_ITER is followed by 3 STORE_LOCAL
 
     else
         _ERROR(vm, vm.plume.error.cannotIterateValue(tobj))
@@ -59,11 +62,12 @@ end
 --- @param arg2 number Offset of the loop end
 --! inline
 function FOR_ITER (vm, arg1, arg2)
-    local state = _STACK_POP(vm.mainStack)
-    local obj = _STACK_POP(vm.mainStack)
+    local obj   = _STACK_GET_FRAMED(vm.variableStack, 0, 0)
+    local state = _STACK_GET_FRAMED(vm.variableStack, 1, 0)
+    local flag  = _STACK_GET_FRAMED(vm.variableStack, 2, 0)
 
     local result
-    if state>=0 then
+    if flag == vm.flag.ITER_LOOP then
         state = state+1
 
         if state > #obj then
