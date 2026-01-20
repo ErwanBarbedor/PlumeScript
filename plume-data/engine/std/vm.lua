@@ -15,12 +15,11 @@ If not, see <https://www.gnu.org/licenses/>.
 
 return function (plume)
 	plume.stdVM = {}
-	local function addLuaStdFunction(name, positionalParamCount)
+	local function registerLuaStdFunction(name)
 		plume.stdVM[name] = {
 			type = "luaStdFunction",
 			name = name,
 			opcode = plume.ops_count,
-			positionalParamCount = positionalParamCount or 0
 		}
 		
 		local opName = "STD_" .. name:upper()
@@ -30,6 +29,7 @@ return function (plume)
 
 	end
 
-	addLuaStdFunction("len", 1)
-	addLuaStdFunction("type", 1)
+	registerLuaStdFunction("len")
+	registerLuaStdFunction("type")
+	registerLuaStdFunction("seq")
 end

@@ -35,3 +35,28 @@ function STD_TYPE(vm, arg1, arg2)
     local t = _STACK_POP(vm.mainStack).table[1]
     _STACK_PUSH(vm.mainStack, _GET_TYPE(vm, t))
 end
+
+--- @opcode
+--! inline
+function STD_SEQ(vm, arg1, arg2)
+    local args = _STACK_POP(vm.mainStack).table
+    local start = args[1]
+    local stop  = args[2]
+    local step  = args[3] or 1
+
+    if not stop then
+        stop = start
+        start = 1
+    end
+
+    start = tonumber(start)
+    stop = tonumber(stop)
+
+    _STACK_PUSH(vm.mainStack, {
+        type = "seq",
+        start=start,
+        stop=stop,
+        step=step
+    })
+end
+

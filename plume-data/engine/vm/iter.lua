@@ -23,6 +23,8 @@ If not, see <https://www.gnu.org/licenses/>.
 function GET_ITER (vm, arg1, arg2)
     local obj = _STACK_POP(vm.mainStack)
     local tobj = _GET_TYPE(vm, obj)
+    
+    local value, flag
     if tobj == "table" then
         local iter
         if obj.meta.table.next then
@@ -31,7 +33,7 @@ function GET_ITER (vm, arg1, arg2)
             iter = obj.meta.table.iter
         end
 
-        local value, flag
+        
         if iter then
             if iter.type == "luaFunction" then
                 value = iter.callable({obj})
@@ -42,18 +44,22 @@ function GET_ITER (vm, arg1, arg2)
             end
         else
             value = obj.table
-            flag = vm.flag.ITER_LOOP
+            flag = vm.flag.ITER_TABLE
         end
 
-        _STACK_PUSH(vm.mainStack, flag)
-        _STACK_PUSH(vm.mainStack, 0) -- state
-        _STACK_PUSH(vm.mainStack, value)
-
-        -- GET_ITER is followed by 3 STORE_LOCAL
+    elseif tobj == "seq" then
+        value = obj
+        flag = vm.flag.ITER_SEQ
 
     else
         _ERROR(vm, vm.plume.error.cannotIterateValue(tobj))
     end 
+
+    _STACK_PUSH(vm.mainStack, flag)
+    _STACK_PUSH(vm.mainStack, 0) -- state
+    _STACK_PUSH(vm.mainStack, value)
+
+    -- GET_ITER is followed by 3 STORE_LOCAL
 end
 
 --- @opcode
@@ -67,7 +73,7 @@ function FOR_ITER (vm, arg1, arg2)
     local flag  = _STACK_GET_FRAMED(vm.variableStack, 2, 0)
 
     local result
-    if flag == vm.flag.ITER_LOOP then
+    if flag == vm.flag.ITER_TABLE then
         state = state+1
 
         if state > #obj then
@@ -75,8 +81,13 @@ function FOR_ITER (vm, arg1, arg2)
         else
             result = obj[state]
         end
-        -- Save state. Offset 1 for local var #2
-        _STACK_SET_FRAMED(vm.variableStack, 1, 0, state)
+    elseif flag == vm.flag.ITER_SEQ then
+        state = state + obj.step
+        if state > obj.stop then
+            result = vm.empty
+        else
+            result = state
+        end
     else
         local iter = obj.meta.table.next
         if iter.type == "luaFunction" then
@@ -85,6 +96,9 @@ function FOR_ITER (vm, arg1, arg2)
             result = _CALL (vm, iter, {obj})
         end
     end
+
+    -- Save state. Offset 1 for local var #2
+    _STACK_SET_FRAMED(vm.variableStack, 1, 0, state)
 
     if result == vm.empty then
         JUMP (vm, 0, arg2)

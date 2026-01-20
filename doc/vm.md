@@ -261,6 +261,9 @@ JUMP_IF_NOT :else   -- Jumps if result is false.
 #### STD_TYPE
 
 
+#### STD_SEQ
+
+
 ### vm/store.lua
 
 #### STORE_STATIC

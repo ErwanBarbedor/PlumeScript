@@ -82,36 +82,6 @@ return function (plume)
             return table.concat(result)
         end,
 
-        seq = function(args)
-            local start = args.table[1]
-            local stop  = args.table[2]
-
-            if not stop then
-                stop = start
-                start = 1
-            end
-
-            start = tonumber(start)
-            stop = tonumber(stop)
-
-            local iterator = plume.obj.table(1, 2)
-            iterator.table[1] = start-1
-            iterator.meta.table.next = plume.obj.luaFunction("next", function()
-                iterator.table[1]  = iterator.table[1] + 1
-                if iterator.table[1] > stop then
-                    return plume.obj.empty
-                else
-                    return iterator.table[1]
-                end
-            end)
-
-            iterator.meta.table.iter = plume.obj.luaFunction("iter", function()
-                return iterator
-            end)
-
-            return iterator
-        end,
-
         enumerate = function(args)
             local t = args.table[1]
 

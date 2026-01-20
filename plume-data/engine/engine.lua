@@ -248,6 +248,8 @@ return function (plume)
 							if op < 50 then
 								if op < 49 then
 									goto STD_TYPE
+								else
+									goto STD_SEQ
 								end
 							end
 						end
@@ -394,6 +396,9 @@ return function (plume)
 				goto DISPATCH
 			::STD_TYPE::
 				STD_TYPE(vm, arg1, arg2)
+				goto DISPATCH
+			::STD_SEQ::
+				STD_SEQ(vm, arg1, arg2)
 				goto DISPATCH
 		::END::
 		return true, _STACK_GET(vm.mainStack)
