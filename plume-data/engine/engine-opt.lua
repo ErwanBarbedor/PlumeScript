@@ -1318,9 +1318,9 @@ return function (plume)
                     local _ret102
                     do
                         local _ret103
-                        _ret103 = variableStackFrames[variableStackFramesPointer + (0 or 0)]
+                        _ret103 = variableStackFrames[variableStackFramesPointer]
                         local _ret104
-                        _ret104 = variableStack[_ret103 + (0 or 0) or variableStackPointer]
+                        _ret104 = variableStack[_ret103 or variableStackPointer]
                         _ret102 = _ret104
                         goto _inline_end219
                     end
@@ -1329,9 +1329,9 @@ return function (plume)
                     local _ret105
                     do
                         local _ret106
-                        _ret106 = variableStackFrames[variableStackFramesPointer + (0 or 0)]
+                        _ret106 = variableStackFrames[variableStackFramesPointer]
                         local _ret107
-                        _ret107 = variableStack[_ret106 + (1 or 0) or variableStackPointer]
+                        _ret107 = variableStack[_ret106 + 1 or variableStackPointer]
                         _ret105 = _ret107
                         goto _inline_end222
                     end
@@ -1340,9 +1340,9 @@ return function (plume)
                     local _ret108
                     do
                         local _ret109
-                        _ret109 = variableStackFrames[variableStackFramesPointer + (0 or 0)]
+                        _ret109 = variableStackFrames[variableStackFramesPointer]
                         local _ret110
-                        _ret110 = variableStack[_ret109 + (2 or 0) or variableStackPointer]
+                        _ret110 = variableStack[_ret109 + 2 or variableStackPointer]
                         _ret108 = _ret110
                         goto _inline_end225
                     end
@@ -1389,7 +1389,7 @@ return function (plume)
                     do
                         local _ret112
                         _ret112 = variableStackFrames[variableStackFramesPointer or 0]
-                        variableStack[_ret112 + (1 or 0)] = state
+                        variableStack[_ret112 + 1] = state
                     end
                     if result == empty then
                         jump = arg2

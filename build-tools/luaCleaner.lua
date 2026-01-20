@@ -56,6 +56,9 @@ local function constantFolding(node)
 		if node[2].type == "nil" or node[2].type == "false" then
 			return node[1]
 		end
+		if node[1].type == "number" then
+			return node[1]
+		end
 	elseif node.type == "eq" then
 		if node[1].type == "number" and node[2].type == "number" then
 			if node[1].value == node[2].value then
