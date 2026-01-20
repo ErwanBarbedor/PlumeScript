@@ -46,6 +46,7 @@ function _VM_INIT_VARS(vm, chunk)
     --! index-to-inline mainStackFrames.*
     --! index-to-inline variableStackFrames.*
     --! index-to-inline injectionStack.*
+    --! index-to-inline flag.* *
 
     vm.chunk = chunk
     vm.bytecode  = chunk.bytecode
@@ -75,6 +76,10 @@ function _VM_INIT_VARS(vm, chunk)
 
     -- local variables
     vm.empty = vm.plume.obj.empty
+
+    -- flag
+    vm.flag = {}
+    vm.flag.ITER_LOOP = 0
 
     --=====================--
     -- Instruction format --

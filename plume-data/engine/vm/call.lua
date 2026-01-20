@@ -152,7 +152,7 @@ end
 --! inline
 function _CALL (vm, macro, arguments)
     table.insert(vm.chunk.callstack, {chunk=vm.chunk, macro=macro, ip=vm.ip})
-    if #vm.chunk.callstack<=1000 then
+    if #vm.chunk.callstack<=500 then
         local success, callResult, cip, source  = vm.plume.run(macro, arguments)
         if success then
             table.remove(vm.chunk.callstack)

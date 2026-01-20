@@ -52,16 +52,15 @@ return function (plume, context, nodeHandlerTable)
 
 		-------------------------------------------------------
 		-- why don't use the wrapper context.scope()?
-		context.registerOP(nil, plume.ops.ENTER_SCOPE, 0, 2)
+		context.registerOP(nil, plume.ops.ENTER_SCOPE, 0, 3) -- iterator, state and flag
 		table.insert(context.scopes, {}) 
 		-------------------------------------------------------
 
 			context.registerOP(node, plume.ops.STORE_LOCAL, 0, 1) -- Save the iterator
 			context.registerOP(node, plume.ops.STORE_LOCAL, 0, 2) -- Save the state
+			context.registerOP(node, plume.ops.STORE_LOCAL, 0, 3) -- Save the flag
 
 			context.registerLabel(node, "for_begin_"..uid)
-			context.registerOP(node, plume.ops.LOAD_LOCAL, 0, 1) -- Load the iterator
-			context.registerOP(node, plume.ops.LOAD_LOCAL, 0, 2) -- Load the state
 			context.registerGoto(node, "for_end_"..uid, "FOR_ITER", 1) -- Call iterator to get next(s) value(s)
 
 			context.scope(function(body)
