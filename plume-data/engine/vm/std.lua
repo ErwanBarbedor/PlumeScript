@@ -53,10 +53,42 @@ function STD_SEQ(vm, arg1, arg2)
     stop = tonumber(stop)
 
     _STACK_PUSH(vm.mainStack, {
-        type = "seq",
+        type = "stdIterator",
         start=start,
         stop=stop,
-        step=step
+        step=step,
+        flag = vm.flag.ITER_SEQ
     })
 end
 
+--- @opcode
+--! inline
+function STD_ITEMS(vm, arg1, arg2)
+    local args = _STACK_POP(vm.mainStack).table
+    _STACK_PUSH(vm.mainStack, {
+        type = "stdIterator",
+        ref  = args[1],
+        flag = vm.flag.ITER_ITEMS,
+        ---------------------------------
+        -- WILL BE REMOVED IN 1.0 (#230)
+        ---------------------------------
+        legacy = args.legacy
+        ---------------------------------
+    })
+end
+
+--- @opcode
+--! inline
+function STD_ENUMERATE(vm, arg1, arg2)
+    local args = _STACK_POP(vm.mainStack).table
+    _STACK_PUSH(vm.mainStack, {
+        type = "stdIterator",
+        ref = args[1],
+        flag = vm.flag.ITER_ENUMS,
+        ---------------------------------
+        -- WILL BE REMOVED IN 1.0 (#230)
+        ---------------------------------
+        legacy = args.legacy
+        ---------------------------------
+    })
+end

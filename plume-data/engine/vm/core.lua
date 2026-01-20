@@ -81,6 +81,8 @@ function _VM_INIT_VARS(vm, chunk)
     vm.flag = {}
     vm.flag.ITER_TABLE = 0
     vm.flag.ITER_SEQ = 1
+    vm.flag.ITER_ITEMS = 2
+    vm.flag.ITER_ENUMS = 3
 
     --=====================--
     -- Instruction format --

@@ -47,10 +47,9 @@ function GET_ITER (vm, arg1, arg2)
             flag = vm.flag.ITER_TABLE
         end
 
-    elseif tobj == "seq" then
+    elseif tobj == "stdIterator" then
         value = obj
-        flag = vm.flag.ITER_SEQ
-
+        flag = obj.flag
     else
         _ERROR(vm, vm.plume.error.cannotIterateValue(tobj))
     end 
@@ -87,6 +86,52 @@ function FOR_ITER (vm, arg1, arg2)
             result = vm.empty
         else
             result = state
+        end
+    elseif flag == vm.flag.ITER_ENUMS then
+        state = state+1
+
+        if state > #obj.ref.table then
+            result = vm.empty
+        else
+             ---------------------------------
+            -- WILL BE REMOVED IN 1.0 (#230)
+            ---------------------------------
+            if obj.legacy then
+                result = vm.plume.obj.table(0, 2)
+                result.table.index = state
+                result.table.value = obj.ref.table[state]
+
+                result.keys = {"index", "value"}
+            ---------------------------------
+            else
+                -- Could be optimized
+                result = vm.plume.obj.table(2, 0)
+                result.table[1] = state
+                result.table[2] = obj.ref.table[state]
+            end 
+        end
+    elseif flag == vm.flag.ITER_ITEMS then
+        state = state+1
+
+        if state > #obj.ref.keys then
+            result = vm.empty
+        else
+             ---------------------------------
+            -- WILL BE REMOVED IN 1.0 (#230)
+            ---------------------------------
+            if obj.legacy then
+                result = vm.plume.obj.table(0, 2)
+                result.table.key = obj.ref.keys[state]
+                result.table.value = obj.ref.table[result.table.key ]
+
+                result.keys = {"key", "value"}
+            ---------------------------------
+            else
+                -- Could be optimized
+                result = vm.plume.obj.table(2, 0)
+                result.table[1] = obj.ref.keys[state]
+                result.table[2] = obj.ref.table[result.table[1]]
+            end
         end
     else
         local iter = obj.meta.table.next

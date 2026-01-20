@@ -32,4 +32,6 @@ return function (plume)
 	registerLuaStdFunction("len")
 	registerLuaStdFunction("type")
 	registerLuaStdFunction("seq")
+	registerLuaStdFunction("items")
+	registerLuaStdFunction("enumerate")
 end

@@ -251,6 +251,12 @@ return function (plume)
 								else
 									goto STD_SEQ
 								end
+							else
+								if op < 51 then
+									goto STD_ITEMS
+								else
+									goto STD_ENUMERATE
+								end
 							end
 						end
 					end
@@ -399,6 +405,12 @@ return function (plume)
 				goto DISPATCH
 			::STD_SEQ::
 				STD_SEQ(vm, arg1, arg2)
+				goto DISPATCH
+			::STD_ITEMS::
+				STD_ITEMS(vm, arg1, arg2)
+				goto DISPATCH
+			::STD_ENUMERATE::
+				STD_ENUMERATE(vm, arg1, arg2)
 				goto DISPATCH
 		::END::
 		return true, _STACK_GET(vm.mainStack)
