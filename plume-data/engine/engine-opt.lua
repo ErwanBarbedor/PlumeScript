@@ -39,6 +39,8 @@ return function (plume)
         local flag = {}
         local ITER_TABLE = 0
         local ITER_SEQ = 1
+        local ITER_ITEMS = 2
+        local ITER_ENUMS = 3
         local bit = require ("bit")
         local OP_BITS = 7
         local ARG1_BITS = 5
@@ -315,6 +317,12 @@ return function (plume)
                                     goto STD_TYPE
                                 else
                                     goto STD_SEQ
+                                end
+                            else
+                                if op < 51 then
+                                    goto STD_ITEMS
+                                else
+                                    goto STD_ENUMERATE
                                 end
                             end
                         end
@@ -1299,9 +1307,9 @@ return function (plume)
                             value = obj.table
                             flag = ITER_TABLE
                         end
-                    elseif tobj == "seq" then
+                    elseif tobj == "stdIterator" then
                         value = obj
-                        flag = ITER_SEQ
+                        flag = obj.flag
                     else
                         vmerr = plume.error.cannotIterateValue (tobj)
                     end
@@ -1362,6 +1370,38 @@ return function (plume)
                             result = empty
                         else
                             result = state
+                        end
+                    elseif flag == ITER_ENUMS then
+                        state = state + 1
+                        if state > #obj.ref.table then
+                            result = empty
+                        else
+                            if obj.legacy then
+                                result = plume.obj.table (0, 2)
+                                result.table.index = state
+                                result.table.value = obj.ref.table[state]
+                                result.keys = {"index", "value"}
+                            else
+                                result = plume.obj.table (2, 0)
+                                result.table[1] = state
+                                result.table[2] = obj.ref.table[state]
+                            end
+                        end
+                    elseif flag == ITER_ITEMS then
+                        state = state + 1
+                        if state > #obj.ref.keys then
+                            result = empty
+                        else
+                            if obj.legacy then
+                                result = plume.obj.table (0, 2)
+                                result.table.key = obj.ref.keys[state]
+                                result.table.value = obj.ref.table[result.table.key]
+                                result.keys = {"key", "value"}
+                            else
+                                result = plume.obj.table (2, 0)
+                                result.table[1] = obj.ref.keys[state]
+                                result.table[2] = obj.ref.table[result.table[1]]
+                            end
                         end
                     else
                         local iter = obj.meta.table.next
@@ -2822,13 +2862,33 @@ return function (plume)
                     start = tonumber (start)
                     stop = tonumber (stop)
                     mainStackPointer = mainStackPointer + 1
-                    mainStack[mainStackPointer] = {type = "seq", start = start, stop = stop, step = step}
+                    mainStack[mainStackPointer] = {type = "stdIterator", start = start, stop = stop, step = step, flag = ITER_SEQ}
+                end
+                goto DISPATCH
+            ::STD_ITEMS::
+                do
+                    local _ret262
+                    mainStackPointer = mainStackPointer - 1
+                    _ret262 = mainStack[mainStackPointer + 1]
+                    local args = _ret262.table
+                    mainStackPointer = mainStackPointer + 1
+                    mainStack[mainStackPointer] = {type = "stdIterator", ref = args[1], flag = ITER_ITEMS, legacy = args.legacy}
+                end
+                goto DISPATCH
+            ::STD_ENUMERATE::
+                do
+                    local _ret263
+                    mainStackPointer = mainStackPointer - 1
+                    _ret263 = mainStack[mainStackPointer + 1]
+                    local args = _ret263.table
+                    mainStackPointer = mainStackPointer + 1
+                    mainStack[mainStackPointer] = {type = "stdIterator", ref = args[1], flag = ITER_ENUMS, legacy = args.legacy}
                 end
                 goto DISPATCH
             ::END::
-            local _ret262
-            _ret262 = mainStack[mainStackPointer]
-            return true, _ret262
+            local _ret264
+            _ret264 = mainStack[mainStackPointer]
+            return true, _ret264
         end
     end
     
