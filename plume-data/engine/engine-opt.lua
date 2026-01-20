@@ -37,7 +37,8 @@ return function (plume)
         local jump = 0
         local empty = plume.obj.empty
         local flag = {}
-        local ITER_LOOP = 0
+        local ITER_TABLE = 0
+        local ITER_SEQ = 1
         local bit = require ("bit")
         local OP_BITS = 7
         local ARG1_BITS = 5
@@ -312,6 +313,8 @@ return function (plume)
                             if op < 50 then
                                 if op < 49 then
                                     goto STD_TYPE
+                                else
+                                    goto STD_SEQ
                                 end
                             end
                         end
@@ -446,7 +449,7 @@ return function (plume)
                         end
                     else
                         local _ret24
-                        _ret24 = type (t) == "table" and (t == empty or t.type) or type (t)
+                        _ret24 = type (t) == "table" and (t == empty or t.type) or (type (t) == "cdata" and t.type) or type (t)
                         goto _inline_end65
                         ::_inline_end65::
                         local tt = _ret24
@@ -567,7 +570,7 @@ return function (plume)
                     _ret37 = mainStack[mainStackPointer + 1]
                     local t = _ret37
                     local _ret38
-                    _ret38 = type (t) == "table" and (t == empty or t.type) or type (t)
+                    _ret38 = type (t) == "table" and (t == empty or t.type) or (type (t) == "cdata" and t.type) or type (t)
                     local tt = _ret38
                     if tt == "table" then
                         for _, item in ipairs (t.table)
@@ -747,7 +750,7 @@ return function (plume)
                     _ret55 = mainStack[mainStackPointer + 1]
                     local tocall = _ret55
                     local _ret56
-                    _ret56 = type (tocall) == "table" and (tocall == empty or tocall.type) or type (tocall)
+                    _ret56 = type (tocall) == "table" and (tocall == empty or tocall.type) or (type (tocall) == "cdata" and tocall.type) or type (tocall)
                     local t = _ret56
                     local self
                     if t == "table" then
@@ -1138,7 +1141,7 @@ return function (plume)
                     _ret86 = mainStack[mainStackPointer]
                     local value = _ret86
                     local _ret87
-                    _ret87 = type (value) == "table" and (value == empty or value.type) or type (value)
+                    _ret87 = type (value) == "table" and (value == empty or value.type) or (type (value) == "cdata" and value.type) or type (value)
                     local t = _ret87
                     if t ~= "number" and t ~= "string" and value ~= empty then
                         if t == "table" and value.meta.table.tostring then
@@ -1259,8 +1262,9 @@ return function (plume)
                     _ret99 = mainStack[mainStackPointer + 1]
                     local obj = _ret99
                     local _ret100
-                    _ret100 = type (obj) == "table" and (obj == empty or obj.type) or type (obj)
+                    _ret100 = type (obj) == "table" and (obj == empty or obj.type) or (type (obj) == "cdata" and obj.type) or type (obj)
                     local tobj = _ret100
+                    local value, flag
                     if tobj == "table" then
                         local iter
                         if obj.meta.table.next then
@@ -1268,7 +1272,6 @@ return function (plume)
                         else
                             iter = obj.meta.table.iter
                         end
-                        local value, flag
                         if iter then
                             if iter.type == "luaFunction" then
                                 value = iter.callable ({obj})
@@ -1294,17 +1297,20 @@ return function (plume)
                             end
                         else
                             value = obj.table
-                            flag = ITER_LOOP
+                            flag = ITER_TABLE
                         end
-                        mainStackPointer = mainStackPointer + 1
-                        mainStack[mainStackPointer] = flag
-                        mainStackPointer = mainStackPointer + 1
-                        mainStack[mainStackPointer] = 0
-                        mainStackPointer = mainStackPointer + 1
-                        mainStack[mainStackPointer] = value
+                    elseif tobj == "seq" then
+                        value = obj
+                        flag = ITER_SEQ
                     else
                         vmerr = plume.error.cannotIterateValue (tobj)
                     end
+                    mainStackPointer = mainStackPointer + 1
+                    mainStack[mainStackPointer] = flag
+                    mainStackPointer = mainStackPointer + 1
+                    mainStack[mainStackPointer] = 0
+                    mainStackPointer = mainStackPointer + 1
+                    mainStack[mainStackPointer] = value
                 end
                 goto DISPATCH
             ::FOR_ITER::
@@ -1343,40 +1349,47 @@ return function (plume)
                     ::_inline_end225::
                     local flag = _ret108
                     local result
-                    if flag == ITER_LOOP then
+                    if flag == ITER_TABLE then
                         state = state + 1
                         if state > #obj then
                             result = empty
                         else
                             result = obj[state]
                         end
-                        do
-                            local _ret111
-                            _ret111 = variableStackFrames[variableStackFramesPointer or 0]
-                            variableStack[_ret111 + (1 or 0)] = state
+                    elseif flag == ITER_SEQ then
+                        state = state + obj.step
+                        if state > obj.stop then
+                            result = empty
+                        else
+                            result = state
                         end
                     else
                         local iter = obj.meta.table.next
                         if iter.type == "luaFunction" then
                             result = iter.callable ()
                         else
-                            local _ret112
+                            local _ret111
                             table.insert (chunk.callstack, {chunk = chunk, macro = iter, ip = ip})
                             if #chunk.callstack <= 500 then
                                 local success, callResult, cip, source = plume.run (iter, {obj})
                                 if success then
                                     table.remove (chunk.callstack)
-                                    _ret112 = callResult
-                                    goto _inline_end231
+                                    _ret111 = callResult
+                                    goto _inline_end228
                                 else
                                     vmserr = {callResult, cip, (source or iter)}
                                 end
                             else
                                 vmerr = plume.error.stackOverflow ()
                             end
-                            ::_inline_end231::
-                            result = _ret112
+                            ::_inline_end228::
+                            result = _ret111
                         end
+                    end
+                    do
+                        local _ret112
+                        _ret112 = variableStackFrames[variableStackFramesPointer or 0]
+                        variableStack[_ret112 + (1 or 0)] = state
                     end
                     if result == empty then
                         jump = arg2
@@ -1400,7 +1413,7 @@ return function (plume)
                     local _ret115, _ret116
                     do
                         local _ret117
-                        _ret117 = type (right) == "table" and (right == empty or right.type) or type (right)
+                        _ret117 = type (right) == "table" and (right == empty or right.type) or (type (right) == "cdata" and right.type) or type (right)
                         local tx = _ret117
                         if tx == "string" then
                             right = tonumber (right)
@@ -1442,7 +1455,7 @@ return function (plume)
                     local _ret119, _ret120
                     do
                         local _ret121
-                        _ret121 = type (left) == "table" and (left == empty or left.type) or type (left)
+                        _ret121 = type (left) == "table" and (left == empty or left.type) or (type (left) == "cdata" and left.type) or type (left)
                         local tx = _ret121
                         if tx == "string" then
                             left = tonumber (left)
@@ -1486,10 +1499,10 @@ return function (plume)
                         do
                             local meta, params
                             local _ret125
-                            _ret125 = type (left) == "table" and (left == empty or left.type) or type (left)
+                            _ret125 = type (left) == "table" and (left == empty or left.type) or (type (left) == "cdata" and left.type) or type (left)
                             local tleft = _ret125
                             local _ret126
-                            _ret126 = type (right) == "table" and (right == empty or right.type) or type (right)
+                            _ret126 = type (right) == "table" and (right == empty or right.type) or (type (right) == "cdata" and right.type) or type (right)
                             local tright = _ret126
                             if tleft == "table" and left.meta and left.meta.table["add" .. "r"] then
                                 meta = left.meta.table["add" .. "r"]
@@ -1558,7 +1571,7 @@ return function (plume)
                     local _ret131, _ret132
                     do
                         local _ret133
-                        _ret133 = type (right) == "table" and (right == empty or right.type) or type (right)
+                        _ret133 = type (right) == "table" and (right == empty or right.type) or (type (right) == "cdata" and right.type) or type (right)
                         local tx = _ret133
                         if tx == "string" then
                             right = tonumber (right)
@@ -1600,7 +1613,7 @@ return function (plume)
                     local _ret135, _ret136
                     do
                         local _ret137
-                        _ret137 = type (left) == "table" and (left == empty or left.type) or type (left)
+                        _ret137 = type (left) == "table" and (left == empty or left.type) or (type (left) == "cdata" and left.type) or type (left)
                         local tx = _ret137
                         if tx == "string" then
                             left = tonumber (left)
@@ -1644,10 +1657,10 @@ return function (plume)
                         do
                             local meta, params
                             local _ret141
-                            _ret141 = type (left) == "table" and (left == empty or left.type) or type (left)
+                            _ret141 = type (left) == "table" and (left == empty or left.type) or (type (left) == "cdata" and left.type) or type (left)
                             local tleft = _ret141
                             local _ret142
-                            _ret142 = type (right) == "table" and (right == empty or right.type) or type (right)
+                            _ret142 = type (right) == "table" and (right == empty or right.type) or (type (right) == "cdata" and right.type) or type (right)
                             local tright = _ret142
                             if tleft == "table" and left.meta and left.meta.table["mul" .. "r"] then
                                 meta = left.meta.table["mul" .. "r"]
@@ -1716,7 +1729,7 @@ return function (plume)
                     local _ret147, _ret148
                     do
                         local _ret149
-                        _ret149 = type (right) == "table" and (right == empty or right.type) or type (right)
+                        _ret149 = type (right) == "table" and (right == empty or right.type) or (type (right) == "cdata" and right.type) or type (right)
                         local tx = _ret149
                         if tx == "string" then
                             right = tonumber (right)
@@ -1758,7 +1771,7 @@ return function (plume)
                     local _ret151, _ret152
                     do
                         local _ret153
-                        _ret153 = type (left) == "table" and (left == empty or left.type) or type (left)
+                        _ret153 = type (left) == "table" and (left == empty or left.type) or (type (left) == "cdata" and left.type) or type (left)
                         local tx = _ret153
                         if tx == "string" then
                             left = tonumber (left)
@@ -1802,10 +1815,10 @@ return function (plume)
                         do
                             local meta, params
                             local _ret157
-                            _ret157 = type (left) == "table" and (left == empty or left.type) or type (left)
+                            _ret157 = type (left) == "table" and (left == empty or left.type) or (type (left) == "cdata" and left.type) or type (left)
                             local tleft = _ret157
                             local _ret158
-                            _ret158 = type (right) == "table" and (right == empty or right.type) or type (right)
+                            _ret158 = type (right) == "table" and (right == empty or right.type) or (type (right) == "cdata" and right.type) or type (right)
                             local tright = _ret158
                             if tleft == "table" and left.meta and left.meta.table["sub" .. "r"] then
                                 meta = left.meta.table["sub" .. "r"]
@@ -1874,7 +1887,7 @@ return function (plume)
                     local _ret163, _ret164
                     do
                         local _ret165
-                        _ret165 = type (right) == "table" and (right == empty or right.type) or type (right)
+                        _ret165 = type (right) == "table" and (right == empty or right.type) or (type (right) == "cdata" and right.type) or type (right)
                         local tx = _ret165
                         if tx == "string" then
                             right = tonumber (right)
@@ -1916,7 +1929,7 @@ return function (plume)
                     local _ret167, _ret168
                     do
                         local _ret169
-                        _ret169 = type (left) == "table" and (left == empty or left.type) or type (left)
+                        _ret169 = type (left) == "table" and (left == empty or left.type) or (type (left) == "cdata" and left.type) or type (left)
                         local tx = _ret169
                         if tx == "string" then
                             left = tonumber (left)
@@ -1960,10 +1973,10 @@ return function (plume)
                         do
                             local meta, params
                             local _ret173
-                            _ret173 = type (left) == "table" and (left == empty or left.type) or type (left)
+                            _ret173 = type (left) == "table" and (left == empty or left.type) or (type (left) == "cdata" and left.type) or type (left)
                             local tleft = _ret173
                             local _ret174
-                            _ret174 = type (right) == "table" and (right == empty or right.type) or type (right)
+                            _ret174 = type (right) == "table" and (right == empty or right.type) or (type (right) == "cdata" and right.type) or type (right)
                             local tright = _ret174
                             if tleft == "table" and left.meta and left.meta.table["div" .. "r"] then
                                 meta = left.meta.table["div" .. "r"]
@@ -2028,7 +2041,7 @@ return function (plume)
                     local _ret178, _ret179
                     do
                         local _ret180
-                        _ret180 = type (x) == "table" and (x == empty or x.type) or type (x)
+                        _ret180 = type (x) == "table" and (x == empty or x.type) or (type (x) == "cdata" and x.type) or type (x)
                         local tx = _ret180
                         if tx == "string" then
                             x = tonumber (x)
@@ -2073,7 +2086,7 @@ return function (plume)
                             local meta
                             local params = {x}
                             local _ret184
-                            _ret184 = type (x) == "table" and (x == empty or x.type) or type (x)
+                            _ret184 = type (x) == "table" and (x == empty or x.type) or (type (x) == "cdata" and x.type) or type (x)
                             if _ret184 == "table" and x.meta and x.meta.table.minus then
                                 meta = x.meta.table.minus
                             end
@@ -2131,7 +2144,7 @@ return function (plume)
                     local _ret189, _ret190
                     do
                         local _ret191
-                        _ret191 = type (right) == "table" and (right == empty or right.type) or type (right)
+                        _ret191 = type (right) == "table" and (right == empty or right.type) or (type (right) == "cdata" and right.type) or type (right)
                         local tx = _ret191
                         if tx == "string" then
                             right = tonumber (right)
@@ -2173,7 +2186,7 @@ return function (plume)
                     local _ret193, _ret194
                     do
                         local _ret195
-                        _ret195 = type (left) == "table" and (left == empty or left.type) or type (left)
+                        _ret195 = type (left) == "table" and (left == empty or left.type) or (type (left) == "cdata" and left.type) or type (left)
                         local tx = _ret195
                         if tx == "string" then
                             left = tonumber (left)
@@ -2217,10 +2230,10 @@ return function (plume)
                         do
                             local meta, params
                             local _ret199
-                            _ret199 = type (left) == "table" and (left == empty or left.type) or type (left)
+                            _ret199 = type (left) == "table" and (left == empty or left.type) or (type (left) == "cdata" and left.type) or type (left)
                             local tleft = _ret199
                             local _ret200
-                            _ret200 = type (right) == "table" and (right == empty or right.type) or type (right)
+                            _ret200 = type (right) == "table" and (right == empty or right.type) or (type (right) == "cdata" and right.type) or type (right)
                             local tright = _ret200
                             if tleft == "table" and left.meta and left.meta.table["mod" .. "r"] then
                                 meta = left.meta.table["mod" .. "r"]
@@ -2289,7 +2302,7 @@ return function (plume)
                     local _ret205, _ret206
                     do
                         local _ret207
-                        _ret207 = type (right) == "table" and (right == empty or right.type) or type (right)
+                        _ret207 = type (right) == "table" and (right == empty or right.type) or (type (right) == "cdata" and right.type) or type (right)
                         local tx = _ret207
                         if tx == "string" then
                             right = tonumber (right)
@@ -2331,7 +2344,7 @@ return function (plume)
                     local _ret209, _ret210
                     do
                         local _ret211
-                        _ret211 = type (left) == "table" and (left == empty or left.type) or type (left)
+                        _ret211 = type (left) == "table" and (left == empty or left.type) or (type (left) == "cdata" and left.type) or type (left)
                         local tx = _ret211
                         if tx == "string" then
                             left = tonumber (left)
@@ -2375,10 +2388,10 @@ return function (plume)
                         do
                             local meta, params
                             local _ret215
-                            _ret215 = type (left) == "table" and (left == empty or left.type) or type (left)
+                            _ret215 = type (left) == "table" and (left == empty or left.type) or (type (left) == "cdata" and left.type) or type (left)
                             local tleft = _ret215
                             local _ret216
-                            _ret216 = type (right) == "table" and (right == empty or right.type) or type (right)
+                            _ret216 = type (right) == "table" and (right == empty or right.type) or (type (right) == "cdata" and right.type) or type (right)
                             local tright = _ret216
                             if tleft == "table" and left.meta and left.meta.table["pow" .. "r"] then
                                 meta = left.meta.table["pow" .. "r"]
@@ -2447,7 +2460,7 @@ return function (plume)
                     local _ret221, _ret222
                     do
                         local _ret223
-                        _ret223 = type (right) == "table" and (right == empty or right.type) or type (right)
+                        _ret223 = type (right) == "table" and (right == empty or right.type) or (type (right) == "cdata" and right.type) or type (right)
                         local tx = _ret223
                         if tx == "string" then
                             right = tonumber (right)
@@ -2489,7 +2502,7 @@ return function (plume)
                     local _ret225, _ret226
                     do
                         local _ret227
-                        _ret227 = type (left) == "table" and (left == empty or left.type) or type (left)
+                        _ret227 = type (left) == "table" and (left == empty or left.type) or (type (left) == "cdata" and left.type) or type (left)
                         local tx = _ret227
                         if tx == "string" then
                             left = tonumber (left)
@@ -2533,10 +2546,10 @@ return function (plume)
                         do
                             local meta, params
                             local _ret231
-                            _ret231 = type (left) == "table" and (left == empty or left.type) or type (left)
+                            _ret231 = type (left) == "table" and (left == empty or left.type) or (type (left) == "cdata" and left.type) or type (left)
                             local tleft = _ret231
                             local _ret232
-                            _ret232 = type (right) == "table" and (right == empty or right.type) or type (right)
+                            _ret232 = type (right) == "table" and (right == empty or right.type) or (type (right) == "cdata" and right.type) or type (right)
                             local tright = _ret232
                             if tleft == "table" and left.meta and left.meta.table["lt" .. "r"] then
                                 meta = left.meta.table["lt" .. "r"]
@@ -2605,10 +2618,10 @@ return function (plume)
                     do
                         local meta, params
                         local _ret239
-                        _ret239 = type (left) == "table" and (left == empty or left.type) or type (left)
+                        _ret239 = type (left) == "table" and (left == empty or left.type) or (type (left) == "cdata" and left.type) or type (left)
                         local tleft = _ret239
                         local _ret240
-                        _ret240 = type (right) == "table" and (right == empty or right.type) or type (right)
+                        _ret240 = type (right) == "table" and (right == empty or right.type) or (type (right) == "cdata" and right.type) or type (right)
                         local tright = _ret240
                         if tleft == "table" and left.meta and left.meta.table["eq" .. "r"] then
                             meta = left.meta.table["eq" .. "r"]
@@ -2788,15 +2801,34 @@ return function (plume)
                     _ret259 = mainStack[mainStackPointer + 1]
                     local t = _ret259.table[1]
                     local _ret260
-                    _ret260 = type (t) == "table" and (t == empty or t.type) or type (t)
+                    _ret260 = type (t) == "table" and (t == empty or t.type) or (type (t) == "cdata" and t.type) or type (t)
                     mainStackPointer = mainStackPointer + 1
                     mainStack[mainStackPointer] = _ret260
                 end
                 goto DISPATCH
+            ::STD_SEQ::
+                do
+                    local _ret261
+                    mainStackPointer = mainStackPointer - 1
+                    _ret261 = mainStack[mainStackPointer + 1]
+                    local args = _ret261.table
+                    local start = args[1]
+                    local stop = args[2]
+                    local step = args[3] or 1
+                    if not stop then
+                        stop = start
+                        start = 1
+                    end
+                    start = tonumber (start)
+                    stop = tonumber (stop)
+                    mainStackPointer = mainStackPointer + 1
+                    mainStack[mainStackPointer] = {type = "seq", start = start, stop = stop, step = step}
+                end
+                goto DISPATCH
             ::END::
-            local _ret261
-            _ret261 = mainStack[mainStackPointer]
-            return true, _ret261
+            local _ret262
+            _ret262 = mainStack[mainStackPointer]
+            return true, _ret262
         end
     end
     

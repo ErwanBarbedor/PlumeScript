@@ -325,7 +325,7 @@ local beautifier = function(node)
         end,
 
         string = function(node)
-            table.insert(result, '"' .. node.value:gsub('"', '\\"') .. '"')
+            table.insert(result, '"' .. node.value:gsub('"', '\\"'):gsub('\n', '\\n'):gsub('\t', '\\t') .. '"')
         end,
 
         table = function(node)
