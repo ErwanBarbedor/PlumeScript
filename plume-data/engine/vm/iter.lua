@@ -24,9 +24,8 @@ function GET_ITER (vm, arg1, arg2)
     local obj = _STACK_POP(vm.mainStack)
     local tobj = _GET_TYPE(vm, obj)
     
-    local value, flag
+    local iter, value, flag, macrocall
     if tobj == "table" then
-        local iter
         if obj.meta.table.next then
             iter = obj
         else
@@ -40,7 +39,7 @@ function GET_ITER (vm, arg1, arg2)
             elseif iter.type == "table" then
                 value = iter
             elseif iter.type == "macro" then
-                value = _CALL (vm, iter, {obj})
+                macrocall = true
             end
         else
             value = obj.table
@@ -56,7 +55,17 @@ function GET_ITER (vm, arg1, arg2)
 
     _STACK_PUSH(vm.mainStack, flag)
     _STACK_PUSH(vm.mainStack, 0) -- state
-    _STACK_PUSH(vm.mainStack, value)
+    if macrocall then -- call will add the value
+        BEGIN_ACC(vm, 0, 0)
+        TABLE_NEW(vm, 0, 0)
+        _STACK_PUSH(vm.mainStack, obj)
+        TABLE_REGISTER_SELF(vm, 0, 0)
+        _STACK_POP(vm.mainStack) -- TABLE_REGISTER_SELF dont pop
+        _STACK_PUSH(vm.mainStack, iter)
+        _INJECTION_PUSH(vm, vm.plume.ops.CONCAT_CALL, 0, 0)
+    else
+        _STACK_PUSH(vm.mainStack, value)
+    end
 
     -- GET_ITER is followed by 3 STORE_LOCAL
 end
