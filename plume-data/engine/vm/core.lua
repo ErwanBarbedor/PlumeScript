@@ -29,7 +29,6 @@ function _VM_INIT (plume, runtime, arguments)
     vm.plume = plume --! to-remove
 
     _VM_INIT_VARS(vm, runtime)
-    _VM_INIT_ARGUMENTS(vm, runtime, arguments)
 
     return vm --! to-remove
 end
@@ -46,6 +45,7 @@ function _VM_INIT_VARS(vm, runtime)
     --! index-to-inline mainStackFrames.*
     --! index-to-inline variableStackFrames.*
     --! index-to-inline fileStack.*
+    --! index-to-inline macroStack.*
     --! index-to-inline injectionStack.*
     --! index-to-inline flag.* *
 
@@ -72,6 +72,9 @@ function _VM_INIT_VARS(vm, runtime)
     vm.fileStack = table.new(2^8, 0)
     vm.fileStack[1] = 1
     vm.fileStack.pointer = 1
+
+    vm.macroStack = table.new(2^8, 0)
+    vm.macroStack.pointer = 0
 
     vm.injectionStack         = table.new(64, 0)
     vm.injectionStack.pointer = 0
@@ -105,66 +108,10 @@ function _VM_INIT_VARS(vm, runtime)
     vm.rshift     = vm.bit.rshift
 end
 
---- Initialize arguments
---! inline
-function _VM_INIT_ARGUMENTS(vm, runtime, arguments)
-    if arguments then
-        if runtime.isFile then
-            for k, v in pairs(arguments) do
-                local offset = runtime.namedParamOffset[k]
-                if offset then
-                    chunk.static[offset] = v
-                end
-            end
-        else -- If not a file, it is a macro
-            for i=1, runtime.localsCount do
-                if arguments[i] == nil then
-                    _STACK_SET(vm.variableStack, i, vm.empty)
-                else
-                    _STACK_SET(vm.variableStack, i, arguments[i])
-                end
-            end
-
-            _STACK_MOVE(vm.variableStack, runtime.localsCount)
-            _STACK_PUSH(vm.variableStack.frames, 1)
-        end
-    end
-end
-
 --- Called at each instruction.
 --- Jump if needed and increment instruction counter
 --! inline-nodo
 function _VM_TICK (vm)
-    --! to-remove-begin
-    if vm.plume.hook then
-        if vm.ip>0 then 
-            local instr, op, arg1, arg2
-            instr = vm.bytecode[vm.ip]
-
-            op, arg1, arg2 = _VM_DECODE_CURRENT_INSTRUCTION(vm)
-
-            vm.plume.hook (
-                vm.chunk,
-                vm.tic,
-                vm.ip,
-                vm.jump,
-                instr,
-                op,
-                arg1,
-                arg2,
-                vm.mainStack,
-                vm.mainStack.pointer,
-                vm.mainStack.frames,
-                vm.mainStack.frames.pointer,
-                vm.variableStack,
-                vm.variableStack.pointer,
-                vm.variableStack.frames,
-                vm.variableStack.frames.pointer
-            )
-        end       
-    end  
-    --! to-remove-end
-
     if vm.jump>0 then
         vm.ip = vm.jump
         vm.jump = 0-- 0 instead of nil to preserve type
@@ -187,6 +134,29 @@ function _VM_DECODE_CURRENT_INSTRUCTION(vm)
         arg1  = vm.band(vm.rshift(instr, vm.ARG1_SHIFT), vm.MASK_ARG1)
         arg2  = vm.band(instr, vm.MASK_ARG2)
     end
+
+    --! to-remove-begin
+    if vm.plume.hook then
+        vm.plume.hook (
+            vm.chunk,
+            vm.tic,
+            vm.ip,
+            vm.jump,
+            instr,
+            op,
+            arg1,
+            arg2,
+            vm.mainStack,
+            vm.mainStack.pointer,
+            vm.mainStack.frames,
+            vm.mainStack.frames.pointer,
+            vm.variableStack,
+            vm.variableStack.pointer,
+            vm.variableStack.frames,
+            vm.variableStack.frames.pointer
+        )    
+    end  
+    --! to-remove-end
 
     return op, arg1, arg2
 end

@@ -24,8 +24,6 @@ return function (plume)
 			if instr.label then
 				labels[instr.label] = offset - runtime.removedCount
 				runtime.removedCount = runtime.removedCount + 1
-			elseif instr.link then
-				runtime.removedCount = runtime.removedCount + 1
 			elseif instr.fileLink then
 				runtime.removedCount = runtime.removedCount + 1
 			end
@@ -37,9 +35,9 @@ return function (plume)
 			offset = offset-runtime.removedOffset
 			if instr.label then
 				runtime.removedOffset = runtime.removedOffset + 1
-			elseif instr.link then
-				runtime.removedOffset = runtime.removedOffset + 1
-				runtime.constants[instr.link].offset = offset --set macro offset
+				if instr.link then
+					runtime.constants[instr.link].offset = offset --set macro offset
+				end
 			elseif instr._goto then
 				if not labels[instr._goto] then
 					error("Internal Error: no label " .. instr._goto)

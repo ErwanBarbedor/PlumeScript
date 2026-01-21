@@ -25,7 +25,7 @@ return function (plume, context, nodeHandlerTable)
 		local macroName = macroIdentifier and macroIdentifier.content
 
 		-- node.label is a debug informations for macro declared as table field
-		local macroObj     = plume.obj.macro(macroName or node.label, context.chunk)
+		local macroObj     = plume.obj.chunk(macroName or node.label, context.chunk)
 		local macroOffset  = context.registerConstant(macroObj)
 		context.registerOP(macroIdentifier or node, plume.ops.LOAD_CONSTANT, 0, macroOffset)
 
@@ -41,8 +41,12 @@ return function (plume, context, nodeHandlerTable)
 			context.registerOP(macroIdentifier, plume.ops.STORE_STATIC, 0, variable.offset)
 		end
 
+
 		-- Skip macro body
-		context.registerGoto(param, "macro_declaration_end" .. uid)
+		context.registerGoto(node, "macro_declaration_end" .. uid)
+
+		-- Anchor point to find macro beginings
+		context.registerLabel(node, "macro_begin" .. uid, macroOffset)
 
 		context.file(function ()
 			-- Each macro open a scope, but it is handled by plume.run
@@ -87,10 +91,10 @@ return function (plume, context, nodeHandlerTable)
 			context.accBlock()(body, "macro_end") -- Handle the macro body
 			
 			macroObj.localsCount = #context.getCurrentScope()
-			
 			table.remove(context.scopes)
 			
 		end) ()
+		context.registerOP(param, plume.ops.RETURN, 0, 0)
 
 		context.registerLabel(param, "macro_declaration_end" .. uid)
 	end

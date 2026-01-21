@@ -18,9 +18,11 @@ return function (plume, context)
 	--- the offset of goto statements. Does not appear in the final bytecode.
 	--- @param node node Emiting node
 	--- @param name string Unique name of this label
-	function context.registerLabel(node, name)
+	--- @param link number Will set `runtime.constants[link].offset`
+	----				   to the final position of this label
+	function context.registerLabel(node, name, link)
 		local current = context.runtime.instructions
-		table.insert(current, {label=name, mapsto=node})
+		table.insert(current, {label=name, mapsto=node, link=link})
 	end
 
 	--- Insert a goto. Will be resolved as a JUMP opcode, to the offset

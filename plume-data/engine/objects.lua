@@ -55,7 +55,6 @@ return function(plume)
 			table.insert(parent.static, {})
 			t.fileID = #parent.static
 			t.static = parent.static[t.fileID]
-			print(t.static, "!")
 		else -- isFile
 			
 			t.static = parent.static

@@ -54,6 +54,21 @@ function CONCAT_CALL (vm, arg1, arg2)
             _CALL (vm, tocall, arguments)
         )
 
+    elseif t == "chunk" then
+        
+        ENTER_SCOPE(vm, 0, tocall.positionalParamCount) -- Create a new scope
+        
+        -- Save params as locals variables
+        for i=1, tocall.positionalParamCount do
+            _STACK_SET_FRAMED(
+                vm.variableStack, i-1, 0,
+                _STACK_GET_FRAMED(vm.mainStack, i, 0)
+            )
+        end
+        _STACK_POP_FRAME(vm.mainStack)      -- clean stack from arguments
+        _STACK_PUSH(vm.macroStack, vm.ip+1) -- Set the return pointer
+        JUMP(vm, 0, tocall.offset)          -- Jump to macro body
+
     elseif t == "luaFunction" then
         CONCAT_TABLE(vm)
         table.insert(vm.runtime.callstack, {runtime=vm.runtime, macro=tocall, ip=vm.ip})
@@ -75,6 +90,13 @@ function CONCAT_CALL (vm, arg1, arg2)
     else
         _ERROR (vm, vm.plume.error.cannotCallValue(t))
     end
+end
+
+--- @opcode
+--! inline
+function RETURN(vm, arg1, arg2)
+    LEAVE_SCOPE(vm, 0, 0) -- close macro stop
+    JUMP(vm, 0, _STACK_POP(vm.macroStack)) -- return in the previous position
 end
 
 --- Collect postionnals argument from the current stack

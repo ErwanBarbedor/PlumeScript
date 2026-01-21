@@ -23,6 +23,12 @@ function BEGIN_ACC(vm, arg1, arg2)
     )
 end
 
+--- Close the current frame
+--! inline
+function _END_ACC (vm)
+    _STACK_POP(vm.mainStack.frames)
+end
+
 --- @opcode
 --- Concat all element in the current frame.
 --- Unstack all element in current frame, remove the last frame
@@ -90,10 +96,4 @@ function CHECK_IS_TEXT (vm, arg1, arg2)
             _ERROR (vm, vm.plume.error.cannotConcatValue(t))
         end
     end
-end
-
---- Close the current frame
---! inline
-function _END_ACC (vm)
-    _STACK_POP(vm.mainStack.frames)
 end
