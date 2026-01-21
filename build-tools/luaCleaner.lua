@@ -74,6 +74,10 @@ local function constantFolding(node)
 		if node[2].type == "number" and node[2].value == "0" then
 			return node[1]
 		end
+	elseif node.type == "concat" then
+		if node[1].type == "string" and node[2].type == "string" then
+			return ast._string(node[1].value .. node[2].value)
+		end
 	elseif node.type == "par" and node.expr.type == "number" then
 		return node.expr
 	end
