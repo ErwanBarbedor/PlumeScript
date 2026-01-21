@@ -671,7 +671,7 @@ return function (plume)
                                     for opp in binopps:gmatch ("%S+")
                                      do
                                         if keyTable[i] == opp then
-                                            expectedParamCount = 1
+                                            expectedParamCount = 2
                                         end
                                     end
                                     for opp in unopps:gmatch ("%S+")
@@ -841,7 +841,7 @@ return function (plume)
                                             for opp in binopps:gmatch ("%S+")
                                              do
                                                 if k == opp then
-                                                    expectedParamCount = 1
+                                                    expectedParamCount = 2
                                                 end
                                             end
                                             for opp in unopps:gmatch ("%S+")
@@ -968,7 +968,7 @@ return function (plume)
                                             for opp in binopps:gmatch ("%S+")
                                              do
                                                 if keyTable[i] == opp then
-                                                    expectedParamCount = 1
+                                                    expectedParamCount = 2
                                                 end
                                             end
                                             for opp in unopps:gmatch ("%S+")
@@ -1078,7 +1078,7 @@ return function (plume)
                                             for opp in binopps:gmatch ("%S+")
                                              do
                                                 if keyTable[i] == opp then
-                                                    expectedParamCount = 1
+                                                    expectedParamCount = 2
                                                 end
                                             end
                                             for opp in unopps:gmatch ("%S+")
@@ -1471,718 +1471,870 @@ return function (plume)
                     mainStackPointer = mainStackPointer - 1
                     _ret118 = mainStack[mainStackPointer + 1]
                     local left = _ret118
-                    local rerr, lerr, success, result
-                    local _ret119, _ret120
-                    do
-                        local _ret121
-                        _ret121 = type (right) == "table" and (right == empty or right.type) or (type (right) == "cdata" and right.type) or type (right)
-                        local tx = _ret121
-                        if tx == "string" then
-                            right = tonumber (right)
-                            if not right then
-                                _ret119, _ret120 = right, "Cannot convert the string value to a number."
-                                goto _inline_end253
-                            end
-                        elseif tx ~= "number" then
-                            if tx == "table" and right.meta.table.tonumber then
-                                local meta = right.meta.table.tonumber
-                                local params = {}
-                                local _ret122
-                                table.insert (chunk.callstack, {chunk = chunk, macro = meta, ip = ip})
-                                if #chunk.callstack <= 500 then
-                                    local success, callResult, cip, source = plume.run (meta, params)
-                                    if success then
-                                        table.remove (chunk.callstack)
-                                        _ret122 = callResult
-                                        goto _inline_end255
-                                    else
-                                        vmserr = {callResult, cip, (source or meta)}
-                                    end
-                                else
-                                    vmerr = plume.error.stackOverflow ()
-                                end
-                                ::_inline_end255::
-                                _ret119, _ret120 = _ret122
-                                goto _inline_end253
-                            else
-                                _ret119, _ret120 = right, "Cannot do comparison or arithmetic with " .. tostring (tx) .. " value."
-                                goto _inline_end253
-                            end
-                        end
-                        _ret119, _ret120 = right
-                        goto _inline_end253
-                    end
-                    ::_inline_end253::
-                    right, rerr = _ret119, _ret120
-                    local _ret123, _ret124
-                    do
-                        local _ret125
-                        _ret125 = type (left) == "table" and (left == empty or left.type) or (type (left) == "cdata" and left.type) or type (left)
-                        local tx = _ret125
-                        if tx == "string" then
-                            left = tonumber (left)
-                            if not left then
-                                _ret123, _ret124 = left, "Cannot convert the string value to a number."
-                                goto _inline_end258
-                            end
-                        elseif tx ~= "number" then
-                            if tx == "table" and left.meta.table.tonumber then
-                                local meta = left.meta.table.tonumber
-                                local params = {}
-                                local _ret126
-                                table.insert (chunk.callstack, {chunk = chunk, macro = meta, ip = ip})
-                                if #chunk.callstack <= 500 then
-                                    local success, callResult, cip, source = plume.run (meta, params)
-                                    if success then
-                                        table.remove (chunk.callstack)
-                                        _ret126 = callResult
-                                        goto _inline_end260
-                                    else
-                                        vmserr = {callResult, cip, (source or meta)}
-                                    end
-                                else
-                                    vmerr = plume.error.stackOverflow ()
-                                end
-                                ::_inline_end260::
-                                _ret123, _ret124 = _ret126
-                                goto _inline_end258
-                            else
-                                _ret123, _ret124 = left, "Cannot do comparison or arithmetic with " .. tostring (tx) .. " value."
-                                goto _inline_end258
-                            end
-                        end
-                        _ret123, _ret124 = left
-                        goto _inline_end258
-                    end
-                    ::_inline_end258::
-                    left, lerr = _ret123, _ret124
-                    if lerr or rerr then
-                        local _ret127, _ret128
-                        do
-                            local meta, params
-                            local _ret129
-                            _ret129 = type (left) == "table" and (left == empty or left.type) or (type (left) == "cdata" and left.type) or type (left)
-                            local tleft = _ret129
-                            local _ret130
-                            _ret130 = type (right) == "table" and (right == empty or right.type) or (type (right) == "cdata" and right.type) or type (right)
-                            local tright = _ret130
-                            if tleft == "table" and left.meta and left.meta.table["add" .. "r"] then
-                                meta = left.meta.table["add" .. "r"]
-                                params = {right, left}
-                            elseif tright == "table" and right.meta and right.meta.table["add" .. "l"] then
-                                meta = right.meta.table["add" .. "l"]
-                                params = {left, right}
-                            elseif tleft == "table" and left.meta and left.meta.table.add then
-                                meta = left.meta.table.add
-                                params = {left, right, left}
-                            elseif tright == "table" and right.meta and right.meta.table.add then
-                                meta = right.meta.table.add
-                                params = {left, right, right}
-                            end
-                            if not meta then
-                                _ret127 = false
-                                goto _inline_end263
-                            end
-                            local _ret131
-                            table.insert (chunk.callstack, {chunk = chunk, macro = meta, ip = ip})
-                            if #chunk.callstack <= 500 then
-                                local success, callResult, cip, source = plume.run (meta, params)
-                                if success then
-                                    table.remove (chunk.callstack)
-                                    _ret131 = callResult
-                                    goto _inline_end266
-                                else
-                                    vmserr = {callResult, cip, (source or meta)}
-                                end
-                            else
-                                vmerr = plume.error.stackOverflow ()
-                            end
-                            ::_inline_end266::
-                            _ret127, _ret128 = true, _ret131
-                            goto _inline_end263
-                        end
-                        ::_inline_end263::
-                        success, result = _ret127, _ret128
-                    else
-                        success = true
-                        local _ret132
-                        _ret132 = left + right
-                        goto _inline_end269
-                        ::_inline_end269::
-                        result = _ret132
-                    end
-                    if success then
+                    local rightNumber = tonumber (right)
+                    local leftNumber = tonumber (left)
+                    if rightNumber and leftNumber then
+                        local _ret119
+                        _ret119 = leftNumber + rightNumber
+                        result = _ret119
                         mainStackPointer = mainStackPointer + 1
                         mainStack[mainStackPointer] = result
                     else
-                        vmerr = lerr or rerr
+                        local rerr, lerr
+                        local _ret133, _ret134
+                        do
+                            local _ret135
+                            _ret135 = type (right) == "table" and (right == empty or right.type) or (type (right) == "cdata" and right.type) or type (right)
+                            local tx = _ret135
+                            if tx == "string" then
+                                right = tonumber (right)
+                                if not right then
+                                    _ret133, _ret134 = right, "Cannot convert the string value to a number."
+                                    goto _inline_end284
+                                end
+                            elseif tx ~= "number" then
+                                if tx == "table" and right.meta.table.tonumber then
+                                    local meta = right.meta.table.tonumber
+                                    local params = {}
+                                    local _ret136
+                                    table.insert (chunk.callstack, {chunk = chunk, macro = meta, ip = ip})
+                                    if #chunk.callstack <= 500 then
+                                        local success, callResult, cip, source = plume.run (meta, params)
+                                        if success then
+                                            table.remove (chunk.callstack)
+                                            _ret136 = callResult
+                                            goto _inline_end286
+                                        else
+                                            vmserr = {callResult, cip, (source or meta)}
+                                        end
+                                    else
+                                        vmerr = plume.error.stackOverflow ()
+                                    end
+                                    ::_inline_end286::
+                                    _ret133, _ret134 = _ret136
+                                    goto _inline_end284
+                                else
+                                    _ret133, _ret134 = right, "Cannot do comparison or arithmetic with " .. tostring (tx) .. " value."
+                                    goto _inline_end284
+                                end
+                            end
+                            _ret133, _ret134 = right
+                            goto _inline_end284
+                        end
+                        ::_inline_end284::
+                        right, rerr = _ret133, _ret134
+                        local _ret129, _ret130
+                        do
+                            local _ret131
+                            _ret131 = type (left) == "table" and (left == empty or left.type) or (type (left) == "cdata" and left.type) or type (left)
+                            local tx = _ret131
+                            if tx == "string" then
+                                left = tonumber (left)
+                                if not left then
+                                    _ret129, _ret130 = left, "Cannot convert the string value to a number."
+                                    goto _inline_end279
+                                end
+                            elseif tx ~= "number" then
+                                if tx == "table" and left.meta.table.tonumber then
+                                    local meta = left.meta.table.tonumber
+                                    local params = {}
+                                    local _ret132
+                                    table.insert (chunk.callstack, {chunk = chunk, macro = meta, ip = ip})
+                                    if #chunk.callstack <= 500 then
+                                        local success, callResult, cip, source = plume.run (meta, params)
+                                        if success then
+                                            table.remove (chunk.callstack)
+                                            _ret132 = callResult
+                                            goto _inline_end281
+                                        else
+                                            vmserr = {callResult, cip, (source or meta)}
+                                        end
+                                    else
+                                        vmerr = plume.error.stackOverflow ()
+                                    end
+                                    ::_inline_end281::
+                                    _ret129, _ret130 = _ret132
+                                    goto _inline_end279
+                                else
+                                    _ret129, _ret130 = left, "Cannot do comparison or arithmetic with " .. tostring (tx) .. " value."
+                                    goto _inline_end279
+                                end
+                            end
+                            _ret129, _ret130 = left
+                            goto _inline_end279
+                        end
+                        ::_inline_end279::
+                        left, lerr = _ret129, _ret130
+                        if lerr or rerr then
+                            local _ret120
+                            do
+                                local meta, param1, param2, paramself
+                                local _ret121
+                                _ret121 = type (left) == "table" and (left == empty or left.type) or (type (left) == "cdata" and left.type) or type (left)
+                                local tleft = _ret121
+                                local _ret122
+                                _ret122 = type (right) == "table" and (right == empty or right.type) or (type (right) == "cdata" and right.type) or type (right)
+                                local tright = _ret122
+                                if tleft == "table" and left.meta and left.meta.table["add" .. "r"] then
+                                    meta = left.meta.table["add" .. "r"]
+                                    param1 = right
+                                    paramself = left
+                                elseif tright == "table" and right.meta and right.meta.table["add" .. "l"] then
+                                    meta = right.meta.table["add" .. "l"]
+                                    param1 = left
+                                    paramself = right
+                                elseif tleft == "table" and left.meta and left.meta.table.add then
+                                    meta = left.meta.table.add
+                                    param1 = left
+                                    param2 = right
+                                    paramself = left
+                                elseif tright == "table" and right.meta and right.meta.table.add then
+                                    meta = right.meta.table.add
+                                    param1 = left
+                                    param2 = right
+                                    paramself = right
+                                end
+                                if meta then
+                                    mainStackFramesPointer = mainStackFramesPointer + 1
+                                    mainStackFrames[mainStackFramesPointer] = mainStackPointer + 1
+                                    mainStackPointer = mainStackPointer + 1
+                                    mainStack[mainStackPointer] = table.new (0, 0)
+                                    mainStackPointer = mainStackPointer + 1
+                                    mainStack[mainStackPointer] = param1
+                                    if param2 then
+                                        mainStackPointer = mainStackPointer + 1
+                                        mainStack[mainStackPointer] = param2
+                                    end
+                                    mainStackPointer = mainStackPointer + 1
+                                    mainStack[mainStackPointer] = paramself
+                                    do
+                                        local _ret123
+                                        do
+                                            local _ret124
+                                            _ret124 = mainStackFrames[mainStackFramesPointer]
+                                            local _ret125
+                                            _ret125 = mainStack[_ret124 or mainStackPointer]
+                                            _ret123 = _ret125
+                                            goto _inline_end266
+                                        end
+                                        ::_inline_end266::
+                                        local t = _ret123
+                                        table.insert (t, "self")
+                                        local _ret126
+                                        _ret126 = mainStack[mainStackPointer]
+                                        table.insert (t, _ret126)
+                                        table.insert (t, false)
+                                    end
+                                    local _ret127
+                                    mainStackPointer = mainStackPointer - 1
+                                    _ret127 = mainStack[mainStackPointer + 1]
+                                    mainStackPointer = mainStackPointer + 1
+                                    mainStack[mainStackPointer] = meta
+                                    injectionStackPointer = injectionStackPointer + 1
+                                    injectionStack[injectionStackPointer] = plume.ops.CONCAT_CALL
+                                    injectionStackPointer = injectionStackPointer + 1
+                                    injectionStack[injectionStackPointer] = 0
+                                    injectionStackPointer = injectionStackPointer + 1
+                                    injectionStack[injectionStackPointer] = 0
+                                end
+                                _ret120 = meta
+                                goto _inline_end255
+                            end
+                            ::_inline_end255::
+                            local meta = _ret120
+                            if not meta then
+                                vmerr = lerr or rerr
+                            end
+                        else
+                            local _ret128
+                            _ret128 = left + right
+                            goto _inline_end278
+                            ::_inline_end278::
+                            result = _ret128
+                            mainStackPointer = mainStackPointer + 1
+                            mainStack[mainStackPointer] = result
+                        end
                     end
                 end
                 goto DISPATCH
             ::OP_MUL::
                 do
-                    local _ret133
+                    local _ret137
                     mainStackPointer = mainStackPointer - 1
-                    _ret133 = mainStack[mainStackPointer + 1]
-                    local right = _ret133
-                    local _ret134
+                    _ret137 = mainStack[mainStackPointer + 1]
+                    local right = _ret137
+                    local _ret138
                     mainStackPointer = mainStackPointer - 1
-                    _ret134 = mainStack[mainStackPointer + 1]
-                    local left = _ret134
-                    local rerr, lerr, success, result
-                    local _ret135, _ret136
-                    do
-                        local _ret137
-                        _ret137 = type (right) == "table" and (right == empty or right.type) or (type (right) == "cdata" and right.type) or type (right)
-                        local tx = _ret137
-                        if tx == "string" then
-                            right = tonumber (right)
-                            if not right then
-                                _ret135, _ret136 = right, "Cannot convert the string value to a number."
-                                goto _inline_end276
-                            end
-                        elseif tx ~= "number" then
-                            if tx == "table" and right.meta.table.tonumber then
-                                local meta = right.meta.table.tonumber
-                                local params = {}
-                                local _ret138
-                                table.insert (chunk.callstack, {chunk = chunk, macro = meta, ip = ip})
-                                if #chunk.callstack <= 500 then
-                                    local success, callResult, cip, source = plume.run (meta, params)
-                                    if success then
-                                        table.remove (chunk.callstack)
-                                        _ret138 = callResult
-                                        goto _inline_end278
-                                    else
-                                        vmserr = {callResult, cip, (source or meta)}
-                                    end
-                                else
-                                    vmerr = plume.error.stackOverflow ()
-                                end
-                                ::_inline_end278::
-                                _ret135, _ret136 = _ret138
-                                goto _inline_end276
-                            else
-                                _ret135, _ret136 = right, "Cannot do comparison or arithmetic with " .. tostring (tx) .. " value."
-                                goto _inline_end276
-                            end
-                        end
-                        _ret135, _ret136 = right
-                        goto _inline_end276
-                    end
-                    ::_inline_end276::
-                    right, rerr = _ret135, _ret136
-                    local _ret139, _ret140
-                    do
-                        local _ret141
-                        _ret141 = type (left) == "table" and (left == empty or left.type) or (type (left) == "cdata" and left.type) or type (left)
-                        local tx = _ret141
-                        if tx == "string" then
-                            left = tonumber (left)
-                            if not left then
-                                _ret139, _ret140 = left, "Cannot convert the string value to a number."
-                                goto _inline_end281
-                            end
-                        elseif tx ~= "number" then
-                            if tx == "table" and left.meta.table.tonumber then
-                                local meta = left.meta.table.tonumber
-                                local params = {}
-                                local _ret142
-                                table.insert (chunk.callstack, {chunk = chunk, macro = meta, ip = ip})
-                                if #chunk.callstack <= 500 then
-                                    local success, callResult, cip, source = plume.run (meta, params)
-                                    if success then
-                                        table.remove (chunk.callstack)
-                                        _ret142 = callResult
-                                        goto _inline_end283
-                                    else
-                                        vmserr = {callResult, cip, (source or meta)}
-                                    end
-                                else
-                                    vmerr = plume.error.stackOverflow ()
-                                end
-                                ::_inline_end283::
-                                _ret139, _ret140 = _ret142
-                                goto _inline_end281
-                            else
-                                _ret139, _ret140 = left, "Cannot do comparison or arithmetic with " .. tostring (tx) .. " value."
-                                goto _inline_end281
-                            end
-                        end
-                        _ret139, _ret140 = left
-                        goto _inline_end281
-                    end
-                    ::_inline_end281::
-                    left, lerr = _ret139, _ret140
-                    if lerr or rerr then
-                        local _ret143, _ret144
-                        do
-                            local meta, params
-                            local _ret145
-                            _ret145 = type (left) == "table" and (left == empty or left.type) or (type (left) == "cdata" and left.type) or type (left)
-                            local tleft = _ret145
-                            local _ret146
-                            _ret146 = type (right) == "table" and (right == empty or right.type) or (type (right) == "cdata" and right.type) or type (right)
-                            local tright = _ret146
-                            if tleft == "table" and left.meta and left.meta.table["mul" .. "r"] then
-                                meta = left.meta.table["mul" .. "r"]
-                                params = {right, left}
-                            elseif tright == "table" and right.meta and right.meta.table["mul" .. "l"] then
-                                meta = right.meta.table["mul" .. "l"]
-                                params = {left, right}
-                            elseif tleft == "table" and left.meta and left.meta.table.mul then
-                                meta = left.meta.table.mul
-                                params = {left, right, left}
-                            elseif tright == "table" and right.meta and right.meta.table.mul then
-                                meta = right.meta.table.mul
-                                params = {left, right, right}
-                            end
-                            if not meta then
-                                _ret143 = false
-                                goto _inline_end286
-                            end
-                            local _ret147
-                            table.insert (chunk.callstack, {chunk = chunk, macro = meta, ip = ip})
-                            if #chunk.callstack <= 500 then
-                                local success, callResult, cip, source = plume.run (meta, params)
-                                if success then
-                                    table.remove (chunk.callstack)
-                                    _ret147 = callResult
-                                    goto _inline_end289
-                                else
-                                    vmserr = {callResult, cip, (source or meta)}
-                                end
-                            else
-                                vmerr = plume.error.stackOverflow ()
-                            end
-                            ::_inline_end289::
-                            _ret143, _ret144 = true, _ret147
-                            goto _inline_end286
-                        end
-                        ::_inline_end286::
-                        success, result = _ret143, _ret144
-                    else
-                        success = true
-                        local _ret148
-                        _ret148 = left * right
-                        goto _inline_end292
-                        ::_inline_end292::
-                        result = _ret148
-                    end
-                    if success then
+                    _ret138 = mainStack[mainStackPointer + 1]
+                    local left = _ret138
+                    local rightNumber = tonumber (right)
+                    local leftNumber = tonumber (left)
+                    if rightNumber and leftNumber then
+                        local _ret139
+                        _ret139 = leftNumber * rightNumber
+                        result = _ret139
                         mainStackPointer = mainStackPointer + 1
                         mainStack[mainStackPointer] = result
                     else
-                        vmerr = lerr or rerr
+                        local rerr, lerr
+                        local _ret153, _ret154
+                        do
+                            local _ret155
+                            _ret155 = type (right) == "table" and (right == empty or right.type) or (type (right) == "cdata" and right.type) or type (right)
+                            local tx = _ret155
+                            if tx == "string" then
+                                right = tonumber (right)
+                                if not right then
+                                    _ret153, _ret154 = right, "Cannot convert the string value to a number."
+                                    goto _inline_end324
+                                end
+                            elseif tx ~= "number" then
+                                if tx == "table" and right.meta.table.tonumber then
+                                    local meta = right.meta.table.tonumber
+                                    local params = {}
+                                    local _ret156
+                                    table.insert (chunk.callstack, {chunk = chunk, macro = meta, ip = ip})
+                                    if #chunk.callstack <= 500 then
+                                        local success, callResult, cip, source = plume.run (meta, params)
+                                        if success then
+                                            table.remove (chunk.callstack)
+                                            _ret156 = callResult
+                                            goto _inline_end326
+                                        else
+                                            vmserr = {callResult, cip, (source or meta)}
+                                        end
+                                    else
+                                        vmerr = plume.error.stackOverflow ()
+                                    end
+                                    ::_inline_end326::
+                                    _ret153, _ret154 = _ret156
+                                    goto _inline_end324
+                                else
+                                    _ret153, _ret154 = right, "Cannot do comparison or arithmetic with " .. tostring (tx) .. " value."
+                                    goto _inline_end324
+                                end
+                            end
+                            _ret153, _ret154 = right
+                            goto _inline_end324
+                        end
+                        ::_inline_end324::
+                        right, rerr = _ret153, _ret154
+                        local _ret149, _ret150
+                        do
+                            local _ret151
+                            _ret151 = type (left) == "table" and (left == empty or left.type) or (type (left) == "cdata" and left.type) or type (left)
+                            local tx = _ret151
+                            if tx == "string" then
+                                left = tonumber (left)
+                                if not left then
+                                    _ret149, _ret150 = left, "Cannot convert the string value to a number."
+                                    goto _inline_end319
+                                end
+                            elseif tx ~= "number" then
+                                if tx == "table" and left.meta.table.tonumber then
+                                    local meta = left.meta.table.tonumber
+                                    local params = {}
+                                    local _ret152
+                                    table.insert (chunk.callstack, {chunk = chunk, macro = meta, ip = ip})
+                                    if #chunk.callstack <= 500 then
+                                        local success, callResult, cip, source = plume.run (meta, params)
+                                        if success then
+                                            table.remove (chunk.callstack)
+                                            _ret152 = callResult
+                                            goto _inline_end321
+                                        else
+                                            vmserr = {callResult, cip, (source or meta)}
+                                        end
+                                    else
+                                        vmerr = plume.error.stackOverflow ()
+                                    end
+                                    ::_inline_end321::
+                                    _ret149, _ret150 = _ret152
+                                    goto _inline_end319
+                                else
+                                    _ret149, _ret150 = left, "Cannot do comparison or arithmetic with " .. tostring (tx) .. " value."
+                                    goto _inline_end319
+                                end
+                            end
+                            _ret149, _ret150 = left
+                            goto _inline_end319
+                        end
+                        ::_inline_end319::
+                        left, lerr = _ret149, _ret150
+                        if lerr or rerr then
+                            local _ret140
+                            do
+                                local meta, param1, param2, paramself
+                                local _ret141
+                                _ret141 = type (left) == "table" and (left == empty or left.type) or (type (left) == "cdata" and left.type) or type (left)
+                                local tleft = _ret141
+                                local _ret142
+                                _ret142 = type (right) == "table" and (right == empty or right.type) or (type (right) == "cdata" and right.type) or type (right)
+                                local tright = _ret142
+                                if tleft == "table" and left.meta and left.meta.table["mul" .. "r"] then
+                                    meta = left.meta.table["mul" .. "r"]
+                                    param1 = right
+                                    paramself = left
+                                elseif tright == "table" and right.meta and right.meta.table["mul" .. "l"] then
+                                    meta = right.meta.table["mul" .. "l"]
+                                    param1 = left
+                                    paramself = right
+                                elseif tleft == "table" and left.meta and left.meta.table.mul then
+                                    meta = left.meta.table.mul
+                                    param1 = left
+                                    param2 = right
+                                    paramself = left
+                                elseif tright == "table" and right.meta and right.meta.table.mul then
+                                    meta = right.meta.table.mul
+                                    param1 = left
+                                    param2 = right
+                                    paramself = right
+                                end
+                                if meta then
+                                    mainStackFramesPointer = mainStackFramesPointer + 1
+                                    mainStackFrames[mainStackFramesPointer] = mainStackPointer + 1
+                                    mainStackPointer = mainStackPointer + 1
+                                    mainStack[mainStackPointer] = table.new (0, 0)
+                                    mainStackPointer = mainStackPointer + 1
+                                    mainStack[mainStackPointer] = param1
+                                    if param2 then
+                                        mainStackPointer = mainStackPointer + 1
+                                        mainStack[mainStackPointer] = param2
+                                    end
+                                    mainStackPointer = mainStackPointer + 1
+                                    mainStack[mainStackPointer] = paramself
+                                    do
+                                        local _ret143
+                                        do
+                                            local _ret144
+                                            _ret144 = mainStackFrames[mainStackFramesPointer]
+                                            local _ret145
+                                            _ret145 = mainStack[_ret144 or mainStackPointer]
+                                            _ret143 = _ret145
+                                            goto _inline_end306
+                                        end
+                                        ::_inline_end306::
+                                        local t = _ret143
+                                        table.insert (t, "self")
+                                        local _ret146
+                                        _ret146 = mainStack[mainStackPointer]
+                                        table.insert (t, _ret146)
+                                        table.insert (t, false)
+                                    end
+                                    local _ret147
+                                    mainStackPointer = mainStackPointer - 1
+                                    _ret147 = mainStack[mainStackPointer + 1]
+                                    mainStackPointer = mainStackPointer + 1
+                                    mainStack[mainStackPointer] = meta
+                                    injectionStackPointer = injectionStackPointer + 1
+                                    injectionStack[injectionStackPointer] = plume.ops.CONCAT_CALL
+                                    injectionStackPointer = injectionStackPointer + 1
+                                    injectionStack[injectionStackPointer] = 0
+                                    injectionStackPointer = injectionStackPointer + 1
+                                    injectionStack[injectionStackPointer] = 0
+                                end
+                                _ret140 = meta
+                                goto _inline_end295
+                            end
+                            ::_inline_end295::
+                            local meta = _ret140
+                            if not meta then
+                                vmerr = lerr or rerr
+                            end
+                        else
+                            local _ret148
+                            _ret148 = left * right
+                            goto _inline_end318
+                            ::_inline_end318::
+                            result = _ret148
+                            mainStackPointer = mainStackPointer + 1
+                            mainStack[mainStackPointer] = result
+                        end
                     end
                 end
                 goto DISPATCH
             ::OP_SUB::
                 do
-                    local _ret149
+                    local _ret157
                     mainStackPointer = mainStackPointer - 1
-                    _ret149 = mainStack[mainStackPointer + 1]
-                    local right = _ret149
-                    local _ret150
+                    _ret157 = mainStack[mainStackPointer + 1]
+                    local right = _ret157
+                    local _ret158
                     mainStackPointer = mainStackPointer - 1
-                    _ret150 = mainStack[mainStackPointer + 1]
-                    local left = _ret150
-                    local rerr, lerr, success, result
-                    local _ret151, _ret152
-                    do
-                        local _ret153
-                        _ret153 = type (right) == "table" and (right == empty or right.type) or (type (right) == "cdata" and right.type) or type (right)
-                        local tx = _ret153
-                        if tx == "string" then
-                            right = tonumber (right)
-                            if not right then
-                                _ret151, _ret152 = right, "Cannot convert the string value to a number."
-                                goto _inline_end299
-                            end
-                        elseif tx ~= "number" then
-                            if tx == "table" and right.meta.table.tonumber then
-                                local meta = right.meta.table.tonumber
-                                local params = {}
-                                local _ret154
-                                table.insert (chunk.callstack, {chunk = chunk, macro = meta, ip = ip})
-                                if #chunk.callstack <= 500 then
-                                    local success, callResult, cip, source = plume.run (meta, params)
-                                    if success then
-                                        table.remove (chunk.callstack)
-                                        _ret154 = callResult
-                                        goto _inline_end301
-                                    else
-                                        vmserr = {callResult, cip, (source or meta)}
-                                    end
-                                else
-                                    vmerr = plume.error.stackOverflow ()
-                                end
-                                ::_inline_end301::
-                                _ret151, _ret152 = _ret154
-                                goto _inline_end299
-                            else
-                                _ret151, _ret152 = right, "Cannot do comparison or arithmetic with " .. tostring (tx) .. " value."
-                                goto _inline_end299
-                            end
-                        end
-                        _ret151, _ret152 = right
-                        goto _inline_end299
-                    end
-                    ::_inline_end299::
-                    right, rerr = _ret151, _ret152
-                    local _ret155, _ret156
-                    do
-                        local _ret157
-                        _ret157 = type (left) == "table" and (left == empty or left.type) or (type (left) == "cdata" and left.type) or type (left)
-                        local tx = _ret157
-                        if tx == "string" then
-                            left = tonumber (left)
-                            if not left then
-                                _ret155, _ret156 = left, "Cannot convert the string value to a number."
-                                goto _inline_end304
-                            end
-                        elseif tx ~= "number" then
-                            if tx == "table" and left.meta.table.tonumber then
-                                local meta = left.meta.table.tonumber
-                                local params = {}
-                                local _ret158
-                                table.insert (chunk.callstack, {chunk = chunk, macro = meta, ip = ip})
-                                if #chunk.callstack <= 500 then
-                                    local success, callResult, cip, source = plume.run (meta, params)
-                                    if success then
-                                        table.remove (chunk.callstack)
-                                        _ret158 = callResult
-                                        goto _inline_end306
-                                    else
-                                        vmserr = {callResult, cip, (source or meta)}
-                                    end
-                                else
-                                    vmerr = plume.error.stackOverflow ()
-                                end
-                                ::_inline_end306::
-                                _ret155, _ret156 = _ret158
-                                goto _inline_end304
-                            else
-                                _ret155, _ret156 = left, "Cannot do comparison or arithmetic with " .. tostring (tx) .. " value."
-                                goto _inline_end304
-                            end
-                        end
-                        _ret155, _ret156 = left
-                        goto _inline_end304
-                    end
-                    ::_inline_end304::
-                    left, lerr = _ret155, _ret156
-                    if lerr or rerr then
-                        local _ret159, _ret160
-                        do
-                            local meta, params
-                            local _ret161
-                            _ret161 = type (left) == "table" and (left == empty or left.type) or (type (left) == "cdata" and left.type) or type (left)
-                            local tleft = _ret161
-                            local _ret162
-                            _ret162 = type (right) == "table" and (right == empty or right.type) or (type (right) == "cdata" and right.type) or type (right)
-                            local tright = _ret162
-                            if tleft == "table" and left.meta and left.meta.table["sub" .. "r"] then
-                                meta = left.meta.table["sub" .. "r"]
-                                params = {right, left}
-                            elseif tright == "table" and right.meta and right.meta.table["sub" .. "l"] then
-                                meta = right.meta.table["sub" .. "l"]
-                                params = {left, right}
-                            elseif tleft == "table" and left.meta and left.meta.table.sub then
-                                meta = left.meta.table.sub
-                                params = {left, right, left}
-                            elseif tright == "table" and right.meta and right.meta.table.sub then
-                                meta = right.meta.table.sub
-                                params = {left, right, right}
-                            end
-                            if not meta then
-                                _ret159 = false
-                                goto _inline_end309
-                            end
-                            local _ret163
-                            table.insert (chunk.callstack, {chunk = chunk, macro = meta, ip = ip})
-                            if #chunk.callstack <= 500 then
-                                local success, callResult, cip, source = plume.run (meta, params)
-                                if success then
-                                    table.remove (chunk.callstack)
-                                    _ret163 = callResult
-                                    goto _inline_end312
-                                else
-                                    vmserr = {callResult, cip, (source or meta)}
-                                end
-                            else
-                                vmerr = plume.error.stackOverflow ()
-                            end
-                            ::_inline_end312::
-                            _ret159, _ret160 = true, _ret163
-                            goto _inline_end309
-                        end
-                        ::_inline_end309::
-                        success, result = _ret159, _ret160
-                    else
-                        success = true
-                        local _ret164
-                        _ret164 = left - right
-                        goto _inline_end315
-                        ::_inline_end315::
-                        result = _ret164
-                    end
-                    if success then
+                    _ret158 = mainStack[mainStackPointer + 1]
+                    local left = _ret158
+                    local rightNumber = tonumber (right)
+                    local leftNumber = tonumber (left)
+                    if rightNumber and leftNumber then
+                        local _ret159
+                        _ret159 = leftNumber - rightNumber
+                        result = _ret159
                         mainStackPointer = mainStackPointer + 1
                         mainStack[mainStackPointer] = result
                     else
-                        vmerr = lerr or rerr
+                        local rerr, lerr
+                        local _ret173, _ret174
+                        do
+                            local _ret175
+                            _ret175 = type (right) == "table" and (right == empty or right.type) or (type (right) == "cdata" and right.type) or type (right)
+                            local tx = _ret175
+                            if tx == "string" then
+                                right = tonumber (right)
+                                if not right then
+                                    _ret173, _ret174 = right, "Cannot convert the string value to a number."
+                                    goto _inline_end364
+                                end
+                            elseif tx ~= "number" then
+                                if tx == "table" and right.meta.table.tonumber then
+                                    local meta = right.meta.table.tonumber
+                                    local params = {}
+                                    local _ret176
+                                    table.insert (chunk.callstack, {chunk = chunk, macro = meta, ip = ip})
+                                    if #chunk.callstack <= 500 then
+                                        local success, callResult, cip, source = plume.run (meta, params)
+                                        if success then
+                                            table.remove (chunk.callstack)
+                                            _ret176 = callResult
+                                            goto _inline_end366
+                                        else
+                                            vmserr = {callResult, cip, (source or meta)}
+                                        end
+                                    else
+                                        vmerr = plume.error.stackOverflow ()
+                                    end
+                                    ::_inline_end366::
+                                    _ret173, _ret174 = _ret176
+                                    goto _inline_end364
+                                else
+                                    _ret173, _ret174 = right, "Cannot do comparison or arithmetic with " .. tostring (tx) .. " value."
+                                    goto _inline_end364
+                                end
+                            end
+                            _ret173, _ret174 = right
+                            goto _inline_end364
+                        end
+                        ::_inline_end364::
+                        right, rerr = _ret173, _ret174
+                        local _ret169, _ret170
+                        do
+                            local _ret171
+                            _ret171 = type (left) == "table" and (left == empty or left.type) or (type (left) == "cdata" and left.type) or type (left)
+                            local tx = _ret171
+                            if tx == "string" then
+                                left = tonumber (left)
+                                if not left then
+                                    _ret169, _ret170 = left, "Cannot convert the string value to a number."
+                                    goto _inline_end359
+                                end
+                            elseif tx ~= "number" then
+                                if tx == "table" and left.meta.table.tonumber then
+                                    local meta = left.meta.table.tonumber
+                                    local params = {}
+                                    local _ret172
+                                    table.insert (chunk.callstack, {chunk = chunk, macro = meta, ip = ip})
+                                    if #chunk.callstack <= 500 then
+                                        local success, callResult, cip, source = plume.run (meta, params)
+                                        if success then
+                                            table.remove (chunk.callstack)
+                                            _ret172 = callResult
+                                            goto _inline_end361
+                                        else
+                                            vmserr = {callResult, cip, (source or meta)}
+                                        end
+                                    else
+                                        vmerr = plume.error.stackOverflow ()
+                                    end
+                                    ::_inline_end361::
+                                    _ret169, _ret170 = _ret172
+                                    goto _inline_end359
+                                else
+                                    _ret169, _ret170 = left, "Cannot do comparison or arithmetic with " .. tostring (tx) .. " value."
+                                    goto _inline_end359
+                                end
+                            end
+                            _ret169, _ret170 = left
+                            goto _inline_end359
+                        end
+                        ::_inline_end359::
+                        left, lerr = _ret169, _ret170
+                        if lerr or rerr then
+                            local _ret160
+                            do
+                                local meta, param1, param2, paramself
+                                local _ret161
+                                _ret161 = type (left) == "table" and (left == empty or left.type) or (type (left) == "cdata" and left.type) or type (left)
+                                local tleft = _ret161
+                                local _ret162
+                                _ret162 = type (right) == "table" and (right == empty or right.type) or (type (right) == "cdata" and right.type) or type (right)
+                                local tright = _ret162
+                                if tleft == "table" and left.meta and left.meta.table["sub" .. "r"] then
+                                    meta = left.meta.table["sub" .. "r"]
+                                    param1 = right
+                                    paramself = left
+                                elseif tright == "table" and right.meta and right.meta.table["sub" .. "l"] then
+                                    meta = right.meta.table["sub" .. "l"]
+                                    param1 = left
+                                    paramself = right
+                                elseif tleft == "table" and left.meta and left.meta.table.sub then
+                                    meta = left.meta.table.sub
+                                    param1 = left
+                                    param2 = right
+                                    paramself = left
+                                elseif tright == "table" and right.meta and right.meta.table.sub then
+                                    meta = right.meta.table.sub
+                                    param1 = left
+                                    param2 = right
+                                    paramself = right
+                                end
+                                if meta then
+                                    mainStackFramesPointer = mainStackFramesPointer + 1
+                                    mainStackFrames[mainStackFramesPointer] = mainStackPointer + 1
+                                    mainStackPointer = mainStackPointer + 1
+                                    mainStack[mainStackPointer] = table.new (0, 0)
+                                    mainStackPointer = mainStackPointer + 1
+                                    mainStack[mainStackPointer] = param1
+                                    if param2 then
+                                        mainStackPointer = mainStackPointer + 1
+                                        mainStack[mainStackPointer] = param2
+                                    end
+                                    mainStackPointer = mainStackPointer + 1
+                                    mainStack[mainStackPointer] = paramself
+                                    do
+                                        local _ret163
+                                        do
+                                            local _ret164
+                                            _ret164 = mainStackFrames[mainStackFramesPointer]
+                                            local _ret165
+                                            _ret165 = mainStack[_ret164 or mainStackPointer]
+                                            _ret163 = _ret165
+                                            goto _inline_end346
+                                        end
+                                        ::_inline_end346::
+                                        local t = _ret163
+                                        table.insert (t, "self")
+                                        local _ret166
+                                        _ret166 = mainStack[mainStackPointer]
+                                        table.insert (t, _ret166)
+                                        table.insert (t, false)
+                                    end
+                                    local _ret167
+                                    mainStackPointer = mainStackPointer - 1
+                                    _ret167 = mainStack[mainStackPointer + 1]
+                                    mainStackPointer = mainStackPointer + 1
+                                    mainStack[mainStackPointer] = meta
+                                    injectionStackPointer = injectionStackPointer + 1
+                                    injectionStack[injectionStackPointer] = plume.ops.CONCAT_CALL
+                                    injectionStackPointer = injectionStackPointer + 1
+                                    injectionStack[injectionStackPointer] = 0
+                                    injectionStackPointer = injectionStackPointer + 1
+                                    injectionStack[injectionStackPointer] = 0
+                                end
+                                _ret160 = meta
+                                goto _inline_end335
+                            end
+                            ::_inline_end335::
+                            local meta = _ret160
+                            if not meta then
+                                vmerr = lerr or rerr
+                            end
+                        else
+                            local _ret168
+                            _ret168 = left - right
+                            goto _inline_end358
+                            ::_inline_end358::
+                            result = _ret168
+                            mainStackPointer = mainStackPointer + 1
+                            mainStack[mainStackPointer] = result
+                        end
                     end
                 end
                 goto DISPATCH
             ::OP_DIV::
                 do
-                    local _ret165
+                    local _ret177
                     mainStackPointer = mainStackPointer - 1
-                    _ret165 = mainStack[mainStackPointer + 1]
-                    local right = _ret165
-                    local _ret166
+                    _ret177 = mainStack[mainStackPointer + 1]
+                    local right = _ret177
+                    local _ret178
                     mainStackPointer = mainStackPointer - 1
-                    _ret166 = mainStack[mainStackPointer + 1]
-                    local left = _ret166
-                    local rerr, lerr, success, result
-                    local _ret167, _ret168
-                    do
-                        local _ret169
-                        _ret169 = type (right) == "table" and (right == empty or right.type) or (type (right) == "cdata" and right.type) or type (right)
-                        local tx = _ret169
-                        if tx == "string" then
-                            right = tonumber (right)
-                            if not right then
-                                _ret167, _ret168 = right, "Cannot convert the string value to a number."
-                                goto _inline_end322
-                            end
-                        elseif tx ~= "number" then
-                            if tx == "table" and right.meta.table.tonumber then
-                                local meta = right.meta.table.tonumber
-                                local params = {}
-                                local _ret170
-                                table.insert (chunk.callstack, {chunk = chunk, macro = meta, ip = ip})
-                                if #chunk.callstack <= 500 then
-                                    local success, callResult, cip, source = plume.run (meta, params)
-                                    if success then
-                                        table.remove (chunk.callstack)
-                                        _ret170 = callResult
-                                        goto _inline_end324
-                                    else
-                                        vmserr = {callResult, cip, (source or meta)}
-                                    end
-                                else
-                                    vmerr = plume.error.stackOverflow ()
-                                end
-                                ::_inline_end324::
-                                _ret167, _ret168 = _ret170
-                                goto _inline_end322
-                            else
-                                _ret167, _ret168 = right, "Cannot do comparison or arithmetic with " .. tostring (tx) .. " value."
-                                goto _inline_end322
-                            end
-                        end
-                        _ret167, _ret168 = right
-                        goto _inline_end322
-                    end
-                    ::_inline_end322::
-                    right, rerr = _ret167, _ret168
-                    local _ret171, _ret172
-                    do
-                        local _ret173
-                        _ret173 = type (left) == "table" and (left == empty or left.type) or (type (left) == "cdata" and left.type) or type (left)
-                        local tx = _ret173
-                        if tx == "string" then
-                            left = tonumber (left)
-                            if not left then
-                                _ret171, _ret172 = left, "Cannot convert the string value to a number."
-                                goto _inline_end327
-                            end
-                        elseif tx ~= "number" then
-                            if tx == "table" and left.meta.table.tonumber then
-                                local meta = left.meta.table.tonumber
-                                local params = {}
-                                local _ret174
-                                table.insert (chunk.callstack, {chunk = chunk, macro = meta, ip = ip})
-                                if #chunk.callstack <= 500 then
-                                    local success, callResult, cip, source = plume.run (meta, params)
-                                    if success then
-                                        table.remove (chunk.callstack)
-                                        _ret174 = callResult
-                                        goto _inline_end329
-                                    else
-                                        vmserr = {callResult, cip, (source or meta)}
-                                    end
-                                else
-                                    vmerr = plume.error.stackOverflow ()
-                                end
-                                ::_inline_end329::
-                                _ret171, _ret172 = _ret174
-                                goto _inline_end327
-                            else
-                                _ret171, _ret172 = left, "Cannot do comparison or arithmetic with " .. tostring (tx) .. " value."
-                                goto _inline_end327
-                            end
-                        end
-                        _ret171, _ret172 = left
-                        goto _inline_end327
-                    end
-                    ::_inline_end327::
-                    left, lerr = _ret171, _ret172
-                    if lerr or rerr then
-                        local _ret175, _ret176
-                        do
-                            local meta, params
-                            local _ret177
-                            _ret177 = type (left) == "table" and (left == empty or left.type) or (type (left) == "cdata" and left.type) or type (left)
-                            local tleft = _ret177
-                            local _ret178
-                            _ret178 = type (right) == "table" and (right == empty or right.type) or (type (right) == "cdata" and right.type) or type (right)
-                            local tright = _ret178
-                            if tleft == "table" and left.meta and left.meta.table["div" .. "r"] then
-                                meta = left.meta.table["div" .. "r"]
-                                params = {right, left}
-                            elseif tright == "table" and right.meta and right.meta.table["div" .. "l"] then
-                                meta = right.meta.table["div" .. "l"]
-                                params = {left, right}
-                            elseif tleft == "table" and left.meta and left.meta.table.div then
-                                meta = left.meta.table.div
-                                params = {left, right, left}
-                            elseif tright == "table" and right.meta and right.meta.table.div then
-                                meta = right.meta.table.div
-                                params = {left, right, right}
-                            end
-                            if not meta then
-                                _ret175 = false
-                                goto _inline_end332
-                            end
-                            local _ret179
-                            table.insert (chunk.callstack, {chunk = chunk, macro = meta, ip = ip})
-                            if #chunk.callstack <= 500 then
-                                local success, callResult, cip, source = plume.run (meta, params)
-                                if success then
-                                    table.remove (chunk.callstack)
-                                    _ret179 = callResult
-                                    goto _inline_end335
-                                else
-                                    vmserr = {callResult, cip, (source or meta)}
-                                end
-                            else
-                                vmerr = plume.error.stackOverflow ()
-                            end
-                            ::_inline_end335::
-                            _ret175, _ret176 = true, _ret179
-                            goto _inline_end332
-                        end
-                        ::_inline_end332::
-                        success, result = _ret175, _ret176
-                    else
-                        success = true
-                        local _ret180
-                        _ret180 = left / right
-                        goto _inline_end338
-                        ::_inline_end338::
-                        result = _ret180
-                    end
-                    if success then
+                    _ret178 = mainStack[mainStackPointer + 1]
+                    local left = _ret178
+                    local rightNumber = tonumber (right)
+                    local leftNumber = tonumber (left)
+                    if rightNumber and leftNumber then
+                        local _ret179
+                        _ret179 = leftNumber / rightNumber
+                        result = _ret179
                         mainStackPointer = mainStackPointer + 1
                         mainStack[mainStackPointer] = result
                     else
-                        vmerr = lerr or rerr
+                        local rerr, lerr
+                        local _ret193, _ret194
+                        do
+                            local _ret195
+                            _ret195 = type (right) == "table" and (right == empty or right.type) or (type (right) == "cdata" and right.type) or type (right)
+                            local tx = _ret195
+                            if tx == "string" then
+                                right = tonumber (right)
+                                if not right then
+                                    _ret193, _ret194 = right, "Cannot convert the string value to a number."
+                                    goto _inline_end404
+                                end
+                            elseif tx ~= "number" then
+                                if tx == "table" and right.meta.table.tonumber then
+                                    local meta = right.meta.table.tonumber
+                                    local params = {}
+                                    local _ret196
+                                    table.insert (chunk.callstack, {chunk = chunk, macro = meta, ip = ip})
+                                    if #chunk.callstack <= 500 then
+                                        local success, callResult, cip, source = plume.run (meta, params)
+                                        if success then
+                                            table.remove (chunk.callstack)
+                                            _ret196 = callResult
+                                            goto _inline_end406
+                                        else
+                                            vmserr = {callResult, cip, (source or meta)}
+                                        end
+                                    else
+                                        vmerr = plume.error.stackOverflow ()
+                                    end
+                                    ::_inline_end406::
+                                    _ret193, _ret194 = _ret196
+                                    goto _inline_end404
+                                else
+                                    _ret193, _ret194 = right, "Cannot do comparison or arithmetic with " .. tostring (tx) .. " value."
+                                    goto _inline_end404
+                                end
+                            end
+                            _ret193, _ret194 = right
+                            goto _inline_end404
+                        end
+                        ::_inline_end404::
+                        right, rerr = _ret193, _ret194
+                        local _ret189, _ret190
+                        do
+                            local _ret191
+                            _ret191 = type (left) == "table" and (left == empty or left.type) or (type (left) == "cdata" and left.type) or type (left)
+                            local tx = _ret191
+                            if tx == "string" then
+                                left = tonumber (left)
+                                if not left then
+                                    _ret189, _ret190 = left, "Cannot convert the string value to a number."
+                                    goto _inline_end399
+                                end
+                            elseif tx ~= "number" then
+                                if tx == "table" and left.meta.table.tonumber then
+                                    local meta = left.meta.table.tonumber
+                                    local params = {}
+                                    local _ret192
+                                    table.insert (chunk.callstack, {chunk = chunk, macro = meta, ip = ip})
+                                    if #chunk.callstack <= 500 then
+                                        local success, callResult, cip, source = plume.run (meta, params)
+                                        if success then
+                                            table.remove (chunk.callstack)
+                                            _ret192 = callResult
+                                            goto _inline_end401
+                                        else
+                                            vmserr = {callResult, cip, (source or meta)}
+                                        end
+                                    else
+                                        vmerr = plume.error.stackOverflow ()
+                                    end
+                                    ::_inline_end401::
+                                    _ret189, _ret190 = _ret192
+                                    goto _inline_end399
+                                else
+                                    _ret189, _ret190 = left, "Cannot do comparison or arithmetic with " .. tostring (tx) .. " value."
+                                    goto _inline_end399
+                                end
+                            end
+                            _ret189, _ret190 = left
+                            goto _inline_end399
+                        end
+                        ::_inline_end399::
+                        left, lerr = _ret189, _ret190
+                        if lerr or rerr then
+                            local _ret180
+                            do
+                                local meta, param1, param2, paramself
+                                local _ret181
+                                _ret181 = type (left) == "table" and (left == empty or left.type) or (type (left) == "cdata" and left.type) or type (left)
+                                local tleft = _ret181
+                                local _ret182
+                                _ret182 = type (right) == "table" and (right == empty or right.type) or (type (right) == "cdata" and right.type) or type (right)
+                                local tright = _ret182
+                                if tleft == "table" and left.meta and left.meta.table["div" .. "r"] then
+                                    meta = left.meta.table["div" .. "r"]
+                                    param1 = right
+                                    paramself = left
+                                elseif tright == "table" and right.meta and right.meta.table["div" .. "l"] then
+                                    meta = right.meta.table["div" .. "l"]
+                                    param1 = left
+                                    paramself = right
+                                elseif tleft == "table" and left.meta and left.meta.table.div then
+                                    meta = left.meta.table.div
+                                    param1 = left
+                                    param2 = right
+                                    paramself = left
+                                elseif tright == "table" and right.meta and right.meta.table.div then
+                                    meta = right.meta.table.div
+                                    param1 = left
+                                    param2 = right
+                                    paramself = right
+                                end
+                                if meta then
+                                    mainStackFramesPointer = mainStackFramesPointer + 1
+                                    mainStackFrames[mainStackFramesPointer] = mainStackPointer + 1
+                                    mainStackPointer = mainStackPointer + 1
+                                    mainStack[mainStackPointer] = table.new (0, 0)
+                                    mainStackPointer = mainStackPointer + 1
+                                    mainStack[mainStackPointer] = param1
+                                    if param2 then
+                                        mainStackPointer = mainStackPointer + 1
+                                        mainStack[mainStackPointer] = param2
+                                    end
+                                    mainStackPointer = mainStackPointer + 1
+                                    mainStack[mainStackPointer] = paramself
+                                    do
+                                        local _ret183
+                                        do
+                                            local _ret184
+                                            _ret184 = mainStackFrames[mainStackFramesPointer]
+                                            local _ret185
+                                            _ret185 = mainStack[_ret184 or mainStackPointer]
+                                            _ret183 = _ret185
+                                            goto _inline_end386
+                                        end
+                                        ::_inline_end386::
+                                        local t = _ret183
+                                        table.insert (t, "self")
+                                        local _ret186
+                                        _ret186 = mainStack[mainStackPointer]
+                                        table.insert (t, _ret186)
+                                        table.insert (t, false)
+                                    end
+                                    local _ret187
+                                    mainStackPointer = mainStackPointer - 1
+                                    _ret187 = mainStack[mainStackPointer + 1]
+                                    mainStackPointer = mainStackPointer + 1
+                                    mainStack[mainStackPointer] = meta
+                                    injectionStackPointer = injectionStackPointer + 1
+                                    injectionStack[injectionStackPointer] = plume.ops.CONCAT_CALL
+                                    injectionStackPointer = injectionStackPointer + 1
+                                    injectionStack[injectionStackPointer] = 0
+                                    injectionStackPointer = injectionStackPointer + 1
+                                    injectionStack[injectionStackPointer] = 0
+                                end
+                                _ret180 = meta
+                                goto _inline_end375
+                            end
+                            ::_inline_end375::
+                            local meta = _ret180
+                            if not meta then
+                                vmerr = lerr or rerr
+                            end
+                        else
+                            local _ret188
+                            _ret188 = left / right
+                            goto _inline_end398
+                            ::_inline_end398::
+                            result = _ret188
+                            mainStackPointer = mainStackPointer + 1
+                            mainStack[mainStackPointer] = result
+                        end
                     end
                 end
                 goto DISPATCH
             ::OP_NEG::
                 do
-                    local _ret181
+                    local _ret197
                     mainStackPointer = mainStackPointer - 1
-                    _ret181 = mainStack[mainStackPointer + 1]
-                    local x = _ret181
+                    _ret197 = mainStack[mainStackPointer + 1]
+                    local x = _ret197
                     local err
-                    local _ret182, _ret183
+                    local _ret198, _ret199
                     do
-                        local _ret184
-                        _ret184 = type (x) == "table" and (x == empty or x.type) or (type (x) == "cdata" and x.type) or type (x)
-                        local tx = _ret184
+                        local _ret200
+                        _ret200 = type (x) == "table" and (x == empty or x.type) or (type (x) == "cdata" and x.type) or type (x)
+                        local tx = _ret200
                         if tx == "string" then
                             x = tonumber (x)
                             if not x then
-                                _ret182, _ret183 = x, "Cannot convert the string value to a number."
-                                goto _inline_end344
+                                _ret198, _ret199 = x, "Cannot convert the string value to a number."
+                                goto _inline_end412
                             end
                         elseif tx ~= "number" then
                             if tx == "table" and x.meta.table.tonumber then
                                 local meta = x.meta.table.tonumber
                                 local params = {}
-                                local _ret185
+                                local _ret201
                                 table.insert (chunk.callstack, {chunk = chunk, macro = meta, ip = ip})
                                 if #chunk.callstack <= 500 then
                                     local success, callResult, cip, source = plume.run (meta, params)
                                     if success then
                                         table.remove (chunk.callstack)
-                                        _ret185 = callResult
-                                        goto _inline_end346
+                                        _ret201 = callResult
+                                        goto _inline_end414
                                     else
                                         vmserr = {callResult, cip, (source or meta)}
                                     end
                                 else
                                     vmerr = plume.error.stackOverflow ()
                                 end
-                                ::_inline_end346::
-                                _ret182, _ret183 = _ret185
-                                goto _inline_end344
+                                ::_inline_end414::
+                                _ret198, _ret199 = _ret201
+                                goto _inline_end412
                             else
-                                _ret182, _ret183 = x, "Cannot do comparison or arithmetic with " .. tostring (tx) .. " value."
-                                goto _inline_end344
+                                _ret198, _ret199 = x, "Cannot do comparison or arithmetic with " .. tostring (tx) .. " value."
+                                goto _inline_end412
                             end
                         end
-                        _ret182, _ret183 = x
-                        goto _inline_end344
+                        _ret198, _ret199 = x
+                        goto _inline_end412
                     end
-                    ::_inline_end344::
-                    x, err = _ret182, _ret183
+                    ::_inline_end412::
+                    x, err = _ret198, _ret199
                     if err then
-                        local _ret186, _ret187
+                        local _ret202, _ret203
                         do
                             local meta
                             local params = {x}
-                            local _ret188
-                            _ret188 = type (x) == "table" and (x == empty or x.type) or (type (x) == "cdata" and x.type) or type (x)
-                            if _ret188 == "table" and x.meta and x.meta.table.minus then
+                            local _ret204
+                            _ret204 = type (x) == "table" and (x == empty or x.type) or (type (x) == "cdata" and x.type) or type (x)
+                            if _ret204 == "table" and x.meta and x.meta.table.minus then
                                 meta = x.meta.table.minus
                             end
                             if not meta then
-                                _ret186 = false
-                                goto _inline_end349
+                                _ret202 = false
+                                goto _inline_end417
                             end
-                            local _ret189
+                            local _ret205
                             table.insert (chunk.callstack, {chunk = chunk, macro = meta, ip = ip})
                             if #chunk.callstack <= 500 then
                                 local success, callResult, cip, source = plume.run (meta, params)
                                 if success then
                                     table.remove (chunk.callstack)
-                                    _ret189 = callResult
-                                    goto _inline_end351
+                                    _ret205 = callResult
+                                    goto _inline_end419
                                 else
                                     vmserr = {callResult, cip, (source or meta)}
                                 end
                             else
                                 vmerr = plume.error.stackOverflow ()
                             end
-                            ::_inline_end351::
-                            _ret186, _ret187 = true, _ret189
-                            goto _inline_end349
+                            ::_inline_end419::
+                            _ret202, _ret203 = true, _ret205
+                            goto _inline_end417
                         end
-                        ::_inline_end349::
-                        success, result = _ret186, _ret187
+                        ::_inline_end417::
+                        success, result = _ret202, _ret203
                     else
                         success = true
-                        local _ret190
-                        _ret190 = -x
-                        goto _inline_end354
-                        ::_inline_end354::
-                        result = _ret190
+                        local _ret206
+                        _ret206 = -x
+                        goto _inline_end422
+                        ::_inline_end422::
+                        result = _ret206
                     end
                     if success then
                         mainStackPointer = mainStackPointer + 1
@@ -2194,164 +2346,6 @@ return function (plume)
                 goto DISPATCH
             ::OP_MOD::
                 do
-                    local _ret191
-                    mainStackPointer = mainStackPointer - 1
-                    _ret191 = mainStack[mainStackPointer + 1]
-                    local right = _ret191
-                    local _ret192
-                    mainStackPointer = mainStackPointer - 1
-                    _ret192 = mainStack[mainStackPointer + 1]
-                    local left = _ret192
-                    local rerr, lerr, success, result
-                    local _ret193, _ret194
-                    do
-                        local _ret195
-                        _ret195 = type (right) == "table" and (right == empty or right.type) or (type (right) == "cdata" and right.type) or type (right)
-                        local tx = _ret195
-                        if tx == "string" then
-                            right = tonumber (right)
-                            if not right then
-                                _ret193, _ret194 = right, "Cannot convert the string value to a number."
-                                goto _inline_end361
-                            end
-                        elseif tx ~= "number" then
-                            if tx == "table" and right.meta.table.tonumber then
-                                local meta = right.meta.table.tonumber
-                                local params = {}
-                                local _ret196
-                                table.insert (chunk.callstack, {chunk = chunk, macro = meta, ip = ip})
-                                if #chunk.callstack <= 500 then
-                                    local success, callResult, cip, source = plume.run (meta, params)
-                                    if success then
-                                        table.remove (chunk.callstack)
-                                        _ret196 = callResult
-                                        goto _inline_end363
-                                    else
-                                        vmserr = {callResult, cip, (source or meta)}
-                                    end
-                                else
-                                    vmerr = plume.error.stackOverflow ()
-                                end
-                                ::_inline_end363::
-                                _ret193, _ret194 = _ret196
-                                goto _inline_end361
-                            else
-                                _ret193, _ret194 = right, "Cannot do comparison or arithmetic with " .. tostring (tx) .. " value."
-                                goto _inline_end361
-                            end
-                        end
-                        _ret193, _ret194 = right
-                        goto _inline_end361
-                    end
-                    ::_inline_end361::
-                    right, rerr = _ret193, _ret194
-                    local _ret197, _ret198
-                    do
-                        local _ret199
-                        _ret199 = type (left) == "table" and (left == empty or left.type) or (type (left) == "cdata" and left.type) or type (left)
-                        local tx = _ret199
-                        if tx == "string" then
-                            left = tonumber (left)
-                            if not left then
-                                _ret197, _ret198 = left, "Cannot convert the string value to a number."
-                                goto _inline_end366
-                            end
-                        elseif tx ~= "number" then
-                            if tx == "table" and left.meta.table.tonumber then
-                                local meta = left.meta.table.tonumber
-                                local params = {}
-                                local _ret200
-                                table.insert (chunk.callstack, {chunk = chunk, macro = meta, ip = ip})
-                                if #chunk.callstack <= 500 then
-                                    local success, callResult, cip, source = plume.run (meta, params)
-                                    if success then
-                                        table.remove (chunk.callstack)
-                                        _ret200 = callResult
-                                        goto _inline_end368
-                                    else
-                                        vmserr = {callResult, cip, (source or meta)}
-                                    end
-                                else
-                                    vmerr = plume.error.stackOverflow ()
-                                end
-                                ::_inline_end368::
-                                _ret197, _ret198 = _ret200
-                                goto _inline_end366
-                            else
-                                _ret197, _ret198 = left, "Cannot do comparison or arithmetic with " .. tostring (tx) .. " value."
-                                goto _inline_end366
-                            end
-                        end
-                        _ret197, _ret198 = left
-                        goto _inline_end366
-                    end
-                    ::_inline_end366::
-                    left, lerr = _ret197, _ret198
-                    if lerr or rerr then
-                        local _ret201, _ret202
-                        do
-                            local meta, params
-                            local _ret203
-                            _ret203 = type (left) == "table" and (left == empty or left.type) or (type (left) == "cdata" and left.type) or type (left)
-                            local tleft = _ret203
-                            local _ret204
-                            _ret204 = type (right) == "table" and (right == empty or right.type) or (type (right) == "cdata" and right.type) or type (right)
-                            local tright = _ret204
-                            if tleft == "table" and left.meta and left.meta.table["mod" .. "r"] then
-                                meta = left.meta.table["mod" .. "r"]
-                                params = {right, left}
-                            elseif tright == "table" and right.meta and right.meta.table["mod" .. "l"] then
-                                meta = right.meta.table["mod" .. "l"]
-                                params = {left, right}
-                            elseif tleft == "table" and left.meta and left.meta.table.mod then
-                                meta = left.meta.table.mod
-                                params = {left, right, left}
-                            elseif tright == "table" and right.meta and right.meta.table.mod then
-                                meta = right.meta.table.mod
-                                params = {left, right, right}
-                            end
-                            if not meta then
-                                _ret201 = false
-                                goto _inline_end371
-                            end
-                            local _ret205
-                            table.insert (chunk.callstack, {chunk = chunk, macro = meta, ip = ip})
-                            if #chunk.callstack <= 500 then
-                                local success, callResult, cip, source = plume.run (meta, params)
-                                if success then
-                                    table.remove (chunk.callstack)
-                                    _ret205 = callResult
-                                    goto _inline_end374
-                                else
-                                    vmserr = {callResult, cip, (source or meta)}
-                                end
-                            else
-                                vmerr = plume.error.stackOverflow ()
-                            end
-                            ::_inline_end374::
-                            _ret201, _ret202 = true, _ret205
-                            goto _inline_end371
-                        end
-                        ::_inline_end371::
-                        success, result = _ret201, _ret202
-                    else
-                        success = true
-                        local _ret206
-                        _ret206 = left % right
-                        goto _inline_end377
-                        ::_inline_end377::
-                        result = _ret206
-                    end
-                    if success then
-                        mainStackPointer = mainStackPointer + 1
-                        mainStack[mainStackPointer] = result
-                    else
-                        vmerr = lerr or rerr
-                    end
-                end
-                goto DISPATCH
-            ::OP_POW::
-                do
                     local _ret207
                     mainStackPointer = mainStackPointer - 1
                     _ret207 = mainStack[mainStackPointer + 1]
@@ -2360,477 +2354,779 @@ return function (plume)
                     mainStackPointer = mainStackPointer - 1
                     _ret208 = mainStack[mainStackPointer + 1]
                     local left = _ret208
-                    local rerr, lerr, success, result
-                    local _ret209, _ret210
-                    do
-                        local _ret211
-                        _ret211 = type (right) == "table" and (right == empty or right.type) or (type (right) == "cdata" and right.type) or type (right)
-                        local tx = _ret211
-                        if tx == "string" then
-                            right = tonumber (right)
-                            if not right then
-                                _ret209, _ret210 = right, "Cannot convert the string value to a number."
-                                goto _inline_end384
-                            end
-                        elseif tx ~= "number" then
-                            if tx == "table" and right.meta.table.tonumber then
-                                local meta = right.meta.table.tonumber
-                                local params = {}
-                                local _ret212
-                                table.insert (chunk.callstack, {chunk = chunk, macro = meta, ip = ip})
-                                if #chunk.callstack <= 500 then
-                                    local success, callResult, cip, source = plume.run (meta, params)
-                                    if success then
-                                        table.remove (chunk.callstack)
-                                        _ret212 = callResult
-                                        goto _inline_end386
-                                    else
-                                        vmserr = {callResult, cip, (source or meta)}
-                                    end
-                                else
-                                    vmerr = plume.error.stackOverflow ()
-                                end
-                                ::_inline_end386::
-                                _ret209, _ret210 = _ret212
-                                goto _inline_end384
-                            else
-                                _ret209, _ret210 = right, "Cannot do comparison or arithmetic with " .. tostring (tx) .. " value."
-                                goto _inline_end384
-                            end
-                        end
-                        _ret209, _ret210 = right
-                        goto _inline_end384
-                    end
-                    ::_inline_end384::
-                    right, rerr = _ret209, _ret210
-                    local _ret213, _ret214
-                    do
-                        local _ret215
-                        _ret215 = type (left) == "table" and (left == empty or left.type) or (type (left) == "cdata" and left.type) or type (left)
-                        local tx = _ret215
-                        if tx == "string" then
-                            left = tonumber (left)
-                            if not left then
-                                _ret213, _ret214 = left, "Cannot convert the string value to a number."
-                                goto _inline_end389
-                            end
-                        elseif tx ~= "number" then
-                            if tx == "table" and left.meta.table.tonumber then
-                                local meta = left.meta.table.tonumber
-                                local params = {}
-                                local _ret216
-                                table.insert (chunk.callstack, {chunk = chunk, macro = meta, ip = ip})
-                                if #chunk.callstack <= 500 then
-                                    local success, callResult, cip, source = plume.run (meta, params)
-                                    if success then
-                                        table.remove (chunk.callstack)
-                                        _ret216 = callResult
-                                        goto _inline_end391
-                                    else
-                                        vmserr = {callResult, cip, (source or meta)}
-                                    end
-                                else
-                                    vmerr = plume.error.stackOverflow ()
-                                end
-                                ::_inline_end391::
-                                _ret213, _ret214 = _ret216
-                                goto _inline_end389
-                            else
-                                _ret213, _ret214 = left, "Cannot do comparison or arithmetic with " .. tostring (tx) .. " value."
-                                goto _inline_end389
-                            end
-                        end
-                        _ret213, _ret214 = left
-                        goto _inline_end389
-                    end
-                    ::_inline_end389::
-                    left, lerr = _ret213, _ret214
-                    if lerr or rerr then
-                        local _ret217, _ret218
-                        do
-                            local meta, params
-                            local _ret219
-                            _ret219 = type (left) == "table" and (left == empty or left.type) or (type (left) == "cdata" and left.type) or type (left)
-                            local tleft = _ret219
-                            local _ret220
-                            _ret220 = type (right) == "table" and (right == empty or right.type) or (type (right) == "cdata" and right.type) or type (right)
-                            local tright = _ret220
-                            if tleft == "table" and left.meta and left.meta.table["pow" .. "r"] then
-                                meta = left.meta.table["pow" .. "r"]
-                                params = {right, left}
-                            elseif tright == "table" and right.meta and right.meta.table["pow" .. "l"] then
-                                meta = right.meta.table["pow" .. "l"]
-                                params = {left, right}
-                            elseif tleft == "table" and left.meta and left.meta.table.pow then
-                                meta = left.meta.table.pow
-                                params = {left, right, left}
-                            elseif tright == "table" and right.meta and right.meta.table.pow then
-                                meta = right.meta.table.pow
-                                params = {left, right, right}
-                            end
-                            if not meta then
-                                _ret217 = false
-                                goto _inline_end394
-                            end
-                            local _ret221
-                            table.insert (chunk.callstack, {chunk = chunk, macro = meta, ip = ip})
-                            if #chunk.callstack <= 500 then
-                                local success, callResult, cip, source = plume.run (meta, params)
-                                if success then
-                                    table.remove (chunk.callstack)
-                                    _ret221 = callResult
-                                    goto _inline_end397
-                                else
-                                    vmserr = {callResult, cip, (source or meta)}
-                                end
-                            else
-                                vmerr = plume.error.stackOverflow ()
-                            end
-                            ::_inline_end397::
-                            _ret217, _ret218 = true, _ret221
-                            goto _inline_end394
-                        end
-                        ::_inline_end394::
-                        success, result = _ret217, _ret218
-                    else
-                        success = true
-                        local _ret222
-                        _ret222 = left ^ right
-                        goto _inline_end400
-                        ::_inline_end400::
-                        result = _ret222
-                    end
-                    if success then
+                    local rightNumber = tonumber (right)
+                    local leftNumber = tonumber (left)
+                    if rightNumber and leftNumber then
+                        local _ret209
+                        _ret209 = leftNumber % rightNumber
+                        result = _ret209
                         mainStackPointer = mainStackPointer + 1
                         mainStack[mainStackPointer] = result
                     else
-                        vmerr = lerr or rerr
+                        local rerr, lerr
+                        local _ret223, _ret224
+                        do
+                            local _ret225
+                            _ret225 = type (right) == "table" and (right == empty or right.type) or (type (right) == "cdata" and right.type) or type (right)
+                            local tx = _ret225
+                            if tx == "string" then
+                                right = tonumber (right)
+                                if not right then
+                                    _ret223, _ret224 = right, "Cannot convert the string value to a number."
+                                    goto _inline_end460
+                                end
+                            elseif tx ~= "number" then
+                                if tx == "table" and right.meta.table.tonumber then
+                                    local meta = right.meta.table.tonumber
+                                    local params = {}
+                                    local _ret226
+                                    table.insert (chunk.callstack, {chunk = chunk, macro = meta, ip = ip})
+                                    if #chunk.callstack <= 500 then
+                                        local success, callResult, cip, source = plume.run (meta, params)
+                                        if success then
+                                            table.remove (chunk.callstack)
+                                            _ret226 = callResult
+                                            goto _inline_end462
+                                        else
+                                            vmserr = {callResult, cip, (source or meta)}
+                                        end
+                                    else
+                                        vmerr = plume.error.stackOverflow ()
+                                    end
+                                    ::_inline_end462::
+                                    _ret223, _ret224 = _ret226
+                                    goto _inline_end460
+                                else
+                                    _ret223, _ret224 = right, "Cannot do comparison or arithmetic with " .. tostring (tx) .. " value."
+                                    goto _inline_end460
+                                end
+                            end
+                            _ret223, _ret224 = right
+                            goto _inline_end460
+                        end
+                        ::_inline_end460::
+                        right, rerr = _ret223, _ret224
+                        local _ret219, _ret220
+                        do
+                            local _ret221
+                            _ret221 = type (left) == "table" and (left == empty or left.type) or (type (left) == "cdata" and left.type) or type (left)
+                            local tx = _ret221
+                            if tx == "string" then
+                                left = tonumber (left)
+                                if not left then
+                                    _ret219, _ret220 = left, "Cannot convert the string value to a number."
+                                    goto _inline_end455
+                                end
+                            elseif tx ~= "number" then
+                                if tx == "table" and left.meta.table.tonumber then
+                                    local meta = left.meta.table.tonumber
+                                    local params = {}
+                                    local _ret222
+                                    table.insert (chunk.callstack, {chunk = chunk, macro = meta, ip = ip})
+                                    if #chunk.callstack <= 500 then
+                                        local success, callResult, cip, source = plume.run (meta, params)
+                                        if success then
+                                            table.remove (chunk.callstack)
+                                            _ret222 = callResult
+                                            goto _inline_end457
+                                        else
+                                            vmserr = {callResult, cip, (source or meta)}
+                                        end
+                                    else
+                                        vmerr = plume.error.stackOverflow ()
+                                    end
+                                    ::_inline_end457::
+                                    _ret219, _ret220 = _ret222
+                                    goto _inline_end455
+                                else
+                                    _ret219, _ret220 = left, "Cannot do comparison or arithmetic with " .. tostring (tx) .. " value."
+                                    goto _inline_end455
+                                end
+                            end
+                            _ret219, _ret220 = left
+                            goto _inline_end455
+                        end
+                        ::_inline_end455::
+                        left, lerr = _ret219, _ret220
+                        if lerr or rerr then
+                            local _ret210
+                            do
+                                local meta, param1, param2, paramself
+                                local _ret211
+                                _ret211 = type (left) == "table" and (left == empty or left.type) or (type (left) == "cdata" and left.type) or type (left)
+                                local tleft = _ret211
+                                local _ret212
+                                _ret212 = type (right) == "table" and (right == empty or right.type) or (type (right) == "cdata" and right.type) or type (right)
+                                local tright = _ret212
+                                if tleft == "table" and left.meta and left.meta.table["mod" .. "r"] then
+                                    meta = left.meta.table["mod" .. "r"]
+                                    param1 = right
+                                    paramself = left
+                                elseif tright == "table" and right.meta and right.meta.table["mod" .. "l"] then
+                                    meta = right.meta.table["mod" .. "l"]
+                                    param1 = left
+                                    paramself = right
+                                elseif tleft == "table" and left.meta and left.meta.table.mod then
+                                    meta = left.meta.table.mod
+                                    param1 = left
+                                    param2 = right
+                                    paramself = left
+                                elseif tright == "table" and right.meta and right.meta.table.mod then
+                                    meta = right.meta.table.mod
+                                    param1 = left
+                                    param2 = right
+                                    paramself = right
+                                end
+                                if meta then
+                                    mainStackFramesPointer = mainStackFramesPointer + 1
+                                    mainStackFrames[mainStackFramesPointer] = mainStackPointer + 1
+                                    mainStackPointer = mainStackPointer + 1
+                                    mainStack[mainStackPointer] = table.new (0, 0)
+                                    mainStackPointer = mainStackPointer + 1
+                                    mainStack[mainStackPointer] = param1
+                                    if param2 then
+                                        mainStackPointer = mainStackPointer + 1
+                                        mainStack[mainStackPointer] = param2
+                                    end
+                                    mainStackPointer = mainStackPointer + 1
+                                    mainStack[mainStackPointer] = paramself
+                                    do
+                                        local _ret213
+                                        do
+                                            local _ret214
+                                            _ret214 = mainStackFrames[mainStackFramesPointer]
+                                            local _ret215
+                                            _ret215 = mainStack[_ret214 or mainStackPointer]
+                                            _ret213 = _ret215
+                                            goto _inline_end442
+                                        end
+                                        ::_inline_end442::
+                                        local t = _ret213
+                                        table.insert (t, "self")
+                                        local _ret216
+                                        _ret216 = mainStack[mainStackPointer]
+                                        table.insert (t, _ret216)
+                                        table.insert (t, false)
+                                    end
+                                    local _ret217
+                                    mainStackPointer = mainStackPointer - 1
+                                    _ret217 = mainStack[mainStackPointer + 1]
+                                    mainStackPointer = mainStackPointer + 1
+                                    mainStack[mainStackPointer] = meta
+                                    injectionStackPointer = injectionStackPointer + 1
+                                    injectionStack[injectionStackPointer] = plume.ops.CONCAT_CALL
+                                    injectionStackPointer = injectionStackPointer + 1
+                                    injectionStack[injectionStackPointer] = 0
+                                    injectionStackPointer = injectionStackPointer + 1
+                                    injectionStack[injectionStackPointer] = 0
+                                end
+                                _ret210 = meta
+                                goto _inline_end431
+                            end
+                            ::_inline_end431::
+                            local meta = _ret210
+                            if not meta then
+                                vmerr = lerr or rerr
+                            end
+                        else
+                            local _ret218
+                            _ret218 = left % right
+                            goto _inline_end454
+                            ::_inline_end454::
+                            result = _ret218
+                            mainStackPointer = mainStackPointer + 1
+                            mainStack[mainStackPointer] = result
+                        end
+                    end
+                end
+                goto DISPATCH
+            ::OP_POW::
+                do
+                    local _ret227
+                    mainStackPointer = mainStackPointer - 1
+                    _ret227 = mainStack[mainStackPointer + 1]
+                    local right = _ret227
+                    local _ret228
+                    mainStackPointer = mainStackPointer - 1
+                    _ret228 = mainStack[mainStackPointer + 1]
+                    local left = _ret228
+                    local rightNumber = tonumber (right)
+                    local leftNumber = tonumber (left)
+                    if rightNumber and leftNumber then
+                        local _ret229
+                        _ret229 = leftNumber ^ rightNumber
+                        result = _ret229
+                        mainStackPointer = mainStackPointer + 1
+                        mainStack[mainStackPointer] = result
+                    else
+                        local rerr, lerr
+                        local _ret243, _ret244
+                        do
+                            local _ret245
+                            _ret245 = type (right) == "table" and (right == empty or right.type) or (type (right) == "cdata" and right.type) or type (right)
+                            local tx = _ret245
+                            if tx == "string" then
+                                right = tonumber (right)
+                                if not right then
+                                    _ret243, _ret244 = right, "Cannot convert the string value to a number."
+                                    goto _inline_end500
+                                end
+                            elseif tx ~= "number" then
+                                if tx == "table" and right.meta.table.tonumber then
+                                    local meta = right.meta.table.tonumber
+                                    local params = {}
+                                    local _ret246
+                                    table.insert (chunk.callstack, {chunk = chunk, macro = meta, ip = ip})
+                                    if #chunk.callstack <= 500 then
+                                        local success, callResult, cip, source = plume.run (meta, params)
+                                        if success then
+                                            table.remove (chunk.callstack)
+                                            _ret246 = callResult
+                                            goto _inline_end502
+                                        else
+                                            vmserr = {callResult, cip, (source or meta)}
+                                        end
+                                    else
+                                        vmerr = plume.error.stackOverflow ()
+                                    end
+                                    ::_inline_end502::
+                                    _ret243, _ret244 = _ret246
+                                    goto _inline_end500
+                                else
+                                    _ret243, _ret244 = right, "Cannot do comparison or arithmetic with " .. tostring (tx) .. " value."
+                                    goto _inline_end500
+                                end
+                            end
+                            _ret243, _ret244 = right
+                            goto _inline_end500
+                        end
+                        ::_inline_end500::
+                        right, rerr = _ret243, _ret244
+                        local _ret239, _ret240
+                        do
+                            local _ret241
+                            _ret241 = type (left) == "table" and (left == empty or left.type) or (type (left) == "cdata" and left.type) or type (left)
+                            local tx = _ret241
+                            if tx == "string" then
+                                left = tonumber (left)
+                                if not left then
+                                    _ret239, _ret240 = left, "Cannot convert the string value to a number."
+                                    goto _inline_end495
+                                end
+                            elseif tx ~= "number" then
+                                if tx == "table" and left.meta.table.tonumber then
+                                    local meta = left.meta.table.tonumber
+                                    local params = {}
+                                    local _ret242
+                                    table.insert (chunk.callstack, {chunk = chunk, macro = meta, ip = ip})
+                                    if #chunk.callstack <= 500 then
+                                        local success, callResult, cip, source = plume.run (meta, params)
+                                        if success then
+                                            table.remove (chunk.callstack)
+                                            _ret242 = callResult
+                                            goto _inline_end497
+                                        else
+                                            vmserr = {callResult, cip, (source or meta)}
+                                        end
+                                    else
+                                        vmerr = plume.error.stackOverflow ()
+                                    end
+                                    ::_inline_end497::
+                                    _ret239, _ret240 = _ret242
+                                    goto _inline_end495
+                                else
+                                    _ret239, _ret240 = left, "Cannot do comparison or arithmetic with " .. tostring (tx) .. " value."
+                                    goto _inline_end495
+                                end
+                            end
+                            _ret239, _ret240 = left
+                            goto _inline_end495
+                        end
+                        ::_inline_end495::
+                        left, lerr = _ret239, _ret240
+                        if lerr or rerr then
+                            local _ret230
+                            do
+                                local meta, param1, param2, paramself
+                                local _ret231
+                                _ret231 = type (left) == "table" and (left == empty or left.type) or (type (left) == "cdata" and left.type) or type (left)
+                                local tleft = _ret231
+                                local _ret232
+                                _ret232 = type (right) == "table" and (right == empty or right.type) or (type (right) == "cdata" and right.type) or type (right)
+                                local tright = _ret232
+                                if tleft == "table" and left.meta and left.meta.table["pow" .. "r"] then
+                                    meta = left.meta.table["pow" .. "r"]
+                                    param1 = right
+                                    paramself = left
+                                elseif tright == "table" and right.meta and right.meta.table["pow" .. "l"] then
+                                    meta = right.meta.table["pow" .. "l"]
+                                    param1 = left
+                                    paramself = right
+                                elseif tleft == "table" and left.meta and left.meta.table.pow then
+                                    meta = left.meta.table.pow
+                                    param1 = left
+                                    param2 = right
+                                    paramself = left
+                                elseif tright == "table" and right.meta and right.meta.table.pow then
+                                    meta = right.meta.table.pow
+                                    param1 = left
+                                    param2 = right
+                                    paramself = right
+                                end
+                                if meta then
+                                    mainStackFramesPointer = mainStackFramesPointer + 1
+                                    mainStackFrames[mainStackFramesPointer] = mainStackPointer + 1
+                                    mainStackPointer = mainStackPointer + 1
+                                    mainStack[mainStackPointer] = table.new (0, 0)
+                                    mainStackPointer = mainStackPointer + 1
+                                    mainStack[mainStackPointer] = param1
+                                    if param2 then
+                                        mainStackPointer = mainStackPointer + 1
+                                        mainStack[mainStackPointer] = param2
+                                    end
+                                    mainStackPointer = mainStackPointer + 1
+                                    mainStack[mainStackPointer] = paramself
+                                    do
+                                        local _ret233
+                                        do
+                                            local _ret234
+                                            _ret234 = mainStackFrames[mainStackFramesPointer]
+                                            local _ret235
+                                            _ret235 = mainStack[_ret234 or mainStackPointer]
+                                            _ret233 = _ret235
+                                            goto _inline_end482
+                                        end
+                                        ::_inline_end482::
+                                        local t = _ret233
+                                        table.insert (t, "self")
+                                        local _ret236
+                                        _ret236 = mainStack[mainStackPointer]
+                                        table.insert (t, _ret236)
+                                        table.insert (t, false)
+                                    end
+                                    local _ret237
+                                    mainStackPointer = mainStackPointer - 1
+                                    _ret237 = mainStack[mainStackPointer + 1]
+                                    mainStackPointer = mainStackPointer + 1
+                                    mainStack[mainStackPointer] = meta
+                                    injectionStackPointer = injectionStackPointer + 1
+                                    injectionStack[injectionStackPointer] = plume.ops.CONCAT_CALL
+                                    injectionStackPointer = injectionStackPointer + 1
+                                    injectionStack[injectionStackPointer] = 0
+                                    injectionStackPointer = injectionStackPointer + 1
+                                    injectionStack[injectionStackPointer] = 0
+                                end
+                                _ret230 = meta
+                                goto _inline_end471
+                            end
+                            ::_inline_end471::
+                            local meta = _ret230
+                            if not meta then
+                                vmerr = lerr or rerr
+                            end
+                        else
+                            local _ret238
+                            _ret238 = left ^ right
+                            goto _inline_end494
+                            ::_inline_end494::
+                            result = _ret238
+                            mainStackPointer = mainStackPointer + 1
+                            mainStack[mainStackPointer] = result
+                        end
                     end
                 end
                 goto DISPATCH
             ::OP_LT::
                 do
-                    local _ret223
+                    local _ret247
                     mainStackPointer = mainStackPointer - 1
-                    _ret223 = mainStack[mainStackPointer + 1]
-                    local right = _ret223
-                    local _ret224
+                    _ret247 = mainStack[mainStackPointer + 1]
+                    local right = _ret247
+                    local _ret248
                     mainStackPointer = mainStackPointer - 1
-                    _ret224 = mainStack[mainStackPointer + 1]
-                    local left = _ret224
-                    local rerr, lerr, success, result
-                    local _ret225, _ret226
-                    do
-                        local _ret227
-                        _ret227 = type (right) == "table" and (right == empty or right.type) or (type (right) == "cdata" and right.type) or type (right)
-                        local tx = _ret227
-                        if tx == "string" then
-                            right = tonumber (right)
-                            if not right then
-                                _ret225, _ret226 = right, "Cannot convert the string value to a number."
-                                goto _inline_end407
-                            end
-                        elseif tx ~= "number" then
-                            if tx == "table" and right.meta.table.tonumber then
-                                local meta = right.meta.table.tonumber
-                                local params = {}
-                                local _ret228
-                                table.insert (chunk.callstack, {chunk = chunk, macro = meta, ip = ip})
-                                if #chunk.callstack <= 500 then
-                                    local success, callResult, cip, source = plume.run (meta, params)
-                                    if success then
-                                        table.remove (chunk.callstack)
-                                        _ret228 = callResult
-                                        goto _inline_end409
-                                    else
-                                        vmserr = {callResult, cip, (source or meta)}
-                                    end
-                                else
-                                    vmerr = plume.error.stackOverflow ()
-                                end
-                                ::_inline_end409::
-                                _ret225, _ret226 = _ret228
-                                goto _inline_end407
-                            else
-                                _ret225, _ret226 = right, "Cannot do comparison or arithmetic with " .. tostring (tx) .. " value."
-                                goto _inline_end407
-                            end
-                        end
-                        _ret225, _ret226 = right
-                        goto _inline_end407
-                    end
-                    ::_inline_end407::
-                    right, rerr = _ret225, _ret226
-                    local _ret229, _ret230
-                    do
-                        local _ret231
-                        _ret231 = type (left) == "table" and (left == empty or left.type) or (type (left) == "cdata" and left.type) or type (left)
-                        local tx = _ret231
-                        if tx == "string" then
-                            left = tonumber (left)
-                            if not left then
-                                _ret229, _ret230 = left, "Cannot convert the string value to a number."
-                                goto _inline_end412
-                            end
-                        elseif tx ~= "number" then
-                            if tx == "table" and left.meta.table.tonumber then
-                                local meta = left.meta.table.tonumber
-                                local params = {}
-                                local _ret232
-                                table.insert (chunk.callstack, {chunk = chunk, macro = meta, ip = ip})
-                                if #chunk.callstack <= 500 then
-                                    local success, callResult, cip, source = plume.run (meta, params)
-                                    if success then
-                                        table.remove (chunk.callstack)
-                                        _ret232 = callResult
-                                        goto _inline_end414
-                                    else
-                                        vmserr = {callResult, cip, (source or meta)}
-                                    end
-                                else
-                                    vmerr = plume.error.stackOverflow ()
-                                end
-                                ::_inline_end414::
-                                _ret229, _ret230 = _ret232
-                                goto _inline_end412
-                            else
-                                _ret229, _ret230 = left, "Cannot do comparison or arithmetic with " .. tostring (tx) .. " value."
-                                goto _inline_end412
-                            end
-                        end
-                        _ret229, _ret230 = left
-                        goto _inline_end412
-                    end
-                    ::_inline_end412::
-                    left, lerr = _ret229, _ret230
-                    if lerr or rerr then
-                        local _ret233, _ret234
-                        do
-                            local meta, params
-                            local _ret235
-                            _ret235 = type (left) == "table" and (left == empty or left.type) or (type (left) == "cdata" and left.type) or type (left)
-                            local tleft = _ret235
-                            local _ret236
-                            _ret236 = type (right) == "table" and (right == empty or right.type) or (type (right) == "cdata" and right.type) or type (right)
-                            local tright = _ret236
-                            if tleft == "table" and left.meta and left.meta.table["lt" .. "r"] then
-                                meta = left.meta.table["lt" .. "r"]
-                                params = {right, left}
-                            elseif tright == "table" and right.meta and right.meta.table["lt" .. "l"] then
-                                meta = right.meta.table["lt" .. "l"]
-                                params = {left, right}
-                            elseif tleft == "table" and left.meta and left.meta.table.lt then
-                                meta = left.meta.table.lt
-                                params = {left, right, left}
-                            elseif tright == "table" and right.meta and right.meta.table.lt then
-                                meta = right.meta.table.lt
-                                params = {left, right, right}
-                            end
-                            if not meta then
-                                _ret233 = false
-                                goto _inline_end417
-                            end
-                            local _ret237
-                            table.insert (chunk.callstack, {chunk = chunk, macro = meta, ip = ip})
-                            if #chunk.callstack <= 500 then
-                                local success, callResult, cip, source = plume.run (meta, params)
-                                if success then
-                                    table.remove (chunk.callstack)
-                                    _ret237 = callResult
-                                    goto _inline_end420
-                                else
-                                    vmserr = {callResult, cip, (source or meta)}
-                                end
-                            else
-                                vmerr = plume.error.stackOverflow ()
-                            end
-                            ::_inline_end420::
-                            _ret233, _ret234 = true, _ret237
-                            goto _inline_end417
-                        end
-                        ::_inline_end417::
-                        success, result = _ret233, _ret234
-                    else
-                        success = true
-                        local _ret238
-                        _ret238 = left < right
-                        goto _inline_end423
-                        ::_inline_end423::
-                        result = _ret238
-                    end
-                    if success then
+                    _ret248 = mainStack[mainStackPointer + 1]
+                    local left = _ret248
+                    local rightNumber = tonumber (right)
+                    local leftNumber = tonumber (left)
+                    if rightNumber and leftNumber then
+                        local _ret249
+                        _ret249 = leftNumber < rightNumber
+                        result = _ret249
                         mainStackPointer = mainStackPointer + 1
                         mainStack[mainStackPointer] = result
                     else
-                        vmerr = lerr or rerr
+                        local rerr, lerr
+                        local _ret263, _ret264
+                        do
+                            local _ret265
+                            _ret265 = type (right) == "table" and (right == empty or right.type) or (type (right) == "cdata" and right.type) or type (right)
+                            local tx = _ret265
+                            if tx == "string" then
+                                right = tonumber (right)
+                                if not right then
+                                    _ret263, _ret264 = right, "Cannot convert the string value to a number."
+                                    goto _inline_end540
+                                end
+                            elseif tx ~= "number" then
+                                if tx == "table" and right.meta.table.tonumber then
+                                    local meta = right.meta.table.tonumber
+                                    local params = {}
+                                    local _ret266
+                                    table.insert (chunk.callstack, {chunk = chunk, macro = meta, ip = ip})
+                                    if #chunk.callstack <= 500 then
+                                        local success, callResult, cip, source = plume.run (meta, params)
+                                        if success then
+                                            table.remove (chunk.callstack)
+                                            _ret266 = callResult
+                                            goto _inline_end542
+                                        else
+                                            vmserr = {callResult, cip, (source or meta)}
+                                        end
+                                    else
+                                        vmerr = plume.error.stackOverflow ()
+                                    end
+                                    ::_inline_end542::
+                                    _ret263, _ret264 = _ret266
+                                    goto _inline_end540
+                                else
+                                    _ret263, _ret264 = right, "Cannot do comparison or arithmetic with " .. tostring (tx) .. " value."
+                                    goto _inline_end540
+                                end
+                            end
+                            _ret263, _ret264 = right
+                            goto _inline_end540
+                        end
+                        ::_inline_end540::
+                        right, rerr = _ret263, _ret264
+                        local _ret259, _ret260
+                        do
+                            local _ret261
+                            _ret261 = type (left) == "table" and (left == empty or left.type) or (type (left) == "cdata" and left.type) or type (left)
+                            local tx = _ret261
+                            if tx == "string" then
+                                left = tonumber (left)
+                                if not left then
+                                    _ret259, _ret260 = left, "Cannot convert the string value to a number."
+                                    goto _inline_end535
+                                end
+                            elseif tx ~= "number" then
+                                if tx == "table" and left.meta.table.tonumber then
+                                    local meta = left.meta.table.tonumber
+                                    local params = {}
+                                    local _ret262
+                                    table.insert (chunk.callstack, {chunk = chunk, macro = meta, ip = ip})
+                                    if #chunk.callstack <= 500 then
+                                        local success, callResult, cip, source = plume.run (meta, params)
+                                        if success then
+                                            table.remove (chunk.callstack)
+                                            _ret262 = callResult
+                                            goto _inline_end537
+                                        else
+                                            vmserr = {callResult, cip, (source or meta)}
+                                        end
+                                    else
+                                        vmerr = plume.error.stackOverflow ()
+                                    end
+                                    ::_inline_end537::
+                                    _ret259, _ret260 = _ret262
+                                    goto _inline_end535
+                                else
+                                    _ret259, _ret260 = left, "Cannot do comparison or arithmetic with " .. tostring (tx) .. " value."
+                                    goto _inline_end535
+                                end
+                            end
+                            _ret259, _ret260 = left
+                            goto _inline_end535
+                        end
+                        ::_inline_end535::
+                        left, lerr = _ret259, _ret260
+                        if lerr or rerr then
+                            local _ret250
+                            do
+                                local meta, param1, param2, paramself
+                                local _ret251
+                                _ret251 = type (left) == "table" and (left == empty or left.type) or (type (left) == "cdata" and left.type) or type (left)
+                                local tleft = _ret251
+                                local _ret252
+                                _ret252 = type (right) == "table" and (right == empty or right.type) or (type (right) == "cdata" and right.type) or type (right)
+                                local tright = _ret252
+                                if tleft == "table" and left.meta and left.meta.table["lt" .. "r"] then
+                                    meta = left.meta.table["lt" .. "r"]
+                                    param1 = right
+                                    paramself = left
+                                elseif tright == "table" and right.meta and right.meta.table["lt" .. "l"] then
+                                    meta = right.meta.table["lt" .. "l"]
+                                    param1 = left
+                                    paramself = right
+                                elseif tleft == "table" and left.meta and left.meta.table.lt then
+                                    meta = left.meta.table.lt
+                                    param1 = left
+                                    param2 = right
+                                    paramself = left
+                                elseif tright == "table" and right.meta and right.meta.table.lt then
+                                    meta = right.meta.table.lt
+                                    param1 = left
+                                    param2 = right
+                                    paramself = right
+                                end
+                                if meta then
+                                    mainStackFramesPointer = mainStackFramesPointer + 1
+                                    mainStackFrames[mainStackFramesPointer] = mainStackPointer + 1
+                                    mainStackPointer = mainStackPointer + 1
+                                    mainStack[mainStackPointer] = table.new (0, 0)
+                                    mainStackPointer = mainStackPointer + 1
+                                    mainStack[mainStackPointer] = param1
+                                    if param2 then
+                                        mainStackPointer = mainStackPointer + 1
+                                        mainStack[mainStackPointer] = param2
+                                    end
+                                    mainStackPointer = mainStackPointer + 1
+                                    mainStack[mainStackPointer] = paramself
+                                    do
+                                        local _ret253
+                                        do
+                                            local _ret254
+                                            _ret254 = mainStackFrames[mainStackFramesPointer]
+                                            local _ret255
+                                            _ret255 = mainStack[_ret254 or mainStackPointer]
+                                            _ret253 = _ret255
+                                            goto _inline_end522
+                                        end
+                                        ::_inline_end522::
+                                        local t = _ret253
+                                        table.insert (t, "self")
+                                        local _ret256
+                                        _ret256 = mainStack[mainStackPointer]
+                                        table.insert (t, _ret256)
+                                        table.insert (t, false)
+                                    end
+                                    local _ret257
+                                    mainStackPointer = mainStackPointer - 1
+                                    _ret257 = mainStack[mainStackPointer + 1]
+                                    mainStackPointer = mainStackPointer + 1
+                                    mainStack[mainStackPointer] = meta
+                                    injectionStackPointer = injectionStackPointer + 1
+                                    injectionStack[injectionStackPointer] = plume.ops.CONCAT_CALL
+                                    injectionStackPointer = injectionStackPointer + 1
+                                    injectionStack[injectionStackPointer] = 0
+                                    injectionStackPointer = injectionStackPointer + 1
+                                    injectionStack[injectionStackPointer] = 0
+                                end
+                                _ret250 = meta
+                                goto _inline_end511
+                            end
+                            ::_inline_end511::
+                            local meta = _ret250
+                            if not meta then
+                                vmerr = lerr or rerr
+                            end
+                        else
+                            local _ret258
+                            _ret258 = left < right
+                            goto _inline_end534
+                            ::_inline_end534::
+                            result = _ret258
+                            mainStackPointer = mainStackPointer + 1
+                            mainStack[mainStackPointer] = result
+                        end
                     end
                 end
                 goto DISPATCH
             ::OP_EQ::
                 do
-                    local _ret239
+                    local _ret267
                     mainStackPointer = mainStackPointer - 1
-                    _ret239 = mainStack[mainStackPointer + 1]
-                    local right = _ret239
-                    local _ret240
+                    _ret267 = mainStack[mainStackPointer + 1]
+                    local right = _ret267
+                    local _ret268
                     mainStackPointer = mainStackPointer - 1
-                    _ret240 = mainStack[mainStackPointer + 1]
-                    local left = _ret240
-                    local _ret241, _ret242
+                    _ret268 = mainStack[mainStackPointer + 1]
+                    local left = _ret268
+                    local _ret269
                     do
-                        local meta, params
-                        local _ret243
-                        _ret243 = type (left) == "table" and (left == empty or left.type) or (type (left) == "cdata" and left.type) or type (left)
-                        local tleft = _ret243
-                        local _ret244
-                        _ret244 = type (right) == "table" and (right == empty or right.type) or (type (right) == "cdata" and right.type) or type (right)
-                        local tright = _ret244
+                        local meta, param1, param2, paramself
+                        local _ret270
+                        _ret270 = type (left) == "table" and (left == empty or left.type) or (type (left) == "cdata" and left.type) or type (left)
+                        local tleft = _ret270
+                        local _ret271
+                        _ret271 = type (right) == "table" and (right == empty or right.type) or (type (right) == "cdata" and right.type) or type (right)
+                        local tright = _ret271
                         if tleft == "table" and left.meta and left.meta.table["eq" .. "r"] then
                             meta = left.meta.table["eq" .. "r"]
-                            params = {right, left}
+                            param1 = right
+                            paramself = left
                         elseif tright == "table" and right.meta and right.meta.table["eq" .. "l"] then
                             meta = right.meta.table["eq" .. "l"]
-                            params = {left, right}
+                            param1 = left
+                            paramself = right
                         elseif tleft == "table" and left.meta and left.meta.table.eq then
                             meta = left.meta.table.eq
-                            params = {left, right, left}
+                            param1 = left
+                            param2 = right
+                            paramself = left
                         elseif tright == "table" and right.meta and right.meta.table.eq then
                             meta = right.meta.table.eq
-                            params = {left, right, right}
+                            param1 = left
+                            param2 = right
+                            paramself = right
                         end
-                        if not meta then
-                            _ret241 = false
-                            goto _inline_end429
-                        end
-                        local _ret245
-                        table.insert (chunk.callstack, {chunk = chunk, macro = meta, ip = ip})
-                        if #chunk.callstack <= 500 then
-                            local success, callResult, cip, source = plume.run (meta, params)
-                            if success then
-                                table.remove (chunk.callstack)
-                                _ret245 = callResult
-                                goto _inline_end432
-                            else
-                                vmserr = {callResult, cip, (source or meta)}
+                        if meta then
+                            mainStackFramesPointer = mainStackFramesPointer + 1
+                            mainStackFrames[mainStackFramesPointer] = mainStackPointer + 1
+                            mainStackPointer = mainStackPointer + 1
+                            mainStack[mainStackPointer] = table.new (0, 0)
+                            mainStackPointer = mainStackPointer + 1
+                            mainStack[mainStackPointer] = param1
+                            if param2 then
+                                mainStackPointer = mainStackPointer + 1
+                                mainStack[mainStackPointer] = param2
                             end
-                        else
-                            vmerr = plume.error.stackOverflow ()
+                            mainStackPointer = mainStackPointer + 1
+                            mainStack[mainStackPointer] = paramself
+                            do
+                                local _ret272
+                                do
+                                    local _ret273
+                                    _ret273 = mainStackFrames[mainStackFramesPointer]
+                                    local _ret274
+                                    _ret274 = mainStack[_ret273 or mainStackPointer]
+                                    _ret272 = _ret274
+                                    goto _inline_end559
+                                end
+                                ::_inline_end559::
+                                local t = _ret272
+                                table.insert (t, "self")
+                                local _ret275
+                                _ret275 = mainStack[mainStackPointer]
+                                table.insert (t, _ret275)
+                                table.insert (t, false)
+                            end
+                            local _ret276
+                            mainStackPointer = mainStackPointer - 1
+                            _ret276 = mainStack[mainStackPointer + 1]
+                            mainStackPointer = mainStackPointer + 1
+                            mainStack[mainStackPointer] = meta
+                            injectionStackPointer = injectionStackPointer + 1
+                            injectionStack[injectionStackPointer] = plume.ops.CONCAT_CALL
+                            injectionStackPointer = injectionStackPointer + 1
+                            injectionStack[injectionStackPointer] = 0
+                            injectionStackPointer = injectionStackPointer + 1
+                            injectionStack[injectionStackPointer] = 0
                         end
-                        ::_inline_end432::
-                        _ret241, _ret242 = true, _ret245
-                        goto _inline_end429
+                        _ret269 = meta
+                        goto _inline_end548
                     end
-                    ::_inline_end429::
-                    local success, result = _ret241, _ret242
-                    if not success then
-                        result = left == right or tonumber (left) and tonumber (left) == tonumber (right) or (false)
+                    ::_inline_end548::
+                    local meta = _ret269
+                    if not meta then
+                        local result = left == right or tonumber (left) and tonumber (left) == tonumber (right) or (false)
+                        mainStackPointer = mainStackPointer + 1
+                        mainStack[mainStackPointer] = result
                     end
-                    mainStackPointer = mainStackPointer + 1
-                    mainStack[mainStackPointer] = result
                 end
                 goto DISPATCH
             ::OP_AND::
                 do
-                    local _ret246
+                    local _ret277
                     mainStackPointer = mainStackPointer - 1
-                    _ret246 = mainStack[mainStackPointer + 1]
-                    local right = _ret246
-                    local _ret247
+                    _ret277 = mainStack[mainStackPointer + 1]
+                    local right = _ret277
+                    local _ret278
                     mainStackPointer = mainStackPointer - 1
-                    _ret247 = mainStack[mainStackPointer + 1]
-                    local left = _ret247
-                    local _ret248
+                    _ret278 = mainStack[mainStackPointer + 1]
+                    local left = _ret278
+                    local _ret279
                     if right == empty then
-                        _ret248 = false
-                        goto _inline_end440
+                        _ret279 = false
+                        goto _inline_end574
                     end
-                    _ret248 = right
-                    ::_inline_end440::
-                    right = _ret248
-                    local _ret249
+                    _ret279 = right
+                    ::_inline_end574::
+                    right = _ret279
+                    local _ret280
                     if left == empty then
-                        _ret249 = false
-                        goto _inline_end441
+                        _ret280 = false
+                        goto _inline_end575
                     end
-                    _ret249 = left
-                    ::_inline_end441::
-                    left = _ret249
-                    local _ret250
-                    _ret250 = right and left
+                    _ret280 = left
+                    ::_inline_end575::
+                    left = _ret280
+                    local _ret281
+                    _ret281 = right and left
                     mainStackPointer = mainStackPointer + 1
-                    mainStack[mainStackPointer] = _ret250
+                    mainStack[mainStackPointer] = _ret281
                 end
                 goto DISPATCH
             ::OP_NOT::
                 do
-                    local _ret251
+                    local _ret282
                     mainStackPointer = mainStackPointer - 1
-                    _ret251 = mainStack[mainStackPointer + 1]
-                    local x = _ret251
-                    local _ret252
+                    _ret282 = mainStack[mainStackPointer + 1]
+                    local x = _ret282
+                    local _ret283
                     if x == empty then
-                        _ret252 = false
-                        goto _inline_end447
+                        _ret283 = false
+                        goto _inline_end581
                     end
-                    _ret252 = x
-                    ::_inline_end447::
-                    x = _ret252
-                    local _ret253
-                    _ret253 = not x
+                    _ret283 = x
+                    ::_inline_end581::
+                    x = _ret283
+                    local _ret284
+                    _ret284 = not x
                     mainStackPointer = mainStackPointer + 1
-                    mainStack[mainStackPointer] = _ret253
+                    mainStack[mainStackPointer] = _ret284
                 end
                 goto DISPATCH
             ::OP_OR::
                 do
-                    local _ret254
+                    local _ret285
                     mainStackPointer = mainStackPointer - 1
-                    _ret254 = mainStack[mainStackPointer + 1]
-                    local right = _ret254
-                    local _ret255
+                    _ret285 = mainStack[mainStackPointer + 1]
+                    local right = _ret285
+                    local _ret286
                     mainStackPointer = mainStackPointer - 1
-                    _ret255 = mainStack[mainStackPointer + 1]
-                    local left = _ret255
-                    local _ret256
+                    _ret286 = mainStack[mainStackPointer + 1]
+                    local left = _ret286
+                    local _ret287
                     if right == empty then
-                        _ret256 = false
-                        goto _inline_end454
+                        _ret287 = false
+                        goto _inline_end588
                     end
-                    _ret256 = right
-                    ::_inline_end454::
-                    right = _ret256
-                    local _ret257
+                    _ret287 = right
+                    ::_inline_end588::
+                    right = _ret287
+                    local _ret288
                     if left == empty then
-                        _ret257 = false
-                        goto _inline_end455
+                        _ret288 = false
+                        goto _inline_end589
                     end
-                    _ret257 = left
-                    ::_inline_end455::
-                    left = _ret257
-                    local _ret258
-                    _ret258 = right or left
+                    _ret288 = left
+                    ::_inline_end589::
+                    left = _ret288
+                    local _ret289
+                    _ret289 = right or left
                     mainStackPointer = mainStackPointer + 1
-                    mainStack[mainStackPointer] = _ret258
+                    mainStack[mainStackPointer] = _ret289
                 end
                 goto DISPATCH
             ::DUPLICATE::
                 do
-                    local _ret259
-                    _ret259 = mainStack[mainStackPointer]
+                    local _ret290
+                    _ret290 = mainStack[mainStackPointer]
                     mainStackPointer = mainStackPointer + 1
-                    mainStack[mainStackPointer] = _ret259
+                    mainStack[mainStackPointer] = _ret290
                 end
                 goto DISPATCH
             ::SWITCH::
                 do
-                    local _ret260
+                    local _ret291
                     mainStackPointer = mainStackPointer - 1
-                    _ret260 = mainStack[mainStackPointer + 1]
-                    local x = _ret260
-                    local _ret261
+                    _ret291 = mainStack[mainStackPointer + 1]
+                    local x = _ret291
+                    local _ret292
                     mainStackPointer = mainStackPointer - 1
-                    _ret261 = mainStack[mainStackPointer + 1]
-                    local y = _ret261
+                    _ret292 = mainStack[mainStackPointer + 1]
+                    local y = _ret292
                     mainStackPointer = mainStackPointer + 1
                     mainStack[mainStackPointer] = x
                     mainStackPointer = mainStackPointer + 1
@@ -2839,10 +3135,10 @@ return function (plume)
                 goto DISPATCH
             ::STD_LEN::
                 do
-                    local _ret262
+                    local _ret293
                     mainStackPointer = mainStackPointer - 1
-                    _ret262 = mainStack[mainStackPointer + 1]
-                    local t = _ret262.table[1]
+                    _ret293 = mainStack[mainStackPointer + 1]
+                    local t = _ret293.table[1]
                     local tt = type (t)
                     local result
                     if tt == "table" then
@@ -2858,22 +3154,22 @@ return function (plume)
                 goto DISPATCH
             ::STD_TYPE::
                 do
-                    local _ret263
+                    local _ret294
                     mainStackPointer = mainStackPointer - 1
-                    _ret263 = mainStack[mainStackPointer + 1]
-                    local t = _ret263.table[1]
-                    local _ret264
-                    _ret264 = type (t) == "table" and (t == empty or t.type) or (type (t) == "cdata" and t.type) or type (t)
+                    _ret294 = mainStack[mainStackPointer + 1]
+                    local t = _ret294.table[1]
+                    local _ret295
+                    _ret295 = type (t) == "table" and (t == empty or t.type) or (type (t) == "cdata" and t.type) or type (t)
                     mainStackPointer = mainStackPointer + 1
-                    mainStack[mainStackPointer] = _ret264
+                    mainStack[mainStackPointer] = _ret295
                 end
                 goto DISPATCH
             ::STD_SEQ::
                 do
-                    local _ret265
+                    local _ret296
                     mainStackPointer = mainStackPointer - 1
-                    _ret265 = mainStack[mainStackPointer + 1]
-                    local args = _ret265.table
+                    _ret296 = mainStack[mainStackPointer + 1]
+                    local args = _ret296.table
                     local start = args[1]
                     local stop = args[2]
                     local step = args[3] or 1
@@ -2889,28 +3185,28 @@ return function (plume)
                 goto DISPATCH
             ::STD_ITEMS::
                 do
-                    local _ret266
+                    local _ret297
                     mainStackPointer = mainStackPointer - 1
-                    _ret266 = mainStack[mainStackPointer + 1]
-                    local args = _ret266.table
+                    _ret297 = mainStack[mainStackPointer + 1]
+                    local args = _ret297.table
                     mainStackPointer = mainStackPointer + 1
                     mainStack[mainStackPointer] = {type = "stdIterator", ref = args[1], flag = ITER_ITEMS, legacy = args.legacy}
                 end
                 goto DISPATCH
             ::STD_ENUMERATE::
                 do
-                    local _ret267
+                    local _ret298
                     mainStackPointer = mainStackPointer - 1
-                    _ret267 = mainStack[mainStackPointer + 1]
-                    local args = _ret267.table
+                    _ret298 = mainStack[mainStackPointer + 1]
+                    local args = _ret298.table
                     mainStackPointer = mainStackPointer + 1
                     mainStack[mainStackPointer] = {type = "stdIterator", ref = args[1], flag = ITER_ENUMS, legacy = args.legacy}
                 end
                 goto DISPATCH
             ::END::
-            local _ret268
-            _ret268 = mainStack[mainStackPointer]
-            return true, _ret268
+            local _ret299
+            _ret299 = mainStack[mainStackPointer]
+            return true, _ret299
         end
     end
     
