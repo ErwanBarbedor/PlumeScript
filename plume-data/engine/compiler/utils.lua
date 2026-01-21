@@ -52,7 +52,7 @@ return function (plume, context)
 	--- @param arg2 number|nil Second argument to give to the opcode. Default to 0.
 	function context.registerOP(node, op, arg1, arg2)
 		assert(op) -- Guard against opcode typo
-		local current = context.getLast("chunks").instructions
+		local current = context.runtime.instructions
 		table.insert(current, {op, arg1 or 0, arg2 or 0, mapsto=node})
 	end
 

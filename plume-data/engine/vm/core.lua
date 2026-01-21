@@ -17,10 +17,10 @@ If not, see <https://www.gnu.org/licenses/>.
 -- Initalization --
 --===============--
 --- Initiialize the VM
---- @param chunk pec The chunk to execute
+--- @param runtime runtime The runtime to execute
 --- @param arguments table
 --! inline-nodo
-function _VM_INIT (plume, chunk, arguments)
+function _VM_INIT (plume, runtime, arguments)
     require("table.new")
 
     local vm = {} --! to-remove
@@ -28,16 +28,16 @@ function _VM_INIT (plume, chunk, arguments)
     -- to avoid context injection
     vm.plume = plume --! to-remove
 
-    _VM_INIT_VARS(vm, chunk)
-    _VM_INIT_ARGUMENTS(vm, chunk, arguments)
+    _VM_INIT_VARS(vm, runtime)
+    _VM_INIT_ARGUMENTS(vm, runtime, arguments)
 
     return vm --! to-remove
 end
 
 --- Declare all vm variables
---- @param chunk pec The chunk to execute
+--- @param runtime runtime The runtime to execute
 --! inline-nodo
-function _VM_INIT_VARS(vm, chunk)
+function _VM_INIT_VARS(vm, runtime)
     --! index-to-inline vm.err vmerr
     --! index-to-inline vm.serr vmserr
     --! index-to-inline vm.* *
@@ -45,13 +45,14 @@ function _VM_INIT_VARS(vm, chunk)
     --! index-to-inline variableStack.*
     --! index-to-inline mainStackFrames.*
     --! index-to-inline variableStackFrames.*
+    --! index-to-inline fileStack.*
     --! index-to-inline injectionStack.*
     --! index-to-inline flag.* *
 
-    vm.chunk = chunk
-    vm.bytecode  = chunk.bytecode
-    vm.constants = chunk.constants
-    vm.static    = chunk.static
+    vm.runtime = runtime
+    vm.bytecode  = runtime.bytecode
+    vm.constants = runtime.constants
+    vm.static    = runtime.static
 
     -- instruction pointer
     vm.ip      = 0
@@ -67,6 +68,10 @@ function _VM_INIT_VARS(vm, chunk)
     vm.variableStack.frames         = table.new(2^8, 0)
     vm.variableStack.pointer        = 0
     vm.variableStack.frames.pointer = 0
+
+    vm.fileStack = table.new(2^8, 0)
+    vm.fileStack[1] = 1
+    vm.fileStack.pointer = 1
 
     vm.injectionStack         = table.new(64, 0)
     vm.injectionStack.pointer = 0
@@ -102,17 +107,17 @@ end
 
 --- Initialize arguments
 --! inline
-function _VM_INIT_ARGUMENTS(vm, chunk, arguments)
+function _VM_INIT_ARGUMENTS(vm, runtime, arguments)
     if arguments then
-        if chunk.isFile then
+        if runtime.isFile then
             for k, v in pairs(arguments) do
-                local offset = chunk.namedParamOffset[k]
+                local offset = runtime.namedParamOffset[k]
                 if offset then
                     chunk.static[offset] = v
                 end
             end
         else -- If not a file, it is a macro
-            for i=1, chunk.localsCount do
+            for i=1, runtime.localsCount do
                 if arguments[i] == nil then
                     _STACK_SET(vm.variableStack, i, vm.empty)
                 else
@@ -120,7 +125,7 @@ function _VM_INIT_ARGUMENTS(vm, chunk, arguments)
                 end
             end
 
-            _STACK_MOVE(vm.variableStack, chunk.localsCount)
+            _STACK_MOVE(vm.variableStack, runtime.localsCount)
             _STACK_PUSH(vm.variableStack.frames, 1)
         end
     end

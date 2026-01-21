@@ -20,21 +20,16 @@ return function (plume, context, nodeHandlerTable)
 		local paramList       = plume.ast.get(node, "PARAMLIST") or {children={}}
 		local uid = context.getUID()
 
-		-- Each macro has it's own execution chunk, like a whole file
-		local macroObj     = plume.newPlumeExecutableChunk(false, context.chunk.state)
-		-- But share declaration file static variables and constants
-		macroObj.static    = context.chunk.static
-		macroObj.constants = context.constants
-
-		-- Push the macro into stack
-		local macroOffset  = context.registerConstant(macroObj)
-		context.registerOP(macroIdentifier, plume.ops.LOAD_CONSTANT, 0, macroOffset)
-		
 		-- If the macro is named, save them in a static variable:
 		-- `macro wing()` is a sugar for `let static wing = macro()`
-		local macroName
-		if macroIdentifier then
-			macroName = macroIdentifier.content
+		local macroName = macroIdentifier and macroIdentifier.content
+
+		-- node.label is a debug informations for macro declared as table field
+		local macroObj     = plume.obj.macro(macroName or node.label, context.chunk)
+		local macroOffset  = context.registerConstant(macroObj)
+		context.registerOP(macroIdentifier or node, plume.ops.LOAD_CONSTANT, 0, macroOffset)
+
+		if macroName then
 			local variable = context.registerVariable(
 				macroName,
 				true -- static
@@ -46,14 +41,13 @@ return function (plume, context, nodeHandlerTable)
 			context.registerOP(macroIdentifier, plume.ops.STORE_STATIC, 0, variable.offset)
 		end
 
-		-- Debug informations
-		macroObj.name = macroName or node.label
+		-- Skip macro body
+		context.registerGoto(param, "macro_declaration_end" .. uid)
 
 		context.file(function ()
 			-- Each macro open a scope, but it is handled by plume.run
 			table.insert(context.scopes, {})
 			table.insert(context.loops, {})
-			table.insert(context.chunks, macroObj)
 
 			-------------------------------------------------------------
 			--- Count arguments, save variadic offset
@@ -95,10 +89,9 @@ return function (plume, context, nodeHandlerTable)
 			macroObj.localsCount = #context.getCurrentScope()
 			
 			table.remove(context.scopes)
-			table.remove(context.chunks)
 			
 		end) ()
 
-		plume.finalize(macroObj)
+		context.registerLabel(param, "macro_declaration_end" .. uid)
 	end
 end

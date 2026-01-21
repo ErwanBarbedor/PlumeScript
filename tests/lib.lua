@@ -153,8 +153,8 @@ function lib.executeTests(allTests, plumeEngine)
                     plumeEngine.cache = {}
                     plumeEngine.env.plume_path = ""
 
-                    local chunk = plumeEngine.newPlumeExecutableChunk(true)
-                    chunk.name = "main"
+                    local runtime = plumeEngine.obj.runtime()
+                    local chunk   = plumeEngine.obj.chunk("main", runtime)
 
                     plumeEngine.runDevFlag = mode==1
                     testData.opt = mode==2
@@ -163,13 +163,12 @@ function lib.executeTests(allTests, plumeEngine)
                         plumeEngine.execute,
                         testData.input,
                         testName,
-                        chunk
+                        chunk,
+                        runtime
                     )
                     
                     -- CRITICAL: Always disable the hook after the pcall completes
                     debug.sethook()
-
-                    
 
                     if not x and y == "timeout" then
                         -- The test timed out
@@ -194,43 +193,11 @@ function lib.executeTests(allTests, plumeEngine)
                         end
 
                         -- Process bytecode state for single or multiple chunks
-                        local bytecode_info
-                        local numChunks = 0
-                        if chunk and chunk.state then
-                            numChunks = #chunk.state
-                        end
-
-                        if numChunks <= 1 then
-                            bytecode_info = {
-                                is_multi = false,
-                                grid = chunk.bytecode and plumeEngine.debug.bytecodeGrid(chunk)
-                            }
-                        else
-                            local chunks_list = {}
-                            for _, subChunk in ipairs(chunk.state) do
-                                if subChunk.bytecode and #subChunk.bytecode > 0 then
-                                    table.insert(chunks_list, {
-                                        name = subChunk.name or "???",
-                                        grid = plumeEngine.debug.bytecodeGrid(subChunk)
-                                    })
-                                end
-                            end
-                            
-                            table.sort(chunks_list, function(a, b) return a.name < b.name end)
-
-                            if #chunks_list <= 1 then
-                                 bytecode_info = {
-                                    is_multi = false,
-                                    grid = chunks_list[1] and chunks_list[1].grid or nil
-                                }
-                            else
-                                bytecode_info = {
-                                    is_multi = true,
-                                    chunks = chunks_list
-                                }
-                            end
-                        end
-
+                        local bytecode_info = {
+                            is_multi = false,
+                            grid = runtime.bytecode and plumeEngine.debug.bytecodeGrid(runtime)
+                        }
+                        
                         testData.obtained = {
                             output = normalizeOutput(result),
                             bytecode = bytecode_info,

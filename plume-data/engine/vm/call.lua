@@ -56,8 +56,8 @@ function CONCAT_CALL (vm, arg1, arg2)
 
     elseif t == "luaFunction" then
         CONCAT_TABLE(vm)
-        table.insert(vm.chunk.callstack, {chunk=vm.chunk, macro=tocall, ip=vm.ip})
-        local success, result  =  pcall(tocall.callable, _STACK_GET(vm.mainStack), vm.chunk)
+        table.insert(vm.runtime.callstack, {runtime=vm.runtime, macro=tocall, ip=vm.ip})
+        local success, result  =  pcall(tocall.callable, _STACK_GET(vm.mainStack), vm.runtime)
         if success then
             table.remove(vm.chunk.callstack)
             if result == nil then
@@ -88,8 +88,8 @@ function _UNSTACK_POS (vm, macro, arguments, capture)
     if argcount ~= macro.positionalParamCount and macro.variadicOffset==0 then
         local name
         -- Last OP_CODE before call is loading the macro by it's name
-        if vm.chunk.mapping[vm.ip-1] then
-            name = vm.chunk.mapping[vm.ip-1].content
+        if vm.runtime.mapping[vm.ip-1] then
+            name = vm.runtime.mapping[vm.ip-1].content
         end
 
         if not name then
@@ -151,11 +151,11 @@ end
 --- @return any Call result
 --! inline
 function _CALL (vm, macro, arguments)
-    table.insert(vm.chunk.callstack, {chunk=vm.chunk, macro=macro, ip=vm.ip})
-    if #vm.chunk.callstack<=500 then
+    table.insert(vm.plume.runtime.callstack, {chunk=vm.plume.runtime, macro=macro, ip=vm.ip})
+    if #vm.plume.runtime.callstack<=500 then
         local success, callResult, cip, source  = vm.plume.run(macro, arguments)
         if success then
-            table.remove(vm.chunk.callstack)
+            table.remove(vm.plume.runtime.callstack)
             return callResult
         else
             _SPECIAL_ERROR(vm, callResult, cip, (source or macro) )

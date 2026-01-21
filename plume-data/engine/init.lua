@@ -36,21 +36,21 @@ require 'plume-data/engine/finalizer'     (plume)
 require 'plume-data/engine/pec'           (plume)
 require 'plume-data/engine/env'           (plume)
 
-function plume.run(chunk, parameter)
+function plume.run(runtime)
 	if plume.runDevFlag then
-		return plume._run_dev(chunk, parameter)
+		return plume._run_dev(runtime)
 	else
-		return plume._run(chunk, parameter)
+		return plume._run(runtime)
 	end
 end
 
-function plume.execute(code, filename, chunk, secondary, args)
+function plume.execute(code, filename, chunk, runtime)
 	local success, result, ip
 	local errorSource = chunk
-	success, result = pcall(plume.compileFile, code, filename, chunk)
+	success, result = pcall(plume.compileFile, code, filename, chunk, runtime)
 
 	if success then
-		success, result, ip, errorSource = plume.run(chunk, args)
+		success, result, ip, errorSource = plume.run(runtime, {})
 	else
 		return false, result
 	end
@@ -65,9 +65,9 @@ function plume.execute(code, filename, chunk, secondary, args)
 	end
 end
 
-function plume.executeFile(filename, state, secondary, args)
-	local chunk = plume.newPlumeExecutableChunk(true, state)
-	chunk.name = filename
+function plume.executeFile(filename, runtime)
+	local runtime = runtime or plume.obj.runtime()
+	local chunk   = plume.obj.chunk(filename, runtime)
 
 	local f = io.open(filename)
 		if not f then
@@ -77,7 +77,7 @@ function plume.executeFile(filename, state, secondary, args)
 		local code = f:read("*a")
 	f:close()
 
-	return plume.execute(code, filename, chunk, secondary, args)
+	return plume.execute(code, filename, chunk, runtime)
 end
 
 plume.hook = nil -- A function call at each step of the vm
