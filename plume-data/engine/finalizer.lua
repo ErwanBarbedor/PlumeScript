@@ -15,45 +15,45 @@ If not, see <https://www.gnu.org/licenses/>.
 
 return function (plume)
 
-	local function link(chunk)
+	local function link(runtime)
 		local labels = {}
 
-		chunk.removedCount = chunk.removedCount or 0
-		for offset=1, #chunk.instructions do
-			instr = chunk.instructions[offset]
+		runtime.removedCount = runtime.removedCount or 0
+		for offset=1, #runtime.instructions do
+			instr = runtime.instructions[offset]
 			if instr.label then
-				labels[instr.label] = offset - chunk.removedCount
-				chunk.removedCount = chunk.removedCount + 1
+				labels[instr.label] = offset - runtime.removedCount
+				runtime.removedCount = runtime.removedCount + 1
 			elseif instr.link then
-				chunk.removedCount = chunk.removedCount + 1
+				runtime.removedCount = runtime.removedCount + 1
 			elseif instr.fileLink then
-				chunk.removedCount = chunk.removedCount + 1
+				runtime.removedCount = runtime.removedCount + 1
 			end
 		end
 
-		chunk.removedOffset = chunk.removedOffset or 0
-		for offset=1, #chunk.instructions do
-			instr = chunk.instructions[offset]
-			offset = offset-chunk.removedOffset
+		runtime.removedOffset = runtime.removedOffset or 0
+		for offset=1, #runtime.instructions do
+			instr = runtime.instructions[offset]
+			offset = offset-runtime.removedOffset
 			if instr.label then
-				chunk.removedOffset = chunk.removedOffset + 1
+				runtime.removedOffset = runtime.removedOffset + 1
 			elseif instr.link then
-				chunk.removedOffset = chunk.removedOffset + 1
-				chunk.constants[instr.link].offset = offset --set macro offset
+				runtime.removedOffset = runtime.removedOffset + 1
+				runtime.constants[instr.link].offset = offset --set macro offset
 			elseif instr._goto then
 				if not labels[instr._goto] then
 					error("Internal Error: no label " .. instr._goto)
 				end
 
-				chunk.linkedInstructions[offset] = {plume.ops[instr.jump], 0, labels[instr._goto]}
+				runtime.linkedInstructions[offset] = {plume.ops[instr.jump], 0, labels[instr._goto]}
 			else
-				chunk.linkedInstructions[offset] = instr
+				runtime.linkedInstructions[offset] = instr
 			end
 		end
 
-		table.insert(chunk.linkedInstructions, {plume.ops.END, 0, 0})
-		chunk.removedOffset = chunk.removedOffset-1 -- offset for END
-		chunk.removedCount  = chunk.removedCount-1
+		table.insert(runtime.linkedInstructions, {plume.ops.END, 0, 0})
+		runtime.removedOffset = runtime.removedOffset-1 -- offset for END
+		runtime.removedCount  = runtime.removedCount-1
 	end
 	
 	------------------------
@@ -70,29 +70,29 @@ return function (plume)
     local MASK_ARG1 = bit.lshift(1, ARG1_BITS) - 1
     local MASK_ARG2 = bit.lshift(1, ARG2_BITS) - 1
     ------------------------
-	local function encode(chunk)
-		if not chunk.bytecode then
-			chunk.bytecode = table.new(#chunk.linkedInstructions, 0)
+	local function encode(runtime)
+		if not runtime.bytecode then
+			runtime.bytecode = table.new(#runtime.linkedInstructions, 0)
 		end
-		for offset=1, #chunk.linkedInstructions do
-			instr = chunk.linkedInstructions[offset]
+		for offset=1, #runtime.linkedInstructions do
+			instr = runtime.linkedInstructions[offset]
 
 			local op_part = bit.lshift(bit.band(instr[1], MASK_OP), OP_SHIFT)
 			local arg1_part = bit.lshift(bit.band(instr[2], MASK_ARG1), ARG1_SHIFT)
 			local arg2_part = bit.band(instr[3], MASK_ARG2)
 			local byte = bit.bor(op_part, arg1_part, arg2_part)
-			chunk.bytecode[offset] = byte
-			chunk.mapping[offset] = instr.mapsto
+			runtime.bytecode[offset] = byte
+			runtime.mapping[offset] = instr.mapsto
 		end
 	end
 
-	function plume.finalize(chunk)
+	function plume.finalize(runtime)
 		-- replaces labels/goto by jumps
 		-- compute real macro offsets
 		-- Add "end" byte
-		link(chunk)
+		link(runtime)
 		-- Encode instruction in one 32bits int
-		encode(chunk)
+		encode(runtime)
 
 		return true
 	end

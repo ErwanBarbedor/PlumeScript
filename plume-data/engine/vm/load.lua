@@ -52,7 +52,7 @@ function LOAD_STATIC (vm, arg1, arg2)
     --- arg2: vs offset
     _STACK_PUSH(
         vm.mainStack,
-        vm.static[arg2]
+        vm.static[_STACK_GET(vm.fileStack)][arg2]
     )
 end
 

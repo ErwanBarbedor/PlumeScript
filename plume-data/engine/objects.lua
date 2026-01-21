@@ -39,4 +39,41 @@ return function(plume)
 		return t
 	end
 
+	function plume.obj.chunk(name, parent)
+		local t = {
+			type   = "chunk",
+			name   = name,
+			positionalParamCount = 0,
+			namedParamCount      = 0,
+			namedParamOffset     = {},
+			parent               = parent,
+			isFile               = parent.type == "runtime"
+			-- offset = offset -- Offset is set by the linker
+		}
+
+		if t.isFile then
+			table.insert(parent.static, {})
+			t.fileID = #parent.static
+			t.static = parent.static[t.fileID]
+			print(t.static, "!")
+		else -- isFile
+			
+			t.static = parent.static
+		end
+		
+		return t
+	end
+
+	function plume.obj.runtime()
+		return {
+			type = "runtime",
+			instructions         = {},
+			linkedInstructions   = {},
+			bytecode             = {},
+			constants            = {},
+			mapping              = {},
+			static               = {}
+		}
+	end
+
 end

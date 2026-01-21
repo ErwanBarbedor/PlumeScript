@@ -19,7 +19,7 @@ return function (plume, context)
 	--- @param node node Emiting node
 	--- @param name string Unique name of this label
 	function context.registerLabel(node, name)
-		local current = context.getLast("chunks").instructions
+		local current = context.runtime.instructions
 		table.insert(current, {label=name, mapsto=node})
 	end
 
@@ -30,7 +30,7 @@ return function (plume, context)
 	--- @param jump string|nil Jump method to use. Default to JUMP.
 	--- Can be: JUMP_IF JUMP_IF_NOT JUMP_IF_NOT_EMPTY JUMP JUMP_IF_PEEK JUMP_IF_NOT_PEEK
 	function context.registerGoto(node, name, jump)
-		local current = context.getLast("chunks").instructions
+		local current = context.runtime.instructions
 		table.insert(current, {_goto=name, jump=jump or "JUMP", mapsto=node})
 	end
 end
