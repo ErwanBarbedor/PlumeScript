@@ -234,4 +234,8 @@ return function(plume)
 	function plume.error.unknowParameter(parameterName, macroName)
 		return string.format("Unknow named parameter '%s' for macro '%s'.", parameterName, macroName)
 	end
+
+	function plume.error.hasNoLen(tt)
+		return string.format("Type '%s' has no len.", tt)
+	end
 end

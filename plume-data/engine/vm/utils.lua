@@ -17,7 +17,7 @@ If not, see <https://www.gnu.org/licenses/>.
 --- @return string Type of x
 --! inline
 function _GET_TYPE(vm, x)
-    return type(x) == "table" and (x == vm.empty or x.type) or type(x)
+    return type(x) == "table" and (x == vm.empty or x.type) or (type(x) == "cdata" and x.type) or type(x)
 end
 
 --- Throw an error

@@ -45,6 +45,8 @@ function _VM_INIT_VARS(vm, chunk)
     --! index-to-inline variableStack.*
     --! index-to-inline mainStackFrames.*
     --! index-to-inline variableStackFrames.*
+    --! index-to-inline injectionStack.*
+    --! index-to-inline flag.* *
 
     vm.chunk = chunk
     vm.bytecode  = chunk.bytecode
@@ -64,13 +66,38 @@ function _VM_INIT_VARS(vm, chunk)
     vm.variableStack                = table.new(2^10, 0)
     vm.variableStack.frames         = table.new(2^8, 0)
     vm.variableStack.pointer        = 0
-    vm.variableStack.frames.pointer = 0 
+    vm.variableStack.frames.pointer = 0
+
+    vm.injectionStack         = table.new(64, 0)
+    vm.injectionStack.pointer = 0
 
     -- easier debuging than setting vm.ip
     vm.jump    = 0
 
     -- local variables
     vm.empty = vm.plume.obj.empty
+
+    -- flag
+    vm.flag = {}
+    vm.flag.ITER_TABLE = 0
+    vm.flag.ITER_SEQ = 1
+    vm.flag.ITER_ITEMS = 2
+    vm.flag.ITER_ENUMS = 3
+
+    --=====================--
+    -- Instruction format --
+    --=====================--
+    vm.bit = require("bit")
+    vm.OP_BITS    = 7
+    vm.ARG1_BITS  = 5
+    vm.ARG2_BITS  = 20
+    vm.ARG1_SHIFT = vm.ARG2_BITS
+    vm.OP_SHIFT   = vm.ARG1_BITS + vm.ARG2_BITS
+    vm.MASK_OP    = vm.bit.lshift(1, vm.OP_BITS) - 1
+    vm.MASK_ARG1  = vm.bit.lshift(1, vm.ARG1_BITS) - 1
+    vm.MASK_ARG2  = vm.bit.lshift(1, vm.ARG2_BITS) - 1
+    vm.band       = vm.bit.band
+    vm.rshift     = vm.bit.rshift
 end
 
 --- Initialize arguments
@@ -101,13 +128,14 @@ end
 
 --- Called at each instruction.
 --- Jump if needed and increment instruction counter
---! inline
+--! inline-nodo
 function _VM_TICK (vm)
     --! to-remove-begin
     if vm.plume.hook then
         if vm.ip>0 then 
             local instr, op, arg1, arg2
             instr = vm.bytecode[vm.ip]
+
             op, arg1, arg2 = _VM_DECODE_CURRENT_INSTRUCTION(vm)
 
             vm.plume.hook (
@@ -142,26 +170,18 @@ function _VM_TICK (vm)
 end
 
 --- Decoding opcode and arguments from instruction
---! inline
+--! inline-nodo
 function _VM_DECODE_CURRENT_INSTRUCTION(vm)
-    --=====================--
-    -- Instruction format --
-    --=====================--
-    local bit = require("bit")
-    local OP_BITS   = 7
-    local ARG1_BITS = 5
-    local ARG2_BITS = 20
-    local ARG1_SHIFT = ARG2_BITS
-    local OP_SHIFT   = ARG1_BITS + ARG2_BITS
-    local MASK_OP   = bit.lshift(1, OP_BITS) - 1
-    local MASK_ARG1 = bit.lshift(1, ARG1_BITS) - 1
-    local MASK_ARG2 = bit.lshift(1, ARG2_BITS) - 1
-
-    local instr, op, arg1, arg2
-    instr = vm.bytecode[vm.ip]
-    op    = bit.band(bit.rshift(instr, OP_SHIFT), MASK_OP)
-    arg1  = bit.band(bit.rshift(instr, ARG1_SHIFT), MASK_ARG1)
-    arg2  = bit.band(instr, MASK_ARG2)
+    local op, arg1, arg2
+    if vm.injectionStack.pointer > 0 then
+        op, arg1, arg2 = _INJECTION_POP(vm)
+    else    
+        _VM_TICK(vm)
+        local instr = vm.bytecode[vm.ip]
+        op    = vm.band(vm.rshift(instr, vm.OP_SHIFT), vm.MASK_OP)
+        arg1  = vm.band(vm.rshift(instr, vm.ARG1_SHIFT), vm.MASK_ARG1)
+        arg2  = vm.band(instr, vm.MASK_ARG2)
+    end
 
     return op, arg1, arg2
 end

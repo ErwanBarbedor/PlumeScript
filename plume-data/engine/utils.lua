@@ -44,10 +44,10 @@ return function (plume)
 ]]
 	local function makeNames(names)
 		local t = {}
-		local count = 1
+		plume.ops_count = 1
 		for name in names:gmatch("%S+") do
-			t[name] = count
-			count = count + 1
+			t[name] = plume.ops_count
+			plume.ops_count = plume.ops_count + 1
 		end
 		return t
 	end

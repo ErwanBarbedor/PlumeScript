@@ -32,6 +32,7 @@ function CONCAT_TEXT (vm, arg1, arg2)
     local start = _STACK_GET(vm.mainStack.frames)
     local stop  = _STACK_POS(vm.mainStack)
     for i = start, stop do
+
         if _STACK_GET(vm.mainStack, i) == vm.empty then
             _STACK_SET(vm.mainStack, i, "")
         end

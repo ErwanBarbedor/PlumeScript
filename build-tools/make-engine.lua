@@ -18,8 +18,7 @@ If not, see <https://www.gnu.org/licenses/>.
 
 require"build-tools/make-vmdoc"
 
-local plume = {}
-require"plume-data/engine/utils"(plume)
+plume = require"plume-data/engine/init"
 local lfs = require "lfs"
 
 local header = [=[--[[This file is part of Plume
@@ -71,9 +70,6 @@ local init = [[
 			if vm.serr then
 				return false, unpack(vm.serr)
 			end
-
-			-- Handle jump and incremente IP
-			_VM_TICK(vm)
 
 			op, arg1, arg2 = _VM_DECODE_CURRENT_INSTRUCTION(vm)
 

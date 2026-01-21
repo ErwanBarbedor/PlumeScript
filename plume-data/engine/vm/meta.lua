@@ -33,7 +33,7 @@ function _META_CHECK (name, macro)
 	end
 	for opp in binopps:gmatch('%S+') do
 		if name == opp then
-			expectedParamCount = 1
+			expectedParamCount = 2
 		end
 	end
 	for opp in unopps:gmatch('%S+') do
