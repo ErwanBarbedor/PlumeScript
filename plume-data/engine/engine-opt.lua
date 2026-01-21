@@ -1575,12 +1575,12 @@ return function (plume)
                                 local _ret122
                                 _ret122 = type (right) == "table" and (right == empty or right.type) or (type (right) == "cdata" and right.type) or type (right)
                                 local tright = _ret122
-                                if tleft == "table" and left.meta and left.meta.table["add" .. "r"] then
-                                    meta = left.meta.table["add" .. "r"]
+                                if tleft == "table" and left.meta and left.meta.table.addr then
+                                    meta = left.meta.table.addr
                                     param1 = right
                                     paramself = left
-                                elseif tright == "table" and right.meta and right.meta.table["add" .. "l"] then
-                                    meta = right.meta.table["add" .. "l"]
+                                elseif tright == "table" and right.meta and right.meta.table.addl then
+                                    meta = right.meta.table.addl
                                     param1 = left
                                     paramself = right
                                 elseif tleft == "table" and left.meta and left.meta.table.add then
@@ -1771,12 +1771,12 @@ return function (plume)
                                 local _ret142
                                 _ret142 = type (right) == "table" and (right == empty or right.type) or (type (right) == "cdata" and right.type) or type (right)
                                 local tright = _ret142
-                                if tleft == "table" and left.meta and left.meta.table["mul" .. "r"] then
-                                    meta = left.meta.table["mul" .. "r"]
+                                if tleft == "table" and left.meta and left.meta.table.mulr then
+                                    meta = left.meta.table.mulr
                                     param1 = right
                                     paramself = left
-                                elseif tright == "table" and right.meta and right.meta.table["mul" .. "l"] then
-                                    meta = right.meta.table["mul" .. "l"]
+                                elseif tright == "table" and right.meta and right.meta.table.mull then
+                                    meta = right.meta.table.mull
                                     param1 = left
                                     paramself = right
                                 elseif tleft == "table" and left.meta and left.meta.table.mul then
@@ -1967,12 +1967,12 @@ return function (plume)
                                 local _ret162
                                 _ret162 = type (right) == "table" and (right == empty or right.type) or (type (right) == "cdata" and right.type) or type (right)
                                 local tright = _ret162
-                                if tleft == "table" and left.meta and left.meta.table["sub" .. "r"] then
-                                    meta = left.meta.table["sub" .. "r"]
+                                if tleft == "table" and left.meta and left.meta.table.subr then
+                                    meta = left.meta.table.subr
                                     param1 = right
                                     paramself = left
-                                elseif tright == "table" and right.meta and right.meta.table["sub" .. "l"] then
-                                    meta = right.meta.table["sub" .. "l"]
+                                elseif tright == "table" and right.meta and right.meta.table.subl then
+                                    meta = right.meta.table.subl
                                     param1 = left
                                     paramself = right
                                 elseif tleft == "table" and left.meta and left.meta.table.sub then
@@ -2163,12 +2163,12 @@ return function (plume)
                                 local _ret182
                                 _ret182 = type (right) == "table" and (right == empty or right.type) or (type (right) == "cdata" and right.type) or type (right)
                                 local tright = _ret182
-                                if tleft == "table" and left.meta and left.meta.table["div" .. "r"] then
-                                    meta = left.meta.table["div" .. "r"]
+                                if tleft == "table" and left.meta and left.meta.table.divr then
+                                    meta = left.meta.table.divr
                                     param1 = right
                                     paramself = left
-                                elseif tright == "table" and right.meta and right.meta.table["div" .. "l"] then
-                                    meta = right.meta.table["div" .. "l"]
+                                elseif tright == "table" and right.meta and right.meta.table.divl then
+                                    meta = right.meta.table.divl
                                     param1 = left
                                     paramself = right
                                 elseif tleft == "table" and left.meta and left.meta.table.div then
@@ -2458,12 +2458,12 @@ return function (plume)
                                 local _ret212
                                 _ret212 = type (right) == "table" and (right == empty or right.type) or (type (right) == "cdata" and right.type) or type (right)
                                 local tright = _ret212
-                                if tleft == "table" and left.meta and left.meta.table["mod" .. "r"] then
-                                    meta = left.meta.table["mod" .. "r"]
+                                if tleft == "table" and left.meta and left.meta.table.modr then
+                                    meta = left.meta.table.modr
                                     param1 = right
                                     paramself = left
-                                elseif tright == "table" and right.meta and right.meta.table["mod" .. "l"] then
-                                    meta = right.meta.table["mod" .. "l"]
+                                elseif tright == "table" and right.meta and right.meta.table.modl then
+                                    meta = right.meta.table.modl
                                     param1 = left
                                     paramself = right
                                 elseif tleft == "table" and left.meta and left.meta.table.mod then
@@ -2654,12 +2654,12 @@ return function (plume)
                                 local _ret232
                                 _ret232 = type (right) == "table" and (right == empty or right.type) or (type (right) == "cdata" and right.type) or type (right)
                                 local tright = _ret232
-                                if tleft == "table" and left.meta and left.meta.table["pow" .. "r"] then
-                                    meta = left.meta.table["pow" .. "r"]
+                                if tleft == "table" and left.meta and left.meta.table.powr then
+                                    meta = left.meta.table.powr
                                     param1 = right
                                     paramself = left
-                                elseif tright == "table" and right.meta and right.meta.table["pow" .. "l"] then
-                                    meta = right.meta.table["pow" .. "l"]
+                                elseif tright == "table" and right.meta and right.meta.table.powl then
+                                    meta = right.meta.table.powl
                                     param1 = left
                                     paramself = right
                                 elseif tleft == "table" and left.meta and left.meta.table.pow then
@@ -2850,12 +2850,12 @@ return function (plume)
                                 local _ret252
                                 _ret252 = type (right) == "table" and (right == empty or right.type) or (type (right) == "cdata" and right.type) or type (right)
                                 local tright = _ret252
-                                if tleft == "table" and left.meta and left.meta.table["lt" .. "r"] then
-                                    meta = left.meta.table["lt" .. "r"]
+                                if tleft == "table" and left.meta and left.meta.table.ltr then
+                                    meta = left.meta.table.ltr
                                     param1 = right
                                     paramself = left
-                                elseif tright == "table" and right.meta and right.meta.table["lt" .. "l"] then
-                                    meta = right.meta.table["lt" .. "l"]
+                                elseif tright == "table" and right.meta and right.meta.table.ltl then
+                                    meta = right.meta.table.ltl
                                     param1 = left
                                     paramself = right
                                 elseif tleft == "table" and left.meta and left.meta.table.lt then
@@ -2951,12 +2951,12 @@ return function (plume)
                         local _ret271
                         _ret271 = type (right) == "table" and (right == empty or right.type) or (type (right) == "cdata" and right.type) or type (right)
                         local tright = _ret271
-                        if tleft == "table" and left.meta and left.meta.table["eq" .. "r"] then
-                            meta = left.meta.table["eq" .. "r"]
+                        if tleft == "table" and left.meta and left.meta.table.eqr then
+                            meta = left.meta.table.eqr
                             param1 = right
                             paramself = left
-                        elseif tright == "table" and right.meta and right.meta.table["eq" .. "l"] then
-                            meta = right.meta.table["eq" .. "l"]
+                        elseif tright == "table" and right.meta and right.meta.table.eql then
+                            meta = right.meta.table.eql
                             param1 = left
                             paramself = right
                         elseif tleft == "table" and left.meta and left.meta.table.eq then
