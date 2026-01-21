@@ -929,8 +929,8 @@ return function (plume)
                             local _ret88
                             _ret88 = variableStackPointer
                             variableStackFramesPointer = variableStackFramesPointer + 1
-                            variableStackFrames[variableStackFramesPointer] = _ret88 + 1 - 0
-                            for i = 1, tocall.positionalParamCount - 0 do
+                            variableStackFrames[variableStackFramesPointer] = _ret88 + 1
+                            for i = 1, tocall.positionalParamCount do
                                 variableStackPointer = variableStackPointer + 1
                                 variableStack[variableStackPointer] = empty
                             end
