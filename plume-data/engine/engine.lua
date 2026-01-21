@@ -235,9 +235,9 @@ return function (plume)
 								end
 							else
 								if op < 47 then
-									goto END
+									goto RETURN
 								else
-									goto STD_LEN
+									goto END
 								end
 							end
 						end
@@ -247,14 +247,20 @@ return function (plume)
 						if op < 52 then
 							if op < 50 then
 								if op < 49 then
-									goto STD_TYPE
+									goto STD_LEN
 								else
-									goto STD_SEQ
+									goto STD_TYPE
 								end
 							else
 								if op < 51 then
-									goto STD_ITEMS
+									goto STD_SEQ
 								else
+									goto STD_ITEMS
+								end
+							end
+						else
+							if op < 54 then
+								if op < 53 then
 									goto STD_ENUMERATE
 								end
 							end
@@ -396,6 +402,9 @@ return function (plume)
 				goto DISPATCH
 			::SWITCH::
 				SWITCH(vm, arg1, arg2)
+				goto DISPATCH
+			::RETURN::
+				RETURN(vm, arg1, arg2)
 				goto DISPATCH
 			::STD_LEN::
 				STD_LEN(vm, arg1, arg2)

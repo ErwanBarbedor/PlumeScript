@@ -47,7 +47,7 @@ return function(plume)
 		context.chunk = chunk
 		context.runtime = runtime
 
-		context.static    = chunk.static
+		context.static    = {}
 		context.constants = runtime.constants
 		
 		context.scopes    = {}

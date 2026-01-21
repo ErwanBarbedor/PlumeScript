@@ -40,6 +40,8 @@ return function (plume)
 		
 		DUPLICATE SWITCH
 
+		RETURN
+
 		END
 ]]
 	local function makeNames(names)
