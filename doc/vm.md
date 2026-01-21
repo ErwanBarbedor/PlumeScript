@@ -253,6 +253,23 @@ JUMP_IF_NOT :else   -- Jumps if result is false.
 #### LEAVE_SCOPE
 <br>Close a frame 
 
+### vm/std.lua
+
+#### STD_LEN
+
+
+#### STD_TYPE
+
+
+#### STD_SEQ
+
+
+#### STD_ITEMS
+
+
+#### STD_ENUMERATE
+
+
 ### vm/store.lua
 
 #### STORE_STATIC

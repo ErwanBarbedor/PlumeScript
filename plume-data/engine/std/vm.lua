@@ -13,30 +13,25 @@ You should have received a copy of the GNU General Public License along with Plu
 If not, see <https://www.gnu.org/licenses/>.
 ]]
 
-return function(plume)
-	require "table.new"
-	
-	plume.obj = {}
-	plume.obj.empty = {type = "empty"}
-
-	--- lua fonction take 1 parameter: the plume table of all given arguments
-	function plume.obj.luaFunction (name, f)
-		return {
-			type = "luaFunction",
-			callable = f,
-			name = name -- optionnal
+return function (plume)
+	plume.stdVM = {}
+	local function registerLuaStdFunction(name)
+		plume.stdVM[name] = {
+			type = "luaStdFunction",
+			name = name,
+			opcode = plume.ops_count,
 		}
+		
+		local opName = "STD_" .. name:upper()
+		plume.ops[opName] = plume.ops_count
+		plume.ops_names = plume.ops_names .. " " .. opName
+		plume.ops_count = plume.ops_count + 1
+
 	end
 
-	function plume.obj.table (listSlots, hashSlots)
-		local t
-		t = {
-			type = "table", --type
-			table = table.new(listSlots, hashSlots),
-			keys = table.new(hashSlots, 0),
-			meta = {table={}}
-		}
-		return t
-	end
-
+	registerLuaStdFunction("len")
+	registerLuaStdFunction("type")
+	registerLuaStdFunction("seq")
+	registerLuaStdFunction("items")
+	registerLuaStdFunction("enumerate")
 end

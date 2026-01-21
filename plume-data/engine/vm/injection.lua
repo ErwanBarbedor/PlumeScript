@@ -13,30 +13,24 @@ You should have received a copy of the GNU General Public License along with Plu
 If not, see <https://www.gnu.org/licenses/>.
 ]]
 
-return function(plume)
-	require "table.new"
-	
-	plume.obj = {}
-	plume.obj.empty = {type = "empty"}
+--- Get the last instruction from the injectionStack
+--- @return number, number, number
+--! inline
+function _INJECTION_POP(vm)
+	local arg2 = _STACK_POP(vm.injectionStack)
+	local arg1 = _STACK_POP(vm.injectionStack)
+	local op   = _STACK_POP(vm.injectionStack)
+	return op, arg1, arg2
+end
 
-	--- lua fonction take 1 parameter: the plume table of all given arguments
-	function plume.obj.luaFunction (name, f)
-		return {
-			type = "luaFunction",
-			callable = f,
-			name = name -- optionnal
-		}
-	end
-
-	function plume.obj.table (listSlots, hashSlots)
-		local t
-		t = {
-			type = "table", --type
-			table = table.new(listSlots, hashSlots),
-			keys = table.new(hashSlots, 0),
-			meta = {table={}}
-		}
-		return t
-	end
-
+--- Add an instruction at the injectionStack end
+--- @param op number
+--- @param arg1 number
+--- @param arg2 number
+--- @return nil
+--! inline
+function _INJECTION_PUSH(vm, op, arg1, arg2)
+	_STACK_PUSH(vm.injectionStack, op)
+	_STACK_PUSH(vm.injectionStack, arg1)
+	_STACK_PUSH(vm.injectionStack, arg2)
 end

@@ -45,29 +45,47 @@ end
 --- @return false|true, any(call result)
 --! inline
 function _HANDLE_META_BIN (vm, left, right, name)
-    local meta, params
+    local meta, param1, param2, paramself
     local tleft  = _GET_TYPE(vm, left)
     local tright = _GET_TYPE(vm, right)
 
     if tleft == "table" and left.meta and left.meta.table[name.."r"] then
         meta = left.meta.table[name.."r"]
-        params = {right, left} -- self last
+        param1 = right
+        paramself = left
     elseif tright == "table" and right.meta and right.meta.table[name.."l"] then
         meta = right.meta.table[name.."l"]
-        params = {left, right}
+        param1 = left
+        paramself = right
     elseif tleft == "table" and left.meta and left.meta.table[name] then
         meta = left.meta.table[name]
-        params = {left, right, left}
+        param1 = left
+        param2 = right
+        paramself = left
     elseif tright == "table" and right.meta and right.meta.table[name] then
         meta = right.meta.table[name]
-        params = {left, right, right}
+        param1 = left
+        param2 = right
+        paramself = right
     end
 
-    if not meta then
-        return false
+    if meta then
+        BEGIN_ACC(vm, 0, 0)
+        TABLE_NEW(vm, 0, 0)
+        _STACK_PUSH(vm.mainStack, param1)
+        if param2 then
+            _STACK_PUSH(vm.mainStack, param2)
+        end
+
+        _STACK_PUSH(vm.mainStack, paramself)
+        TABLE_REGISTER_SELF(vm, 0, 0)
+        _STACK_POP(vm.mainStack) -- TABLE_REGISTER_SELF dont pop
+
+        _STACK_PUSH(vm.mainStack, meta)
+        _INJECTION_PUSH(vm, vm.plume.ops.CONCAT_CALL, 0, 0)
     end
 
-    return true, _CALL (vm, meta, params)
+    return meta
 end
 
 --- For a given operation name, try to find a meta macro to do the operation.
@@ -126,23 +144,34 @@ function _BIN_OP_NUMBER (vm, op, name)
     local right = _STACK_POP(vm.mainStack)
     local left  = _STACK_POP(vm.mainStack)
 
-    local rerr, lerr, success, result
+    local rightNumber = tonumber(right)
+    local leftNumber = tonumber(left)
 
-    right, rerr = _CHECK_NUMBER_META (vm, right)
-    left, lerr  = _CHECK_NUMBER_META (vm, left)
-
-    if lerr or rerr then
-        success, result = _HANDLE_META_BIN (vm, left, right, name)
-    else
-        success = true
-        result = op(left, right)
-    end
-
-    if success then
+    -- Only number
+    if rightNumber and leftNumber then
+        result = op(leftNumber, rightNumber)
         _STACK_PUSH(vm.mainStack, result)
     else
-        _ERROR(vm, lerr or rerr)
-    end    
+
+        local rerr, lerr
+
+        right, rerr = _CHECK_NUMBER_META (vm, right)
+        left, lerr  = _CHECK_NUMBER_META (vm, left)
+
+        -- table with metafield for this operator
+        if lerr or rerr then
+            local meta = _HANDLE_META_BIN (vm, left, right, name)
+            if not meta then
+                _ERROR(vm, lerr or rerr)
+            end
+        -- table with tonumber metafield
+        else
+            result = op(left, right)
+            _STACK_PUSH(vm.mainStack, result)
+        end
+
+        
+    end
 end
 
 --- Unstack 1 value, apply an operation, stack the result.
@@ -287,12 +316,13 @@ function OP_EQ (vm, arg1, arg2)
     local right = _STACK_POP(vm.mainStack)
     local left  = _STACK_POP(vm.mainStack)
 
-    local success, result = _HANDLE_META_BIN (vm, left, right, "eq")
+    local meta  = _HANDLE_META_BIN (vm, left, right, "eq")
 
-    if not success then
-        -- (false) instead of false preventing make-engine-opt optimization
-        result = left == right or tonumber(left) and tonumber(left) == tonumber(right) or (false)
+    if not meta then
+        -- `(false)` instead of `false` preventing make-engine-opt optimization
+        local result = left == right or tonumber(left) and tonumber(left) == tonumber(right) or (false)
+        _STACK_PUSH(vm.mainStack, result)  
     end
 
-    _STACK_PUSH(vm.mainStack, result)  
+    
 end

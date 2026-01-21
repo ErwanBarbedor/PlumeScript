@@ -115,7 +115,7 @@ Runtime error: Stack overflow
 Traceback (most recent call first):
   File 'stack overflow', line 5: $mark()
                                   ^^^^^^
-  These lines are repeated 498 times:
+  These lines are repeated 248 times:
   -------------
   File 'stack overflow', line 5: $mark()
                                   ^^^^^^

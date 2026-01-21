@@ -1,0 +1,94 @@
+--[[This file is part of Plume
+
+Plume🪶 is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, version 3 of the License.
+
+Plume🪶 is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+See the GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License along with Plume🪶.
+If not, see <https://www.gnu.org/licenses/>.
+]]
+
+--- @opcode
+--! inline
+function STD_LEN(vm, arg1, arg2)
+	local t = _STACK_POP(vm.mainStack).table[1]
+	local tt = type(t)
+    local result
+	if tt == "table" then
+        result = #t.table
+    elseif tt == "string" then
+        result = #t
+    else
+        _ERROR(vm, vm.plume.error.hasNoLen(tt))
+    end
+    _STACK_PUSH(vm.mainStack, result)
+end
+
+--- @opcode
+--! inline
+function STD_TYPE(vm, arg1, arg2)
+    local t = _STACK_POP(vm.mainStack).table[1]
+    _STACK_PUSH(vm.mainStack, _GET_TYPE(vm, t))
+end
+
+--- @opcode
+--! inline
+function STD_SEQ(vm, arg1, arg2)
+    local args = _STACK_POP(vm.mainStack).table
+    local start = args[1]
+    local stop  = args[2]
+    local step  = args[3] or 1
+
+    if not stop then
+        stop = start
+        start = 1
+    end
+
+    start = tonumber(start)
+    stop = tonumber(stop)
+
+    _STACK_PUSH(vm.mainStack, {
+        type = "stdIterator",
+        start=start,
+        stop=stop,
+        step=step,
+        flag = vm.flag.ITER_SEQ
+    })
+end
+
+--- @opcode
+--! inline
+function STD_ITEMS(vm, arg1, arg2)
+    local args = _STACK_POP(vm.mainStack).table
+    _STACK_PUSH(vm.mainStack, {
+        type = "stdIterator",
+        ref  = args[1],
+        flag = vm.flag.ITER_ITEMS,
+        ---------------------------------
+        -- WILL BE REMOVED IN 1.0 (#230)
+        ---------------------------------
+        legacy = args.legacy
+        ---------------------------------
+    })
+end
+
+--- @opcode
+--! inline
+function STD_ENUMERATE(vm, arg1, arg2)
+    local args = _STACK_POP(vm.mainStack).table
+    _STACK_PUSH(vm.mainStack, {
+        type = "stdIterator",
+        ref = args[1],
+        flag = vm.flag.ITER_ENUMS,
+        ---------------------------------
+        -- WILL BE REMOVED IN 1.0 (#230)
+        ---------------------------------
+        legacy = args.legacy
+        ---------------------------------
+    })
+end
