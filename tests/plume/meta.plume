@@ -147,7 +147,7 @@ My value is 5
 
 /// Test eq
 let t = @table
-  meta eq: macro(x)
+  meta eq: macro(x, y)
     $true
   end
 end
@@ -159,7 +159,7 @@ true
 
 /// Test neq fallback
 let t = @table
-  meta eq: macro(x)
+  meta eq: macro(x, y)
     $true
   end
 end
@@ -171,7 +171,7 @@ false
 
 /// Test lt
 let t = @table
-  meta lt: macro(x)
+  meta lt: macro(x, y)
     $true
   end
 end
@@ -183,7 +183,7 @@ true
 
 /// Test lt fallback 1
 let t = @table
-  meta lt: macro(x)
+  meta lt: macro(x, y)
     $true
   end
 end
@@ -195,7 +195,7 @@ true
 
 /// Test lt fallback 2
 let t = @table
-  meta lt: macro(x)
+  meta lt: macro(x, y)
     $true
   end
 end
