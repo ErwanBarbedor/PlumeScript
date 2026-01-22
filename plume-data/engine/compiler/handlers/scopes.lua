@@ -14,10 +14,6 @@ If not, see <https://www.gnu.org/licenses/>.
 ]]
 
 return function (plume, context, nodeHandlerTable)
-	nodeHandlerTable.LEAVE = function(node)
-		context.registerGoto(node, "macro_end")
-	end
-
 	nodeHandlerTable.FILE = context.file(function(node)
 		local lets = #plume.ast.getAll(node, "LET")
 		context.registerOP(node, plume.ops.ENTER_SCOPE, 0, lets)
