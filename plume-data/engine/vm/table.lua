@@ -128,8 +128,11 @@ function TABLE_INDEX (vm, arg1, arg2)
                     LOAD_EMPTY(vm)
                 elseif t.meta.table.getindex then
                     local meta = t.meta.table.getindex
-                    local args = {key}
-                    _STACK_PUSH(vm.mainStack, _CALL (vm, meta, args))
+                    BEGIN_ACC(vm, 0, 0)
+                    _STACK_PUSH(vm.mainStack, key)
+                    _PUSH_SELF(vm, t)
+                    _STACK_PUSH(vm.mainStack, meta)
+                    _INJECTION_PUSH(vm, vm.plume.ops.CONCAT_CALL, 0, 0)
                 else
                     if tonumber(key) then
                         _ERROR (vm, vm.plume.error.invalidKey(key))
@@ -140,6 +143,16 @@ function TABLE_INDEX (vm, arg1, arg2)
             end
         end
     end
+end
+
+--- @param self table
+--- Register a table as the value for the field self
+--- in the current accumulation table
+--! inline
+function _PUSH_SELF(vm, self)
+    _STACK_PUSH(vm.mainStack, self)
+    _STACK_PUSH(vm.mainStack, "self")
+    TAG_KEY(vm)
 end
 
 --- @opcode
@@ -161,22 +174,50 @@ end
 --- @opcode
 --- Unstack 3, in order: table, key, value
 --- Set the table.key to value
+--- @param arg1 number If set to 1, take table, key, value in reverse order
 --! inline
 function TABLE_SET (vm, arg1, arg2)
-    local t     = _STACK_POP(vm.mainStack)
-    local key   = _STACK_POP(vm.mainStack)
-    local value = _STACK_POP(vm.mainStack)
+    local t, key, value
+
+    if arg1 == 1 then
+        value = _STACK_POP(vm.mainStack)
+        key   = _STACK_POP(vm.mainStack)
+        t     = _STACK_POP(vm.mainStack)
+    else
+        t     = _STACK_POP(vm.mainStack)
+        key   = _STACK_POP(vm.mainStack)
+        value = _STACK_POP(vm.mainStack)
+    end
+    local meta
     if not t.table[key] then
         table.insert(t.keys, key)
-        if t.meta.table.setindex then
-            local meta = t.meta.table.setindex
-            local args = {key, value}
-            
-            value = _CALL (vm, meta, args)
+        meta = t.meta.table.setindex
+        if meta then
+            -- for preventing infinite loop with next TABLE_SET
+            -- quite dirty an vulnerable (ex: meta set this key to nil)
+            -- may be rewrited in the futur
+            t.table[key] = vm.empty 
+
+            -- table & key
+            _STACK_PUSH(vm.mainStack, t)
+            _STACK_PUSH(vm.mainStack, key)
+
+            -- value
+            BEGIN_ACC(vm, 0, 0)
+            _STACK_PUSH(vm.mainStack, key)
+            _STACK_PUSH(vm.mainStack, value)
+            _PUSH_SELF(vm, t)
+            _STACK_PUSH(vm.mainStack, meta)
+
+            _INJECTION_PUSH(vm, vm.plume.ops.TABLE_SET, 1, 0)   -- set
+            _INJECTION_PUSH(vm, vm.plume.ops.CONCAT_CALL, 0, 0) -- call
         end
     end
-    key = tonumber(key) or key
-    t.table[key] = value
+
+    if not meta then
+        key = tonumber(key) or key
+        t.table[key] = value
+    end
 end
 
 --- @opcode

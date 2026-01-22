@@ -127,7 +127,7 @@ end
 --! inline-nodo
 function _VM_DECODE_CURRENT_INSTRUCTION(vm)
     local op, arg1, arg2
-    if vm.injectionStack.pointer > 0 then
+    if _CAN_INJECT(vm) then
         op, arg1, arg2 = _INJECTION_POP(vm)
     else    
         _VM_TICK(vm)

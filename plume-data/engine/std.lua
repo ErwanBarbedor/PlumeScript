@@ -47,6 +47,7 @@ return function (plume)
     _table.table.append = plume.std.append
 
     plume.std.table = _table
+    plume.std.tostring = {} -- hardcoded
 
     local function importLuaFunction(name, f)
         return plume.obj.luaFunction(name, function(args)

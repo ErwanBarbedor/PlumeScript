@@ -71,15 +71,12 @@ function _HANDLE_META_BIN (vm, left, right, name)
 
     if meta then
         BEGIN_ACC(vm, 0, 0)
-        TABLE_NEW(vm, 0, 0)
         _STACK_PUSH(vm.mainStack, param1)
         if param2 then
             _STACK_PUSH(vm.mainStack, param2)
         end
 
-        _STACK_PUSH(vm.mainStack, paramself)
-        TABLE_REGISTER_SELF(vm, 0, 0)
-        _STACK_POP(vm.mainStack) -- TABLE_REGISTER_SELF dont pop
+        _PUSH_SELF(vm, paramself)
 
         _STACK_PUSH(vm.mainStack, meta)
         _INJECTION_PUSH(vm, vm.plume.ops.CONCAT_CALL, 0, 0)
@@ -96,16 +93,19 @@ end
 --! inline
 function _HANDLE_META_UN (vm, x, name)
     local meta
-    local params = {x}
     if _GET_TYPE(vm, x) == "table" and x.meta and x.meta.table[name] then
         meta = x.meta.table[name]
     end
 
-    if not meta then
-        return false
+    if meta then
+        BEGIN_ACC(vm, 0, 0)
+        _STACK_PUSH(vm.mainStack, x)
+        _PUSH_SELF(vm, paramself)
+        _STACK_PUSH(vm.mainStack, meta)
+        _INJECTION_PUSH(vm, vm.plume.ops.CONCAT_CALL, 0, 0)
     end
 
-    return true, _CALL (vm, meta, params)
+    return meta
 end
 
 --- Unstack 2 value, apply an boolean operation, stack the result.
@@ -180,22 +180,18 @@ end
 --! inline
 function _UN_OP_NUMBER (vm, op, name)
     local x = _STACK_POP(vm.mainStack)
-    local err
+    local err, meta
 
     x, err = _CHECK_NUMBER_META (vm, x)
 
     if err then
-        success, result = _HANDLE_META_UN (vm, x, name)
+        meta = _HANDLE_META_UN (vm, x, name)
+        if not meta then
+             _ERROR(vm, err)
+        end
     else
-        success = true
-        result = op(x)
+        _STACK_PUSH(vm.mainStack, op(x))
     end
-
-    if success then
-        _STACK_PUSH(vm.mainStack, result)
-    else
-        _ERROR(vm, err)
-    end  
 end
 
 ----------------
