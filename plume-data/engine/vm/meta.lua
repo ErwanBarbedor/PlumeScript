@@ -49,7 +49,7 @@ function _META_CHECK (name, macro)
 		if macro.namedParamCount > 1 then -- 1 for self
 			return false, "Meta-macro '" .. name .. "' dont support named parameters."
 		end
-	elseif name ~= "call" and name ~= "tostring" and name ~= "tonumber" and name ~= "getindex" and name ~= "setindex" and name ~= "next" and name ~= "iter" then
+	elseif name ~= "call" and name ~= "tostring" and name ~= "getindex" and name ~= "setindex" and name ~= "next" and name ~= "iter" then
 		return false, "'" .. name .. "' isn't a valid meta-macro name."
 	end
 

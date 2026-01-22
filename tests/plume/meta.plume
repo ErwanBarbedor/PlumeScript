@@ -229,30 +229,6 @@ $(tostring(t))
 I'm a table
 /// End
 
-/// Test tonumber 1
-let t = @table
-  meta tonumber: macro()
-    5
-  end
-end
-
-$(t+1)
-/// Output
-6
-/// End
-
-/// Test tonumber 2
-let t = @table
-  meta tonumber: macro()
-    5
-  end
-end
-
-$tonumber($t)
-/// Output
-5
-/// End
-
 /// Test getindex 1
 let t = @table
   meta getindex: macro(name)

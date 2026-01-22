@@ -60,8 +60,6 @@ return function (plume)
                 error("Cannot convert empty into number", 0)
             elseif type(x) == "number" then
                 return x
-            elseif type(x) == "table" and x.type == "table" and x.meta.table.tonumber then
-                return callPlumeMacro(x.meta.table.tonumber, {x}, chunk)
             else
                error(string.format("Cannot convert %s into number", type(x)), 0)
             end
