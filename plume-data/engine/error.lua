@@ -188,7 +188,7 @@ return function(plume)
 		local lineInfos = plume.error.getLineInfos(node)
 		table.insert(
 			errorCallstack,
-			plume.error.formatLine(lineInfos, (not runtime.isFile) and runtime.name)
+			plume.error.formatLine(lineInfos)
 		)
 
 		if runtime.callstack then
@@ -196,13 +196,16 @@ return function(plume)
 				local source = runtime.callstack[i]
 				local node
 				if source.macro.type == "macro" then
-					node = plume.error.getNode(source.chunk, source.ip)
+					node = plume.error.getNode(runtime, source.ip)
 				elseif source.macro.type == "luaFunction" and i>1 then
-					node = plume.error.getNode(source.chunk, source.ip)
+					node = plume.error.getNode(runtime, source.ip)
 				end
 				if node then
+					local parentMacro = runtime.callstack[i-1]
+					local parentMacroName = parentMacro and parentMacro.macro.type == "macro" and parentMacro.macro.name
+
 					local lineInfos = plume.error.getLineInfos(node)
-					local formatedLine = plume.error.formatLine(lineInfos, (not source.chunk.isFile) and source.chunk.name)
+					local formatedLine = plume.error.formatLine(lineInfos, parentMacroName)
 					table.insert(errorCallstack, formatedLine)
 				end
 			end

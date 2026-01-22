@@ -59,7 +59,7 @@ end
 --! inline
 function CONCAT_TABLE(vm)
     -- Treat all arguments as variadic by asking for 0 positional variables and 0 named variables
-    local resultTable = _CONCAT_TABLE(vm, 0, nil)
+    local resultTable = _CONCAT_TABLE(vm, 0, nil, true)
 
     _STACK_POP_FRAME(vm.mainStack) -- Clean stack from arguments
     _STACK_PUSH(vm.mainStack, resultTable) -- Push the resulting table onto the stack
@@ -69,16 +69,23 @@ end
 ---@param namedParamOffset table|nil A map of named parameters to their register offsets (nil for none).
 ---@return table The variadic table object containing surplus/variadic arguments.
 --! inline
-function _CONCAT_TABLE(vm, posParamCount, namedParamOffset)
+function _CONCAT_TABLE(vm, posParamCount, namedParamOffset, variadic)
     local argsOffset   = 1
     
     local frameOffset  = _STACK_GET(vm.mainStack.frames)
     local bufferOffset = frameOffset
     local mainStackTop = _STACK_POS(vm.mainStack)
 
+    local variadicTable
     -- Heuristic allocation: assume worst case (all items are part of the table)
-    local max = mainStackTop - bufferOffset + 1
-    local variadicTable = vm.plume.obj.table(max, max / 2)
+    if variadic then
+        local max = mainStackTop - bufferOffset + 1
+        variadicTable = vm.plume.obj.table(max, max / 2)
+    end
+
+    local tomanyPositionnalCounter = 0
+    local capturedCount = 0
+    local unknowNamed
 
     while bufferOffset <= mainStackTop do
         local tag = vm.tagStack[bufferOffset+1]
@@ -88,9 +95,12 @@ function _CONCAT_TABLE(vm, posParamCount, namedParamOffset)
             if argsOffset <= posParamCount then
                 -- Assign to local variable register
                 _STACK_SET_FRAMED(vm.variableStack, argsOffset-1, 0, value)
-            else
+                capturedCount = capturedCount+1
+            elseif variadicTable then
                 -- Surplus -> Insert into variadic table
                 table.insert(variadicTable.table, value)
+            else
+                tomanyPositionnalCounter = tomanyPositionnalCounter+1
             end
             argsOffset = argsOffset + 1
 
@@ -109,13 +119,23 @@ function _CONCAT_TABLE(vm, posParamCount, namedParamOffset)
                 end
             else
                 -- Unknown key -> Insert into variadic table
-                if tag == "key" then
-                    if not variadicTable.table[key] then
-                        table.insert(variadicTable.keys, key)
+                if variadicTable then
+                    if tag == "key" then
+                        if not variadicTable.table[key] then
+                            table.insert(variadicTable.keys, key)
+                        end
+                        variadicTable.table[key] = value
+                    elseif tag == "metakey" then
+                        local success, err = _META_CHECK (key, value)
+                        if success then
+                            variadicTable.meta.table[key] = value
+                        else
+                            _ERROR(vm, err)
+                        end
                     end
-                    variadicTable.table[key] = value
-                elseif tag == "metakey" then
-                    variadicTable.meta.table[key] = value
+                else
+                    unknowNamed = key
+                    break
                 end
             end
             
@@ -124,7 +144,7 @@ function _CONCAT_TABLE(vm, posParamCount, namedParamOffset)
         bufferOffset = bufferOffset + 1
     end
 
-    return variadicTable
+    return variadicTable, tomanyPositionnalCounter, capturedCount, unknowNamed
 end
 
 --- @opcode

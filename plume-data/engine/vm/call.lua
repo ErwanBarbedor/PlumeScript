@@ -91,22 +91,49 @@ function _CALL_MACRO(vm, chunk)
     ENTER_SCOPE(vm, 0, allocationCount) -- Create a new scope
 
     -- Distribute arguments to locals and get the overflow table
-    local variadicTable = _CONCAT_TABLE(vm, chunk.positionalParamCount, chunk.namedParamOffset)
+    local variadicTable, tomanyPositionnalCounter, capturedCount, unknowNamed = _CONCAT_TABLE(
+        vm,
+        chunk.positionalParamCount,
+        chunk.namedParamOffset,
+        chunk.variadicOffset
+    )
 
-    -- If the chunk expects a variadic argument, assign the table to the specific register
-    if chunk.variadicOffset then
-        _STACK_SET_FRAMED(vm.variableStack, chunk.variadicOffset - 1, 0, variadicTable)
+    if tomanyPositionnalCounter>0 then
+        _ERROR(vm, vm.plume.error.wrongArgsCount(
+            chunk.name,
+            chunk.positionalParamCount+tomanyPositionnalCounter,
+            chunk.positionalParamCount
+        ))
+    elseif capturedCount < chunk.positionalParamCount then
+        _ERROR(vm, vm.plume.error.wrongArgsCount(
+            chunk.name,
+            capturedCount,
+            chunk.positionalParamCount
+        ))
+    elseif unknowNamed then
+        _ERROR(vm, vm.plume.error.unknowParameter(unknowNamed, chunk.name))
+    else
+        -- If the chunk expects a variadic argument, assign the table to the specific register
+        if chunk.variadicOffset then
+            _STACK_SET_FRAMED(vm.variableStack, chunk.variadicOffset - 1, 0, variadicTable)
+        end
+
+        table.insert(vm.runtime.callstack, {macro=chunk, ip=vm.ip})
+        if #vm.runtime.callstack<=1000 then
+            _STACK_POP_FRAME(vm.mainStack)        -- Clean stack from arguments
+            _STACK_PUSH(vm.macroStack, vm.ip + 1) -- Set the return pointer
+            JUMP(vm, 0, chunk.offset)             -- Jump to macro body  
+        else
+            _ERROR (vm, vm.plume.error.stackOverflow())
+        end
     end
-
-    _STACK_POP_FRAME(vm.mainStack)        -- Clean stack from arguments
-    _STACK_PUSH(vm.macroStack, vm.ip + 1) -- Set the return pointer
-    JUMP(vm, 0, chunk.offset)             -- Jump to macro body
 end
 
 --- @opcode
 --! inline
 function RETURN(vm, arg1, arg2)
     LEAVE_SCOPE(vm, 0, 0) -- close macro scope
+    table.remove(vm.runtime.callstack)
     JUMP(vm, 0, _STACK_POP(vm.macroStack)) -- return in the previous position
 end
 

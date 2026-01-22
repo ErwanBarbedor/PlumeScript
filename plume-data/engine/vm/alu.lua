@@ -99,7 +99,6 @@ function _HANDLE_META_UN (vm, x, name)
 
     if meta then
         BEGIN_ACC(vm, 0, 0)
-        _STACK_PUSH(vm.mainStack, x)
         _PUSH_SELF(vm, paramself)
         _STACK_PUSH(vm.mainStack, meta)
         _INJECTION_PUSH(vm, vm.plume.ops.CONCAT_CALL, 0, 0)

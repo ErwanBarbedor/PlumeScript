@@ -115,15 +115,15 @@ Runtime error: Stack overflow
 Traceback (most recent call first):
   File 'stack overflow', line 5: $mark()
                                   ^^^^^^
-  These lines are repeated 248 times:
+  These lines are repeated 498 times:
   -------------
-  File 'stack overflow', line 5: $mark()
-                                  ^^^^^^
-  File 'stack overflow', line 9: $quill()
-                                  ^^^^^^^
+  File 'stack overflow', line 5, in macro quill: $mark()
+                                                  ^^^^^^
+  File 'stack overflow', line 9, in macro mark: $quill()
+                                                 ^^^^^^^
   -------------
-  File 'stack overflow', line 9: $quill()
-                                  ^^^^^^^
+  File 'stack overflow', line 9, in macro mark: $quill()
+                                                 ^^^^^^^
   File 'stack overflow', line 12: $mark()
                                    ^^^^^^
 /// End

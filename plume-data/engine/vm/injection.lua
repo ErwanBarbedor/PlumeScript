@@ -40,6 +40,5 @@ end
 --- Check if an injection is waiting AND in the macro that called it
 --! inline
 function _CAN_INJECT(vm)
-	print(_STACK_GET(vm.injectionStack), _STACK_POS(vm.macroStack))
 	return vm.injectionStack.pointer > 0 and _STACK_GET(vm.injectionStack) == _STACK_POS(vm.macroStack)
 end
