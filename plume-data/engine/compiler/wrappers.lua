@@ -17,8 +17,7 @@ return function (plume, context)
     --- Initialize an accumulation table
     --- @return nil
     function context.accTableInit(node)  
-        context.registerOP(node, plume.ops.BEGIN_ACC, 0, 0)  
-        context.registerOP(node, plume.ops.TABLE_NEW, 0, 0)  
+        context.registerOP(node, plume.ops.BEGIN_ACC, 0, 0)
     end 
 
     --- Wrapper for accumulation block. Initialize accumulator and finalize the block.

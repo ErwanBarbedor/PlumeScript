@@ -46,7 +46,7 @@ return function (plume)
 		local op, arg1, arg2, vmerr, vmserr
 		::DISPATCH::
 			if vm.err then 
-				return false, vm.err, vm.ip, vm.chunk
+				return false, vm.err, vm.ip, vm.runtime
 			end
 			if vm.serr then
 				return false, unpack(vm.serr)
@@ -123,27 +123,27 @@ return function (plume)
 								if op < 17 then
 									goto TABLE_EXPAND
 								else
-									goto ENTER_SCOPE
+									goto TAG_META_KEY
 								end
 							else
 								if op < 19 then
-									goto LEAVE_SCOPE
+									goto TAG_KEY
 								else
-									goto BEGIN_ACC
+									goto ENTER_SCOPE
 								end
 							end
 						else
 							if op < 22 then
 								if op < 21 then
-									goto CONCAT_TABLE
+									goto LEAVE_SCOPE
 								else
-									goto CONCAT_TEXT
+									goto BEGIN_ACC
 								end
 							else
 								if op < 23 then
-									goto CONCAT_CALL
+									goto CONCAT_TABLE
 								else
-									goto CHECK_IS_TEXT
+									goto CONCAT_TEXT
 								end
 							end
 						end
@@ -151,29 +151,29 @@ return function (plume)
 						if op < 28 then
 							if op < 26 then
 								if op < 25 then
-									goto JUMP_IF
+									goto CONCAT_CALL
 								else
-									goto JUMP_IF_NOT
+									goto CHECK_IS_TEXT
 								end
 							else
 								if op < 27 then
-									goto JUMP_IF_NOT_EMPTY
+									goto JUMP_IF
 								else
-									goto JUMP
+									goto JUMP_IF_NOT
 								end
 							end
 						else
 							if op < 30 then
 								if op < 29 then
-									goto JUMP_IF_PEEK
+									goto JUMP_IF_NOT_EMPTY
 								else
-									goto JUMP_IF_NOT_PEEK
+									goto JUMP
 								end
 							else
 								if op < 31 then
-									goto GET_ITER
+									goto JUMP_IF_PEEK
 								else
-									goto FOR_ITER
+									goto JUMP_IF_NOT_PEEK
 								end
 							end
 						end
@@ -185,29 +185,29 @@ return function (plume)
 						if op < 36 then
 							if op < 34 then
 								if op < 33 then
-									goto OP_ADD
+									goto GET_ITER
 								else
-									goto OP_MUL
+									goto FOR_ITER
 								end
 							else
 								if op < 35 then
-									goto OP_SUB
+									goto OP_ADD
 								else
-									goto OP_DIV
+									goto OP_MUL
 								end
 							end
 						else
 							if op < 38 then
 								if op < 37 then
-									goto OP_NEG
+									goto OP_SUB
 								else
-									goto OP_MOD
+									goto OP_DIV
 								end
 							else
 								if op < 39 then
-									goto OP_POW
+									goto OP_NEG
 								else
-									goto OP_LT
+									goto OP_MOD
 								end
 							end
 						end
@@ -215,29 +215,29 @@ return function (plume)
 						if op < 44 then
 							if op < 42 then
 								if op < 41 then
-									goto OP_EQ
+									goto OP_POW
 								else
-									goto OP_AND
+									goto OP_LT
 								end
 							else
 								if op < 43 then
-									goto OP_NOT
+									goto OP_EQ
 								else
-									goto OP_OR
+									goto OP_AND
 								end
 							end
 						else
 							if op < 46 then
 								if op < 45 then
-									goto DUPLICATE
+									goto OP_NOT
 								else
-									goto SWITCH
+									goto OP_OR
 								end
 							else
 								if op < 47 then
-									goto RETURN
+									goto DUPLICATE
 								else
-									goto END
+									goto SWITCH
 								end
 							end
 						end
@@ -247,20 +247,26 @@ return function (plume)
 						if op < 52 then
 							if op < 50 then
 								if op < 49 then
-									goto STD_LEN
+									goto RETURN
 								else
-									goto STD_TYPE
+									goto END
 								end
 							else
 								if op < 51 then
-									goto STD_SEQ
+									goto STD_LEN
 								else
-									goto STD_ITEMS
+									goto STD_TYPE
 								end
 							end
 						else
 							if op < 54 then
 								if op < 53 then
+									goto STD_SEQ
+								else
+									goto STD_ITEMS
+								end
+							else
+								if op < 55 then
 									goto STD_ENUMERATE
 								end
 							end
@@ -315,6 +321,12 @@ return function (plume)
 				goto DISPATCH
 			::TABLE_EXPAND::
 				TABLE_EXPAND(vm, arg1, arg2)
+				goto DISPATCH
+			::TAG_META_KEY::
+				TAG_META_KEY(vm, arg1, arg2)
+				goto DISPATCH
+			::TAG_KEY::
+				TAG_KEY(vm, arg1, arg2)
 				goto DISPATCH
 			::ENTER_SCOPE::
 				ENTER_SCOPE(vm, arg1, arg2)

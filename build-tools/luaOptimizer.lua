@@ -123,6 +123,9 @@ local function loadCode(path, isFile)
 	local result, msg = Parser.parse(code, isFile and path, '5.2', true)
 
 	if not result then
+		if #path > 100 then
+			path = path:sub(1, 1000)
+		end
 		print("Cannot load " .. path .. ".")
 		error(msg)
 	end
