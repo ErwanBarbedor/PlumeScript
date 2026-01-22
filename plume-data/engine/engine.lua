@@ -123,27 +123,27 @@ return function (plume)
 								if op < 17 then
 									goto TABLE_EXPAND
 								else
-									goto TAG_META_KEY
+									goto CALL_INDEX_REGISTER_SELF
 								end
 							else
 								if op < 19 then
-									goto TAG_KEY
+									goto TAG_META_KEY
 								else
-									goto ENTER_SCOPE
+									goto TAG_KEY
 								end
 							end
 						else
 							if op < 22 then
 								if op < 21 then
-									goto LEAVE_SCOPE
+									goto ENTER_SCOPE
 								else
-									goto BEGIN_ACC
+									goto LEAVE_SCOPE
 								end
 							else
 								if op < 23 then
-									goto CONCAT_TABLE
+									goto BEGIN_ACC
 								else
-									goto CONCAT_TEXT
+									goto CONCAT_TABLE
 								end
 							end
 						end
@@ -151,29 +151,29 @@ return function (plume)
 						if op < 28 then
 							if op < 26 then
 								if op < 25 then
-									goto CONCAT_CALL
+									goto CONCAT_TEXT
 								else
-									goto CHECK_IS_TEXT
+									goto CONCAT_CALL
 								end
 							else
 								if op < 27 then
-									goto JUMP_IF
+									goto CHECK_IS_TEXT
 								else
-									goto JUMP_IF_NOT
+									goto JUMP_IF
 								end
 							end
 						else
 							if op < 30 then
 								if op < 29 then
-									goto JUMP_IF_NOT_EMPTY
+									goto JUMP_IF_NOT
 								else
-									goto JUMP
+									goto JUMP_IF_NOT_EMPTY
 								end
 							else
 								if op < 31 then
-									goto JUMP_IF_PEEK
+									goto JUMP
 								else
-									goto JUMP_IF_NOT_PEEK
+									goto JUMP_IF_PEEK
 								end
 							end
 						end
@@ -185,29 +185,29 @@ return function (plume)
 						if op < 36 then
 							if op < 34 then
 								if op < 33 then
-									goto GET_ITER
+									goto JUMP_IF_NOT_PEEK
 								else
-									goto FOR_ITER
+									goto GET_ITER
 								end
 							else
 								if op < 35 then
-									goto OP_ADD
+									goto FOR_ITER
 								else
-									goto OP_MUL
+									goto OP_ADD
 								end
 							end
 						else
 							if op < 38 then
 								if op < 37 then
-									goto OP_SUB
+									goto OP_MUL
 								else
-									goto OP_DIV
+									goto OP_SUB
 								end
 							else
 								if op < 39 then
-									goto OP_NEG
+									goto OP_DIV
 								else
-									goto OP_MOD
+									goto OP_NEG
 								end
 							end
 						end
@@ -215,29 +215,29 @@ return function (plume)
 						if op < 44 then
 							if op < 42 then
 								if op < 41 then
-									goto OP_POW
+									goto OP_MOD
 								else
-									goto OP_LT
+									goto OP_POW
 								end
 							else
 								if op < 43 then
-									goto OP_EQ
+									goto OP_LT
 								else
-									goto OP_AND
+									goto OP_EQ
 								end
 							end
 						else
 							if op < 46 then
 								if op < 45 then
-									goto OP_NOT
+									goto OP_AND
 								else
-									goto OP_OR
+									goto OP_NOT
 								end
 							else
 								if op < 47 then
-									goto DUPLICATE
+									goto OP_OR
 								else
-									goto SWITCH
+									goto DUPLICATE
 								end
 							end
 						end
@@ -247,26 +247,36 @@ return function (plume)
 						if op < 52 then
 							if op < 50 then
 								if op < 49 then
-									goto RETURN
+									goto SWITCH
 								else
-									goto END
+									goto RETURN
 								end
 							else
 								if op < 51 then
-									goto STD_LEN
+									goto RETURN_FILE
 								else
-									goto STD_TYPE
+									goto END
 								end
 							end
 						else
 							if op < 54 then
 								if op < 53 then
+									goto STD_LEN
+								else
+									goto STD_TYPE
+								end
+							else
+								if op < 55 then
 									goto STD_SEQ
 								else
 									goto STD_ITEMS
 								end
-							else
-								if op < 55 then
+							end
+						end
+					else
+						if op < 60 then
+							if op < 58 then
+								if op < 57 then
 									goto STD_ENUMERATE
 								end
 							end
@@ -321,6 +331,9 @@ return function (plume)
 				goto DISPATCH
 			::TABLE_EXPAND::
 				TABLE_EXPAND(vm, arg1, arg2)
+				goto DISPATCH
+			::CALL_INDEX_REGISTER_SELF::
+				CALL_INDEX_REGISTER_SELF(vm, arg1, arg2)
 				goto DISPATCH
 			::TAG_META_KEY::
 				TAG_META_KEY(vm, arg1, arg2)
@@ -417,6 +430,9 @@ return function (plume)
 				goto DISPATCH
 			::RETURN::
 				RETURN(vm, arg1, arg2)
+				goto DISPATCH
+			::RETURN_FILE::
+				RETURN_FILE(vm, arg1, arg2)
 				goto DISPATCH
 			::STD_LEN::
 				STD_LEN(vm, arg1, arg2)

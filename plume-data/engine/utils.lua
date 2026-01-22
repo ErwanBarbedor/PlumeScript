@@ -26,6 +26,8 @@ return function (plume)
 		TABLE_SET_ACC
 		TABLE_EXPAND
 
+		CALL_INDEX_REGISTER_SELF
+
 		TAG_META_KEY TAG_KEY
 		
 		ENTER_SCOPE LEAVE_SCOPE
@@ -42,7 +44,7 @@ return function (plume)
 		
 		DUPLICATE SWITCH
 
-		RETURN
+		RETURN RETURN_FILE
 
 		END
 ]]

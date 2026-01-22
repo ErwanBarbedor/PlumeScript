@@ -67,7 +67,7 @@ end
 
 function plume.executeFile(filename, runtime)
 	local runtime = runtime or plume.obj.runtime()
-	local chunk   = plume.obj.chunk(filename, runtime)
+	local chunk   = plume.obj.macro(filename, runtime)
 
 	local f = io.open(filename)
 		if not f then

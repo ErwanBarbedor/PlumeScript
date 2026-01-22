@@ -47,6 +47,7 @@ return function (plume, context, nodeHandlerTable)
 		-- Push all index/call info in reverse order.
 		for i=#node.children, 2, -1 do
 			local child = node.children[i]
+
 			-- `$wing(arg1, arg2)`
 			if child.name == "CALL" then
 				context.accTableInit(node)
@@ -84,7 +85,7 @@ return function (plume, context, nodeHandlerTable)
 				-- When call a table field, add the table in argument list as the value for the key `self`
 				-- Ex: `$wing.nib()` is treated like `$wing.nib(self: $wing)`
 				if nextChildIsCall then
-					context.registerOP(child, plume.ops.TABLE_REGISTER_SELF)
+					context.registerOP(child, plume.ops.CALL_INDEX_REGISTER_SELF, 0, 0)
 				end
 				context.registerOP(child, plume.ops.TABLE_INDEX)
 			end

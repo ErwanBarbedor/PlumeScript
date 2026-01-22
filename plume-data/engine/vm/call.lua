@@ -33,20 +33,20 @@ function CONCAT_CALL (vm, arg1, arg2)
     end
 
     -- Macro
-    if t == "chunk" then
-        _CALL_CHUNK(vm, tocall)
+    if t == "macro" then
+        _CALL_MACRO(vm, tocall)
 
     -- Std functions defined in lua or user lua functions
     elseif t == "luaFunction" then
         CONCAT_TABLE(vm)
         table.insert(vm.runtime.callstack, {runtime=vm.runtime, macro=tocall, ip=vm.ip})
-        local success, result  =  pcall(tocall.callable, _STACK_GET(vm.mainStack), vm.runtime)
+        local success, result  =  pcall(tocall.callable, _STACK_POP(vm.mainStack), vm.runtime)
         if success then
             table.remove(vm.runtime.callstack)
             if result == nil then
                 result = vm.empty
             end
-            _STACK_POP(vm.mainStack)
+            
             _STACK_PUSH(vm.mainStack, result)
         else
             _ERROR(vm, result)
@@ -68,7 +68,7 @@ end
 ---@param vm VM The virtual machine instance.
 ---@param chunk table The function chunk to call.
 --! inline
-function _CALL_CHUNK(vm, chunk)
+function _CALL_MACRO(vm, chunk)
     local allocationCount = chunk.positionalParamCount + chunk.namedParamCount
 
     if chunk.variadicOffset then
@@ -93,7 +93,7 @@ end
 --- @opcode
 --! inline
 function RETURN(vm, arg1, arg2)
-    LEAVE_SCOPE(vm, 0, 0) -- close macro stop
+    LEAVE_SCOPE(vm, 0, 0) -- close macro scope
     JUMP(vm, 0, _STACK_POP(vm.macroStack)) -- return in the previous position
 end
 
