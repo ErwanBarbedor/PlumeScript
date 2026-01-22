@@ -25,7 +25,7 @@ return function (plume, context, nodeHandlerTable)
 		local macroName = macroIdentifier and macroIdentifier.content
 
 		-- node.label is a debug informations for macro declared as table field
-		local macroObj     = plume.obj.chunk(macroName or node.label, context.chunk)
+		local macroObj     = plume.obj.macro(macroName or node.label, context.chunk)
 		local macroOffset  = context.registerConstant(macroObj)
 		context.registerOP(macroIdentifier or node, plume.ops.LOAD_CONSTANT, 0, macroOffset)
 
@@ -113,6 +113,10 @@ return function (plume, context, nodeHandlerTable)
 
 	nodeHandlerTable.LEAVE = function(node)
 		local uid = context.getLast "macros"
-		context.registerGoto(node, "macro_body_end_" .. uid)
+		if uid then
+			context.registerGoto(node, "macro_body_end_" .. uid)
+		else
+			context.registerOP(node, plume.ops.END, 0, 0) -- waiting for file rewrite
+		end
 	end
 end

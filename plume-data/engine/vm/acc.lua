@@ -71,8 +71,9 @@ end
 --! inline
 function _CONCAT_TABLE(vm, posParamCount, namedParamOffset)
     local argsOffset   = 1
-    local bufferOffset = 1
+    
     local frameOffset  = _STACK_GET(vm.mainStack.frames)
+    local bufferOffset = frameOffset
     local mainStackTop = _STACK_POS(vm.mainStack)
 
     -- Heuristic allocation: assume worst case (all items are part of the table)
@@ -80,15 +81,13 @@ function _CONCAT_TABLE(vm, posParamCount, namedParamOffset)
     local variadicTable = vm.plume.obj.table(max, max / 2)
 
     while bufferOffset <= mainStackTop do
-        local tagOffset = frameOffset + bufferOffset
-        local tag = vm.tagStack[tagOffset]
-        local value = _STACK_GET_FRAMED(vm.mainStack, bufferOffset - 1, 0)
-
+        local tag = vm.tagStack[bufferOffset+1]
+        local value = _STACK_GET(vm.mainStack, bufferOffset)
         -- Positional Argument
         if tag == nil then
             if argsOffset <= posParamCount then
                 -- Assign to local variable register
-                _STACK_SET_FRAMED(vm.variableStack, argsOffset - 1, 0, value)
+                _STACK_SET_FRAMED(vm.variableStack, argsOffset-1, 0, value)
             else
                 -- Surplus -> Insert into variadic table
                 table.insert(variadicTable.table, value)
@@ -98,15 +97,13 @@ function _CONCAT_TABLE(vm, posParamCount, namedParamOffset)
         -- Named Argument or Meta Key
         else
             bufferOffset = bufferOffset + 1
-            local key = _STACK_GET_FRAMED(vm.mainStack, bufferOffset - 1, 0)
-            
+            local key = _STACK_GET(vm.mainStack, bufferOffset)
             -- Check if this key corresponds to a declared named parameter
             local argOffset = namedParamOffset and (namedParamOffset)[key]
-
             if argOffset then
                 if tag == "key" then
                     -- Assign to local variable register
-                    _STACK_SET_FRAMED(vm.variableStack, argOffset, 0, value)
+                    _STACK_SET_FRAMED(vm.variableStack, argOffset-1, 0, value)
                 else
                     _ERROR(vm, vm.plume.error.cannotUseMetaKey)
                 end
@@ -122,7 +119,7 @@ function _CONCAT_TABLE(vm, posParamCount, namedParamOffset)
                 end
             end
             
-            vm.tagStack[tagOffset] = nil -- Clean tagstack for the key
+            vm.tagStack[bufferOffset] = nil -- Clean tagstack for the key
         end
         bufferOffset = bufferOffset + 1
     end

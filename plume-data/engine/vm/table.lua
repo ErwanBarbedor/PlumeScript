@@ -143,14 +143,18 @@ function TABLE_INDEX (vm, arg1, arg2)
 end
 
 --- @opcode
---- Unstack 2, in order: table, key
---- Add current table as self key for current call table.
+--- The stack may be [(frame begin)| call arguments | index | table]
+--- Insert self | table in the call arguments
 --! inline
-function TABLE_REGISTER_SELF (vm, arg1, arg2)
-    local t = _STACK_GET_FRAMED(vm.mainStack)
-    table.insert(t, "self")
-    table.insert(t, _STACK_GET(vm.mainStack))
-    table.insert(t, false)
+function CALL_INDEX_REGISTER_SELF (vm, arg1, arg2)
+    local t = _STACK_POP(vm.mainStack)
+    local index = _STACK_POP(vm.mainStack)
+    
+    _STACK_PUSH(vm.mainStack, "self")
+    TAG_KEY(vm)
+    _STACK_PUSH(vm.mainStack, t)
+    _STACK_PUSH(vm.mainStack, index)
+    _STACK_PUSH(vm.mainStack, t)
 end
 
 --- @opcode
@@ -177,7 +181,7 @@ end
 --- @opcode
 --- Unstack 1: a table
 --- Stack all list item
---- Put all hash item on the acc table
+--- Put all hash item on the stack
 --! inline
 function TABLE_EXPAND (vm, arg1, arg2)
     local t  = _STACK_POP(vm.mainStack)
@@ -187,11 +191,10 @@ function TABLE_EXPAND (vm, arg1, arg2)
             _STACK_PUSH(vm.mainStack, item)
         end
 
-        local ft = _STACK_GET_FRAMED(vm.mainStack)
         for _, key in ipairs(t.keys) do
-            table.insert(ft, key)
-            table.insert(ft, t.table[key])
-            table.insert(ft, false)
+            _STACK_PUSH(vm.mainStack, t.table[key])
+            _STACK_PUSH(vm.mainStack, key)
+            TAG_KEY(vm)
         end
     else
         _ERROR (vm, vm.plume.error.cannotExpandValue(tt))

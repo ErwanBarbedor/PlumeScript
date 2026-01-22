@@ -310,11 +310,11 @@ JUMP_IF_NOT :else   -- Jumps if result is false.
 <br>Index a table <br>Unstack 2, in order: table, key <br>Stack 1, `table[key]` 
 - **arg1** *(number)*: 1 if "safe mode" (return empty if key not exit), 0 else (raise error if key not exist)
 
-#### TABLE_REGISTER_SELF
-<br>Unstack 2, in order: table, key <br>Add current table as self key for current call table. 
+#### CALL_INDEX_REGISTER_SELF
+<br>The stack may be [(frame begin)| call arguments | index | table] <br>Insert self | table in the call arguments 
 
 #### TABLE_SET
 <br>Unstack 3, in order: table, key, value <br>Set the table.key to value 
 
 #### TABLE_EXPAND
-<br>Unstack 1: a table <br>Stack all list item <br>Put all hash item on the acc table 
+<br>Unstack 1: a table <br>Stack all list item <br>Put all hash item on the stack 

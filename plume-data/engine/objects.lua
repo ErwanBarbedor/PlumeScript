@@ -39,9 +39,9 @@ return function(plume)
 		return t
 	end
 
-	function plume.obj.chunk(name, parent)
+	function plume.obj.macro(name, parent)
 		local t = {
-			type   = "chunk",
+			type   = "macro",
 			name   = name,
 			positionalParamCount = 0,
 			namedParamCount      = 0,
