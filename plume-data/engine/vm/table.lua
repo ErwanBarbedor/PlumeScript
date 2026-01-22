@@ -150,9 +150,10 @@ function CALL_INDEX_REGISTER_SELF (vm, arg1, arg2)
     local t = _STACK_POP(vm.mainStack)
     local index = _STACK_POP(vm.mainStack)
     
+    
+    _STACK_PUSH(vm.mainStack, t)
     _STACK_PUSH(vm.mainStack, "self")
     TAG_KEY(vm)
-    _STACK_PUSH(vm.mainStack, t)
     _STACK_PUSH(vm.mainStack, index)
     _STACK_PUSH(vm.mainStack, t)
 end

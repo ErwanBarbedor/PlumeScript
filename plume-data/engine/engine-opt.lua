@@ -610,6 +610,8 @@ return function (plume)
                     _ret39 = mainStack[mainStackPointer + 1]
                     local index = _ret39
                     mainStackPointer = mainStackPointer + 1
+                    mainStack[mainStackPointer] = t
+                    mainStackPointer = mainStackPointer + 1
                     mainStack[mainStackPointer] = "self"
                     do
                         local _ret40
@@ -617,8 +619,6 @@ return function (plume)
                         local pos = _ret40
                         tagStack[pos] = "key"
                     end
-                    mainStackPointer = mainStackPointer + 1
-                    mainStack[mainStackPointer] = t
                     mainStackPointer = mainStackPointer + 1
                     mainStack[mainStackPointer] = index
                     mainStackPointer = mainStackPointer + 1
