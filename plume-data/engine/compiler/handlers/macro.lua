@@ -43,10 +43,12 @@ return function (plume, context, nodeHandlerTable)
 
 
 		-- Skip macro body
-		context.registerGoto(node, "macro_declaration_end" .. uid)
+		context.registerGoto(node, "macro_declaration_end_" .. uid)
+
+		table.insert(context.macros, uid)
 
 		-- Anchor point to find macro beginings
-		context.registerLabel(node, "macro_begin" .. uid, macroOffset)
+		context.registerLabel(node, "macro_begin_" .. uid, macroOffset)
 
 		context.file(function ()
 			-- Each macro open a scope, but it is handled by plume.run
@@ -97,7 +99,7 @@ return function (plume, context, nodeHandlerTable)
 				macroObj.namedParamOffset.self = param.offset
 			end
 
-			context.accBlock()(body, "macro_end") -- Handle the macro body
+			context.accBlock()(body, "macro_body_end_" .. uid) -- Handle the macro body
 			
 			macroObj.localsCount = #context.getCurrentScope()
 			table.remove(context.scopes)
@@ -105,6 +107,12 @@ return function (plume, context, nodeHandlerTable)
 		end) ()
 		context.registerOP(node, plume.ops.RETURN, 0, 0)
 
-		context.registerLabel(node, "macro_declaration_end" .. uid)
+		context.registerLabel(node, "macro_declaration_end_" .. uid)
+		table.remove(context.macros)
+	end
+
+	nodeHandlerTable.LEAVE = function(node)
+		local uid = context.getLast "macros"
+		context.registerGoto(node, "macro_body_end_" .. uid)
 	end
 end

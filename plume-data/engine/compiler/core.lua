@@ -54,6 +54,7 @@ return function(plume)
 		context.concats   = {}
 		context.roots     = {}
 		context.loops     = {}
+		context.macros    = {}
 		
 
 		require 'plume-data/engine/compiler/labels'    (plume, context)
