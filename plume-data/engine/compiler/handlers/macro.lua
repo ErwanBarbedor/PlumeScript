@@ -23,9 +23,22 @@ return function (plume, context, nodeHandlerTable)
 		-- If the macro is named, save them in a static variable:
 		-- `macro wing()` is a sugar for `let static wing = macro()`
 		local macroName = macroIdentifier and macroIdentifier.content
-
 		-- node.label is a debug informations for macro declared as table field
-		local macroObj     = plume.obj.macro(macroName or node.label, context.chunk)
+		local debugMacroName = macroName or node.label
+		-- Case let x = macro
+		if not debugMacroName then
+			local parent = node.parent.parent
+			if parent.name == "SET" or parent.name == "LET" then
+				local varlist    = plume.ast.get(parent, "VARLIST")
+				local identifier = plume.ast.get(varlist, "IDENTIFIER")
+				debugMacroName = identifier and identifier.content
+			end
+		end
+		if not debugMacroName then
+			debugMacroName = "???"
+		end
+
+		local macroObj     = plume.obj.macro(debugMacroName, context.chunk)
 		local macroOffset  = context.registerConstant(macroObj)
 		context.registerOP(macroIdentifier or node, plume.ops.LOAD_CONSTANT, 0, macroOffset)
 

@@ -99,6 +99,11 @@ local beautifier = function(node)
             newline()
         end,
 
+        ["break"] = function(node)
+            table.insert(result, "break")
+            newline()
+        end,
+
         ["if"] = function(node)
         	table.insert(result, "if ")
         	beautify(node.cond)

@@ -59,7 +59,7 @@ function plume.execute(code, filename, chunk, runtime)
 		return true, result
 	else
 		if not secondary then
-			result = plume.error.makeRuntimeError(errorSource, ip, result)
+			result = plume.error.makeRuntimeError(runtime, ip, result)
 		end
 		return false, result
 	end

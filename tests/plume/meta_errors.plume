@@ -55,7 +55,7 @@ end
 
 $t(1)
 /// Error
-Runtime error: Wrong number of positionnal arguments for macro 't', 1 instead of 2.
+Runtime error: Wrong number of positionnal arguments for macro '???', 1 instead of 2.
 
 Traceback (most recent call first):
   File 'meta wrong parameter number 4', line 7: $t(1)
@@ -89,9 +89,9 @@ Runtime error: Stack overflow
 Traceback (most recent call first):
   File 'stack overflow', line 3: $(self+1)
                                    ^^^^^^
+  File 'stack overflow', line 3, in macro ???: $(self+1)
+                                                 ^^^^^^
     ...
-   (same line 499 more times)
+   (same line 1996 more times)
     ...
-  File 'stack overflow', line 7: $(t+1)
-                                   ^^^
 /// End
