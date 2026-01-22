@@ -17,6 +17,7 @@ If not, see <https://www.gnu.org/licenses/>.
 --- @return number, number, number
 --! inline
 function _INJECTION_POP(vm)
+	_STACK_POP(vm.injectionStack) -- deepth
 	local arg2 = _STACK_POP(vm.injectionStack)
 	local arg1 = _STACK_POP(vm.injectionStack)
 	local op   = _STACK_POP(vm.injectionStack)
@@ -33,4 +34,12 @@ function _INJECTION_PUSH(vm, op, arg1, arg2)
 	_STACK_PUSH(vm.injectionStack, op)
 	_STACK_PUSH(vm.injectionStack, arg1)
 	_STACK_PUSH(vm.injectionStack, arg2)
+	_STACK_PUSH(vm.injectionStack, _STACK_POS(vm.macroStack))
+end
+
+--- Check if an injection is waiting AND in the macro that called it
+--! inline
+function _CAN_INJECT(vm)
+	print(_STACK_GET(vm.injectionStack), _STACK_POS(vm.macroStack))
+	return vm.injectionStack.pointer > 0 and _STACK_GET(vm.injectionStack) == _STACK_POS(vm.macroStack)
 end

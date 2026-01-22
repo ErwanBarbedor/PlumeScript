@@ -34,6 +34,10 @@ function CONCAT_CALL (vm, arg1, arg2)
 
     -- Macro
     if t == "macro" then
+        if self then
+            _PUSH_SELF(vm, self)
+        end
+
         _CALL_MACRO(vm, tocall)
 
     -- Std functions defined in lua or user lua functions
@@ -60,6 +64,15 @@ function CONCAT_CALL (vm, arg1, arg2)
     -- @table ... end just return the accumulated table
     elseif tocall == vm.plume.std.table then
         CONCAT_TABLE(vm)
+
+    -- CHECK_IS_TEXT do exactly the same thing as tostring
+    elseif tocall == vm.plume.std.tostring then
+        local value = _STACK_POP(vm.mainStack)
+        _STACK_POP_FRAME(vm.mainStack)
+        _STACK_PUSH(vm.mainStack, value)
+        -- Should check for to many arguments, instead of ignoring them
+        _INJECTION_PUSH(vm, vm.plume.ops.CHECK_IS_TEXT, 0, 0)
+    
     else
         _ERROR (vm, vm.plume.error.cannotCallValue(t))
     end

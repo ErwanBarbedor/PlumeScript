@@ -54,20 +54,6 @@ return function (plume)
             return table.concat(args.table, sep)
         end,
 
-        -- temporary name
-        tostring = function(args, chunk)
-            local result = {}
-            for _, x in ipairs(args.table) do
-                if x == plume.obj.empty then
-                elseif type(x) == "table" and x.type == "table" and x.meta.table.tostring then
-                    table.insert(result, callPlumeMacro(x.meta.table.tostring, {x}, chunk))
-                else
-                    table.insert(result, tostring(x))
-                end
-            end
-            return table.concat(result)
-        end,
-
         tonumber = function(args, chunk)
             local x = args.table[1]
             if x == plume.obj.empty then

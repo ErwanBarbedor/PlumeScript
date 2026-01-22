@@ -315,6 +315,7 @@ JUMP_IF_NOT :else   -- Jumps if result is false.
 
 #### TABLE_SET
 <br>Unstack 3, in order: table, key, value <br>Set the table.key to value 
+- **arg1** *(number)*: If set to 1, take table, key, value in reverse order
 
 #### TABLE_EXPAND
 <br>Unstack 1: a table <br>Stack all list item <br>Put all hash item on the stack 

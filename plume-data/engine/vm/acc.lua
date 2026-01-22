@@ -115,7 +115,7 @@ function _CONCAT_TABLE(vm, posParamCount, namedParamOffset)
                     end
                     variadicTable.table[key] = value
                 elseif tag == "metakey" then
-                    variadicTable.meta[key] = value
+                    variadicTable.meta.table[key] = value
                 end
             end
             
@@ -135,11 +135,16 @@ end
 function CHECK_IS_TEXT (vm, arg1, arg2)
     local value = _STACK_GET(vm.mainStack)
     local t     = _GET_TYPE(vm, value)
+
     if t ~= "number" and t ~= "string" and value ~= vm.empty then
-        if t == "table" and value.meta.table.tostring then
-            local meta = value.meta.table.tostring
-            local args = {}
-            _STACK_SET(vm.mainStack, _STACK_POS(vm.mainStack), _CALL (vm, meta, args))
+        local meta = t == "table" and value.meta.table.tostring
+        if  meta then
+            _STACK_POP(vm.mainStack)
+
+            BEGIN_ACC(vm, 0, 0)
+            _PUSH_SELF(vm, t)
+            _STACK_PUSH(vm.mainStack, meta)
+            _INJECTION_PUSH(vm, vm.plume.ops.CONCAT_CALL, 0, 0)
         else
             _ERROR (vm, vm.plume.error.cannotConcatValue(t))
         end

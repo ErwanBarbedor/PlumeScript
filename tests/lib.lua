@@ -189,7 +189,10 @@ function lib.executeTests(allTests, plumeEngine)
                         end
 
                         if success then
-                            result = plumeEngine.std.tostring.callable({table={result}})
+                            if result == plumeEngine.obj.empty then
+                                result = ""
+                            end
+                            result = tostring(result)
                         end
 
                         -- Process bytecode state for single or multiple chunks
