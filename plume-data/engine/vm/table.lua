@@ -21,6 +21,22 @@ function TABLE_NEW (vm, arg1, arg2)
     _STACK_PUSH(vm.mainStack, table.new(0, arg1))
 end
 
+--- @opcode
+--- Mark the last element of the stack as a key
+--! inline
+function TAG_KEY(vm, arg1, arg2)
+    local pos = _STACK_POS(vm.mainStack)
+    vm.tagStack[pos] = "key"
+end
+
+--- @opcode
+--- Mark the last element of the stack as a meta-key
+--! inline
+function TAG_META_KEY(vm, arg1, arg2)
+    local pos = _STACK_POS(vm.mainStack)
+    vm.tagStack[pos] = "metakey"
+end
+
 --- Set a table field. If k isn't a number and is a new key, save it in `t.keys`.
 --- Should certainly be handled by the table itself?
 --- @param t table

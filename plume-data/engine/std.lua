@@ -45,9 +45,6 @@ return function (plume)
     _table.table.keys = {"append", "remove"}
     _table.table.remove = plume.std.remove
     _table.table.append = plume.std.append
-    _table.meta.table.call = plume.obj.luaFunction("call", function(args)
-        return args
-    end)
 
     plume.std.table = _table
 

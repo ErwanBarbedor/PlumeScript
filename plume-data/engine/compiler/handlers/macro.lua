@@ -57,24 +57,33 @@ return function (plume, context, nodeHandlerTable)
 			--- Count arguments, save variadic offset
 			--- and evaluate default value when optionnal args are empty.
 			-------------------------------------------------------------
-			for i, param in ipairs(paramList.children) do
-				local paramName = plume.ast.get(param, "IDENTIFIER", 1, 2).content
-				local variadic  = plume.ast.get(param, "VARIADIC")
-				local paramBody = plume.ast.get(param, "BODY")
+			for i, paramNode in ipairs(paramList.children) do
+				local paramName = plume.ast.get(paramNode, "IDENTIFIER", 1, 2).content
+				local variadic  = plume.ast.get(paramNode, "VARIADIC")
+				local paramBody = plume.ast.get(paramNode, "BODY")
 				local param = context.registerVariable(paramName)
 
 				if paramBody then
-					context.registerOP(param, plume.ops.LOAD_LOCAL, 0, i)
-					context.registerGoto(param, "macro_var_" .. i .. "_" .. uid, "JUMP_IF_NOT_EMPTY")
+					if macroObj.variadicOffset then
+						plume.error.cannotAddNamedAfterVariadic(paramNode)
+					end
+					context.registerOP(paramNode, plume.ops.LOAD_LOCAL, 0, i)
+					context.registerGoto(paramNode, "macro_var_" .. i .. "_" .. uid, "JUMP_IF_NOT_EMPTY")
 					context.accBlock()(paramBody)
-					context.registerOP(param, plume.ops.STORE_LOCAL, 0, i)
-					context.registerLabel(param, "macro_var_" .. i .. "_" .. uid)
+					context.registerOP(paramNode, plume.ops.STORE_LOCAL, 0, i)
+					context.registerLabel(paramNode, "macro_var_" .. i .. "_" .. uid)
 
 					macroObj.namedParamCount = macroObj.namedParamCount+1
 					macroObj.namedParamOffset[paramName] = param.offset
 				elseif variadic then
 					macroObj.variadicOffset = param.offset
 				else
+					if macroObj.namedParamCount > 0 then
+						plume.error.cannotAddPositionnalAfterNamed(paramNode)
+					end
+					if macroObj.variadicOffset then
+						plume.error.cannotAddPositionnalAfterVariadic(paramNode)
+					end
 					macroObj.positionalParamCount = macroObj.positionalParamCount+1
 				end
 			end
@@ -94,8 +103,8 @@ return function (plume, context, nodeHandlerTable)
 			table.remove(context.scopes)
 			
 		end) ()
-		context.registerOP(param, plume.ops.RETURN, 0, 0)
+		context.registerOP(node, plume.ops.RETURN, 0, 0)
 
-		context.registerLabel(param, "macro_declaration_end" .. uid)
+		context.registerLabel(node, "macro_declaration_end" .. uid)
 	end
 end

@@ -65,7 +65,7 @@ local init = [[
 		local op, arg1, arg2, vmerr, vmserr
 		::DISPATCH::
 			if vm.err then 
-				return false, vm.err, vm.ip, vm.chunk
+				return false, vm.err, vm.ip, vm.runtime
 			end
 			if vm.serr then
 				return false, unpack(vm.serr)

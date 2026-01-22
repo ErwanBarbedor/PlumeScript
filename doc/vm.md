@@ -293,6 +293,12 @@ JUMP_IF_NOT :else   -- Jumps if result is false.
 <br>Create a new table, waiting CONCAT_TABLE or CALL 
 - **arg1** *(number)*: Number of hash slot to allocate
 
+#### TAG_KEY
+<br>Mark the last element of the stack as a key 
+
+#### TAG_META_KEY
+<br>Mark the last element of the stack as a meta-key 
+
 #### TABLE_SET_ACC
 <br>Add a key to the current accumulation table (bottom of the current frame) <br>Unstack 2: a key, then a value 
 - **arg2** *(number)*: 1 if the key should be registered as metafield

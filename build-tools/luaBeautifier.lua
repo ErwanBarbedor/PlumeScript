@@ -133,6 +133,19 @@ local beautifier = function(node)
         	newline()
         end,
 
+        ["while"] = function(node)
+            table.insert(result, "while ")
+            beautify(node.cond)
+            table.insert(result, " do")
+                indent = indent + 1
+                newline()
+                beautifyAll(node)
+            indent = indent - 1
+            correctIndentation()
+            table.insert(result, "end")
+            newline()
+        end,
+
         foreq = function(node)
         	table.insert(result, "for ")
         	beautify(node.var)

@@ -329,9 +329,9 @@ return function (plume)
 		getStack(s_ms, ms, msp, msf, msfp)
 		getStack(s_vs, vs, vsp, vsf, vsfp)
 
-		local show = {header, table.concat(s_ms), table.concat(s_vs), ""}
+		local show = {"\t"..table.concat(s_ms), "\t"..table.concat(s_vs), header}
 
-		print(table.concat(show, "\n\t"))
+		print(table.concat(show, "\n"))
 		
 	end
 end

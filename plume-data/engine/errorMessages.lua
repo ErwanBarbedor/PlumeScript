@@ -22,6 +22,22 @@ return function(plume)
 		error(message, -1)
 	end
 
+	function plume.error.cannotAddPositionnalAfterNamed(node, varName)
+		local message = "Cannot add a positionnal parameter after a named one"
+		throwCompilationError(node, message)
+	end
+
+	function plume.error.cannotAddPositionnalAfterVariadic(node, varName)
+		local message = "Cannot add a positionnal parameter after a variadic one"
+		throwCompilationError(node, message)
+	end
+
+	function plume.error.cannotAddNamedAfterVariadic(node, varName)
+		local message = "Cannot add a positionnal parameter after a variadic one"
+		throwCompilationError(node, message)
+	end
+
+
 	function plume.error.compoundWithDestructionError(node)
 		local message = "Cannot use compound operator and destructuration at the same time."
 		throwCompilationError(node, message)
@@ -237,5 +253,9 @@ return function(plume)
 
 	function plume.error.hasNoLen(tt)
 		return string.format("Type '%s' has no len.", tt)
+	end
+
+	function plume.error.cannotUseMetaKey()
+		return "Cannot use a meta key for a macro named argument."
 	end
 end

@@ -32,49 +32,17 @@ function CONCAT_CALL (vm, arg1, arg2)
         end
     end
 
-    if t == "macro" then
-        local capture = vm.plume.obj.table(0, 0)
-        local arguments = {}
+    -- Macro
+    if t == "chunk" then
+        _CALL_CHUNK(vm, tocall)
 
-        _UNSTACK_POS   (vm, tocall, arguments, capture)
-        _UNSTACK_NAMED (vm, tocall, arguments, capture)
-
-        -- Add self to params if the callable is a table
-        if self then  
-            table.insert(arguments, self)
-        end
-
-        if tocall.variadicOffset>0 then
-            arguments[tocall.variadicOffset] = capture
-        end
-        _END_ACC(vm)
-
-        _STACK_PUSH(
-            vm.mainStack,
-            _CALL (vm, tocall, arguments)
-        )
-
-    elseif t == "chunk" then
-        
-        ENTER_SCOPE(vm, 0, tocall.positionalParamCount) -- Create a new scope
-        
-        -- Save params as locals variables
-        for i=1, tocall.positionalParamCount do
-            _STACK_SET_FRAMED(
-                vm.variableStack, i-1, 0,
-                _STACK_GET_FRAMED(vm.mainStack, i, 0)
-            )
-        end
-        _STACK_POP_FRAME(vm.mainStack)      -- clean stack from arguments
-        _STACK_PUSH(vm.macroStack, vm.ip+1) -- Set the return pointer
-        JUMP(vm, 0, tocall.offset)          -- Jump to macro body
-
+    -- Std functions defined in lua or user lua functions
     elseif t == "luaFunction" then
         CONCAT_TABLE(vm)
         table.insert(vm.runtime.callstack, {runtime=vm.runtime, macro=tocall, ip=vm.ip})
         local success, result  =  pcall(tocall.callable, _STACK_GET(vm.mainStack), vm.runtime)
         if success then
-            table.remove(vm.chunk.callstack)
+            table.remove(vm.runtime.callstack)
             if result == nil then
                 result = vm.empty
             end
@@ -84,12 +52,42 @@ function CONCAT_CALL (vm, arg1, arg2)
             _ERROR(vm, result)
         end
 
+    -- Some harcoded std functions
     elseif t == "luaStdFunction" then
         CONCAT_TABLE(vm)
         _INJECTION_PUSH(vm, tocall.opcode, 0, 0)
+
+    -- @table ... end just return the accumulated table
+    elseif tocall == vm.plume.std.table then
+        CONCAT_TABLE(vm)
     else
         _ERROR (vm, vm.plume.error.cannotCallValue(t))
     end
+end
+
+---@param vm VM The virtual machine instance.
+---@param chunk table The function chunk to call.
+--! inline
+function _CALL_CHUNK(vm, chunk)
+    local allocationCount = chunk.positionalParamCount + chunk.namedParamCount
+
+    if chunk.variadicOffset then
+        allocationCount = allocationCount + 1
+    end
+
+    ENTER_SCOPE(vm, 0, allocationCount) -- Create a new scope
+
+    -- Distribute arguments to locals and get the overflow table
+    local variadicTable = _CONCAT_TABLE(vm, chunk.positionalParamCount, chunk.namedParamOffset)
+
+    -- If the chunk expects a variadic argument, assign the table to the specific register
+    if chunk.variadicOffset then
+        _STACK_SET_FRAMED(vm.variableStack, chunk.variadicOffset - 1, 0, variadicTable)
+    end
+
+    _STACK_POP_FRAME(vm.mainStack)        -- Clean stack from arguments
+    _STACK_PUSH(vm.macroStack, vm.ip + 1) -- Set the return pointer
+    JUMP(vm, 0, chunk.offset)             -- Jump to macro body
 end
 
 --- @opcode

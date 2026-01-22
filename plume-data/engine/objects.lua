@@ -71,7 +71,8 @@ return function(plume)
 			bytecode             = {},
 			constants            = {},
 			mapping              = {},
-			static               = {}
+			static               = {},
+			callstack            = {}
 		}
 	end
 

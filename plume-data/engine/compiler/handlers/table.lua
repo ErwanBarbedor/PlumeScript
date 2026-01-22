@@ -29,9 +29,9 @@ return function (plume, context, nodeHandlerTable)
 		context.registerOP(node, plume.ops.LOAD_CONSTANT, 0, offset)
 
 		if meta then
-			context.registerOP(node, plume.ops.TABLE_SET_ACC, 0, 1)
+			context.registerOP(node, plume.ops.TAG_META_KEY, 0, 0)
 		else
-			context.registerOP(node, plume.ops.TABLE_SET_ACC, 0, 0)
+			context.registerOP(node, plume.ops.TAG_KEY, 0, 0)
 		end
 	end
 

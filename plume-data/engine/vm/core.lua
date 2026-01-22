@@ -79,6 +79,8 @@ function _VM_INIT_VARS(vm, runtime)
     vm.injectionStack         = table.new(64, 0)
     vm.injectionStack.pointer = 0
 
+    vm.tagStack = table.new(2^14, 0)
+
     -- easier debuging than setting vm.ip
     vm.jump    = 0
 
