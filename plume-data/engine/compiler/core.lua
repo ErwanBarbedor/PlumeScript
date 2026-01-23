@@ -23,6 +23,12 @@ return function(plume)
 	function plume.compileFile(code, filename, chunk, runtime)
 		local context = plume.newCompilationContext(chunk, runtime)
 
+			-- A compilation is already running. Save the partial result
+			if #runtime.instructions > 0 then
+				context.savedInstructions = runtime.instructions
+				runtime.instructions = {}
+			end
+
 		-- Cache system disabled
 		-- if not plume.copyExecutableChunckFromCache(filename, chunk) then
 			-- Add std function to the chunck static table
@@ -37,6 +43,12 @@ return function(plume)
 			plume.finalize(runtime) 
 			-- plume.saveExecutableChunckToCache(filename, chunk)
 		-- end
+
+			-- Restore instructions
+			if context.savedInstructions then
+				runtime.instructions = context.savedInstructions
+				context.savedInstructions = nil
+			end
 
 		return true
 	end

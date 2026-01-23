@@ -44,7 +44,7 @@ If not, see <https://www.gnu.org/licenses/>.
 
 -- Add all needed functions are loaded as globals
 return function (plume)
-	function plume._run_dev (runtime)
+	function plume._run_dev (runtime, ip)
 ]=]
 
 local import = {}
@@ -60,7 +60,7 @@ local init = [[
 	
 		-- Creates stacks, handle arguments
 		local vm =  --! to-remove
-			_VM_INIT(plume, runtime)
+			_VM_INIT(plume, runtime, ip)
 		
 		local op, arg1, arg2, vmerr, vmserr
 		::DISPATCH::
