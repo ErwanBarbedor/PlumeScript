@@ -87,8 +87,8 @@ function _CALL_MACRO(vm, chunk)
     if chunk.variadicOffset then
         allocationCount = allocationCount + 1
     end
-
-    ENTER_SCOPE(vm, 0, allocationCount) -- Create a new scope
+    
+    ENTER_SCOPE(vm, 0, chunk.localsCount) -- Create a new scope
 
     -- Distribute arguments to locals and get the overflow table
     local variadicTable, tomanyPositionnalCounter, capturedCount, unknowNamed = _CONCAT_TABLE(
