@@ -96,17 +96,17 @@ end
 --- @opcode
 --! inline
 function STD_IMPORT(vm, arg1, arg2)
-    local args = _STACK_POP(vm.mainStack).table
+    local args = _STACK_POP(vm.mainStack)
 
     local firstFilename = vm.runtime.files[1].name
     local lastFilename  = vm.runtime.files[vm.fileStack.pointer].name
 
     local filename, searchPaths = vm.plume.getFilenameFromPath(
-        args[1],
+        args.table[1],
         ---------------------------------
         -- WILL BE REMOVED IN 1.0 (#230)
         ---------------------------------
-        args.lua,
+        args.table.lua,
         ---------------------------------
         vm.runtime,
         firstFilename,
@@ -117,7 +117,7 @@ function STD_IMPORT(vm, arg1, arg2)
         ---------------------------------
         -- WILL BE REMOVED IN 1.0 (#230)
         ---------------------------------
-        if args.lua then
+        if args.table.lua then
             local result = dofile(filename)(vm.plume)
             _STACK_PUSH(vm.mainStack, result or vm.empty)
         ---------------------------------
@@ -135,6 +135,15 @@ function STD_IMPORT(vm, arg1, arg2)
                 vm.runtime.files[filename] = chunk
             end
             if success then
+                -- Add params to static
+                for _, key in ipairs(args.keys) do
+                    local offset = chunk.namedParamOffset[key]
+                    if offset then
+                        chunk.static[offset] = args.table[key]
+                    end
+                end
+
+                -- prepare stack and jumps
                 _STACK_PUSH(vm.fileStack, chunk.fileID)
                 _STACK_PUSH(vm.macroStack, vm.ip + 1)
                 _INJECTION_PUSH(vm, vm.plume.ops.JUMP, 0, chunk.offset)
