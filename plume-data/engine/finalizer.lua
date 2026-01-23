@@ -19,18 +19,16 @@ return function (plume)
 		local bytecodeSize = runtime.bytecode and #runtime.bytecode or 0
 
 		local labels = {}
-		removedCount = 0
+		local removedCount = 0
 		for offset=1, #runtime.instructions do
 			instr = runtime.instructions[offset]
 			if instr.label then
 				labels[instr.label] = offset - removedCount
 				removedCount = removedCount + 1
-			elseif instr.fileLink then
-				removedCount = removedCount + 1
 			end
 		end
 
-		removedOffset = 0
+		local removedOffset = 0
 		for offset=1, #runtime.instructions do
 			instr = runtime.instructions[offset]
 			offset = offset-removedOffset
@@ -82,6 +80,8 @@ return function (plume)
 			runtime.bytecode[bytecodeSize+offset] = byte
 			runtime.mapping[bytecodeSize+offset] = instr.mapsto
 		end
+
+		assert(#runtime.bytecode <= MASK_ARG2)
 	end
 
 	local function clean(runtime)
