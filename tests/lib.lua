@@ -168,7 +168,7 @@ function lib.executeTests(allTests, plumeEngine)
 
                     local runtime = plumeEngine.obj.runtime()
                     local chunk   = plumeEngine.obj.macro("main", runtime)
-                    runtime.env.plume_path = ""
+                    runtime.env.PLUME_PATH = ""
 
                     plumeEngine.runDevFlag = mode==1
                     testData.opt = mode==2

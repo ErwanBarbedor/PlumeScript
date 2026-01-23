@@ -3477,7 +3477,7 @@ return function (plume)
                     _ret318 = mainStack[mainStackPointer + 1]
                     local args = _ret318
                     local firstFilename = runtime.files[1].name
-                    local lastFilename = runtime.files[fileStackPointer].name
+                    local lastFilename = runtime.files[fileStack[fileStackPointer]].name
                     local filename, searchPaths = plume.getFilenameFromPath (args.table[1], args.table.lua, runtime, firstFilename, lastFilename)
                     if filename then
                         if args.table.lua then

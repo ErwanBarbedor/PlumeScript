@@ -99,7 +99,7 @@ function STD_IMPORT(vm, arg1, arg2)
     local args = _STACK_POP(vm.mainStack)
 
     local firstFilename = vm.runtime.files[1].name
-    local lastFilename  = vm.runtime.files[vm.fileStack.pointer].name
+    local lastFilename  = vm.runtime.files[vm.fileStack[vm.fileStack.pointer]].name
 
     local filename, searchPaths = vm.plume.getFilenameFromPath(
         args.table[1],
