@@ -44,7 +44,7 @@ function CONCAT_CALL (vm, arg1, arg2)
     elseif t == "luaFunction" then
         CONCAT_TABLE(vm)
         table.insert(vm.runtime.callstack, {runtime=vm.runtime, macro=tocall, ip=vm.ip})
-        local success, result  =  pcall(tocall.callable, _STACK_POP(vm.mainStack), vm.runtime)
+        local success, result  =  pcall(tocall.callable, _STACK_POP(vm.mainStack), vm.runtime, _STACK_GET(vm.fileStack))
         if success then
             table.remove(vm.runtime.callstack)
             if result == nil then
@@ -201,26 +201,5 @@ function _UNSTACK_NAMED (vm, macro, arguments, capture)
         _ERROR(vm, err)
     else
         _STACK_POP(vm.mainStack)
-    end
-end
-
---- Call a given macro, keep trace of execution in callstack, and return the result.
---- Throw stack overflow errors if callstack is too big.
---- @param macro macro The macro to call
---- @param arguments table Arguments for the call
---- @return any Call result
---! inline
-function _CALL (vm, macro, arguments)
-    table.insert(vm.plume.runtime.callstack, {chunk=vm.plume.runtime, macro=macro, ip=vm.ip})
-    if #vm.plume.runtime.callstack<=500 then
-        local success, callResult, cip, source  = vm.plume.run(macro, arguments)
-        if success then
-            table.remove(vm.plume.runtime.callstack)
-            return callResult
-        else
-            _SPECIAL_ERROR(vm, callResult, cip, (source or macro) )
-        end
-    else
-        _ERROR (vm, vm.plume.error.stackOverflow())
     end
 end

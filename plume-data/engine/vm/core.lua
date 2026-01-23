@@ -18,9 +18,8 @@ If not, see <https://www.gnu.org/licenses/>.
 --===============--
 --- Initiialize the VM
 --- @param runtime runtime The runtime to execute
---- @param arguments table
 --! inline-nodo
-function _VM_INIT (plume, runtime, arguments)
+function _VM_INIT (plume, runtime)
     require("table.new")
 
     local vm = {} --! to-remove
@@ -49,7 +48,7 @@ function _VM_INIT_VARS(vm, runtime)
     --! index-to-inline injectionStack.*
     --! index-to-inline flag.* *
 
-    vm.runtime = runtime
+    vm.runtime   = runtime
     vm.bytecode  = runtime.bytecode
     vm.constants = runtime.constants
     vm.static    = runtime.static

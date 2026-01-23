@@ -92,3 +92,57 @@ function STD_ENUMERATE(vm, arg1, arg2)
         ---------------------------------
     })
 end
+
+--- @opcode
+--! inline
+function STD_IMPORT(vm, arg1, arg2)
+    local args = _STACK_POP(vm.mainStack).table
+
+    local firstFilename = vm.runtime.files[1].name
+    local lastFilename  = vm.runtime.files[vm.fileStack.pointer].name
+
+    local filename, searchPaths = vm.plume.getFilenameFromPath(
+        args[1],
+        ---------------------------------
+        -- WILL BE REMOVED IN 1.0 (#230)
+        ---------------------------------
+        args.lua,
+        ---------------------------------
+        vm.runtime,
+        firstFilename,
+        lastFilename
+    )
+
+    if filename then
+        ---------------------------------
+        -- WILL BE REMOVED IN 1.0 (#230)
+        ---------------------------------
+        if args.lua then
+            local result = dofile(filename)(vm.plume)
+            _STACK_PUSH(vm.mainStack, result or vm.empty)
+        ---------------------------------
+        else
+            local success = true
+            local err
+            local chunk = vm.runtime.files[filename]
+            if not chunk then
+                chunk =  vm.plume.obj.macro(filename, vm.runtime)
+
+                local f = io.open(filename)
+                    local code = f:read("*a")
+                f:close()
+                success, err = pcall(vm.plume.compileFile, code, filename, chunk, vm.runtime)
+                vm.runtime.files[filename] = chunk
+            end
+            if success then
+                _STACK_PUSH(vm.fileStack, chunk.fileID)
+                _STACK_PUSH(vm.macroStack, vm.ip + 1)
+                _INJECTION_PUSH(vm, vm.plume.ops.JUMP, 0, chunk.offset)
+            else
+                _ERROR(vm, err)
+            end
+        end
+    else
+        _ERROR(vm, vm.plume.error.cannotOpenFile(args[1], searchPaths))
+    end
+end

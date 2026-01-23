@@ -81,8 +81,11 @@ return function (plume)
         plume.std.lua.table[name] = importLuaTable(name, _G[name])
     end
 
-    plume.std.lua.table.require =  plume.obj.luaFunction("require", function(args, chunk)
-        local filename, searchPaths = plume.getFilenameFromPath(args.table[1], true, chunk)
+    plume.std.lua.table.require =  plume.obj.luaFunction("require", function(args, runtime, fileID)
+        local firstFilename = runtime.files[1].name
+        local lastFilename  = runtime.files[fileID].name
+
+        local filename, searchPaths = plume.getFilenameFromPath(args.table[1], true, runtime, firstFilename, lastFilename)
         if filename then
             return dofile(filename)(plume) 
         else

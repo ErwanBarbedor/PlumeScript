@@ -35,3 +35,14 @@ end
 function LEAVE_SCOPE (vm, arg1, arg2)
     _STACK_POP_FRAME(vm.variableStack)
 end
+
+--- @opcode
+--! inline
+function RETURN_FILE(vm, arg1, arg2)
+    _STACK_POP(vm.fileStack)
+    if _STACK_POS(vm.fileStack) == 0 then
+        _INJECTION_PUSH(vm, vm.plume.ops.END, 0, 0) -- last file, end the program
+    else
+        JUMP(vm, 0, _STACK_POP(vm.macroStack)) -- return in the previous position
+    end
+end

@@ -21,7 +21,7 @@ If not, see <https://www.gnu.org/licenses/>.
 
 -- Add all needed functions are loaded as globals
 return function (plume)
-	function plume._run_dev (chunk, arguments)
+	function plume._run_dev (runtime)
 		require "plume-data/engine/vm/acc"
 		require "plume-data/engine/vm/alu"
 		require "plume-data/engine/vm/call"
@@ -41,12 +41,12 @@ return function (plume)
 	
 		-- Creates stacks, handle arguments
 		local vm =  --! to-remove
-			_VM_INIT(plume, chunk, arguments)
+			_VM_INIT(plume, runtime)
 		
 		local op, arg1, arg2, vmerr, vmserr
 		::DISPATCH::
 			if vm.err then 
-				return false, vm.err, vm.ip, vm.runtime
+				return false, vm.err, vm.ip
 			end
 			if vm.serr then
 				return false, unpack(vm.serr)
@@ -281,6 +281,10 @@ return function (plume)
 								else
 									goto STD_ENUMERATE
 								end
+							else
+								if op < 59 then
+									goto STD_IMPORT
+								end
 							end
 						end
 					end
@@ -453,6 +457,9 @@ return function (plume)
 				goto DISPATCH
 			::STD_ENUMERATE::
 				STD_ENUMERATE(vm, arg1, arg2)
+				goto DISPATCH
+			::STD_IMPORT::
+				STD_IMPORT(vm, arg1, arg2)
 				goto DISPATCH
 		::END::
 		return true, _STACK_GET(vm.mainStack)

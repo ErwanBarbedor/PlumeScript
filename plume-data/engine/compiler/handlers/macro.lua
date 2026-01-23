@@ -38,6 +38,9 @@ return function (plume, context, nodeHandlerTable)
 			debugMacroName = "???"
 		end
 
+		-- Save name in the node
+		node.debugMacroName = debugMacroName
+
 		local macroObj     = plume.obj.macro(debugMacroName, context.chunk)
 		local macroOffset  = context.registerConstant(macroObj)
 		context.registerOP(macroIdentifier or node, plume.ops.LOAD_CONSTANT, 0, macroOffset)

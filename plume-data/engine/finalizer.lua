@@ -16,42 +16,41 @@ If not, see <https://www.gnu.org/licenses/>.
 return function (plume)
 
 	local function link(runtime)
-		local labels = {}
+		local bytecodeSize = runtime.bytecode and #runtime.bytecode or 0
 
-		runtime.removedCount = runtime.removedCount or 0
+		local labels = {}
+		removedCount = 0
 		for offset=1, #runtime.instructions do
 			instr = runtime.instructions[offset]
 			if instr.label then
-				labels[instr.label] = offset - runtime.removedCount
-				runtime.removedCount = runtime.removedCount + 1
+				labels[instr.label] = offset - removedCount
+				removedCount = removedCount + 1
 			elseif instr.fileLink then
-				runtime.removedCount = runtime.removedCount + 1
+				removedCount = removedCount + 1
 			end
 		end
 
-		runtime.removedOffset = runtime.removedOffset or 0
+		removedOffset = 0
 		for offset=1, #runtime.instructions do
 			instr = runtime.instructions[offset]
-			offset = offset-runtime.removedOffset
+			offset = offset-removedOffset
 			if instr.label then
-				runtime.removedOffset = runtime.removedOffset + 1
+				removedOffset = removedOffset + 1
 				if instr.link then
-					runtime.constants[instr.link].offset = offset --set macro offset
+					runtime.constants[instr.link].offset = bytecodeSize + offset --set macro offset
 				end
 			elseif instr._goto then
 				if not labels[instr._goto] then
 					error("Internal Error: no label " .. instr._goto)
 				end
 
-				runtime.linkedInstructions[offset] = {plume.ops[instr.jump], 0, labels[instr._goto]}
+				runtime.linkedInstructions[offset] = {plume.ops[instr.jump], 0, bytecodeSize + labels[instr._goto]}
 			else
 				runtime.linkedInstructions[offset] = instr
 			end
 		end
 
-		table.insert(runtime.linkedInstructions, {plume.ops.END, 0, 0})
-		runtime.removedOffset = runtime.removedOffset-1 -- offset for END
-		runtime.removedCount  = runtime.removedCount-1
+		table.insert(runtime.linkedInstructions, {plume.ops.RETURN_FILE, 0, 0})
 	end
 	
 	------------------------
@@ -72,6 +71,7 @@ return function (plume)
 		if not runtime.bytecode then
 			runtime.bytecode = table.new(#runtime.linkedInstructions, 0)
 		end
+		local bytecodeSize = #runtime.bytecode
 		for offset=1, #runtime.linkedInstructions do
 			instr = runtime.linkedInstructions[offset]
 
@@ -79,9 +79,14 @@ return function (plume)
 			local arg1_part = bit.lshift(bit.band(instr[2], MASK_ARG1), ARG1_SHIFT)
 			local arg2_part = bit.band(instr[3], MASK_ARG2)
 			local byte = bit.bor(op_part, arg1_part, arg2_part)
-			runtime.bytecode[offset] = byte
-			runtime.mapping[offset] = instr.mapsto
+			runtime.bytecode[bytecodeSize+offset] = byte
+			runtime.mapping[bytecodeSize+offset] = instr.mapsto
 		end
+	end
+
+	local function clean(runtime)
+		runtime.instructions = {}
+		runtime.linkedInstructions = {}
 	end
 
 	function plume.finalize(runtime)
@@ -91,6 +96,8 @@ return function (plume)
 		link(runtime)
 		-- Encode instruction in one 32bits int
 		encode(runtime)
+		-- Clean temp table for next file
+		clean(runtime)
 
 		return true
 	end

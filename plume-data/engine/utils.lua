@@ -279,14 +279,14 @@ return function (plume)
         "%base%%path%/init.%ext%",
     }
     
-    function plume.getFilenameFromPath(path, lua, chunk)
+    function plume.getFilenameFromPath(path, lua, runtime, firstFilename, lastFilename)
         path = path:gsub('\\', '/')
         
         local root
         if path:match('^%.+/') or path == "." then
-            root = formatDirFromFilename(chunk.name)
+            root = formatDirFromFilename(lastFilename)
         else
-            root = formatDirFromFilename(chunk.state[1].name)
+            root = formatDirFromFilename(firstFilename)
         end
 
         local ext
@@ -297,7 +297,7 @@ return function (plume)
         end
 
         local basedirs = {}
-        local env = plume.env.plume_path
+        local env = runtime.env.plume_path
         if env then
             for dir in env:gmatch('[^;]+') do
                 dir = formatDir(dir)

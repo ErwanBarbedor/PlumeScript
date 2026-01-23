@@ -180,6 +180,14 @@ return function(plume)
 		return errorCallstack
 	end
 
+	local function findNodeParentMacro (node)
+		if node.name == "MACRO" then
+			return node.debugMacroName
+		elseif node.parent then
+			return findNodeParentMacro(node.parent)
+		end
+	end
+
 	function plume.error.makeRuntimeError(runtime, ip, message)
 		local node = plume.error.getNode(runtime, ip)
 		local message = "Runtime error: " .. message
@@ -188,7 +196,7 @@ return function(plume)
 		local lineInfos = plume.error.getLineInfos(node)
 		table.insert(
 			errorCallstack,
-			plume.error.formatLine(lineInfos)
+			plume.error.formatLine(lineInfos, findNodeParentMacro (node))
 		)
 
 		if runtime.callstack then
@@ -203,6 +211,7 @@ return function(plume)
 				if node then
 					local parentMacro = runtime.callstack[i-1]
 					local parentMacroName = parentMacro and parentMacro.macro.type == "macro" and parentMacro.macro.name
+					local parentMacroName = parentMacroName or findNodeParentMacro (node)
 
 					local lineInfos = plume.error.getLineInfos(node)
 					local formatedLine = plume.error.formatLine(lineInfos, parentMacroName)
@@ -211,13 +220,11 @@ return function(plume)
 			end
 		end
 
-		
 		if #errorCallstack > 10 then
 			errorCallstack = simplifyErrorCallstack(errorCallstack)
 		end
 
 		local traceback = table.concat(errorCallstack, "\n")
-		-- traceback = ""
 		message = message .. "\n\nTraceback (most recent call first):\n" .. traceback
 
 		return message

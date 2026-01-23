@@ -53,10 +53,11 @@ return function(plume)
 
 		if t.isFile then
 			table.insert(parent.static, {})
+			table.insert(parent.files, t)
+			parent.files[name] = t
 			t.fileID = #parent.static
 			t.static = parent.static[t.fileID]
-		else -- isFile
-			
+		else -- is macro
 			t.static = parent.static
 		end
 		
@@ -72,7 +73,11 @@ return function(plume)
 			constants            = {},
 			mapping              = {},
 			static               = {},
-			callstack            = {}
+			callstack            = {},
+			files                = {},
+			env = {
+				PLUME_PATH= os.getenv("PLUME_PATH")
+			}
 		}
 	end
 

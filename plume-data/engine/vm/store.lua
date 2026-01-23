@@ -19,7 +19,8 @@ If not, see <https://www.gnu.org/licenses/>.
 --- @param arg2 variable offset
 --! inline
 function STORE_STATIC (vm, arg1, arg2)
-    vm.static[_STACK_GET(vm.fileStack)][arg2] = _STACK_POP(vm.mainStack)
+    local currentStatic = _GET_STATIC(vm)
+    currentStatic[arg2] = _STACK_POP(vm.mainStack)
 end
 
 --- @opcode
