@@ -35,11 +35,11 @@ require 'plume-data/engine/engine-opt'    (plume)
 require 'plume-data/engine/finalizer'     (plume)
 require 'plume-data/engine/pec'           (plume)
 
-function plume.run(runtime, ip)
+function plume.run(runtime, chunk)
 	if plume.runDevFlag then
-		return plume._run_dev(runtime, ip)
+		return plume._run_dev(runtime, chunk)
 	else
-		return plume._run(runtime, ip)
+		return plume._run(runtime, chunk)
 	end
 end
 
@@ -48,7 +48,7 @@ function plume.execute(code, filename, chunk, runtime)
 	success, result = pcall(plume.compileFile, code, filename, chunk, runtime)
 
 	if success then
-		success, result, ip = plume.run(runtime, chunk.offset)
+		success, result, ip = plume.run(runtime, chunk)
 	else
 		return false, result
 	end

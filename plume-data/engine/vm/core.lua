@@ -35,7 +35,7 @@ end
 --- Declare all vm variables
 --- @param runtime runtime The runtime to execute
 --! inline-nodo
-function _VM_INIT_VARS(vm, runtime, ip)
+function _VM_INIT_VARS(vm, runtime, chunk)
     --! index-to-inline vm.err vmerr
     --! index-to-inline vm.serr vmserr
     --! index-to-inline vm.* *
@@ -54,7 +54,7 @@ function _VM_INIT_VARS(vm, runtime, ip)
     vm.static    = runtime.static
 
     -- instruction pointer
-    vm.ip      = (ip or 1) - 1
+    vm.ip      = chunk.offset - 1
     -- total instruction count
     vm.tic     = 0
 
@@ -69,7 +69,7 @@ function _VM_INIT_VARS(vm, runtime, ip)
     vm.variableStack.frames.pointer = 0
 
     vm.fileStack = table.new(2^8, 0)
-    vm.fileStack[1] = 1
+    vm.fileStack[1] = chunk.fileID
     vm.fileStack.pointer = 1
 
     vm.macroStack = table.new(2^8, 0)

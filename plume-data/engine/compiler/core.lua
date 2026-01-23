@@ -22,7 +22,6 @@ return function(plume)
 	--- @return nil (instructions are writted directly into the chunk)
 	function plume.compileFile(code, filename, chunk, runtime)
 		local context = plume.newCompilationContext(chunk, runtime)
-
 			-- A compilation is already running. Save the partial result
 			if #runtime.instructions > 0 then
 				context.savedInstructions = runtime.instructions
