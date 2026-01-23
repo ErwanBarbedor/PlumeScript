@@ -354,9 +354,9 @@ $len(t)
 1
 /// End
 
-/// Test #300
-let x
-$(x==2)
+/// Test #329
+use tests/plume/toimport/touse
+$nib()
 /// Output
-false
+nib
 /// End
