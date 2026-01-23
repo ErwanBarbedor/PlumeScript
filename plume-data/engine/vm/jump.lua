@@ -37,10 +37,6 @@ end
 --- @param arg2 jump offset
 --! inline
 function JUMP_IF (vm, arg1, arg2)
-    --- Unstack 1
-    --- Jump to offset if true
-    --- arg1: -
-    --- arg2: target offset
     local test = _STACK_POP(vm.mainStack)
     if _CHECK_BOOL (vm, test) then
         vm.jump = arg2
@@ -52,9 +48,6 @@ end
 --- @param arg2 jump offset
 --! inline
 function JUMP_IF_PEEK (vm, arg1, arg2)
-    --- Jump to offset if top is true, without unpacking
-    --- arg1: -
-    --- arg2: target offset
     local test = _STACK_GET(vm.mainStack)
     if _CHECK_BOOL (vm, test) then
         vm.jump = arg2
@@ -66,11 +59,20 @@ end
 --- @param arg2 jump offset
 --! inline
 function JUMP_IF_NOT_PEEK (vm, arg1, arg2)
-    --- Jump to offset if top is false, without unpacking
-    --- arg1: -
-    --- arg2: target offset
     local test = _STACK_GET(vm.mainStack)
     if not _CHECK_BOOL (vm, test) then
+        vm.jump = arg2
+    end
+end
+
+
+--- @opcode
+--- Unstack 1, and jump to a given instruction if empty
+--- @param arg2 jump offset
+--! inline
+function JUMP_IF_EMPTY (vm, arg1, arg2)
+    local test = _STACK_POP(vm.mainStack)
+    if test == vm.empty then
         vm.jump = arg2
     end
 end
@@ -80,11 +82,6 @@ end
 --- @param arg2 jump offset
 --! inline
 function JUMP_IF_NOT_EMPTY (vm, arg1, arg2)
-    --- Unstack 1
-    --- Jump to offset if not empty
-    --- Used by macro when setting defaut values
-    --- arg1: -
-    --- arg2: target offset
     local test = _STACK_POP(vm.mainStack)
     if test ~= vm.empty then
         vm.jump = arg2
