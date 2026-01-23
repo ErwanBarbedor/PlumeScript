@@ -75,4 +75,16 @@ return function (plume, context)
     function context.checkIfCanConcat()
     	return context.getLast"concats"
     end
+
+    --- Calculating number of declared local variables
+    --- @param node node
+    --- @return number
+    function context.countLocals(node)
+    	local lets = plume.ast.getAll(node, "LET")
+    	local count = 0
+    	for _, let in ipairs(lets) do
+    		count = count + #plume.ast.get(let, "VARLIST").children
+    	end
+    	return count
+    end
 end

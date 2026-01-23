@@ -15,7 +15,7 @@ If not, see <https://www.gnu.org/licenses/>.
 
 return function (plume, context, nodeHandlerTable)
 	nodeHandlerTable.FILE = context.file(function(node)
-		local lets = #plume.ast.getAll(node, "LET")
+		local lets = context.countLocals(node)
 		context.registerOP(node, plume.ops.ENTER_SCOPE, 0, lets)
 		table.insert(context.scopes, {})
 		context.accBlock()(node, "macro_end")
