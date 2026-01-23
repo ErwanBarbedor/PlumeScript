@@ -297,7 +297,7 @@ return function (plume)
         end
 
         local basedirs = {}
-        local env = runtime.env.plume_path
+        local env = runtime.env.PLUME_PATH
         if env then
             for dir in env:gmatch('[^;]+') do
                 dir = formatDir(dir)
