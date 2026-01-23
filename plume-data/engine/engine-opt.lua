@@ -3475,12 +3475,12 @@ return function (plume)
                     local _ret318
                     mainStackPointer = mainStackPointer - 1
                     _ret318 = mainStack[mainStackPointer + 1]
-                    local args = _ret318.table
+                    local args = _ret318
                     local firstFilename = runtime.files[1].name
                     local lastFilename = runtime.files[fileStackPointer].name
-                    local filename, searchPaths = plume.getFilenameFromPath (args[1], args.lua, runtime, firstFilename, lastFilename)
+                    local filename, searchPaths = plume.getFilenameFromPath (args.table[1], args.table.lua, runtime, firstFilename, lastFilename)
                     if filename then
-                        if args.lua then
+                        if args.table.lua then
                             local result = dofile (filename)
                              (plume)
                             mainStackPointer = mainStackPointer + 1
@@ -3498,6 +3498,13 @@ return function (plume)
                                 runtime.files[filename] = chunk
                             end
                             if success then
+                                for _, key in ipairs (args.keys)
+                                 do
+                                    local offset = chunk.namedParamOffset[key]
+                                    if offset then
+                                        chunk.static[offset] = args.table[key]
+                                    end
+                                end
                                 fileStackPointer = fileStackPointer + 1
                                 fileStack[fileStackPointer] = chunk.fileID
                                 macroStackPointer = macroStackPointer + 1
