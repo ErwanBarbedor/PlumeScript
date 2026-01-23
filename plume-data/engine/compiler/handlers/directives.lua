@@ -20,13 +20,12 @@ return function (plume, context, nodeHandlerTable)
 		local path = node.content
 
 		-- Same path resolver as `import`
-		local filename, searchPaths = plume.getFilenameFromPath(path, false, context.chunk)
-
+		local filename, searchPaths = plume.getFilenameFromPath(path, false, context.runtime, context.chunk.name, context.chunk.name )
 		if not filename then
-            plume.error.cannotOpenFile(node, path, searchPaths)
+            plume.error.compilationCannotOpenFile(node, path, searchPaths)
 		end
 
-		local success, result = plume.executeFile(filename, context.chunk.state, false)
+		local success, result = plume.executeFile(filename, context.runtime)
         if not success then
             plume.error.cannotExecuteFile(node, path, result)
         end

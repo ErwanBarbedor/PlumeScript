@@ -184,7 +184,7 @@ return function(plume)
 		throwSyntaxError(node, message)
 	end
 
-	function plume.error.cannotOpenFile(node, path, searchPaths)
+	function plume.error.compilationCannotOpenFile(node, path, searchPaths)
 		local message = string.format("Cannot open '%s'.\nPaths tried:\n\t%s", path, table.concat(searchPaths, '\n\t'))
 		throwCompilationError(node, message)
 	end

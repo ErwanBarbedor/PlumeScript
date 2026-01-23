@@ -19,7 +19,7 @@ If not, see <https://www.gnu.org/licenses/>.
 --- Initiialize the VM
 --- @param runtime runtime The runtime to execute
 --! inline-nodo
-function _VM_INIT (plume, runtime)
+function _VM_INIT (plume, runtime, ip)
     require("table.new")
 
     local vm = {} --! to-remove
@@ -27,7 +27,7 @@ function _VM_INIT (plume, runtime)
     -- to avoid context injection
     vm.plume = plume --! to-remove
 
-    _VM_INIT_VARS(vm, runtime)
+    _VM_INIT_VARS(vm, runtime, ip)
 
     return vm --! to-remove
 end
@@ -35,7 +35,7 @@ end
 --- Declare all vm variables
 --- @param runtime runtime The runtime to execute
 --! inline-nodo
-function _VM_INIT_VARS(vm, runtime)
+function _VM_INIT_VARS(vm, runtime, ip)
     --! index-to-inline vm.err vmerr
     --! index-to-inline vm.serr vmserr
     --! index-to-inline vm.* *
@@ -54,7 +54,7 @@ function _VM_INIT_VARS(vm, runtime)
     vm.static    = runtime.static
 
     -- instruction pointer
-    vm.ip      = 0
+    vm.ip      = (ip or 1) - 1
     -- total instruction count
     vm.tic     = 0
 
