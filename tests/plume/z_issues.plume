@@ -360,3 +360,11 @@ $nib()
 /// Output
 nib
 /// End
+
+/// Test #330
+let nib from $import(tests/plume/toimport/touse)
+$nib()
+$nib()
+/// Output
+nibnib
+/// End
