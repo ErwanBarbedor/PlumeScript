@@ -1,0 +1,10 @@
+macro wing()
+	wing
+end
+
+macro nib()
+	nib
+end
+
+wing: $wing
+nib: $nib
