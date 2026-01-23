@@ -3372,12 +3372,18 @@ return function (plume)
                 goto DISPATCH
             ::RETURN_FILE::
                 do
-                    local _ret308
+                    do
+                        local _ret308
+                        variableStackFramesPointer = variableStackFramesPointer - 1
+                        _ret308 = variableStackFrames[variableStackFramesPointer + 1]
+                        variableStackPointer = _ret308 - 1
+                    end
+                    local _ret309
                     fileStackPointer = fileStackPointer - 1
-                    _ret308 = fileStack[fileStackPointer + 1]
-                    local _ret310
-                    _ret310 = fileStackPointer
-                    if _ret310 == 0 then
+                    _ret309 = fileStack[fileStackPointer + 1]
+                    local _ret311
+                    _ret311 = fileStackPointer
+                    if _ret311 == 0 then
                         do
                             injectionStackPointer = injectionStackPointer + 1
                             injectionStack[injectionStackPointer] = plume.ops.END
@@ -3385,27 +3391,27 @@ return function (plume)
                             injectionStack[injectionStackPointer] = 0
                             injectionStackPointer = injectionStackPointer + 1
                             injectionStack[injectionStackPointer] = 0
-                            local _ret309
-                            _ret309 = macroStackPointer
+                            local _ret310
+                            _ret310 = macroStackPointer
                             injectionStackPointer = injectionStackPointer + 1
-                            injectionStack[injectionStackPointer] = _ret309
+                            injectionStack[injectionStackPointer] = _ret310
                         end
                     else
-                        local _ret311
+                        local _ret312
                         macroStackPointer = macroStackPointer - 1
-                        _ret311 = macroStack[macroStackPointer + 1]
-                        goto _inline_end702
-                        ::_inline_end702::
-                        jump = _ret311
+                        _ret312 = macroStack[macroStackPointer + 1]
+                        goto _inline_end706
+                        ::_inline_end706::
+                        jump = _ret312
                     end
                 end
                 goto DISPATCH
             ::STD_LEN::
                 do
-                    local _ret312
+                    local _ret313
                     mainStackPointer = mainStackPointer - 1
-                    _ret312 = mainStack[mainStackPointer + 1]
-                    local t = _ret312.table[1]
+                    _ret313 = mainStack[mainStackPointer + 1]
+                    local t = _ret313.table[1]
                     local tt = type (t)
                     local result
                     if tt == "table" then
@@ -3421,22 +3427,22 @@ return function (plume)
                 goto DISPATCH
             ::STD_TYPE::
                 do
-                    local _ret313
-                    mainStackPointer = mainStackPointer - 1
-                    _ret313 = mainStack[mainStackPointer + 1]
-                    local t = _ret313.table[1]
                     local _ret314
-                    _ret314 = type (t) == "table" and (t == empty or t.type) or (type (t) == "cdata" and t.type) or type (t)
+                    mainStackPointer = mainStackPointer - 1
+                    _ret314 = mainStack[mainStackPointer + 1]
+                    local t = _ret314.table[1]
+                    local _ret315
+                    _ret315 = type (t) == "table" and (t == empty or t.type) or (type (t) == "cdata" and t.type) or type (t)
                     mainStackPointer = mainStackPointer + 1
-                    mainStack[mainStackPointer] = _ret314
+                    mainStack[mainStackPointer] = _ret315
                 end
                 goto DISPATCH
             ::STD_SEQ::
                 do
-                    local _ret315
+                    local _ret316
                     mainStackPointer = mainStackPointer - 1
-                    _ret315 = mainStack[mainStackPointer + 1]
-                    local args = _ret315.table
+                    _ret316 = mainStack[mainStackPointer + 1]
+                    local args = _ret316.table
                     local start = args[1]
                     local stop = args[2]
                     local step = args[3] or 1
@@ -3452,30 +3458,30 @@ return function (plume)
                 goto DISPATCH
             ::STD_ITEMS::
                 do
-                    local _ret316
+                    local _ret317
                     mainStackPointer = mainStackPointer - 1
-                    _ret316 = mainStack[mainStackPointer + 1]
-                    local args = _ret316.table
+                    _ret317 = mainStack[mainStackPointer + 1]
+                    local args = _ret317.table
                     mainStackPointer = mainStackPointer + 1
                     mainStack[mainStackPointer] = {type = "stdIterator", ref = args[1], flag = ITER_ITEMS, legacy = args.legacy}
                 end
                 goto DISPATCH
             ::STD_ENUMERATE::
                 do
-                    local _ret317
+                    local _ret318
                     mainStackPointer = mainStackPointer - 1
-                    _ret317 = mainStack[mainStackPointer + 1]
-                    local args = _ret317.table
+                    _ret318 = mainStack[mainStackPointer + 1]
+                    local args = _ret318.table
                     mainStackPointer = mainStackPointer + 1
                     mainStack[mainStackPointer] = {type = "stdIterator", ref = args[1], flag = ITER_ENUMS, legacy = args.legacy}
                 end
                 goto DISPATCH
             ::STD_IMPORT::
                 do
-                    local _ret318
+                    local _ret319
                     mainStackPointer = mainStackPointer - 1
-                    _ret318 = mainStack[mainStackPointer + 1]
-                    local args = _ret318
+                    _ret319 = mainStack[mainStackPointer + 1]
+                    local args = _ret319
                     local firstFilename = runtime.files[1].name
                     local lastFilename = runtime.files[fileStack[fileStackPointer]].name
                     local filename, searchPaths = plume.getFilenameFromPath (args.table[1], args.table.lua, runtime, firstFilename, lastFilename)
@@ -3516,10 +3522,10 @@ return function (plume)
                                     injectionStack[injectionStackPointer] = 0
                                     injectionStackPointer = injectionStackPointer + 1
                                     injectionStack[injectionStackPointer] = chunk.offset
-                                    local _ret319
-                                    _ret319 = macroStackPointer
+                                    local _ret320
+                                    _ret320 = macroStackPointer
                                     injectionStackPointer = injectionStackPointer + 1
-                                    injectionStack[injectionStackPointer] = _ret319
+                                    injectionStack[injectionStackPointer] = _ret320
                                 end
                             else
                                 vmerr = err
@@ -3531,9 +3537,9 @@ return function (plume)
                 end
                 goto DISPATCH
             ::END::
-            local _ret320
-            _ret320 = mainStack[mainStackPointer]
-            return true, _ret320
+            local _ret321
+            _ret321 = mainStack[mainStackPointer]
+            return true, _ret321
         end
     end
     
