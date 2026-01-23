@@ -967,12 +967,13 @@ return function (plume)
                             if tocall.variadicOffset then
                                 allocationCount = allocationCount + 1
                             end
+                            print (tocall.localsCount)
                             do
                                 local _ret75
                                 _ret75 = variableStackPointer
                                 variableStackFramesPointer = variableStackFramesPointer + 1
                                 variableStackFrames[variableStackFramesPointer] = _ret75 + 1
-                                for i = 1, allocationCount do
+                                for i = 1, tocall.localsCount do
                                     variableStackPointer = variableStackPointer + 1
                                     variableStack[variableStackPointer] = empty
                                 end

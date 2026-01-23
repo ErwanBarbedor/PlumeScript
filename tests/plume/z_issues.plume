@@ -256,7 +256,7 @@ $(wing(false))
 /// End
 
 /// Test #187
-macro Wing(...s, ?optn)
+macro Wing(?optn, ...s)
     if optn
        true 
     else
