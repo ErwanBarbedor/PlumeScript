@@ -258,4 +258,8 @@ return function(plume)
 	function plume.error.cannotUseMetaKey()
 		return "Cannot use a meta key for a macro named argument."
 	end
+
+	function plume.error.cannotOpenFile(path, searchPaths)
+		return string.format("Error: cannot open '%s'.\nPaths tried:\n\t%s", path, table.concat(searchPaths, '\n\t'))
+	end
 end

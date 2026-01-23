@@ -34,7 +34,6 @@ require 'plume-data/engine/engine'        (plume)
 require 'plume-data/engine/engine-opt'    (plume)
 require 'plume-data/engine/finalizer'     (plume)
 require 'plume-data/engine/pec'           (plume)
-require 'plume-data/engine/env'           (plume)
 
 function plume.run(runtime)
 	if plume.runDevFlag then
@@ -46,11 +45,10 @@ end
 
 function plume.execute(code, filename, chunk, runtime)
 	local success, result, ip
-	local errorSource = chunk
 	success, result = pcall(plume.compileFile, code, filename, chunk, runtime)
 
 	if success then
-		success, result, ip, errorSource = plume.run(runtime, {})
+		success, result, ip = plume.run(runtime)
 	else
 		return false, result
 	end

@@ -143,47 +143,50 @@ return function (plume)
             return iterator
         end,
 
-        -- If start by ./ or ../, search relativly to current file
-        -- Else, search from root file and dir from PLUME_PATH (separated by comma)
-        -- For a given path, search for path.plume and path/init.plume
-        import = function(args, chunk)
-            local filename, searchPaths = plume.getFilenameFromPath(
-                args.table[1],
-                ---------------------------------
-                -- WILL BE REMOVED IN 1.0 (#230)
-                ---------------------------------
-                args.table.lua,
-                ---------------------------------
-                chunk)
+        -- -- If start by ./ or ../, search relativly to current file
+        -- -- Else, search from root file and dir from PLUME_PATH (separated by comma)
+        -- -- For a given path, search for path.plume and path/init.plume
+        -- import = function(args, runtime, fileID)
+        --     local firstFilename = runtime.files[1].name
+        --     local lastFilename = runtime.files[fileID].name
+        --     local filename, searchPaths = plume.getFilenameFromPath(
+        --         args.table[1],
+        --         ---------------------------------
+        --         -- WILL BE REMOVED IN 1.0 (#230)
+        --         ---------------------------------
+        --         args.table.lua,
+        --         ---------------------------------
+        --         firstFilename,
+        --         lastFilename)
             
-            if filename then
-                ---------------------------------
-                -- WILL BE REMOVED IN 1.0 (#230)
-                ---------------------------------
-                if args.table.lua then
-                    return dofile(filename)(plume) 
-                ---------------------------------
-                else
-                    table.remove(args.table)
-                    local success, result = plume.executeFile(filename, chunk.state, true, args.table)
-                    if not success then
-                        error(result, 0)
-                    end
-                    return result
-                end
-            else
-                msg = "Error: cannot open '" .. args.table[1] .. "'.\nPaths tried:\n\t" .. table.concat(searchPaths, '\n\t')
-                error(msg, 0)
-            end
-        end,
+        --     if filename then
+        --         ---------------------------------
+        --         -- WILL BE REMOVED IN 1.0 (#230)
+        --         ---------------------------------
+        --         if args.table.lua then
+        --             return dofile(filename)(plume) 
+        --         ---------------------------------
+        --         else
+        --             table.remove(args.table)
+        --             local success, result = plume.executeFile(filename, chunk.state, true, args.table)
+        --             if not success then
+        --                 error(result, 0)
+        --             end
+        --             return result
+        --         end
+        --     else
+        --         msg = "Error: cannot open '" .. args.table[1] .. "'.\nPaths tried:\n\t" .. table.concat(searchPaths, '\n\t')
+        --         error(msg, 0)
+        --     end
+        -- end,
 
         -- path
-        setPlumePath = function(args)
-            plume.env.plume_path = args.table[1]
+        setPlumePath = function(args, runtime)
+            runtime.env.plume_path = args.table[1]
         end,
 
-        addToPlumePath = function(args)
-            plume.env.plume_path = (plume.env.plume_path or "") .. ";" .. args.table[1]
+        addToPlumePath = function(args, runtime)
+            runtime.env.plume_path = (runtime.env.plume_path or "") .. ";" .. args.table[1]
         end,
 
         -- io

@@ -30,10 +30,6 @@ end
 --- @param arg2 Variable offset
 --! inline
 function LOAD_LOCAL (vm, arg1, arg2)
-    --- Stack 1 from vs.
-    --- Final offset: the nth last frame + vs offset
-    --- arg1: frame offset
-    --- arg2: vs offset
     _STACK_PUSH(
         vm.mainStack,
         _STACK_GET_FRAMED(vm.variableStack, arg2 - 1, -arg1)
@@ -45,14 +41,10 @@ end
 --- @param arg2 static offset
 --! inline
 function LOAD_STATIC (vm, arg1, arg2)
-    --- Stack 1 from static memory
-    --- memory[mp] is a pointer to the current
-    --- file intern memory
-    --- arg1: -
-    --- arg2: vs offset
+    local currentStatic = _GET_STATIC(vm)
     _STACK_PUSH(
         vm.mainStack,
-        vm.static[_STACK_GET(vm.fileStack)][arg2]
+        currentStatic[arg2]
     )
 end
 
@@ -60,9 +52,6 @@ end
 --- Stack 1, `true`
 --! inline
 function LOAD_TRUE (vm, arg1, arg2)
-    --- Stack 1 constant true
-    --- arg1: -
-    --- arg2: -
     _STACK_PUSH(vm.mainStack, true)
 end
 
@@ -70,9 +59,6 @@ end
 --- Stack 1, `false`
 --! inline
 function LOAD_FALSE (vm, arg1, arg2)
-    --- Stack 1 constant false
-    --- arg1: -
-    --- arg2: -
     _STACK_PUSH(vm.mainStack, false)
 end
 
@@ -80,8 +66,5 @@ end
 --- Stack 1, `empty`
 --! inline
 function LOAD_EMPTY (vm, arg1, arg2)
-    --- Stack 1 constant empty
-    --- arg1: -
-    --- arg2: -
     _STACK_PUSH(vm.mainStack, vm.empty)
 end

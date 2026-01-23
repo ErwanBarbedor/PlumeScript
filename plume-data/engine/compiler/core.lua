@@ -31,6 +31,8 @@ return function(plume)
 			local ast = plume.parse(code, filename) 
 			-- Call, for each ast node, a function to emit bytecode
 			context.nodeHandler(ast) 
+			-- Save file offset
+			chunk.offset = (runtime.bytecode and #runtime.bytecode or 0) + 1
 			-- Encode OP, compute goto offsets
 			plume.finalize(runtime) 
 			-- plume.saveExecutableChunckToCache(filename, chunk)

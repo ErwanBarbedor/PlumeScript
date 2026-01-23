@@ -35,7 +35,7 @@ end
 --- @return nil
 --! inline-keepret
 function _SPECIAL_ERROR (vm, msg, ip, runtime)
-    vm.serr = {msg, ip, runtime}
+    vm.serr = {msg, ip}
 end
 
 --- @param x any
@@ -47,3 +47,17 @@ function _CHECK_BOOL (vm, x)
     end
     return x
 end
+
+--------------------------------------------
+--- Temp code waiting for closure (#293)
+--! inline
+function _GET_STATIC(vm)
+    for i=#vm.runtime.callstack, 1, -1 do
+        local call = vm.runtime.callstack[i]
+        if call.macro and call.macro.static then
+            return call.macro.static
+        end
+    end
+    return vm.static[vm.fileStack[vm.fileStack.pointer]]
+end
+--------------------------------------------

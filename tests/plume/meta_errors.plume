@@ -87,11 +87,11 @@ $(t+1)
 Runtime error: Stack overflow
 
 Traceback (most recent call first):
-  File 'stack overflow', line 3: $(self+1)
-                                   ^^^^^^
   File 'stack overflow', line 3, in macro ???: $(self+1)
                                                  ^^^^^^
     ...
-   (same line 1996 more times)
+   (same line 999 more times)
     ...
+  File 'stack overflow', line 7: $(t+1)
+                                   ^^^
 /// End

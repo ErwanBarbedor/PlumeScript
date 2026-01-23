@@ -264,6 +264,9 @@ JUMP_IF_NOT :else   -- Jumps if result is false.
 #### LEAVE_SCOPE
 <br>Close a frame 
 
+#### RETURN_FILE
+
+
 ### vm/std.lua
 
 #### STD_LEN
@@ -279,6 +282,9 @@ JUMP_IF_NOT :else   -- Jumps if result is false.
 
 
 #### STD_ENUMERATE
+
+
+#### STD_IMPORT
 
 
 ### vm/store.lua

@@ -127,16 +127,33 @@ function lib.loadTests(directory)
     return allTests
 end
 
+function getSortedListByKey(t)
+    local sortedList = {}
+    local keys = {}
+    for k in pairs(t) do
+        table.insert(keys, k)
+    end
+    table.sort(keys)
+    for _, k in ipairs(keys) do
+        table.insert(sortedList, {key = k, value = t[k]})
+    end
+    return sortedList
+end
+
 --- Executes a collection of tests using the provided Plume engine.
 -- @param allTests The table of tests loaded by `lib.loadTests`.
 -- @param plumeEngine The Plume engine object. Must contain an `execute` method.
 -- @return The `allTests` table, populated with execution results.
 function lib.executeTests(allTests, plumeEngine)
     local TIMEOUT_SECONDS = 1
-    
-    for filename, tests in pairs(allTests) do
+
+    for _, testsInfos in ipairs(getSortedListByKey(allTests)) do
+        local filename = testsInfos.key
+        local tests  = testsInfos.value
         if not tests.error then
-            for testName, testData in pairs(tests) do
+            for _, test in ipairs(getSortedListByKey(tests)) do
+                local testName = test.key
+                local testData = test.value
                 for mode=1, 2 do
                     -- Timeout implementation
                     local start_time = os.clock()
@@ -147,20 +164,21 @@ function lib.executeTests(allTests, plumeEngine)
                         end
                     end
                     
-                    -- Set hook to run every 1,000,000 instructions
-                    debug.sethook(timeout_hook, "", 1000000)
-                    plumeEngine.callstack = {}
-                    plumeEngine.cache = {}
-                    plumeEngine.env.plume_path = ""
+                    
 
                     local runtime = plumeEngine.obj.runtime()
                     local chunk   = plumeEngine.obj.macro("main", runtime)
+                    runtime.env.plume_path = ""
 
                     plumeEngine.runDevFlag = mode==1
                     testData.opt = mode==2
 
-                    local x, y, z = pcall(
+                    -- Set hook to run every 1,000,000 instructions
+                    debug.sethook(timeout_hook, "", 1000000)
+
+                    local x, y, z = xpcall(
                         plumeEngine.execute,
+                        debug.traceback,
                         testData.input,
                         testName,
                         chunk,
@@ -195,7 +213,6 @@ function lib.executeTests(allTests, plumeEngine)
                             result = tostring(result)
                         end
 
-                        -- Process bytecode state for single or multiple chunks
                         local bytecode_info = {
                             is_multi = false,
                             grid = runtime.bytecode and plumeEngine.debug.bytecodeGrid(runtime)
