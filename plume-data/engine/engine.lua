@@ -171,9 +171,9 @@ return function (plume)
 								end
 							else
 								if op < 31 then
-									goto JUMP
+									goto JUMP_FOR
 								else
-									goto JUMP_IF_PEEK
+									goto JUMP
 								end
 							end
 						end
@@ -185,29 +185,29 @@ return function (plume)
 						if op < 36 then
 							if op < 34 then
 								if op < 33 then
-									goto JUMP_IF_NOT_PEEK
+									goto JUMP_IF_PEEK
 								else
-									goto GET_ITER
+									goto JUMP_IF_NOT_PEEK
 								end
 							else
 								if op < 35 then
-									goto FOR_ITER
+									goto GET_ITER
 								else
-									goto OP_ADD
+									goto FOR_ITER
 								end
 							end
 						else
 							if op < 38 then
 								if op < 37 then
-									goto OP_MUL
+									goto OP_ADD
 								else
-									goto OP_SUB
+									goto OP_MUL
 								end
 							else
 								if op < 39 then
-									goto OP_DIV
+									goto OP_SUB
 								else
-									goto OP_NEG
+									goto OP_DIV
 								end
 							end
 						end
@@ -215,29 +215,29 @@ return function (plume)
 						if op < 44 then
 							if op < 42 then
 								if op < 41 then
-									goto OP_MOD
+									goto OP_NEG
 								else
-									goto OP_POW
+									goto OP_MOD
 								end
 							else
 								if op < 43 then
-									goto OP_LT
+									goto OP_POW
 								else
-									goto OP_EQ
+									goto OP_LT
 								end
 							end
 						else
 							if op < 46 then
 								if op < 45 then
-									goto OP_AND
+									goto OP_EQ
 								else
-									goto OP_NOT
+									goto OP_AND
 								end
 							else
 								if op < 47 then
-									goto OP_OR
+									goto OP_NOT
 								else
-									goto DUPLICATE
+									goto OP_OR
 								end
 							end
 						end
@@ -247,29 +247,29 @@ return function (plume)
 						if op < 52 then
 							if op < 50 then
 								if op < 49 then
-									goto SWITCH
+									goto DUPLICATE
 								else
-									goto RETURN
+									goto SWITCH
 								end
 							else
 								if op < 51 then
-									goto RETURN_FILE
+									goto RETURN
 								else
-									goto END
+									goto RETURN_FILE
 								end
 							end
 						else
 							if op < 54 then
 								if op < 53 then
-									goto STD_LEN
+									goto END
 								else
-									goto STD_TYPE
+									goto STD_LEN
 								end
 							else
 								if op < 55 then
-									goto STD_SEQ
+									goto STD_TYPE
 								else
-									goto STD_ITEMS
+									goto STD_SEQ
 								end
 							end
 						end
@@ -277,6 +277,8 @@ return function (plume)
 						if op < 60 then
 							if op < 58 then
 								if op < 57 then
+									goto STD_ITEMS
+								else
 									goto STD_ENUMERATE
 								end
 							end
@@ -370,6 +372,9 @@ return function (plume)
 				goto DISPATCH
 			::JUMP_IF_NOT_EMPTY::
 				JUMP_IF_NOT_EMPTY(vm, arg1, arg2)
+				goto DISPATCH
+			::JUMP_FOR::
+				JUMP_FOR(vm, arg1, arg2)
 				goto DISPATCH
 			::JUMP::
 				JUMP(vm, arg1, arg2)

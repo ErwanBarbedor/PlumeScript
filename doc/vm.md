@@ -188,6 +188,10 @@ JUMP_IF_NOT :else   -- Jumps if result is false.
 <br>Unstack 1 iterator and call it <br>If empty, jump to for loop end. 
 - **arg2** *(number)*: Offset of the loop end
 
+#### JUMP_FOR
+<br>If stack top is empty, pop it and jump. <br>Else, do nothing 
+- **arg2** *(jump)*: offset
+
 ### vm/jump.lua
 
 #### JUMP
@@ -208,6 +212,10 @@ JUMP_IF_NOT :else   -- Jumps if result is false.
 
 #### JUMP_IF_NOT_PEEK
 <br>Jump to a given instruction if stack top is false 
+- **arg2** *(jump)*: offset
+
+#### JUMP_IF_EMPTY
+<br>Unstack 1, and jump to a given instruction if empty 
 - **arg2** *(jump)*: offset
 
 #### JUMP_IF_NOT_EMPTY

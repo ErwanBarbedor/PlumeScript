@@ -57,10 +57,7 @@ function GET_ITER (vm, arg1, arg2)
     _STACK_PUSH(vm.mainStack, 0) -- state
     if macrocall then -- call will add the value
         BEGIN_ACC(vm, 0, 0)
-        TABLE_NEW(vm, 0, 0)
-        _STACK_PUSH(vm.mainStack, obj)
-        TABLE_REGISTER_SELF(vm, 0, 0)
-        _STACK_POP(vm.mainStack) -- TABLE_REGISTER_SELF dont pop
+        _PUSH_SELF(vm, obj)
         _STACK_PUSH(vm.mainStack, iter)
         _INJECTION_PUSH(vm, vm.plume.ops.CONCAT_CALL, 0, 0)
     else
@@ -80,7 +77,7 @@ function FOR_ITER (vm, arg1, arg2)
     local state = _STACK_GET_FRAMED(vm.variableStack, 1, 0)
     local flag  = _STACK_GET_FRAMED(vm.variableStack, 2, 0)
 
-    local result
+    local result, call
     if flag == vm.flag.ITER_TABLE then
         state = state+1
 
@@ -147,16 +144,39 @@ function FOR_ITER (vm, arg1, arg2)
         if iter.type == "luaFunction" then
             result = iter.callable()
         else
-            result = _CALL (vm, iter, {obj})
+            call = true
+
+            BEGIN_ACC(vm, 0, 0)
+            _PUSH_SELF(vm, obj)
+            _STACK_PUSH(vm.mainStack, iter)
+
+
+            _INJECTION_PUSH(vm, vm.plume.ops.JUMP_FOR, 0, arg2)
+            _INJECTION_PUSH(vm, vm.plume.ops.CONCAT_CALL, 0, 0)
         end
     end
 
-    -- Save state. Offset 1 for local var #2
-    _STACK_SET_FRAMED(vm.variableStack, 1, 0, state)
+    if not call then
+        -- Save state. Offset 1 for local var #2
+        _STACK_SET_FRAMED(vm.variableStack, 1, 0, state)
 
-    if result == vm.empty then
-        JUMP (vm, 0, arg2)
-    else
-        _STACK_PUSH(vm.mainStack, result)
+        if result == vm.empty then
+            JUMP (vm, 0, arg2)
+        else
+            _STACK_PUSH(vm.mainStack, result)
+        end
+    end
+end
+
+--- @opcode
+--- If stack top is empty, pop it and jump.
+--- Else, do nothing
+--- @param arg2 jump offset
+--! inline
+function JUMP_FOR (vm, arg1, arg2)
+    local test = _STACK_GET(vm.mainStack)
+    if not _CHECK_BOOL (vm, test) then
+        _STACK_POP(vm.mainStack)
+        JUMP(vm, 0, arg2)
     end
 end
