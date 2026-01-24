@@ -57,6 +57,8 @@ tree:traverse(optimizer.inlineIndex)
 tree:traverse(optimizer.inlineIndex)
 tree:traverse(optimizer.tolocal)
 
+optimizer.checkUselessFunctions()
+
 tree = optimizer.loadCode(beautifier(tree), false)
 for i=1, 5 do
 	tree:traverse(cleaner.constantFolding)

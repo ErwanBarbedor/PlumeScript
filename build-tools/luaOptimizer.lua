@@ -80,6 +80,7 @@ local function findAnchor(node)
 end
 
 local functionsToInline = {}
+local usedInlinedFunctions = {}
 local indexToInline = {}
 
 local function applyCommands(code)
@@ -89,6 +90,7 @@ local function applyCommands(code)
 			optns[k] = true
 		end
 		functionsToInline[name] = optns
+		usedInlinedFunctions[name] = false
 	end
 
 	for value, rpl in code:gmatch('%-%-! index%-to%-inline ([^%s]+) ?([^\n]*)') do
@@ -137,6 +139,7 @@ local function inlineFunctions(node)
 	if node.type == "call" then
 		local f = functionsToInline[node.func.name]
 		if f then
+			usedInlinedFunctions[node.func.name] = true
 			local body = f.body:copy()
 			
 			local args = node.args
@@ -308,7 +311,13 @@ return {
 		return node
 	end,
 
-	
+	checkUselessFunctions = function()
+		for k, v in pairs(usedInlinedFunctions) do
+			if not v then
+				print(string.format("Warning: function %s not used", k))
+			end
+		end
+	end,
 
 	renameRun = function (node)
 		if node.type == "function" and node.name then
