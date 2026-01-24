@@ -28,16 +28,6 @@ function _ERROR (vm, msg)
     vm.err = msg
 end
 
---- Throw an error from another runtime
---- @param msg string
---- @param ip number
---- @param chunk pec
---- @return nil
---! inline-keepret
-function _SPECIAL_ERROR (vm, msg, ip, runtime)
-    vm.serr = {msg, ip}
-end
-
 --- @param x any
 --- @return any|false Return false if x is empty, else x it self.
 --! inline

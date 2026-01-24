@@ -78,16 +78,6 @@ function _STACK_MOVE(stack, value)
 	stack.pointer = value  
 end  
 
---- Resets the stack pointer to the position defined by the current frame.
----@param stack table The stack structure.
---! inline  
-function _STACK_MOVE_FRAMED(stack)  
-	 _STACK_MOVE(  
-		stack,  
-		_STACK_GET(stack.frames)  
-	)  
-end  
-
 --- Pops the top frame and restores the pointer to the position immediately before it.
 ---@param stack table The stack structure.
 --! inline  
