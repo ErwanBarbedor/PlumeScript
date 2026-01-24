@@ -80,7 +80,8 @@ local function findAnchor(node)
 end
 
 local functionsToInline = {}
-local indexToInline = {}
+local functionsToMove   = {}
+local indexToInline     = {}
 
 local function applyCommands(code)
 	for optn, name in code:gmatch('%-%-! inline([^\n]*)\n%s*function%s+([a-zA-Z_0-9]*)') do
@@ -89,6 +90,13 @@ local function applyCommands(code)
 			optns[k] = true
 		end
 		functionsToInline[name] = optns
+	end
+	for optn, name in code:gmatch('%-%-! move([^\n]*)\n%s*function%s+([a-zA-Z_0-9]*)') do
+		local optns = {}
+		for k in optn:gmatch('[^-]+') do
+			optns[k] = true
+		end
+		functionsToMove[name] = optns
 	end
 
 	for value, rpl in code:gmatch('%-%-! index%-to%-inline ([^%s]+) ?([^\n]*)') do
@@ -101,7 +109,7 @@ local function applyCommands(code)
 	code = code:gsub('[^\n]+%-%-! to%-remove', '')
 	code = code:gsub('%-%-! to%-add ([^\n]+)', '%1')
 	for command in code:gmatch('%-%-! ([^\n]*)') do
-		if not command:match("^inline") and not command:match("^index%-to%-inline") then
+		if not command:match("^inline") and not command:match("^move") and not command:match("^index%-to%-inline") then
 			print("Error: unknow command '" .. command .. "'.")
 		end
 	end
@@ -283,7 +291,7 @@ return {
 	applyCommands = applyCommands,
 	applyInsertBefore=applyInsertBefore,
 	applyInsertExprs=applyInsertExprs,
-	saveFunctionsToInline = function(node)
+	saveFunctionsToMoveInline = function(node)
 		if node.type == "function" and node.name then
 			local name = node.name.name
 			if functionsToInline[name] then
@@ -292,6 +300,10 @@ return {
 					params = node.args,
 					optn = functionsToInline[name],
 				}
+				return ast._block()
+			elseif functionsToMove[name] then
+				node.islocal = true
+				table.insert(functionsToMove,node)
 				return ast._block()
 			end
 		end
@@ -308,7 +320,12 @@ return {
 		return node
 	end,
 
-	
+	moveFunctions = function(node)
+		if node.type == "label" and node.name == "DISPATCH" then
+			return ast._block(unpack(functionsToMove), node)
+		end
+		return node
+	end,
 
 	renameRun = function (node)
 		if node.type == "function" and node.name then
