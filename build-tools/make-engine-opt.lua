@@ -35,11 +35,10 @@ local tree
 
 if debug then
 	tree = optimizer.loadCode([[
---! move
-function test()
+do
+    mainStackPointer = mainStackPointer + 1
+    mainStack[mainStackPointer] = constants[arg2]
 end
-
-::DISPATCH::
 ]], false)
 else
 	tree = optimizer.loadCode('plume-data/engine/engine.lua', true)
@@ -49,8 +48,7 @@ end
 
 tree:traverse(optimizer.inlineRequire)
 tree:traverse(optimizer.renameRun)
-tree:traverse(optimizer.saveFunctionsToMoveInline)
-tree:traverse(optimizer.moveFunctions)
+tree:traverse(optimizer.saveFunctionsToInline)
 tree:traverse(optimizer.inlineFunctions)
 tree:traverse(optimizer.applyInsertBefore)
 tree:traverse(optimizer.applyInsertExprs)
