@@ -67,6 +67,10 @@ local beautifier = function(node)
         end,
 
         ["function"] = function(node)
+            if node.islocal then
+                table.insert(result, "local ")
+            end
+
             table.insert(result, "function")
             if node.name then
             	if type(node.name) == "string" then
