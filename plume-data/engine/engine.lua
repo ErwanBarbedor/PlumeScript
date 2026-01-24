@@ -48,9 +48,6 @@ return function (plume)
 			if vm.err then 
 				return false, vm.err, vm.ip
 			end
-			if vm.serr then
-				return false, unpack(vm.serr)
-			end
 
 			op, arg1, arg2 = _VM_DECODE_CURRENT_INSTRUCTION(vm)
 

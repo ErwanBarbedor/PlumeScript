@@ -63,9 +63,6 @@ return function (plume)
             if vmerr then
                 return false, vmerr, ip
             end
-            if vmserr then
-                return false, unpack (vmserr)
-            end
             local _ret1, _ret2, _ret3
             local op, arg1, arg2
             local _ret11

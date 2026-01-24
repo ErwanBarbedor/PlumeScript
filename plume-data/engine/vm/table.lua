@@ -37,39 +37,6 @@ function TAG_META_KEY(vm, arg1, arg2)
     vm.tagStack[pos] = "metakey"
 end
 
---- Set a table field. If k isn't a number and is a new key, save it in `t.keys`.
---- Should certainly be handled by the table itself?
---- @param t table
---- @param k string
---- @param v any
---- @return nil
---! inline
-function _TABLE_SET (vm, t, k, v)
-    local key   = k
-    local value = v
-    key = tonumber(key) or key
-    if not t.table[key] then
-        table.insert(t.keys, k)
-    end
-    --set
-    t.table[key] = value 
-end
-
---- Set a table metafield
---- @param t table
---- @param k string
---- @param v any
---- @return nil
---! inline
-function _TABLE_META_SET (vm, t, k, v)
-    local success, err = _META_CHECK (k, v)
-    if success then
-        t.meta.table[k] = v --set
-    else
-        _ERROR(vm, err)
-    end
-end
-
 --- @opcode
 --- Add a key to the current accumulation table (bottom of the current frame)
 --- Unstack 2: a key, then a value
