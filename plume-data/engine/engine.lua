@@ -58,27 +58,27 @@ return function (plume)
 							if op < 2 then
 								if op < 1 then
 								else
-									goto LOAD_CONSTANT
+LOAD_CONSTANT(vm, arg1, arg2)
 								end
 							else
 								if op < 3 then
-									goto LOAD_TRUE
+LOAD_TRUE(vm, arg1, arg2)
 								else
-									goto LOAD_FALSE
+LOAD_FALSE(vm, arg1, arg2)
 								end
 							end
 						else
 							if op < 6 then
 								if op < 5 then
-									goto LOAD_EMPTY
+LOAD_EMPTY(vm, arg1, arg2)
 								else
-									goto LOAD_LOCAL
+LOAD_LOCAL(vm, arg1, arg2)
 								end
 							else
 								if op < 7 then
-									goto LOAD_STATIC
+LOAD_STATIC(vm, arg1, arg2)
 								else
-									goto STORE_LOCAL
+STORE_LOCAL(vm, arg1, arg2)
 								end
 							end
 						end
@@ -86,29 +86,29 @@ return function (plume)
 						if op < 12 then
 							if op < 10 then
 								if op < 9 then
-									goto STORE_STATIC
+STORE_STATIC(vm, arg1, arg2)
 								else
-									goto STORE_VOID
+STORE_VOID(vm, arg1, arg2)
 								end
 							else
 								if op < 11 then
-									goto TABLE_NEW
+TABLE_NEW(vm, arg1, arg2)
 								else
-									goto TABLE_SET
+TABLE_SET(vm, arg1, arg2)
 								end
 							end
 						else
 							if op < 14 then
 								if op < 13 then
-									goto TABLE_INDEX
+TABLE_INDEX(vm, arg1, arg2)
 								else
-									goto TABLE_REGISTER_SELF
+TABLE_REGISTER_SELF(vm, arg1, arg2)
 								end
 							else
 								if op < 15 then
-									goto TABLE_SET_META
+TABLE_SET_META(vm, arg1, arg2)
 								else
-									goto TABLE_SET_ACC
+TABLE_SET_ACC(vm, arg1, arg2)
 								end
 							end
 						end
@@ -118,29 +118,29 @@ return function (plume)
 						if op < 20 then
 							if op < 18 then
 								if op < 17 then
-									goto TABLE_EXPAND
+TABLE_EXPAND(vm, arg1, arg2)
 								else
-									goto CALL_INDEX_REGISTER_SELF
+CALL_INDEX_REGISTER_SELF(vm, arg1, arg2)
 								end
 							else
 								if op < 19 then
-									goto TAG_META_KEY
+TAG_META_KEY(vm, arg1, arg2)
 								else
-									goto TAG_KEY
+TAG_KEY(vm, arg1, arg2)
 								end
 							end
 						else
 							if op < 22 then
 								if op < 21 then
-									goto ENTER_SCOPE
+ENTER_SCOPE(vm, arg1, arg2)
 								else
-									goto LEAVE_SCOPE
+LEAVE_SCOPE(vm, arg1, arg2)
 								end
 							else
 								if op < 23 then
-									goto BEGIN_ACC
+BEGIN_ACC(vm, arg1, arg2)
 								else
-									goto CONCAT_TABLE
+CONCAT_TABLE(vm, arg1, arg2)
 								end
 							end
 						end
@@ -148,29 +148,29 @@ return function (plume)
 						if op < 28 then
 							if op < 26 then
 								if op < 25 then
-									goto CONCAT_TEXT
+CONCAT_TEXT(vm, arg1, arg2)
 								else
-									goto CONCAT_CALL
+CONCAT_CALL(vm, arg1, arg2)
 								end
 							else
 								if op < 27 then
-									goto CHECK_IS_TEXT
+CHECK_IS_TEXT(vm, arg1, arg2)
 								else
-									goto JUMP_IF
+JUMP_IF(vm, arg1, arg2)
 								end
 							end
 						else
 							if op < 30 then
 								if op < 29 then
-									goto JUMP_IF_NOT
+JUMP_IF_NOT(vm, arg1, arg2)
 								else
-									goto JUMP_IF_NOT_EMPTY
+JUMP_IF_NOT_EMPTY(vm, arg1, arg2)
 								end
 							else
 								if op < 31 then
-									goto JUMP_FOR
+JUMP_FOR(vm, arg1, arg2)
 								else
-									goto JUMP
+JUMP(vm, arg1, arg2)
 								end
 							end
 						end
@@ -182,29 +182,29 @@ return function (plume)
 						if op < 36 then
 							if op < 34 then
 								if op < 33 then
-									goto JUMP_IF_PEEK
+JUMP_IF_PEEK(vm, arg1, arg2)
 								else
-									goto JUMP_IF_NOT_PEEK
+JUMP_IF_NOT_PEEK(vm, arg1, arg2)
 								end
 							else
 								if op < 35 then
-									goto GET_ITER
+GET_ITER(vm, arg1, arg2)
 								else
-									goto FOR_ITER
+FOR_ITER(vm, arg1, arg2)
 								end
 							end
 						else
 							if op < 38 then
 								if op < 37 then
-									goto OP_ADD
+OP_ADD(vm, arg1, arg2)
 								else
-									goto OP_MUL
+OP_MUL(vm, arg1, arg2)
 								end
 							else
 								if op < 39 then
-									goto OP_SUB
+OP_SUB(vm, arg1, arg2)
 								else
-									goto OP_DIV
+OP_DIV(vm, arg1, arg2)
 								end
 							end
 						end
@@ -212,29 +212,29 @@ return function (plume)
 						if op < 44 then
 							if op < 42 then
 								if op < 41 then
-									goto OP_NEG
+OP_NEG(vm, arg1, arg2)
 								else
-									goto OP_MOD
+OP_MOD(vm, arg1, arg2)
 								end
 							else
 								if op < 43 then
-									goto OP_POW
+OP_POW(vm, arg1, arg2)
 								else
-									goto OP_LT
+OP_LT(vm, arg1, arg2)
 								end
 							end
 						else
 							if op < 46 then
 								if op < 45 then
-									goto OP_EQ
+OP_EQ(vm, arg1, arg2)
 								else
-									goto OP_AND
+OP_AND(vm, arg1, arg2)
 								end
 							else
 								if op < 47 then
-									goto OP_NOT
+OP_NOT(vm, arg1, arg2)
 								else
-									goto OP_OR
+OP_OR(vm, arg1, arg2)
 								end
 							end
 						end
@@ -244,15 +244,15 @@ return function (plume)
 						if op < 52 then
 							if op < 50 then
 								if op < 49 then
-									goto DUPLICATE
+DUPLICATE(vm, arg1, arg2)
 								else
-									goto SWITCH
+SWITCH(vm, arg1, arg2)
 								end
 							else
 								if op < 51 then
-									goto RETURN
+RETURN(vm, arg1, arg2)
 								else
-									goto RETURN_FILE
+RETURN_FILE(vm, arg1, arg2)
 								end
 							end
 						else
@@ -260,13 +260,13 @@ return function (plume)
 								if op < 53 then
 									goto END
 								else
-									goto STD_LEN
+STD_LEN(vm, arg1, arg2)
 								end
 							else
 								if op < 55 then
-									goto STD_TYPE
+STD_TYPE(vm, arg1, arg2)
 								else
-									goto STD_SEQ
+STD_SEQ(vm, arg1, arg2)
 								end
 							end
 						end
@@ -274,191 +274,20 @@ return function (plume)
 						if op < 60 then
 							if op < 58 then
 								if op < 57 then
-									goto STD_ITEMS
+STD_ITEMS(vm, arg1, arg2)
 								else
-									goto STD_ENUMERATE
+STD_ENUMERATE(vm, arg1, arg2)
 								end
 							else
 								if op < 59 then
-									goto STD_IMPORT
+STD_IMPORT(vm, arg1, arg2)
 								end
 							end
 						end
 					end
 				end
 			end
-			::LOAD_CONSTANT::
-				LOAD_CONSTANT(vm, arg1, arg2)
-				goto DISPATCH
-			::LOAD_TRUE::
-				LOAD_TRUE(vm, arg1, arg2)
-				goto DISPATCH
-			::LOAD_FALSE::
-				LOAD_FALSE(vm, arg1, arg2)
-				goto DISPATCH
-			::LOAD_EMPTY::
-				LOAD_EMPTY(vm, arg1, arg2)
-				goto DISPATCH
-			::LOAD_LOCAL::
-				LOAD_LOCAL(vm, arg1, arg2)
-				goto DISPATCH
-			::LOAD_STATIC::
-				LOAD_STATIC(vm, arg1, arg2)
-				goto DISPATCH
-			::STORE_LOCAL::
-				STORE_LOCAL(vm, arg1, arg2)
-				goto DISPATCH
-			::STORE_STATIC::
-				STORE_STATIC(vm, arg1, arg2)
-				goto DISPATCH
-			::STORE_VOID::
-				STORE_VOID(vm, arg1, arg2)
-				goto DISPATCH
-			::TABLE_NEW::
-				TABLE_NEW(vm, arg1, arg2)
-				goto DISPATCH
-			::TABLE_SET::
-				TABLE_SET(vm, arg1, arg2)
-				goto DISPATCH
-			::TABLE_INDEX::
-				TABLE_INDEX(vm, arg1, arg2)
-				goto DISPATCH
-			::TABLE_REGISTER_SELF::
-				TABLE_REGISTER_SELF(vm, arg1, arg2)
-				goto DISPATCH
-			::TABLE_SET_META::
-				TABLE_SET_META(vm, arg1, arg2)
-				goto DISPATCH
-			::TABLE_SET_ACC::
-				TABLE_SET_ACC(vm, arg1, arg2)
-				goto DISPATCH
-			::TABLE_EXPAND::
-				TABLE_EXPAND(vm, arg1, arg2)
-				goto DISPATCH
-			::CALL_INDEX_REGISTER_SELF::
-				CALL_INDEX_REGISTER_SELF(vm, arg1, arg2)
-				goto DISPATCH
-			::TAG_META_KEY::
-				TAG_META_KEY(vm, arg1, arg2)
-				goto DISPATCH
-			::TAG_KEY::
-				TAG_KEY(vm, arg1, arg2)
-				goto DISPATCH
-			::ENTER_SCOPE::
-				ENTER_SCOPE(vm, arg1, arg2)
-				goto DISPATCH
-			::LEAVE_SCOPE::
-				LEAVE_SCOPE(vm, arg1, arg2)
-				goto DISPATCH
-			::BEGIN_ACC::
-				BEGIN_ACC(vm, arg1, arg2)
-				goto DISPATCH
-			::CONCAT_TABLE::
-				CONCAT_TABLE(vm, arg1, arg2)
-				goto DISPATCH
-			::CONCAT_TEXT::
-				CONCAT_TEXT(vm, arg1, arg2)
-				goto DISPATCH
-			::CONCAT_CALL::
-				CONCAT_CALL(vm, arg1, arg2)
-				goto DISPATCH
-			::CHECK_IS_TEXT::
-				CHECK_IS_TEXT(vm, arg1, arg2)
-				goto DISPATCH
-			::JUMP_IF::
-				JUMP_IF(vm, arg1, arg2)
-				goto DISPATCH
-			::JUMP_IF_NOT::
-				JUMP_IF_NOT(vm, arg1, arg2)
-				goto DISPATCH
-			::JUMP_IF_NOT_EMPTY::
-				JUMP_IF_NOT_EMPTY(vm, arg1, arg2)
-				goto DISPATCH
-			::JUMP_FOR::
-				JUMP_FOR(vm, arg1, arg2)
-				goto DISPATCH
-			::JUMP::
-				JUMP(vm, arg1, arg2)
-				goto DISPATCH
-			::JUMP_IF_PEEK::
-				JUMP_IF_PEEK(vm, arg1, arg2)
-				goto DISPATCH
-			::JUMP_IF_NOT_PEEK::
-				JUMP_IF_NOT_PEEK(vm, arg1, arg2)
-				goto DISPATCH
-			::GET_ITER::
-				GET_ITER(vm, arg1, arg2)
-				goto DISPATCH
-			::FOR_ITER::
-				FOR_ITER(vm, arg1, arg2)
-				goto DISPATCH
-			::OP_ADD::
-				OP_ADD(vm, arg1, arg2)
-				goto DISPATCH
-			::OP_MUL::
-				OP_MUL(vm, arg1, arg2)
-				goto DISPATCH
-			::OP_SUB::
-				OP_SUB(vm, arg1, arg2)
-				goto DISPATCH
-			::OP_DIV::
-				OP_DIV(vm, arg1, arg2)
-				goto DISPATCH
-			::OP_NEG::
-				OP_NEG(vm, arg1, arg2)
-				goto DISPATCH
-			::OP_MOD::
-				OP_MOD(vm, arg1, arg2)
-				goto DISPATCH
-			::OP_POW::
-				OP_POW(vm, arg1, arg2)
-				goto DISPATCH
-			::OP_LT::
-				OP_LT(vm, arg1, arg2)
-				goto DISPATCH
-			::OP_EQ::
-				OP_EQ(vm, arg1, arg2)
-				goto DISPATCH
-			::OP_AND::
-				OP_AND(vm, arg1, arg2)
-				goto DISPATCH
-			::OP_NOT::
-				OP_NOT(vm, arg1, arg2)
-				goto DISPATCH
-			::OP_OR::
-				OP_OR(vm, arg1, arg2)
-				goto DISPATCH
-			::DUPLICATE::
-				DUPLICATE(vm, arg1, arg2)
-				goto DISPATCH
-			::SWITCH::
-				SWITCH(vm, arg1, arg2)
-				goto DISPATCH
-			::RETURN::
-				RETURN(vm, arg1, arg2)
-				goto DISPATCH
-			::RETURN_FILE::
-				RETURN_FILE(vm, arg1, arg2)
-				goto DISPATCH
-			::STD_LEN::
-				STD_LEN(vm, arg1, arg2)
-				goto DISPATCH
-			::STD_TYPE::
-				STD_TYPE(vm, arg1, arg2)
-				goto DISPATCH
-			::STD_SEQ::
-				STD_SEQ(vm, arg1, arg2)
-				goto DISPATCH
-			::STD_ITEMS::
-				STD_ITEMS(vm, arg1, arg2)
-				goto DISPATCH
-			::STD_ENUMERATE::
-				STD_ENUMERATE(vm, arg1, arg2)
-				goto DISPATCH
-			::STD_IMPORT::
-				STD_IMPORT(vm, arg1, arg2)
-				goto DISPATCH
-		::END::
+goto DISPATCH		::END::
 		return true, _STACK_GET(vm.mainStack)
 	end
 end
