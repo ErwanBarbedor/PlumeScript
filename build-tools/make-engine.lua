@@ -133,10 +133,10 @@ local function makeDispatchFlat()
 		if uselabelGoto or op_name == "END" then
 			table.insert(dispatch, string.format("\n\t\t\t\tgoto %s\n",op_name))
 		else
-			table.insert(dispatch,string.format("%s(vm, arg1, arg2)\n", op_name))
+			table.insert(dispatch,string.format("\n\t\t\t\t%s(vm, arg1, arg2)\n", op_name))
 		end
 	end
-	table.insert(dispatch, "end")
+	table.insert(dispatch, "end\n")
 end
 
 makeDispatchBinary()
