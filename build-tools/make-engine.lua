@@ -72,6 +72,8 @@ local init = [[
 
 ]]
 
+local uselabelGoto = false
+
 local dispatch, labels = {}, {}
 local totalCount = 0
 local op_namesTable = {}
@@ -83,9 +85,6 @@ for op_name in plume.ops_names:gmatch("%S+") do
 	end
 end
 
--- Set to the nearest  2^n
-
-
 local function handleChoice(limDown, limUp, indent)
 	indent = indent or "\t\t\t"
 	local middlePoint = math.floor((limDown + limUp) / 2)
@@ -95,7 +94,11 @@ local function handleChoice(limDown, limUp, indent)
 		if limUp - limDown > 2 then
 			handleChoice(limDown, middlePoint, indent.."\t")
 		else
-			table.insert(dispatch, string.format(indent.."\tgoto %s\n", op_namesTable[middlePoint-1]))
+			if  uselabelGoto or op_namesTable[middlePoint-1] == "END" then
+				table.insert(dispatch, string.format(indent.."\tgoto %s\n", op_namesTable[middlePoint-1]))
+			else
+				table.insert(dispatch,string.format("%s(vm, arg1, arg2)\n", op_namesTable[middlePoint-1]))
+			end
 		end
 	end
 	
@@ -104,13 +107,18 @@ local function handleChoice(limDown, limUp, indent)
 		if limUp - limDown > 2 then
 			handleChoice(middlePoint+1, limUp, indent.."\t")
 		else
-			table.insert(dispatch, string.format(indent.."\tgoto %s\n", op_namesTable[middlePoint]))
+			if uselabelGoto or op_namesTable[middlePoint] == "END" then
+				table.insert(dispatch, string.format(indent.."\tgoto %s\n", op_namesTable[middlePoint]))
+			else
+				table.insert(dispatch,string.format("%s(vm, arg1, arg2)\n", op_namesTable[middlePoint]))
+			end
 		end
 	end
 	table.insert(dispatch, indent.."end\n")
 end
 
 local function makeDispatchBinary()
+	-- Set to the nearest  2^n
 	local totalCount = 2^(math.floor(0.5+math.log(#op_namesTable, 2)))
 	handleChoice(0, totalCount)
 end
@@ -121,7 +129,12 @@ local function makeDispatchFlat()
 		if i>1 then
 			table.insert(dispatch, "else")
 		end
-		table.insert(dispatch, string.format("if op == %i then\n\t\t\t\tgoto %s\n", i, op_name))
+		table.insert(dispatch, string.format("if op == %i then", i))
+		if uselabelGoto or op_name == "END" then
+			table.insert(dispatch, string.format("\n\t\t\t\tgoto %s\n",op_name))
+		else
+			table.insert(dispatch,string.format("%s(vm, arg1, arg2)\n", op_name))
+		end
 	end
 	table.insert(dispatch, "end")
 end
@@ -130,7 +143,12 @@ makeDispatchBinary()
 -- makeDispatchFlat()
 
 dispatch = table.concat(dispatch)
-labels = table.concat(labels)
+
+if uselabelGoto then
+	labels = table.concat(labels)
+else
+	labels = "goto DISPATCH"
+end
 
 local footer = "\t\t::END::\n\t\treturn true, _STACK_GET(vm.mainStack)\n\tend\nend"
 
