@@ -126,8 +126,8 @@ local function makeDispatchFlat()
 	table.insert(dispatch, "end")
 end
 
--- makeDispatchBinary()
-makeDispatchFlat()
+makeDispatchBinary()
+-- makeDispatchFlat()
 
 dispatch = table.concat(dispatch)
 labels = table.concat(labels)
