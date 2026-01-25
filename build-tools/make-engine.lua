@@ -84,7 +84,7 @@ for op_name in plume.ops_names:gmatch("%S+") do
 end
 
 -- Set to the nearest  2^n
-local totalCount = 2^(math.floor(0.5+math.log(#op_namesTable, 2)))
+
 
 local function handleChoice(limDown, limUp, indent)
 	indent = indent or "\t\t\t"
@@ -110,7 +110,24 @@ local function handleChoice(limDown, limUp, indent)
 	table.insert(dispatch, indent.."end\n")
 end
 
-handleChoice(0, totalCount)
+local function makeDispatchBinary()
+	local totalCount = 2^(math.floor(0.5+math.log(#op_namesTable, 2)))
+	handleChoice(0, totalCount)
+end
+
+local function makeDispatchFlat()
+	for i, op_name in ipairs(op_namesTable) do
+		table.insert(dispatch, "\t\t\t")
+		if i>1 then
+			table.insert(dispatch, "else")
+		end
+		table.insert(dispatch, string.format("if op == %i then\n\t\t\t\tgoto %s\n", i, op_name))
+	end
+	table.insert(dispatch, "end")
+end
+
+-- makeDispatchBinary()
+makeDispatchFlat()
 
 dispatch = table.concat(dispatch)
 labels = table.concat(labels)
