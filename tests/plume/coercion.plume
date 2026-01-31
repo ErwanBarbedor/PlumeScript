@@ -30,3 +30,19 @@ $type($_write)
 /// Output
 table
 /// End
+
+/// Test boolean 1
+let bool = $(1==1)
+Result\: $bool
+/// Output
+Result: true
+/// End
+
+/// Test boolean 2
+let bool = $(1==1)
+if bool
+	Result\: true
+end
+/// Output
+Result: true
+/// End

@@ -171,6 +171,8 @@ function CHECK_IS_TEXT (vm, arg1, arg2)
             _PUSH_SELF(vm, t)
             _STACK_PUSH(vm.mainStack, meta)
             _INJECTION_PUSH(vm, vm.plume.ops.CONCAT_CALL, 0, 0)
+        elseif t == "boolean" then
+            _STACK_SET(vm.mainStack, _STACK_POS(vm.mainStack), tostring(value))
         else
             _ERROR (vm, vm.plume.error.cannotConcatValue(t))
         end
