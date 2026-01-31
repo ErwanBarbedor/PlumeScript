@@ -737,6 +737,9 @@ Plume provides a set of built-in macros to handle common tasks such as I/O, tabl
     *   `table.append(table, item)`: Adds `item` to the end of the specified `table`.
     *   `table.remove(table, [index])`: Removes the `index`-th item of `table` (default: table length) and return it.
     *   `table.removeKey(table, key)`: Removes a key from `table`. Contrary to `table.remove`, no shift is applied.
+    *   `table.hasKey(table, key)`: Check if `table` as a field `key`. Behave exactly like `table.key?`, except if `table.key` exists but is `empty`.
+    *   `table.find(table, v)`: Search for a `k` such that `table[k] = v` and return the first found. Return `empty` if not found.
+    *   `table.finds(table, v)`: Search for all `k` such that `table[k] = v`. Return a table.
 *   `rawset(table, key, value)`: Sets the value of `key` in `table` to `value` without triggering any `setindex` metafield.
 *   `join(sep: "", ...items)`: Returns a string produced by concatenating `items`, optionally separated by `sep`.
 

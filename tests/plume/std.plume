@@ -238,6 +238,31 @@ end
 quill
 /// End
 
+/// Test hasKey
+let t = $table(wing: nib)
+
+$table.hasKey($t, wing)\n
+$table.hasKey($t, nib)
+/// Output
+true
+false
+/// End
+
+/// Test find
+let t = $table(wing: nib)
+
+$table.find($t, nib)
+/// Output
+wing
+/// End
+
+/// Test finds
+let t = $table(wing: nib, write: nib)
+
+$join(...table.finds($t, nib))
+/// Output
+wingwrite
+/// End
 
 /// Test Error
 let t = @table

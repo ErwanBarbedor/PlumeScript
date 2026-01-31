@@ -66,6 +66,43 @@ return function (plume)
         t.table[key] = nil
         table.remove(t.keys, index)
     end)
+    _table.table.hasKey = plume.obj.luaFunction("hasKey", function (args)
+        local t = args.table[1]
+        local key = args.table[2]
+
+        key = tonumber(key) or key
+        for k, v in ipairs(t.keys) do
+            if v == key then
+                return true
+            end
+        end
+
+        return false
+    end)
+    _table.table.find = plume.obj.luaFunction("find", function (args)
+        local t = args.table[1]
+        local x = args.table[2]
+
+        for k, v in ipairs(t.keys) do
+            if t.table[v] == x then
+                return v
+            end
+        end
+    end)
+    _table.table.finds = plume.obj.luaFunction("finds", function (args)
+        local t = args.table[1]
+        local x = args.table[2]
+
+        local result = plume.obj.table(0, 0)
+        for k, v in ipairs(t.keys) do
+            if t.table[v] == x then
+                table.insert(result.table, v)
+                table.insert(result.keys, #result.table)
+            end
+        end
+
+        return result
+    end)
 
     plume.std.table = _table
     plume.std.tostring = {} -- hardcoded
