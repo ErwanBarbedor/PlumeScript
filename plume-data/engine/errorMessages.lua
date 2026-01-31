@@ -227,6 +227,20 @@ return function(plume)
 		)
 	end
 
+	function plume.error.wrongArgsCountStd(macroName, argCount, minArgsCount, maxArgsCount)
+		if minArgsCount == maxArgsCount then
+			return string.format(
+				"Wrong number of positionnal arguments for macro '%s', %s instead of %s.",
+				macroName, argCount, minArgsCount
+			)
+		else
+			return string.format(
+				"Wrong number of positionnal arguments for macro '%s', %s instead of between %s and %s.",
+				macroName, argCount, minArgsCount, maxArgsCount
+			)
+		end
+	end
+
 	function plume.error.stackOverflow()
 		return "Stack overflow"
 	end

@@ -63,6 +63,8 @@ function CONCAT_TABLE(vm)
 
     _STACK_POP_FRAME(vm.mainStack) -- Clean stack from arguments
     _STACK_PUSH(vm.mainStack, resultTable) -- Push the resulting table onto the stack
+
+    return resultTable
 end
 
 ---@param posParamCount integer The number of expected positional parameters (0 for none).

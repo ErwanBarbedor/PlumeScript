@@ -15,11 +15,20 @@ If not, see <https://www.gnu.org/licenses/>.
 
 return function (plume)
 	plume.stdVM = {}
-	local function registerLuaStdFunction(name)
+	local function registerLuaStdFunction(name, minArgs, maxArgs)
+		if not minArgs then
+			minArgs = 0
+		end
+		if not maxArgs then
+			maxArgs = minArgs
+		end
+
 		plume.stdVM[name] = {
 			type = "luaStdFunction",
 			name = name,
 			opcode = plume.ops_count,
+			minArgs = minArgs,
+			maxArgs = maxArgs
 		}
 		
 		local opName = "STD_" .. name:upper()
@@ -29,10 +38,10 @@ return function (plume)
 
 	end
 
-	registerLuaStdFunction("len")
-	registerLuaStdFunction("type")
-	registerLuaStdFunction("seq")
-	registerLuaStdFunction("items")
-	registerLuaStdFunction("enumerate")
-	registerLuaStdFunction("import")
+	registerLuaStdFunction("len", 1)
+	registerLuaStdFunction("type", 1)
+	registerLuaStdFunction("seq", 1, 3)
+	registerLuaStdFunction("items", 1)
+	registerLuaStdFunction("enumerate", 1)
+	registerLuaStdFunction("import", 1)
 end

@@ -1,0 +1,23 @@
+/// Test seq to few argument
+for x in seq()
+  $x
+end
+/// Error
+Runtime error: Wrong number of positionnal arguments for macro 'seq', 0 instead of between 1 and 3.
+
+Traceback (most recent call first):
+  File 'seq to few argument', line 1: for x in seq()
+                                               ^^^^^
+/// End
+
+/// Test seq to many arguments
+for x in seq(1, 2, 3, 4)
+  $x
+end
+/// Error
+Runtime error: Wrong number of positionnal arguments for macro 'seq', 4 instead of between 1 and 3.
+
+Traceback (most recent call first):
+  File 'seq to many arguments', line 1: for x in seq(1, 2, 3, 4)
+                                                 ^^^^^^^^^^^^^^^
+/// End

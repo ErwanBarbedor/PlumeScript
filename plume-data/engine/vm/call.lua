@@ -58,7 +58,11 @@ function CONCAT_CALL (vm, arg1, arg2)
 
     -- Some harcoded std functions
     elseif t == "luaStdFunction" then
-        CONCAT_TABLE(vm)
+        local args = CONCAT_TABLE(vm)
+        if #args.table < tocall.minArgs or #args.table > tocall.maxArgs then
+            _ERROR(vm, vm.plume.error.wrongArgsCountStd(tocall.name, #args.table, tocall.minArgs, tocall.maxArgs))
+        end
+
         _INJECTION_PUSH(vm, tocall.opcode, 0, 0)
 
     -- @table ... end just return the accumulated table
