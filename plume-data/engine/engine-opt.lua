@@ -1569,6 +1569,7 @@ return function (plume)
                                         _ret153 = type (obj) == "table" and (obj == empty or obj.type) or (type (obj) == "cdata" and obj.type) or type (obj)
                                         local tobj = _ret153
                                         local iter, value, flag, macrocall
+                                        local start = 0
                                         if tobj == "table" then
                                             if obj.meta.table.next then
                                                 iter = obj
@@ -1590,13 +1591,14 @@ return function (plume)
                                         elseif tobj == "stdIterator" then
                                             value = obj
                                             flag = obj.flag
+                                            start = obj.start or start
                                         else
                                             vmerr = plume.error.cannotIterateValue (tobj)
                                         end
                                         mainStackPointer = mainStackPointer + 1
                                         mainStack[mainStackPointer] = flag
                                         mainStackPointer = mainStackPointer + 1
-                                        mainStack[mainStackPointer] = 0
+                                        mainStack[mainStackPointer] = start
                                         if macrocall then
                                             mainStackFramesPointer = mainStackFramesPointer + 1
                                             mainStackFrames[mainStackFramesPointer] = mainStackPointer + 1
@@ -3269,7 +3271,7 @@ return function (plume)
                                         start = tonumber (start)
                                         stop = tonumber (stop)
                                         mainStackPointer = mainStackPointer + 1
-                                        mainStack[mainStackPointer] = {type = "stdIterator", start = start, stop = stop, step = step, flag = ITER_SEQ}
+                                        mainStack[mainStackPointer] = {type = "stdIterator", start = start - step, stop = stop, step = step, flag = ITER_SEQ}
                                     end
                                 end
                             end

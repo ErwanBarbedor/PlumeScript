@@ -25,6 +25,7 @@ function GET_ITER (vm, arg1, arg2)
     local tobj = _GET_TYPE(vm, obj)
     
     local iter, value, flag, macrocall
+    local start = 0
     if tobj == "table" then
         if obj.meta.table.next then
             iter = obj
@@ -49,12 +50,13 @@ function GET_ITER (vm, arg1, arg2)
     elseif tobj == "stdIterator" then
         value = obj
         flag = obj.flag
+        start = obj.start or start
     else
         _ERROR(vm, vm.plume.error.cannotIterateValue(tobj))
     end 
 
     _STACK_PUSH(vm.mainStack, flag)
-    _STACK_PUSH(vm.mainStack, 0) -- state
+    _STACK_PUSH(vm.mainStack, start) -- state
     if macrocall then -- call will add the value
         BEGIN_ACC(vm, 0, 0)
         _PUSH_SELF(vm, obj)

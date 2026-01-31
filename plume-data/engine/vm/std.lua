@@ -54,7 +54,7 @@ function STD_SEQ(vm, arg1, arg2)
 
     _STACK_PUSH(vm.mainStack, {
         type = "stdIterator",
-        start=start,
+        start=start-step, --FOR_ITER increment state before using it
         stop=stop,
         step=step,
         flag = vm.flag.ITER_SEQ
