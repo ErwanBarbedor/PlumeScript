@@ -39,11 +39,11 @@ number
 /// End
 
 /// Test seq 1
-for write in seq(1, 5)
+for write in seq(2, 5)
   $write
 end
 /// Output
-12345
+2345
 /// End
 
 /// Test seq 2
@@ -52,6 +52,14 @@ for write in seq(3)
 end
 /// Output
 123
+/// End
+
+/// Test seq 3
+for write in seq(2, 6, 2)
+  $write
+end
+/// Output
+246
 /// End
 
 /// Test enumerate
