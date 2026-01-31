@@ -5,7 +5,7 @@
     A language where your code <b>is</b> your document
 </i></p>
 
-![Version](https://img.shields.io/badge/version-0.69-blue.svg) [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
+![Version](https://img.shields.io/badge/version-0.70-blue.svg) [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 
 ## Introduction
 
@@ -112,7 +112,5 @@ end
 *   2018-2024: Various attempts, including LaTeX-focused Python preprocessors and LaTeX transpilation.
 *   `Plume🪶 v0.1 - v0.13`: first implementation (scratchy home interpreter with AST manipulations).
 *   `Plume🪶 v0.20 - v0.47`: second implementation (move away from LaTeX syntax, transpilation to Lua).
-*   From `Plume🪶 v0.50`: third implementation (major syntax changes, custom VM)
-*   **Actual: `Plume🪶 v0.69`**
-*   Until `Plume🪶 v0.70`: core implementation.
+*   From `Plume🪶 v0.50 to Plume🪶 v0.70`: third implementation (major syntax changes, custom VM)
 *   Then `Plume🪶 v1.0.0.beta.x`: tests in real world, last-minute changes, bugfixs.

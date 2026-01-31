@@ -1,5 +1,5 @@
 --[[
-Plume🪶 0.69
+Plume🪶 0.70
 Copyright (C) 2024-2025 Erwan Barbedor
 
 Check https://github.com/ErwanBarbedor/PlumeScript
