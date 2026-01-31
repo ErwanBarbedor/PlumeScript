@@ -18,6 +18,7 @@ return function (plume)
         local t = args.table[1]
         local value = args.table[2]
         table.insert(t.table, value)
+        table.insert(t.keys, #t.table)
     end
 
     local function remove (args)
