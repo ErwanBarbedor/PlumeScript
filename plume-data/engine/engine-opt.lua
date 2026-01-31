@@ -48,9 +48,9 @@ return function (plume)
         local ITER_ITEMS = 2
         local ITER_ENUMS = 3
         local bit = require ("bit")
-        local OP_BITS = 7
-        local ARG1_BITS = 5
-        local ARG2_BITS = 20
+        local OP_BITS = plume.OP_BITS
+        local ARG1_BITS = plume.ARG1_BITS
+        local ARG2_BITS = plume.ARG2_BITS
         local ARG1_SHIFT = ARG2_BITS
         local OP_SHIFT = ARG1_BITS + ARG2_BITS
         local MASK_OP = bit.lshift (1, OP_BITS) - 1

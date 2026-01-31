@@ -97,9 +97,9 @@ function _VM_INIT_VARS(vm, runtime, chunk)
     -- Instruction format --
     --=====================--
     vm.bit = require("bit")
-    vm.OP_BITS    = 7
-    vm.ARG1_BITS  = 5
-    vm.ARG2_BITS  = 20
+    vm.OP_BITS    = vm.plume.OP_BITS
+    vm.ARG1_BITS  = vm.plume.ARG1_BITS
+    vm.ARG2_BITS  = vm.plume.ARG2_BITS
     vm.ARG1_SHIFT = vm.ARG2_BITS
     vm.OP_SHIFT   = vm.ARG1_BITS + vm.ARG2_BITS
     vm.MASK_OP    = vm.bit.lshift(1, vm.OP_BITS) - 1
