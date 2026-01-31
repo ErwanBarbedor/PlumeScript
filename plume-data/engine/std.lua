@@ -22,7 +22,9 @@ return function (plume)
 
     local function remove (args)
         local t = args.table[1]
-        return table.remove(t.table)
+        local index = args.table[2]
+
+        return table.remove(t.table, index)
     end
 
     ---------------------------------

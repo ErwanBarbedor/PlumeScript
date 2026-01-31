@@ -152,7 +152,7 @@ $len($t)
 3
 /// End
 
-/// Test table remove
+/// Test table remove 1
 let t = @table
   - Wing
   - Nib
@@ -165,6 +165,19 @@ $len($t)
 2
 Nib
 1
+/// End
+
+/// Test table remove 2
+let t = @table
+  - Wing
+  - Nib
+  quill: blue
+end
+$table.remove($t)\n
+$t[1]
+/// Output
+Nib
+Wing
 /// End
 
 /// Test Error
