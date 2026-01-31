@@ -1746,6 +1746,12 @@ return function (plume)
                                             end
                                         elseif flag == ITER_ITEMS then
                                             state = state + 1
+                                            if obj.named then
+                                                while tonumber (obj.ref.keys[state])
+                                                 do
+                                                    state = state + 1
+                                                end
+                                            end
                                             if state > #obj.ref.keys then
                                                 result = empty
                                             else
@@ -3333,7 +3339,7 @@ return function (plume)
                                         _ret321 = mainStack[mainStackPointer + 1]
                                         local args = _ret321.table
                                         mainStackPointer = mainStackPointer + 1
-                                        mainStack[mainStackPointer] = {type = "stdIterator", ref = args[1], flag = ITER_ITEMS, legacy = args.legacy}
+                                        mainStack[mainStackPointer] = {type = "stdIterator", ref = args[1], flag = ITER_ITEMS, named = args.named, legacy = args.legacy}
                                     end
                                 else
                                     do

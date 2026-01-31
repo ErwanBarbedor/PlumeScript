@@ -98,736 +98,8 @@
 <body>
 <div class="container">
     
-<h1>Global: <span style="font-weight: normal;">294 passed and <span class="fail-count">1</span> failed out of 295 tests</span></h1>
-<div class="progress-bar"><div class="progress-success" style="width: 99.66%"></div><div class="progress-fail" style="width: 0.34%"></div></div>
-<h2>macro: <span style="font-weight: normal;">12 passed and <span class="fail-count">1</span> failed out of 13 tests</span></h2>
-<div class="progress-bar"><div class="progress-success" style="width: 92.31%"></div><div class="progress-fail" style="width: 7.69%"></div></div>
-<details open>
-<summary>
-<span class="status-icon status-fail">✗</span> Variadic 1 <em style='font-weight: normal'></em>
-</summary>
-<div class="test-content">
-<div class="code-grid">
-<div>
-<h4>Code</h4>
-<pre><code class="language-plume">
-set write = macro (...args)
-  Positionnals args: $join(...args, sep:\,\s)\n
-  Named args:\s
-  @join(sep:\,\s)
-    for key, value in items(args)
-      - $key\=$value
-    end
-  end
-end
-$write(write, paint, song, ink: quill, wing: mark)
-
-</code></pre>
-</div>
-<div>
-<h4>Bytecode</h4>
-<pre><code class="language-bytecode"><span class="bc-line-num">001</span> <span class="bc-opcode">ENTER_SCOPE     </span> <span class="bc-arg">0 0</span> <span class="bc-info">; s</span>
-<span class="bc-line-num">002</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 1</span> <span class="bc-info">; macro (...args)[...]</span>
-<span class="bc-line-num">003</span> <span class="bc-opcode">JUMP            </span> <span class="bc-arg">0 63</span>
-<span class="bc-line-num">004</span> <span class="bc-opcode">BEGIN_ACC       </span> <span class="bc-arg">0 0</span> <span class="bc-info">; [...]</span>
-<span class="bc-line-num">005</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 2</span> <span class="bc-info">; Positionnals args: </span>
-<span class="bc-line-num">006</span> <span class="bc-opcode">BEGIN_ACC       </span> <span class="bc-arg">0 0</span> <span class="bc-info">; join(...args, sep:\,\s)</span>
-<span class="bc-line-num">007</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 1</span> <span class="bc-info">; args</span>
-<span class="bc-line-num">008</span> <span class="bc-opcode">TABLE_EXPAND    </span> <span class="bc-arg">0 0</span> <span class="bc-info">; ...args</span>
-<span class="bc-line-num">009</span> <span class="bc-opcode">BEGIN_ACC       </span> <span class="bc-arg">0 0</span> <span class="bc-info">; \,\s</span>
-<span class="bc-line-num">010</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 4</span> <span class="bc-info">; ,</span>
-<span class="bc-line-num">011</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 5</span>
-<span class="bc-line-num">012</span> <span class="bc-opcode">CONCAT_TEXT     </span> <span class="bc-arg">0 0</span>
-<span class="bc-line-num">013</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 3</span> <span class="bc-info">; sep:\,\s</span>
-<span class="bc-line-num">014</span> <span class="bc-opcode">TAG_KEY         </span> <span class="bc-arg">0 0</span> <span class="bc-info">; sep:\,\s</span>
-<span class="bc-line-num">015</span> <span class="bc-opcode">LOAD_STATIC     </span> <span class="bc-arg">0 6</span> <span class="bc-info">; join</span>
-<span class="bc-line-num">016</span> <span class="bc-opcode">CONCAT_CALL     </span> <span class="bc-arg">0 0</span> <span class="bc-info">; join(...args, sep:\,\s)</span>
-<span class="bc-line-num">017</span> <span class="bc-opcode">CHECK_IS_TEXT   </span> <span class="bc-arg">0 0</span> <span class="bc-info">; join(...args, sep:\,\s)</span>
-<span class="bc-line-num">018</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 6</span>
-<span class="bc-line-num">019</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 7</span> <span class="bc-info">; Named args:</span>
-<span class="bc-line-num">020</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 5</span>
-<span class="bc-line-num">021</span> <span class="bc-opcode">BEGIN_ACC       </span> <span class="bc-arg">0 0</span> <span class="bc-info">; @join(sep:\,\s)[...]</span>
-<span class="bc-line-num">022</span> <span class="bc-opcode">BEGIN_ACC       </span> <span class="bc-arg">0 0</span> <span class="bc-info">; \,\s</span>
-<span class="bc-line-num">023</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 4</span> <span class="bc-info">; ,</span>
-<span class="bc-line-num">024</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 5</span>
-<span class="bc-line-num">025</span> <span class="bc-opcode">CONCAT_TEXT     </span> <span class="bc-arg">0 0</span>
-<span class="bc-line-num">026</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 3</span> <span class="bc-info">; sep:\,\s</span>
-<span class="bc-line-num">027</span> <span class="bc-opcode">TAG_KEY         </span> <span class="bc-arg">0 0</span> <span class="bc-info">; sep:\,\s</span>
-<span class="bc-line-num">028</span> <span class="bc-opcode">BEGIN_ACC       </span> <span class="bc-arg">0 0</span> <span class="bc-info">; items(args)</span>
-<span class="bc-line-num">029</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 1</span> <span class="bc-info">; args</span>
-<span class="bc-line-num">030</span> <span class="bc-opcode">LOAD_STATIC     </span> <span class="bc-arg">0 5</span> <span class="bc-info">; items</span>
-<span class="bc-line-num">031</span> <span class="bc-opcode">CONCAT_CALL     </span> <span class="bc-arg">0 0</span> <span class="bc-info">; items(args)</span>
-<span class="bc-line-num">032</span> <span class="bc-opcode">GET_ITER        </span> <span class="bc-arg">0 0</span> <span class="bc-info">; for key, value in items(args)[...]</span>
-<span class="bc-line-num">033</span> <span class="bc-opcode">ENTER_SCOPE     </span> <span class="bc-arg">0 3</span>
-<span class="bc-line-num">034</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; for key, value in items(args)[...]</span>
-<span class="bc-line-num">035</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">0 2</span> <span class="bc-info">; for key, value in items(args)[...]</span>
-<span class="bc-line-num">036</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">0 3</span> <span class="bc-info">; for key, value in items(args)[...]</span>
-<span class="bc-line-num">037</span> <span class="bc-opcode">FOR_ITER        </span> <span class="bc-arg">0 57</span>
-<span class="bc-line-num">038</span> <span class="bc-opcode">ENTER_SCOPE     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; [...]</span>
-<span class="bc-line-num">039</span> <span class="bc-opcode">DUPLICATE       </span> <span class="bc-arg">0 0</span>
-<span class="bc-line-num">040</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 10</span>
-<span class="bc-line-num">041</span> <span class="bc-opcode">SWITCH          </span> <span class="bc-arg">0 0</span>
-<span class="bc-line-num">042</span> <span class="bc-opcode">TABLE_INDEX     </span> <span class="bc-arg">0 0</span>
-<span class="bc-line-num">043</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; key</span>
-<span class="bc-line-num">044</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 11</span>
-<span class="bc-line-num">045</span> <span class="bc-opcode">SWITCH          </span> <span class="bc-arg">0 0</span>
-<span class="bc-line-num">046</span> <span class="bc-opcode">TABLE_INDEX     </span> <span class="bc-arg">0 0</span>
-<span class="bc-line-num">047</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">0 2</span> <span class="bc-info">; value</span>
-<span class="bc-line-num">048</span> <span class="bc-opcode">BEGIN_ACC       </span> <span class="bc-arg">0 0</span> <span class="bc-info">; - $key\=$value</span>
-<span class="bc-line-num">049</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 1</span> <span class="bc-info">; key</span>
-<span class="bc-line-num">050</span> <span class="bc-opcode">CHECK_IS_TEXT   </span> <span class="bc-arg">0 0</span> <span class="bc-info">; key</span>
-<span class="bc-line-num">051</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 12</span> <span class="bc-info">; =</span>
-<span class="bc-line-num">052</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 2</span> <span class="bc-info">; value</span>
-<span class="bc-line-num">053</span> <span class="bc-opcode">CHECK_IS_TEXT   </span> <span class="bc-arg">0 0</span> <span class="bc-info">; value</span>
-<span class="bc-line-num">054</span> <span class="bc-opcode">CONCAT_TEXT     </span> <span class="bc-arg">0 0</span>
-<span class="bc-line-num">055</span> <span class="bc-opcode">LEAVE_SCOPE     </span> <span class="bc-arg">0 0</span>
-<span class="bc-line-num">056</span> <span class="bc-opcode">JUMP            </span> <span class="bc-arg">0 37</span>
-<span class="bc-line-num">057</span> <span class="bc-opcode">LEAVE_SCOPE     </span> <span class="bc-arg">0 0</span> <span class="bc-info">; for key, value in items(args)[...]</span>
-<span class="bc-line-num">058</span> <span class="bc-opcode">LOAD_STATIC     </span> <span class="bc-arg">0 6</span> <span class="bc-info">; join</span>
-<span class="bc-line-num">059</span> <span class="bc-opcode">CONCAT_CALL     </span> <span class="bc-arg">0 0</span> <span class="bc-info">; @join(sep:\,\s)[...]</span>
-<span class="bc-line-num">060</span> <span class="bc-opcode">CHECK_IS_TEXT   </span> <span class="bc-arg">0 0</span> <span class="bc-info">; @join(sep:\,\s)[...]</span>
-<span class="bc-line-num">061</span> <span class="bc-opcode">CONCAT_TEXT     </span> <span class="bc-arg">0 0</span>
-<span class="bc-line-num">062</span> <span class="bc-opcode">RETURN          </span> <span class="bc-arg">0 0</span> <span class="bc-info">; macro (...args)[...]</span>
-<span class="bc-line-num">063</span> <span class="bc-opcode">STORE_STATIC    </span> <span class="bc-arg">0 19</span> <span class="bc-info">; write</span>
-<span class="bc-line-num">064</span> <span class="bc-opcode">BEGIN_ACC       </span> <span class="bc-arg">0 0</span> <span class="bc-info">; write(write, paint, song, ink: quill, wing: mark)</span>
-<span class="bc-line-num">065</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 13</span> <span class="bc-info">; write</span>
-<span class="bc-line-num">066</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 14</span> <span class="bc-info">; paint</span>
-<span class="bc-line-num">067</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 15</span> <span class="bc-info">; song</span>
-<span class="bc-line-num">068</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 17</span> <span class="bc-info">; quill</span>
-<span class="bc-line-num">069</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 16</span> <span class="bc-info">; ink: quill</span>
-<span class="bc-line-num">070</span> <span class="bc-opcode">TAG_KEY         </span> <span class="bc-arg">0 0</span> <span class="bc-info">; ink: quill</span>
-<span class="bc-line-num">071</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 19</span> <span class="bc-info">; mark</span>
-<span class="bc-line-num">072</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 18</span> <span class="bc-info">; wing: mark</span>
-<span class="bc-line-num">073</span> <span class="bc-opcode">TAG_KEY         </span> <span class="bc-arg">0 0</span> <span class="bc-info">; wing: mark</span>
-<span class="bc-line-num">074</span> <span class="bc-opcode">LOAD_STATIC     </span> <span class="bc-arg">0 19</span> <span class="bc-info">; write</span>
-<span class="bc-line-num">075</span> <span class="bc-opcode">CONCAT_CALL     </span> <span class="bc-arg">0 0</span> <span class="bc-info">; write(write, paint, song, ink: quill, wing: mark)</span>
-<span class="bc-line-num">076</span> <span class="bc-opcode">RETURN_FILE     </span> <span class="bc-arg">0 0</span></code></pre>
-</div>
-</div>
-<div class="comparison-grid">
-<h4>Expected</h4>
-<h4>Obtained</h4>
-<div><div class="result-type-header">Output</div><pre><code><span class="diff-match">Positionnals args: write, paint, song
-Named args: </span><span class="diff-expected">ink=quill, wing=mark</span></code></pre></div>
-<div><div class="result-type-header">Output</div><pre><code><span class="diff-match">Positionnals args: write, paint, song
-Named args: </span><span class="diff-obtained">1=write, 2=paint, 3=song, ink=quill, wing=mark</span></code></pre></div>
-</div>
-</div>
-</details>
-<details>
-<summary>
-<span class="status-icon status-pass">✓</span> Flag <em style='font-weight: normal'></em>
-</summary>
-<div class="test-content">
-<div class="code-grid">
-<div>
-<h4>Code</h4>
-<pre><code class="language-plume">
-set write = macro (?flag)
-  if flag
-    paint
-  else
-    sing
-  end
-end
-$write()\n
-$write(?flag)
-
-</code></pre>
-</div>
-<div>
-<h4>Bytecode</h4>
-<pre><code class="language-bytecode"><span class="bc-line-num">001</span> <span class="bc-opcode">ENTER_SCOPE     </span> <span class="bc-arg">0 0</span> <span class="bc-info">; s</span>
-<span class="bc-line-num">002</span> <span class="bc-opcode">BEGIN_ACC       </span> <span class="bc-arg">0 0</span> <span class="bc-info">; s</span>
-<span class="bc-line-num">003</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 1</span> <span class="bc-info">; macro (?flag)[...]</span>
-<span class="bc-line-num">004</span> <span class="bc-opcode">JUMP            </span> <span class="bc-arg">0 16</span>
-<span class="bc-line-num">005</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 1</span> <span class="bc-info">; ?flag</span>
-<span class="bc-line-num">006</span> <span class="bc-opcode">JUMP_IF_NOT_EMPTY</span> <span class="bc-arg">0 9</span>
-<span class="bc-line-num">007</span> <span class="bc-opcode">LOAD_FALSE      </span> <span class="bc-arg">0 0</span> <span class="bc-info">; ?flag</span>
-<span class="bc-line-num">008</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; ?flag</span>
-<span class="bc-line-num">009</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 1</span> <span class="bc-info">; flag</span>
-<span class="bc-line-num">010</span> <span class="bc-opcode">JUMP_IF_NOT     </span> <span class="bc-arg">0 13</span>
-<span class="bc-line-num">011</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 2</span> <span class="bc-info">; paint</span>
-<span class="bc-line-num">012</span> <span class="bc-opcode">JUMP            </span> <span class="bc-arg">0 15</span>
-<span class="bc-line-num">013</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 3</span> <span class="bc-info">; sing</span>
-<span class="bc-line-num">014</span> <span class="bc-opcode">JUMP            </span> <span class="bc-arg">0 15</span>
-<span class="bc-line-num">015</span> <span class="bc-opcode">RETURN          </span> <span class="bc-arg">0 0</span> <span class="bc-info">; macro (?flag)[...]</span>
-<span class="bc-line-num">016</span> <span class="bc-opcode">STORE_STATIC    </span> <span class="bc-arg">0 19</span> <span class="bc-info">; write</span>
-<span class="bc-line-num">017</span> <span class="bc-opcode">BEGIN_ACC       </span> <span class="bc-arg">0 0</span> <span class="bc-info">; write()</span>
-<span class="bc-line-num">018</span> <span class="bc-opcode">LOAD_STATIC     </span> <span class="bc-arg">0 19</span> <span class="bc-info">; write</span>
-<span class="bc-line-num">019</span> <span class="bc-opcode">CONCAT_CALL     </span> <span class="bc-arg">0 0</span> <span class="bc-info">; write()</span>
-<span class="bc-line-num">020</span> <span class="bc-opcode">CHECK_IS_TEXT   </span> <span class="bc-arg">0 0</span> <span class="bc-info">; write()</span>
-<span class="bc-line-num">021</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 4</span>
-<span class="bc-line-num">022</span> <span class="bc-opcode">BEGIN_ACC       </span> <span class="bc-arg">0 0</span> <span class="bc-info">; write(?flag)</span>
-<span class="bc-line-num">023</span> <span class="bc-opcode">LOAD_TRUE       </span> <span class="bc-arg">0 0</span> <span class="bc-info">; ?flag</span>
-<span class="bc-line-num">024</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 5</span> <span class="bc-info">; ?flag</span>
-<span class="bc-line-num">025</span> <span class="bc-opcode">TAG_KEY         </span> <span class="bc-arg">0 0</span> <span class="bc-info">; ?flag</span>
-<span class="bc-line-num">026</span> <span class="bc-opcode">LOAD_STATIC     </span> <span class="bc-arg">0 19</span> <span class="bc-info">; write</span>
-<span class="bc-line-num">027</span> <span class="bc-opcode">CONCAT_CALL     </span> <span class="bc-arg">0 0</span> <span class="bc-info">; write(?flag)</span>
-<span class="bc-line-num">028</span> <span class="bc-opcode">CHECK_IS_TEXT   </span> <span class="bc-arg">0 0</span> <span class="bc-info">; write(?flag)</span>
-<span class="bc-line-num">029</span> <span class="bc-opcode">CONCAT_TEXT     </span> <span class="bc-arg">0 0</span>
-<span class="bc-line-num">030</span> <span class="bc-opcode">RETURN_FILE     </span> <span class="bc-arg">0 0</span></code></pre>
-</div>
-</div>
-<h4>Output</h4>
-<pre><code>
-sing
-paint
-</code></pre>
-</div>
-</details>
-<details>
-<summary>
-<span class="status-icon status-pass">✓</span> Leave file <em style='font-weight: normal'></em>
-</summary>
-<div class="test-content">
-<div class="code-grid">
-<div>
-<h4>Code</h4>
-<pre><code class="language-plume">
-Nib
-leave
-Wing
-
-</code></pre>
-</div>
-<div>
-<h4>Bytecode</h4>
-<pre><code class="language-bytecode"><span class="bc-line-num">001</span> <span class="bc-opcode">ENTER_SCOPE     </span> <span class="bc-arg">0 0</span> <span class="bc-info">; N</span>
-<span class="bc-line-num">002</span> <span class="bc-opcode">BEGIN_ACC       </span> <span class="bc-arg">0 0</span> <span class="bc-info">; N</span>
-<span class="bc-line-num">003</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 1</span> <span class="bc-info">; Nib</span>
-<span class="bc-line-num">004</span> <span class="bc-opcode">END             </span> <span class="bc-arg">0 0</span> <span class="bc-info">; leave</span>
-<span class="bc-line-num">005</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 2</span> <span class="bc-info">; Wing</span>
-<span class="bc-line-num">006</span> <span class="bc-opcode">CONCAT_TEXT     </span> <span class="bc-arg">0 0</span>
-<span class="bc-line-num">007</span> <span class="bc-opcode">RETURN_FILE     </span> <span class="bc-arg">0 0</span></code></pre>
-</div>
-</div>
-<h4>Output</h4>
-<pre><code>
-Nib
-</code></pre>
-</div>
-</details>
-<details>
-<summary>
-<span class="status-icon status-pass">✓</span> Leave macro (table) <em style='font-weight: normal'></em>
-</summary>
-<div class="test-content">
-<div class="code-grid">
-<div>
-<h4>Code</h4>
-<pre><code class="language-plume">
-macro t()
-  content: wing
-  leave
-  content: nib
-end
-
-$t().content
-
-</code></pre>
-</div>
-<div>
-<h4>Bytecode</h4>
-<pre><code class="language-bytecode"><span class="bc-line-num">001</span> <span class="bc-opcode">ENTER_SCOPE     </span> <span class="bc-arg">0 0</span> <span class="bc-info">; m</span>
-<span class="bc-line-num">002</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 1</span> <span class="bc-info">; t</span>
-<span class="bc-line-num">003</span> <span class="bc-opcode">STORE_STATIC    </span> <span class="bc-arg">0 20</span> <span class="bc-info">; t</span>
-<span class="bc-line-num">004</span> <span class="bc-opcode">JUMP            </span> <span class="bc-arg">0 15</span>
-<span class="bc-line-num">005</span> <span class="bc-opcode">BEGIN_ACC       </span> <span class="bc-arg">0 0</span> <span class="bc-info">; [...]</span>
-<span class="bc-line-num">006</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 3</span> <span class="bc-info">; wing</span>
-<span class="bc-line-num">007</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 2</span> <span class="bc-info">; content: wing</span>
-<span class="bc-line-num">008</span> <span class="bc-opcode">TAG_KEY         </span> <span class="bc-arg">0 0</span> <span class="bc-info">; content: wing</span>
-<span class="bc-line-num">009</span> <span class="bc-opcode">JUMP            </span> <span class="bc-arg">0 13</span>
-<span class="bc-line-num">010</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 4</span> <span class="bc-info">; nib</span>
-<span class="bc-line-num">011</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 2</span> <span class="bc-info">; content: nib</span>
-<span class="bc-line-num">012</span> <span class="bc-opcode">TAG_KEY         </span> <span class="bc-arg">0 0</span> <span class="bc-info">; content: nib</span>
-<span class="bc-line-num">013</span> <span class="bc-opcode">CONCAT_TABLE    </span> <span class="bc-arg">0 0</span>
-<span class="bc-line-num">014</span> <span class="bc-opcode">RETURN          </span> <span class="bc-arg">0 0</span> <span class="bc-info">; macro t()[...]</span>
-<span class="bc-line-num">015</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 2</span> <span class="bc-info">; content</span>
-<span class="bc-line-num">016</span> <span class="bc-opcode">BEGIN_ACC       </span> <span class="bc-arg">0 0</span> <span class="bc-info">; t().content</span>
-<span class="bc-line-num">017</span> <span class="bc-opcode">LOAD_STATIC     </span> <span class="bc-arg">0 20</span> <span class="bc-info">; t</span>
-<span class="bc-line-num">018</span> <span class="bc-opcode">CONCAT_CALL     </span> <span class="bc-arg">0 0</span> <span class="bc-info">; t().content</span>
-<span class="bc-line-num">019</span> <span class="bc-opcode">TABLE_INDEX     </span> <span class="bc-arg">0 0</span> <span class="bc-info">; .content</span>
-<span class="bc-line-num">020</span> <span class="bc-opcode">RETURN_FILE     </span> <span class="bc-arg">0 0</span></code></pre>
-</div>
-</div>
-<h4>Output</h4>
-<pre><code>
-wing
-</code></pre>
-</div>
-</details>
-<details>
-<summary>
-<span class="status-icon status-pass">✓</span> Leave macro (text) <em style='font-weight: normal'></em>
-</summary>
-<div class="test-content">
-<div class="code-grid">
-<div>
-<h4>Code</h4>
-<pre><code class="language-plume">
-let t = @table
-  - blue
-  - red
-  - green
-end
-
-macro index(t, y)
-  for i in seq(1, len(t))
-    if t[i] == y
-      $i
-      leave
-    end
-  end
-end
-
-$index($t, red)
-
-</code></pre>
-</div>
-<div>
-<h4>Bytecode</h4>
-<pre><code class="language-bytecode"><span class="bc-line-num">001</span> <span class="bc-opcode">ENTER_SCOPE     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; l</span>
-<span class="bc-line-num">002</span> <span class="bc-opcode">BEGIN_ACC       </span> <span class="bc-arg">0 0</span> <span class="bc-info">; @table[...]</span>
-<span class="bc-line-num">003</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 1</span> <span class="bc-info">; blue</span>
-<span class="bc-line-num">004</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 2</span> <span class="bc-info">; red</span>
-<span class="bc-line-num">005</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 3</span> <span class="bc-info">; green</span>
-<span class="bc-line-num">006</span> <span class="bc-opcode">LOAD_STATIC     </span> <span class="bc-arg">0 15</span> <span class="bc-info">; table</span>
-<span class="bc-line-num">007</span> <span class="bc-opcode">CONCAT_CALL     </span> <span class="bc-arg">0 0</span> <span class="bc-info">; @table[...]</span>
-<span class="bc-line-num">008</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; t</span>
-<span class="bc-line-num">009</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 4</span> <span class="bc-info">; index</span>
-<span class="bc-line-num">010</span> <span class="bc-opcode">STORE_STATIC    </span> <span class="bc-arg">0 20</span> <span class="bc-info">; index</span>
-<span class="bc-line-num">011</span> <span class="bc-opcode">JUMP            </span> <span class="bc-arg">0 47</span>
-<span class="bc-line-num">012</span> <span class="bc-opcode">BEGIN_ACC       </span> <span class="bc-arg">0 0</span> <span class="bc-info">; [...]</span>
-<span class="bc-line-num">013</span> <span class="bc-opcode">BEGIN_ACC       </span> <span class="bc-arg">0 0</span> <span class="bc-info">; seq(1, len(t))</span>
-<span class="bc-line-num">014</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 7</span> <span class="bc-info">; 1</span>
-<span class="bc-line-num">015</span> <span class="bc-opcode">BEGIN_ACC       </span> <span class="bc-arg">0 0</span> <span class="bc-info">; len(t)</span>
-<span class="bc-line-num">016</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 1</span> <span class="bc-info">; t</span>
-<span class="bc-line-num">017</span> <span class="bc-opcode">LOAD_STATIC     </span> <span class="bc-arg">0 7</span> <span class="bc-info">; len</span>
-<span class="bc-line-num">018</span> <span class="bc-opcode">CONCAT_CALL     </span> <span class="bc-arg">0 0</span> <span class="bc-info">; len(t)</span>
-<span class="bc-line-num">019</span> <span class="bc-opcode">LOAD_STATIC     </span> <span class="bc-arg">0 13</span> <span class="bc-info">; seq</span>
-<span class="bc-line-num">020</span> <span class="bc-opcode">CONCAT_CALL     </span> <span class="bc-arg">0 0</span> <span class="bc-info">; seq(1, len(t))</span>
-<span class="bc-line-num">021</span> <span class="bc-opcode">GET_ITER        </span> <span class="bc-arg">0 0</span> <span class="bc-info">; for i in seq(1, len(t))[...]</span>
-<span class="bc-line-num">022</span> <span class="bc-opcode">ENTER_SCOPE     </span> <span class="bc-arg">0 3</span>
-<span class="bc-line-num">023</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; for i in seq(1, len(t))[...]</span>
-<span class="bc-line-num">024</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">0 2</span> <span class="bc-info">; for i in seq(1, len(t))[...]</span>
-<span class="bc-line-num">025</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">0 3</span> <span class="bc-info">; for i in seq(1, len(t))[...]</span>
-<span class="bc-line-num">026</span> <span class="bc-opcode">FOR_ITER        </span> <span class="bc-arg">0 44</span>
-<span class="bc-line-num">027</span> <span class="bc-opcode">ENTER_SCOPE     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; [...]</span>
-<span class="bc-line-num">028</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; i</span>
-<span class="bc-line-num">029</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 1</span> <span class="bc-info">; i</span>
-<span class="bc-line-num">030</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">2 1</span> <span class="bc-info">; t</span>
-<span class="bc-line-num">031</span> <span class="bc-opcode">TABLE_INDEX     </span> <span class="bc-arg">0 0</span> <span class="bc-info">; [i]</span>
-<span class="bc-line-num">032</span> <span class="bc-opcode">CHECK_IS_TEXT   </span> <span class="bc-arg">0 0</span> <span class="bc-info">; t[i]</span>
-<span class="bc-line-num">033</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">2 2</span> <span class="bc-info">; y</span>
-<span class="bc-line-num">034</span> <span class="bc-opcode">OP_EQ           </span> <span class="bc-arg">0 0</span> <span class="bc-info">; t[i] == y</span>
-<span class="bc-line-num">035</span> <span class="bc-opcode">JUMP_IF_NOT     </span> <span class="bc-arg">0 40</span>
-<span class="bc-line-num">036</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 1</span> <span class="bc-info">; i</span>
-<span class="bc-line-num">037</span> <span class="bc-opcode">CHECK_IS_TEXT   </span> <span class="bc-arg">0 0</span> <span class="bc-info">; i</span>
-<span class="bc-line-num">038</span> <span class="bc-opcode">JUMP            </span> <span class="bc-arg">0 45</span>
-<span class="bc-line-num">039</span> <span class="bc-opcode">JUMP            </span> <span class="bc-arg">0 42</span>
-<span class="bc-line-num">040</span> <span class="bc-opcode">LOAD_EMPTY      </span> <span class="bc-arg">0 0</span> <span class="bc-info">; if t[i] == y[...]</span>
-<span class="bc-line-num">041</span> <span class="bc-opcode">JUMP            </span> <span class="bc-arg">0 42</span>
-<span class="bc-line-num">042</span> <span class="bc-opcode">LEAVE_SCOPE     </span> <span class="bc-arg">0 0</span>
-<span class="bc-line-num">043</span> <span class="bc-opcode">JUMP            </span> <span class="bc-arg">0 26</span>
-<span class="bc-line-num">044</span> <span class="bc-opcode">LEAVE_SCOPE     </span> <span class="bc-arg">0 0</span> <span class="bc-info">; for i in seq(1, len(t))[...]</span>
-<span class="bc-line-num">045</span> <span class="bc-opcode">CONCAT_TEXT     </span> <span class="bc-arg">0 0</span>
-<span class="bc-line-num">046</span> <span class="bc-opcode">RETURN          </span> <span class="bc-arg">0 0</span> <span class="bc-info">; macro index(t, y)[...]</span>
-<span class="bc-line-num">047</span> <span class="bc-opcode">BEGIN_ACC       </span> <span class="bc-arg">0 0</span> <span class="bc-info">; index($t, red)</span>
-<span class="bc-line-num">048</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 1</span> <span class="bc-info">; t</span>
-<span class="bc-line-num">049</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 2</span> <span class="bc-info">; red</span>
-<span class="bc-line-num">050</span> <span class="bc-opcode">LOAD_STATIC     </span> <span class="bc-arg">0 20</span> <span class="bc-info">; index</span>
-<span class="bc-line-num">051</span> <span class="bc-opcode">CONCAT_CALL     </span> <span class="bc-arg">0 0</span> <span class="bc-info">; index($t, red)</span>
-<span class="bc-line-num">052</span> <span class="bc-opcode">RETURN_FILE     </span> <span class="bc-arg">0 0</span></code></pre>
-</div>
-</div>
-<h4>Output</h4>
-<pre><code>
-2
-</code></pre>
-</div>
-</details>
-<details>
-<summary>
-<span class="status-icon status-pass">✓</span> long argument <em style='font-weight: normal'></em>
-</summary>
-<div class="test-content">
-<div class="code-grid">
-<div>
-<h4>Code</h4>
-<pre><code class="language-plume">
-macro id(write)
-  $write
-end
-
-$id(This is quite long\, i think.)
-
-</code></pre>
-</div>
-<div>
-<h4>Bytecode</h4>
-<pre><code class="language-bytecode"><span class="bc-line-num">001</span> <span class="bc-opcode">ENTER_SCOPE     </span> <span class="bc-arg">0 0</span> <span class="bc-info">; m</span>
-<span class="bc-line-num">002</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 1</span> <span class="bc-info">; id</span>
-<span class="bc-line-num">003</span> <span class="bc-opcode">STORE_STATIC    </span> <span class="bc-arg">0 20</span> <span class="bc-info">; id</span>
-<span class="bc-line-num">004</span> <span class="bc-opcode">JUMP            </span> <span class="bc-arg">0 7</span>
-<span class="bc-line-num">005</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 1</span> <span class="bc-info">; write</span>
-<span class="bc-line-num">006</span> <span class="bc-opcode">RETURN          </span> <span class="bc-arg">0 0</span> <span class="bc-info">; macro id(write)[...]</span>
-<span class="bc-line-num">007</span> <span class="bc-opcode">BEGIN_ACC       </span> <span class="bc-arg">0 0</span> <span class="bc-info">; id(This is quite long\, i think.)</span>
-<span class="bc-line-num">008</span> <span class="bc-opcode">BEGIN_ACC       </span> <span class="bc-arg">0 0</span> <span class="bc-info">; This is quite long\, i think.</span>
-<span class="bc-line-num">009</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 2</span> <span class="bc-info">; This is quite long</span>
-<span class="bc-line-num">010</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 3</span> <span class="bc-info">; ,</span>
-<span class="bc-line-num">011</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 4</span> <span class="bc-info">;  i think.</span>
-<span class="bc-line-num">012</span> <span class="bc-opcode">CONCAT_TEXT     </span> <span class="bc-arg">0 0</span>
-<span class="bc-line-num">013</span> <span class="bc-opcode">LOAD_STATIC     </span> <span class="bc-arg">0 20</span> <span class="bc-info">; id</span>
-<span class="bc-line-num">014</span> <span class="bc-opcode">CONCAT_CALL     </span> <span class="bc-arg">0 0</span> <span class="bc-info">; id(This is quite long\, i think.)</span>
-<span class="bc-line-num">015</span> <span class="bc-opcode">RETURN_FILE     </span> <span class="bc-arg">0 0</span></code></pre>
-</div>
-</div>
-<h4>Output</h4>
-<pre><code>
-This is quite long, i think.
-</code></pre>
-</div>
-</details>
-<details>
-<summary>
-<span class="status-icon status-pass">✓</span> macro &amp; call (1 param) <em style='font-weight: normal'></em>
-</summary>
-<div class="test-content">
-<div class="code-grid">
-<div>
-<h4>Code</h4>
-<pre><code class="language-plume">
-macro double(write)
-  $write $write
-end
-$double(quill)
-
-</code></pre>
-</div>
-<div>
-<h4>Bytecode</h4>
-<pre><code class="language-bytecode"><span class="bc-line-num">001</span> <span class="bc-opcode">ENTER_SCOPE     </span> <span class="bc-arg">0 0</span> <span class="bc-info">; m</span>
-<span class="bc-line-num">002</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 1</span> <span class="bc-info">; double</span>
-<span class="bc-line-num">003</span> <span class="bc-opcode">STORE_STATIC    </span> <span class="bc-arg">0 20</span> <span class="bc-info">; double</span>
-<span class="bc-line-num">004</span> <span class="bc-opcode">JUMP            </span> <span class="bc-arg">0 13</span>
-<span class="bc-line-num">005</span> <span class="bc-opcode">BEGIN_ACC       </span> <span class="bc-arg">0 0</span> <span class="bc-info">; [...]</span>
-<span class="bc-line-num">006</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 1</span> <span class="bc-info">; write</span>
-<span class="bc-line-num">007</span> <span class="bc-opcode">CHECK_IS_TEXT   </span> <span class="bc-arg">0 0</span> <span class="bc-info">; write</span>
-<span class="bc-line-num">008</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 2</span> <span class="bc-info">;  </span>
-<span class="bc-line-num">009</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 1</span> <span class="bc-info">; write</span>
-<span class="bc-line-num">010</span> <span class="bc-opcode">CHECK_IS_TEXT   </span> <span class="bc-arg">0 0</span> <span class="bc-info">; write</span>
-<span class="bc-line-num">011</span> <span class="bc-opcode">CONCAT_TEXT     </span> <span class="bc-arg">0 0</span>
-<span class="bc-line-num">012</span> <span class="bc-opcode">RETURN          </span> <span class="bc-arg">0 0</span> <span class="bc-info">; macro double(write)[...]</span>
-<span class="bc-line-num">013</span> <span class="bc-opcode">BEGIN_ACC       </span> <span class="bc-arg">0 0</span> <span class="bc-info">; double(quill)</span>
-<span class="bc-line-num">014</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 3</span> <span class="bc-info">; quill</span>
-<span class="bc-line-num">015</span> <span class="bc-opcode">LOAD_STATIC     </span> <span class="bc-arg">0 20</span> <span class="bc-info">; double</span>
-<span class="bc-line-num">016</span> <span class="bc-opcode">CONCAT_CALL     </span> <span class="bc-arg">0 0</span> <span class="bc-info">; double(quill)</span>
-<span class="bc-line-num">017</span> <span class="bc-opcode">RETURN_FILE     </span> <span class="bc-arg">0 0</span></code></pre>
-</div>
-</div>
-<h4>Output</h4>
-<pre><code>
-quill quill
-</code></pre>
-</div>
-</details>
-<details>
-<summary>
-<span class="status-icon status-pass">✓</span> macro &amp; call (2 params) <em style='font-weight: normal'></em>
-</summary>
-<div class="test-content">
-<div class="code-grid">
-<div>
-<h4>Code</h4>
-<pre><code class="language-plume">
-macro f(write, paint)
-  $write $paint
-end
-$f(quill, mark)
-
-</code></pre>
-</div>
-<div>
-<h4>Bytecode</h4>
-<pre><code class="language-bytecode"><span class="bc-line-num">001</span> <span class="bc-opcode">ENTER_SCOPE     </span> <span class="bc-arg">0 0</span> <span class="bc-info">; m</span>
-<span class="bc-line-num">002</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 1</span> <span class="bc-info">; f</span>
-<span class="bc-line-num">003</span> <span class="bc-opcode">STORE_STATIC    </span> <span class="bc-arg">0 20</span> <span class="bc-info">; f</span>
-<span class="bc-line-num">004</span> <span class="bc-opcode">JUMP            </span> <span class="bc-arg">0 13</span>
-<span class="bc-line-num">005</span> <span class="bc-opcode">BEGIN_ACC       </span> <span class="bc-arg">0 0</span> <span class="bc-info">; [...]</span>
-<span class="bc-line-num">006</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 1</span> <span class="bc-info">; write</span>
-<span class="bc-line-num">007</span> <span class="bc-opcode">CHECK_IS_TEXT   </span> <span class="bc-arg">0 0</span> <span class="bc-info">; write</span>
-<span class="bc-line-num">008</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 2</span> <span class="bc-info">;  </span>
-<span class="bc-line-num">009</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 2</span> <span class="bc-info">; paint</span>
-<span class="bc-line-num">010</span> <span class="bc-opcode">CHECK_IS_TEXT   </span> <span class="bc-arg">0 0</span> <span class="bc-info">; paint</span>
-<span class="bc-line-num">011</span> <span class="bc-opcode">CONCAT_TEXT     </span> <span class="bc-arg">0 0</span>
-<span class="bc-line-num">012</span> <span class="bc-opcode">RETURN          </span> <span class="bc-arg">0 0</span> <span class="bc-info">; macro f(write, paint)[...]</span>
-<span class="bc-line-num">013</span> <span class="bc-opcode">BEGIN_ACC       </span> <span class="bc-arg">0 0</span> <span class="bc-info">; f(quill, mark)</span>
-<span class="bc-line-num">014</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 3</span> <span class="bc-info">; quill</span>
-<span class="bc-line-num">015</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 4</span> <span class="bc-info">; mark</span>
-<span class="bc-line-num">016</span> <span class="bc-opcode">LOAD_STATIC     </span> <span class="bc-arg">0 20</span> <span class="bc-info">; f</span>
-<span class="bc-line-num">017</span> <span class="bc-opcode">CONCAT_CALL     </span> <span class="bc-arg">0 0</span> <span class="bc-info">; f(quill, mark)</span>
-<span class="bc-line-num">018</span> <span class="bc-opcode">RETURN_FILE     </span> <span class="bc-arg">0 0</span></code></pre>
-</div>
-</div>
-<h4>Output</h4>
-<pre><code>
-quill mark
-</code></pre>
-</div>
-</details>
-<details>
-<summary>
-<span class="status-icon status-pass">✓</span> macro &amp; call (miwriteed params) <em style='font-weight: normal'></em>
-</summary>
-<div class="test-content">
-<div class="code-grid">
-<div>
-<h4>Code</h4>
-<pre><code class="language-plume">
-macro f(write, paint, optn: value)
-  $write $paint $optn
-end
-$f(quill, mark)\n
-$f(quill, ink, optn: another value)
-
-</code></pre>
-</div>
-<div>
-<h4>Bytecode</h4>
-<pre><code class="language-bytecode"><span class="bc-line-num">001</span> <span class="bc-opcode">ENTER_SCOPE     </span> <span class="bc-arg">0 0</span> <span class="bc-info">; m</span>
-<span class="bc-line-num">002</span> <span class="bc-opcode">BEGIN_ACC       </span> <span class="bc-arg">0 0</span> <span class="bc-info">; m</span>
-<span class="bc-line-num">003</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 1</span> <span class="bc-info">; f</span>
-<span class="bc-line-num">004</span> <span class="bc-opcode">STORE_STATIC    </span> <span class="bc-arg">0 20</span> <span class="bc-info">; f</span>
-<span class="bc-line-num">005</span> <span class="bc-opcode">JUMP            </span> <span class="bc-arg">0 21</span>
-<span class="bc-line-num">006</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 3</span> <span class="bc-info">; optn: value</span>
-<span class="bc-line-num">007</span> <span class="bc-opcode">JUMP_IF_NOT_EMPTY</span> <span class="bc-arg">0 10</span>
-<span class="bc-line-num">008</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 2</span> <span class="bc-info">; value</span>
-<span class="bc-line-num">009</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">0 3</span> <span class="bc-info">; optn: value</span>
-<span class="bc-line-num">010</span> <span class="bc-opcode">BEGIN_ACC       </span> <span class="bc-arg">0 0</span> <span class="bc-info">; [...]</span>
-<span class="bc-line-num">011</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 1</span> <span class="bc-info">; write</span>
-<span class="bc-line-num">012</span> <span class="bc-opcode">CHECK_IS_TEXT   </span> <span class="bc-arg">0 0</span> <span class="bc-info">; write</span>
-<span class="bc-line-num">013</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 3</span> <span class="bc-info">;  </span>
-<span class="bc-line-num">014</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 2</span> <span class="bc-info">; paint</span>
-<span class="bc-line-num">015</span> <span class="bc-opcode">CHECK_IS_TEXT   </span> <span class="bc-arg">0 0</span> <span class="bc-info">; paint</span>
-<span class="bc-line-num">016</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 3</span> <span class="bc-info">;  </span>
-<span class="bc-line-num">017</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 3</span> <span class="bc-info">; optn</span>
-<span class="bc-line-num">018</span> <span class="bc-opcode">CHECK_IS_TEXT   </span> <span class="bc-arg">0 0</span> <span class="bc-info">; optn</span>
-<span class="bc-line-num">019</span> <span class="bc-opcode">CONCAT_TEXT     </span> <span class="bc-arg">0 0</span>
-<span class="bc-line-num">020</span> <span class="bc-opcode">RETURN          </span> <span class="bc-arg">0 0</span> <span class="bc-info">; macro f(write, paint, optn: value)[...]</span>
-<span class="bc-line-num">021</span> <span class="bc-opcode">BEGIN_ACC       </span> <span class="bc-arg">0 0</span> <span class="bc-info">; f(quill, mark)</span>
-<span class="bc-line-num">022</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 4</span> <span class="bc-info">; quill</span>
-<span class="bc-line-num">023</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 5</span> <span class="bc-info">; mark</span>
-<span class="bc-line-num">024</span> <span class="bc-opcode">LOAD_STATIC     </span> <span class="bc-arg">0 20</span> <span class="bc-info">; f</span>
-<span class="bc-line-num">025</span> <span class="bc-opcode">CONCAT_CALL     </span> <span class="bc-arg">0 0</span> <span class="bc-info">; f(quill, mark)</span>
-<span class="bc-line-num">026</span> <span class="bc-opcode">CHECK_IS_TEXT   </span> <span class="bc-arg">0 0</span> <span class="bc-info">; f(quill, mark)</span>
-<span class="bc-line-num">027</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 6</span>
-<span class="bc-line-num">028</span> <span class="bc-opcode">BEGIN_ACC       </span> <span class="bc-arg">0 0</span> <span class="bc-info">; f(quill, ink, optn: another value)</span>
-<span class="bc-line-num">029</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 4</span> <span class="bc-info">; quill</span>
-<span class="bc-line-num">030</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 7</span> <span class="bc-info">; ink</span>
-<span class="bc-line-num">031</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 9</span> <span class="bc-info">; another value</span>
-<span class="bc-line-num">032</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 8</span> <span class="bc-info">; optn: another value</span>
-<span class="bc-line-num">033</span> <span class="bc-opcode">TAG_KEY         </span> <span class="bc-arg">0 0</span> <span class="bc-info">; optn: another value</span>
-<span class="bc-line-num">034</span> <span class="bc-opcode">LOAD_STATIC     </span> <span class="bc-arg">0 20</span> <span class="bc-info">; f</span>
-<span class="bc-line-num">035</span> <span class="bc-opcode">CONCAT_CALL     </span> <span class="bc-arg">0 0</span> <span class="bc-info">; f(quill, ink, optn: another value)</span>
-<span class="bc-line-num">036</span> <span class="bc-opcode">CHECK_IS_TEXT   </span> <span class="bc-arg">0 0</span> <span class="bc-info">; f(quill, ink, optn: another value)</span>
-<span class="bc-line-num">037</span> <span class="bc-opcode">CONCAT_TEXT     </span> <span class="bc-arg">0 0</span>
-<span class="bc-line-num">038</span> <span class="bc-opcode">RETURN_FILE     </span> <span class="bc-arg">0 0</span></code></pre>
-</div>
-</div>
-<h4>Output</h4>
-<pre><code>
-quill mark value
-quill ink another value
-</code></pre>
-</div>
-</details>
-<details>
-<summary>
-<span class="status-icon status-pass">✓</span> macro &amp; call (named params) <em style='font-weight: normal'></em>
-</summary>
-<div class="test-content">
-<div class="code-grid">
-<div>
-<h4>Code</h4>
-<pre><code class="language-plume">
-macro f(optn: value)
-  $optn
-end
-$f()\n
-$f(optn: another value)
-
-</code></pre>
-</div>
-<div>
-<h4>Bytecode</h4>
-<pre><code class="language-bytecode"><span class="bc-line-num">001</span> <span class="bc-opcode">ENTER_SCOPE     </span> <span class="bc-arg">0 0</span> <span class="bc-info">; m</span>
-<span class="bc-line-num">002</span> <span class="bc-opcode">BEGIN_ACC       </span> <span class="bc-arg">0 0</span> <span class="bc-info">; m</span>
-<span class="bc-line-num">003</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 1</span> <span class="bc-info">; f</span>
-<span class="bc-line-num">004</span> <span class="bc-opcode">STORE_STATIC    </span> <span class="bc-arg">0 20</span> <span class="bc-info">; f</span>
-<span class="bc-line-num">005</span> <span class="bc-opcode">JUMP            </span> <span class="bc-arg">0 12</span>
-<span class="bc-line-num">006</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 1</span> <span class="bc-info">; optn: value</span>
-<span class="bc-line-num">007</span> <span class="bc-opcode">JUMP_IF_NOT_EMPTY</span> <span class="bc-arg">0 10</span>
-<span class="bc-line-num">008</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 2</span> <span class="bc-info">; value</span>
-<span class="bc-line-num">009</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; optn: value</span>
-<span class="bc-line-num">010</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 1</span> <span class="bc-info">; optn</span>
-<span class="bc-line-num">011</span> <span class="bc-opcode">RETURN          </span> <span class="bc-arg">0 0</span> <span class="bc-info">; macro f(optn: value)[...]</span>
-<span class="bc-line-num">012</span> <span class="bc-opcode">BEGIN_ACC       </span> <span class="bc-arg">0 0</span> <span class="bc-info">; f()</span>
-<span class="bc-line-num">013</span> <span class="bc-opcode">LOAD_STATIC     </span> <span class="bc-arg">0 20</span> <span class="bc-info">; f</span>
-<span class="bc-line-num">014</span> <span class="bc-opcode">CONCAT_CALL     </span> <span class="bc-arg">0 0</span> <span class="bc-info">; f()</span>
-<span class="bc-line-num">015</span> <span class="bc-opcode">CHECK_IS_TEXT   </span> <span class="bc-arg">0 0</span> <span class="bc-info">; f()</span>
-<span class="bc-line-num">016</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 3</span>
-<span class="bc-line-num">017</span> <span class="bc-opcode">BEGIN_ACC       </span> <span class="bc-arg">0 0</span> <span class="bc-info">; f(optn: another value)</span>
-<span class="bc-line-num">018</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 5</span> <span class="bc-info">; another value</span>
-<span class="bc-line-num">019</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 4</span> <span class="bc-info">; optn: another value</span>
-<span class="bc-line-num">020</span> <span class="bc-opcode">TAG_KEY         </span> <span class="bc-arg">0 0</span> <span class="bc-info">; optn: another value</span>
-<span class="bc-line-num">021</span> <span class="bc-opcode">LOAD_STATIC     </span> <span class="bc-arg">0 20</span> <span class="bc-info">; f</span>
-<span class="bc-line-num">022</span> <span class="bc-opcode">CONCAT_CALL     </span> <span class="bc-arg">0 0</span> <span class="bc-info">; f(optn: another value)</span>
-<span class="bc-line-num">023</span> <span class="bc-opcode">CHECK_IS_TEXT   </span> <span class="bc-arg">0 0</span> <span class="bc-info">; f(optn: another value)</span>
-<span class="bc-line-num">024</span> <span class="bc-opcode">CONCAT_TEXT     </span> <span class="bc-arg">0 0</span>
-<span class="bc-line-num">025</span> <span class="bc-opcode">RETURN_FILE     </span> <span class="bc-arg">0 0</span></code></pre>
-</div>
-</div>
-<h4>Output</h4>
-<pre><code>
-value
-another value
-</code></pre>
-</div>
-</details>
-<details>
-<summary>
-<span class="status-icon status-pass">✓</span> macro nested <em style='font-weight: normal'></em>
-</summary>
-<div class="test-content">
-<div class="code-grid">
-<div>
-<h4>Code</h4>
-<pre><code class="language-plume">
-macro double(write)
-  $write $write
-end
-
-$double($double(quill))
-
-</code></pre>
-</div>
-<div>
-<h4>Bytecode</h4>
-<pre><code class="language-bytecode"><span class="bc-line-num">001</span> <span class="bc-opcode">ENTER_SCOPE     </span> <span class="bc-arg">0 0</span> <span class="bc-info">; m</span>
-<span class="bc-line-num">002</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 1</span> <span class="bc-info">; double</span>
-<span class="bc-line-num">003</span> <span class="bc-opcode">STORE_STATIC    </span> <span class="bc-arg">0 20</span> <span class="bc-info">; double</span>
-<span class="bc-line-num">004</span> <span class="bc-opcode">JUMP            </span> <span class="bc-arg">0 13</span>
-<span class="bc-line-num">005</span> <span class="bc-opcode">BEGIN_ACC       </span> <span class="bc-arg">0 0</span> <span class="bc-info">; [...]</span>
-<span class="bc-line-num">006</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 1</span> <span class="bc-info">; write</span>
-<span class="bc-line-num">007</span> <span class="bc-opcode">CHECK_IS_TEXT   </span> <span class="bc-arg">0 0</span> <span class="bc-info">; write</span>
-<span class="bc-line-num">008</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 2</span> <span class="bc-info">;  </span>
-<span class="bc-line-num">009</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 1</span> <span class="bc-info">; write</span>
-<span class="bc-line-num">010</span> <span class="bc-opcode">CHECK_IS_TEXT   </span> <span class="bc-arg">0 0</span> <span class="bc-info">; write</span>
-<span class="bc-line-num">011</span> <span class="bc-opcode">CONCAT_TEXT     </span> <span class="bc-arg">0 0</span>
-<span class="bc-line-num">012</span> <span class="bc-opcode">RETURN          </span> <span class="bc-arg">0 0</span> <span class="bc-info">; macro double(write)[...]</span>
-<span class="bc-line-num">013</span> <span class="bc-opcode">BEGIN_ACC       </span> <span class="bc-arg">0 0</span> <span class="bc-info">; double($double(quill))</span>
-<span class="bc-line-num">014</span> <span class="bc-opcode">BEGIN_ACC       </span> <span class="bc-arg">0 0</span> <span class="bc-info">; double(quill)</span>
-<span class="bc-line-num">015</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 3</span> <span class="bc-info">; quill</span>
-<span class="bc-line-num">016</span> <span class="bc-opcode">LOAD_STATIC     </span> <span class="bc-arg">0 20</span> <span class="bc-info">; double</span>
-<span class="bc-line-num">017</span> <span class="bc-opcode">CONCAT_CALL     </span> <span class="bc-arg">0 0</span> <span class="bc-info">; double(quill)</span>
-<span class="bc-line-num">018</span> <span class="bc-opcode">LOAD_STATIC     </span> <span class="bc-arg">0 20</span> <span class="bc-info">; double</span>
-<span class="bc-line-num">019</span> <span class="bc-opcode">CONCAT_CALL     </span> <span class="bc-arg">0 0</span> <span class="bc-info">; double($double(quill))</span>
-<span class="bc-line-num">020</span> <span class="bc-opcode">RETURN_FILE     </span> <span class="bc-arg">0 0</span></code></pre>
-</div>
-</div>
-<h4>Output</h4>
-<pre><code>
-quill quill quill quill
-</code></pre>
-</div>
-</details>
-<details>
-<summary>
-<span class="status-icon status-pass">✓</span> macro scope <em style='font-weight: normal'></em>
-</summary>
-<div class="test-content">
-<div class="code-grid">
-<div>
-<h4>Code</h4>
-<pre><code class="language-plume">
-let _write = 5
-macro f()
-  let _write = 3
-  $_write
-end
-$f()\n
-$_write
-
-</code></pre>
-</div>
-<div>
-<h4>Bytecode</h4>
-<pre><code class="language-bytecode"><span class="bc-line-num">001</span> <span class="bc-opcode">ENTER_SCOPE     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; l</span>
-<span class="bc-line-num">002</span> <span class="bc-opcode">BEGIN_ACC       </span> <span class="bc-arg">0 0</span> <span class="bc-info">; l</span>
-<span class="bc-line-num">003</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 1</span> <span class="bc-info">; 5</span>
-<span class="bc-line-num">004</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; _write</span>
-<span class="bc-line-num">005</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 2</span> <span class="bc-info">; f</span>
-<span class="bc-line-num">006</span> <span class="bc-opcode">STORE_STATIC    </span> <span class="bc-arg">0 20</span> <span class="bc-info">; f</span>
-<span class="bc-line-num">007</span> <span class="bc-opcode">JUMP            </span> <span class="bc-arg">0 12</span>
-<span class="bc-line-num">008</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 3</span> <span class="bc-info">; 3</span>
-<span class="bc-line-num">009</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">0 2</span> <span class="bc-info">; _write</span>
-<span class="bc-line-num">010</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 2</span> <span class="bc-info">; _write</span>
-<span class="bc-line-num">011</span> <span class="bc-opcode">RETURN          </span> <span class="bc-arg">0 0</span> <span class="bc-info">; macro f()[...]</span>
-<span class="bc-line-num">012</span> <span class="bc-opcode">BEGIN_ACC       </span> <span class="bc-arg">0 0</span> <span class="bc-info">; f()</span>
-<span class="bc-line-num">013</span> <span class="bc-opcode">LOAD_STATIC     </span> <span class="bc-arg">0 20</span> <span class="bc-info">; f</span>
-<span class="bc-line-num">014</span> <span class="bc-opcode">CONCAT_CALL     </span> <span class="bc-arg">0 0</span> <span class="bc-info">; f()</span>
-<span class="bc-line-num">015</span> <span class="bc-opcode">CHECK_IS_TEXT   </span> <span class="bc-arg">0 0</span> <span class="bc-info">; f()</span>
-<span class="bc-line-num">016</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 4</span>
-<span class="bc-line-num">017</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 1</span> <span class="bc-info">; _write</span>
-<span class="bc-line-num">018</span> <span class="bc-opcode">CHECK_IS_TEXT   </span> <span class="bc-arg">0 0</span> <span class="bc-info">; _write</span>
-<span class="bc-line-num">019</span> <span class="bc-opcode">CONCAT_TEXT     </span> <span class="bc-arg">0 0</span>
-<span class="bc-line-num">020</span> <span class="bc-opcode">RETURN_FILE     </span> <span class="bc-arg">0 0</span></code></pre>
-</div>
-</div>
-<h4>Output</h4>
-<pre><code>
-3
-5
-</code></pre>
-</div>
-</details>
-<details>
-<summary>
-<span class="status-icon status-pass">✓</span> simple macro &amp; call <em style='font-weight: normal'></em>
-</summary>
-<div class="test-content">
-<div class="code-grid">
-<div>
-<h4>Code</h4>
-<pre><code class="language-plume">
-macro quill()
-  mark
-end
-$quill()
-
-</code></pre>
-</div>
-<div>
-<h4>Bytecode</h4>
-<pre><code class="language-bytecode"><span class="bc-line-num">001</span> <span class="bc-opcode">ENTER_SCOPE     </span> <span class="bc-arg">0 0</span> <span class="bc-info">; m</span>
-<span class="bc-line-num">002</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 1</span> <span class="bc-info">; quill</span>
-<span class="bc-line-num">003</span> <span class="bc-opcode">STORE_STATIC    </span> <span class="bc-arg">0 20</span> <span class="bc-info">; quill</span>
-<span class="bc-line-num">004</span> <span class="bc-opcode">JUMP            </span> <span class="bc-arg">0 7</span>
-<span class="bc-line-num">005</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 2</span> <span class="bc-info">; mark</span>
-<span class="bc-line-num">006</span> <span class="bc-opcode">RETURN          </span> <span class="bc-arg">0 0</span> <span class="bc-info">; macro quill()[...]</span>
-<span class="bc-line-num">007</span> <span class="bc-opcode">BEGIN_ACC       </span> <span class="bc-arg">0 0</span> <span class="bc-info">; quill()</span>
-<span class="bc-line-num">008</span> <span class="bc-opcode">LOAD_STATIC     </span> <span class="bc-arg">0 20</span> <span class="bc-info">; quill</span>
-<span class="bc-line-num">009</span> <span class="bc-opcode">CONCAT_CALL     </span> <span class="bc-arg">0 0</span> <span class="bc-info">; quill()</span>
-<span class="bc-line-num">010</span> <span class="bc-opcode">RETURN_FILE     </span> <span class="bc-arg">0 0</span></code></pre>
-</div>
-</div>
-<h4>Output</h4>
-<pre><code>
-mark
-</code></pre>
-</div>
-</details>
+<h1>Global: <span style="font-weight: normal;">296 passed out of 296 tests</span></h1>
+<div class="progress-bar"><div class="progress-success" style="width: 100.00%"></div><div class="progress-fail" style="width: 0.00%"></div></div>
 <h2>arithmetic: <span style="font-weight: normal;">30 passed out of 30 tests</span></h2>
 <div class="progress-bar"><div class="progress-success" style="width: 100.00%"></div><div class="progress-fail" style="width: 0.00%"></div></div>
 <details>
@@ -5757,6 +5029,734 @@ $lua.string.gsub(azerty, [ae], .)
 </code></pre>
 </div>
 </details>
+<h2>macro: <span style="font-weight: normal;">13 passed out of 13 tests</span></h2>
+<div class="progress-bar"><div class="progress-success" style="width: 100.00%"></div><div class="progress-fail" style="width: 0.00%"></div></div>
+<details>
+<summary>
+<span class="status-icon status-pass">✓</span> Flag <em style='font-weight: normal'></em>
+</summary>
+<div class="test-content">
+<div class="code-grid">
+<div>
+<h4>Code</h4>
+<pre><code class="language-plume">
+set write = macro (?flag)
+  if flag
+    paint
+  else
+    sing
+  end
+end
+$write()\n
+$write(?flag)
+
+</code></pre>
+</div>
+<div>
+<h4>Bytecode</h4>
+<pre><code class="language-bytecode"><span class="bc-line-num">001</span> <span class="bc-opcode">ENTER_SCOPE     </span> <span class="bc-arg">0 0</span> <span class="bc-info">; s</span>
+<span class="bc-line-num">002</span> <span class="bc-opcode">BEGIN_ACC       </span> <span class="bc-arg">0 0</span> <span class="bc-info">; s</span>
+<span class="bc-line-num">003</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 1</span> <span class="bc-info">; macro (?flag)[...]</span>
+<span class="bc-line-num">004</span> <span class="bc-opcode">JUMP            </span> <span class="bc-arg">0 16</span>
+<span class="bc-line-num">005</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 1</span> <span class="bc-info">; ?flag</span>
+<span class="bc-line-num">006</span> <span class="bc-opcode">JUMP_IF_NOT_EMPTY</span> <span class="bc-arg">0 9</span>
+<span class="bc-line-num">007</span> <span class="bc-opcode">LOAD_FALSE      </span> <span class="bc-arg">0 0</span> <span class="bc-info">; ?flag</span>
+<span class="bc-line-num">008</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; ?flag</span>
+<span class="bc-line-num">009</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 1</span> <span class="bc-info">; flag</span>
+<span class="bc-line-num">010</span> <span class="bc-opcode">JUMP_IF_NOT     </span> <span class="bc-arg">0 13</span>
+<span class="bc-line-num">011</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 2</span> <span class="bc-info">; paint</span>
+<span class="bc-line-num">012</span> <span class="bc-opcode">JUMP            </span> <span class="bc-arg">0 15</span>
+<span class="bc-line-num">013</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 3</span> <span class="bc-info">; sing</span>
+<span class="bc-line-num">014</span> <span class="bc-opcode">JUMP            </span> <span class="bc-arg">0 15</span>
+<span class="bc-line-num">015</span> <span class="bc-opcode">RETURN          </span> <span class="bc-arg">0 0</span> <span class="bc-info">; macro (?flag)[...]</span>
+<span class="bc-line-num">016</span> <span class="bc-opcode">STORE_STATIC    </span> <span class="bc-arg">0 19</span> <span class="bc-info">; write</span>
+<span class="bc-line-num">017</span> <span class="bc-opcode">BEGIN_ACC       </span> <span class="bc-arg">0 0</span> <span class="bc-info">; write()</span>
+<span class="bc-line-num">018</span> <span class="bc-opcode">LOAD_STATIC     </span> <span class="bc-arg">0 19</span> <span class="bc-info">; write</span>
+<span class="bc-line-num">019</span> <span class="bc-opcode">CONCAT_CALL     </span> <span class="bc-arg">0 0</span> <span class="bc-info">; write()</span>
+<span class="bc-line-num">020</span> <span class="bc-opcode">CHECK_IS_TEXT   </span> <span class="bc-arg">0 0</span> <span class="bc-info">; write()</span>
+<span class="bc-line-num">021</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 4</span>
+<span class="bc-line-num">022</span> <span class="bc-opcode">BEGIN_ACC       </span> <span class="bc-arg">0 0</span> <span class="bc-info">; write(?flag)</span>
+<span class="bc-line-num">023</span> <span class="bc-opcode">LOAD_TRUE       </span> <span class="bc-arg">0 0</span> <span class="bc-info">; ?flag</span>
+<span class="bc-line-num">024</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 5</span> <span class="bc-info">; ?flag</span>
+<span class="bc-line-num">025</span> <span class="bc-opcode">TAG_KEY         </span> <span class="bc-arg">0 0</span> <span class="bc-info">; ?flag</span>
+<span class="bc-line-num">026</span> <span class="bc-opcode">LOAD_STATIC     </span> <span class="bc-arg">0 19</span> <span class="bc-info">; write</span>
+<span class="bc-line-num">027</span> <span class="bc-opcode">CONCAT_CALL     </span> <span class="bc-arg">0 0</span> <span class="bc-info">; write(?flag)</span>
+<span class="bc-line-num">028</span> <span class="bc-opcode">CHECK_IS_TEXT   </span> <span class="bc-arg">0 0</span> <span class="bc-info">; write(?flag)</span>
+<span class="bc-line-num">029</span> <span class="bc-opcode">CONCAT_TEXT     </span> <span class="bc-arg">0 0</span>
+<span class="bc-line-num">030</span> <span class="bc-opcode">RETURN_FILE     </span> <span class="bc-arg">0 0</span></code></pre>
+</div>
+</div>
+<h4>Output</h4>
+<pre><code>
+sing
+paint
+</code></pre>
+</div>
+</details>
+<details>
+<summary>
+<span class="status-icon status-pass">✓</span> Leave file <em style='font-weight: normal'></em>
+</summary>
+<div class="test-content">
+<div class="code-grid">
+<div>
+<h4>Code</h4>
+<pre><code class="language-plume">
+Nib
+leave
+Wing
+
+</code></pre>
+</div>
+<div>
+<h4>Bytecode</h4>
+<pre><code class="language-bytecode"><span class="bc-line-num">001</span> <span class="bc-opcode">ENTER_SCOPE     </span> <span class="bc-arg">0 0</span> <span class="bc-info">; N</span>
+<span class="bc-line-num">002</span> <span class="bc-opcode">BEGIN_ACC       </span> <span class="bc-arg">0 0</span> <span class="bc-info">; N</span>
+<span class="bc-line-num">003</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 1</span> <span class="bc-info">; Nib</span>
+<span class="bc-line-num">004</span> <span class="bc-opcode">END             </span> <span class="bc-arg">0 0</span> <span class="bc-info">; leave</span>
+<span class="bc-line-num">005</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 2</span> <span class="bc-info">; Wing</span>
+<span class="bc-line-num">006</span> <span class="bc-opcode">CONCAT_TEXT     </span> <span class="bc-arg">0 0</span>
+<span class="bc-line-num">007</span> <span class="bc-opcode">RETURN_FILE     </span> <span class="bc-arg">0 0</span></code></pre>
+</div>
+</div>
+<h4>Output</h4>
+<pre><code>
+Nib
+</code></pre>
+</div>
+</details>
+<details>
+<summary>
+<span class="status-icon status-pass">✓</span> Leave macro (table) <em style='font-weight: normal'></em>
+</summary>
+<div class="test-content">
+<div class="code-grid">
+<div>
+<h4>Code</h4>
+<pre><code class="language-plume">
+macro t()
+  content: wing
+  leave
+  content: nib
+end
+
+$t().content
+
+</code></pre>
+</div>
+<div>
+<h4>Bytecode</h4>
+<pre><code class="language-bytecode"><span class="bc-line-num">001</span> <span class="bc-opcode">ENTER_SCOPE     </span> <span class="bc-arg">0 0</span> <span class="bc-info">; m</span>
+<span class="bc-line-num">002</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 1</span> <span class="bc-info">; t</span>
+<span class="bc-line-num">003</span> <span class="bc-opcode">STORE_STATIC    </span> <span class="bc-arg">0 20</span> <span class="bc-info">; t</span>
+<span class="bc-line-num">004</span> <span class="bc-opcode">JUMP            </span> <span class="bc-arg">0 15</span>
+<span class="bc-line-num">005</span> <span class="bc-opcode">BEGIN_ACC       </span> <span class="bc-arg">0 0</span> <span class="bc-info">; [...]</span>
+<span class="bc-line-num">006</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 3</span> <span class="bc-info">; wing</span>
+<span class="bc-line-num">007</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 2</span> <span class="bc-info">; content: wing</span>
+<span class="bc-line-num">008</span> <span class="bc-opcode">TAG_KEY         </span> <span class="bc-arg">0 0</span> <span class="bc-info">; content: wing</span>
+<span class="bc-line-num">009</span> <span class="bc-opcode">JUMP            </span> <span class="bc-arg">0 13</span>
+<span class="bc-line-num">010</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 4</span> <span class="bc-info">; nib</span>
+<span class="bc-line-num">011</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 2</span> <span class="bc-info">; content: nib</span>
+<span class="bc-line-num">012</span> <span class="bc-opcode">TAG_KEY         </span> <span class="bc-arg">0 0</span> <span class="bc-info">; content: nib</span>
+<span class="bc-line-num">013</span> <span class="bc-opcode">CONCAT_TABLE    </span> <span class="bc-arg">0 0</span>
+<span class="bc-line-num">014</span> <span class="bc-opcode">RETURN          </span> <span class="bc-arg">0 0</span> <span class="bc-info">; macro t()[...]</span>
+<span class="bc-line-num">015</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 2</span> <span class="bc-info">; content</span>
+<span class="bc-line-num">016</span> <span class="bc-opcode">BEGIN_ACC       </span> <span class="bc-arg">0 0</span> <span class="bc-info">; t().content</span>
+<span class="bc-line-num">017</span> <span class="bc-opcode">LOAD_STATIC     </span> <span class="bc-arg">0 20</span> <span class="bc-info">; t</span>
+<span class="bc-line-num">018</span> <span class="bc-opcode">CONCAT_CALL     </span> <span class="bc-arg">0 0</span> <span class="bc-info">; t().content</span>
+<span class="bc-line-num">019</span> <span class="bc-opcode">TABLE_INDEX     </span> <span class="bc-arg">0 0</span> <span class="bc-info">; .content</span>
+<span class="bc-line-num">020</span> <span class="bc-opcode">RETURN_FILE     </span> <span class="bc-arg">0 0</span></code></pre>
+</div>
+</div>
+<h4>Output</h4>
+<pre><code>
+wing
+</code></pre>
+</div>
+</details>
+<details>
+<summary>
+<span class="status-icon status-pass">✓</span> Leave macro (text) <em style='font-weight: normal'></em>
+</summary>
+<div class="test-content">
+<div class="code-grid">
+<div>
+<h4>Code</h4>
+<pre><code class="language-plume">
+let t = @table
+  - blue
+  - red
+  - green
+end
+
+macro index(t, y)
+  for i in seq(1, len(t))
+    if t[i] == y
+      $i
+      leave
+    end
+  end
+end
+
+$index($t, red)
+
+</code></pre>
+</div>
+<div>
+<h4>Bytecode</h4>
+<pre><code class="language-bytecode"><span class="bc-line-num">001</span> <span class="bc-opcode">ENTER_SCOPE     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; l</span>
+<span class="bc-line-num">002</span> <span class="bc-opcode">BEGIN_ACC       </span> <span class="bc-arg">0 0</span> <span class="bc-info">; @table[...]</span>
+<span class="bc-line-num">003</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 1</span> <span class="bc-info">; blue</span>
+<span class="bc-line-num">004</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 2</span> <span class="bc-info">; red</span>
+<span class="bc-line-num">005</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 3</span> <span class="bc-info">; green</span>
+<span class="bc-line-num">006</span> <span class="bc-opcode">LOAD_STATIC     </span> <span class="bc-arg">0 15</span> <span class="bc-info">; table</span>
+<span class="bc-line-num">007</span> <span class="bc-opcode">CONCAT_CALL     </span> <span class="bc-arg">0 0</span> <span class="bc-info">; @table[...]</span>
+<span class="bc-line-num">008</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; t</span>
+<span class="bc-line-num">009</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 4</span> <span class="bc-info">; index</span>
+<span class="bc-line-num">010</span> <span class="bc-opcode">STORE_STATIC    </span> <span class="bc-arg">0 20</span> <span class="bc-info">; index</span>
+<span class="bc-line-num">011</span> <span class="bc-opcode">JUMP            </span> <span class="bc-arg">0 47</span>
+<span class="bc-line-num">012</span> <span class="bc-opcode">BEGIN_ACC       </span> <span class="bc-arg">0 0</span> <span class="bc-info">; [...]</span>
+<span class="bc-line-num">013</span> <span class="bc-opcode">BEGIN_ACC       </span> <span class="bc-arg">0 0</span> <span class="bc-info">; seq(1, len(t))</span>
+<span class="bc-line-num">014</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 7</span> <span class="bc-info">; 1</span>
+<span class="bc-line-num">015</span> <span class="bc-opcode">BEGIN_ACC       </span> <span class="bc-arg">0 0</span> <span class="bc-info">; len(t)</span>
+<span class="bc-line-num">016</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 1</span> <span class="bc-info">; t</span>
+<span class="bc-line-num">017</span> <span class="bc-opcode">LOAD_STATIC     </span> <span class="bc-arg">0 7</span> <span class="bc-info">; len</span>
+<span class="bc-line-num">018</span> <span class="bc-opcode">CONCAT_CALL     </span> <span class="bc-arg">0 0</span> <span class="bc-info">; len(t)</span>
+<span class="bc-line-num">019</span> <span class="bc-opcode">LOAD_STATIC     </span> <span class="bc-arg">0 13</span> <span class="bc-info">; seq</span>
+<span class="bc-line-num">020</span> <span class="bc-opcode">CONCAT_CALL     </span> <span class="bc-arg">0 0</span> <span class="bc-info">; seq(1, len(t))</span>
+<span class="bc-line-num">021</span> <span class="bc-opcode">GET_ITER        </span> <span class="bc-arg">0 0</span> <span class="bc-info">; for i in seq(1, len(t))[...]</span>
+<span class="bc-line-num">022</span> <span class="bc-opcode">ENTER_SCOPE     </span> <span class="bc-arg">0 3</span>
+<span class="bc-line-num">023</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; for i in seq(1, len(t))[...]</span>
+<span class="bc-line-num">024</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">0 2</span> <span class="bc-info">; for i in seq(1, len(t))[...]</span>
+<span class="bc-line-num">025</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">0 3</span> <span class="bc-info">; for i in seq(1, len(t))[...]</span>
+<span class="bc-line-num">026</span> <span class="bc-opcode">FOR_ITER        </span> <span class="bc-arg">0 44</span>
+<span class="bc-line-num">027</span> <span class="bc-opcode">ENTER_SCOPE     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; [...]</span>
+<span class="bc-line-num">028</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; i</span>
+<span class="bc-line-num">029</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 1</span> <span class="bc-info">; i</span>
+<span class="bc-line-num">030</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">2 1</span> <span class="bc-info">; t</span>
+<span class="bc-line-num">031</span> <span class="bc-opcode">TABLE_INDEX     </span> <span class="bc-arg">0 0</span> <span class="bc-info">; [i]</span>
+<span class="bc-line-num">032</span> <span class="bc-opcode">CHECK_IS_TEXT   </span> <span class="bc-arg">0 0</span> <span class="bc-info">; t[i]</span>
+<span class="bc-line-num">033</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">2 2</span> <span class="bc-info">; y</span>
+<span class="bc-line-num">034</span> <span class="bc-opcode">OP_EQ           </span> <span class="bc-arg">0 0</span> <span class="bc-info">; t[i] == y</span>
+<span class="bc-line-num">035</span> <span class="bc-opcode">JUMP_IF_NOT     </span> <span class="bc-arg">0 40</span>
+<span class="bc-line-num">036</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 1</span> <span class="bc-info">; i</span>
+<span class="bc-line-num">037</span> <span class="bc-opcode">CHECK_IS_TEXT   </span> <span class="bc-arg">0 0</span> <span class="bc-info">; i</span>
+<span class="bc-line-num">038</span> <span class="bc-opcode">JUMP            </span> <span class="bc-arg">0 45</span>
+<span class="bc-line-num">039</span> <span class="bc-opcode">JUMP            </span> <span class="bc-arg">0 42</span>
+<span class="bc-line-num">040</span> <span class="bc-opcode">LOAD_EMPTY      </span> <span class="bc-arg">0 0</span> <span class="bc-info">; if t[i] == y[...]</span>
+<span class="bc-line-num">041</span> <span class="bc-opcode">JUMP            </span> <span class="bc-arg">0 42</span>
+<span class="bc-line-num">042</span> <span class="bc-opcode">LEAVE_SCOPE     </span> <span class="bc-arg">0 0</span>
+<span class="bc-line-num">043</span> <span class="bc-opcode">JUMP            </span> <span class="bc-arg">0 26</span>
+<span class="bc-line-num">044</span> <span class="bc-opcode">LEAVE_SCOPE     </span> <span class="bc-arg">0 0</span> <span class="bc-info">; for i in seq(1, len(t))[...]</span>
+<span class="bc-line-num">045</span> <span class="bc-opcode">CONCAT_TEXT     </span> <span class="bc-arg">0 0</span>
+<span class="bc-line-num">046</span> <span class="bc-opcode">RETURN          </span> <span class="bc-arg">0 0</span> <span class="bc-info">; macro index(t, y)[...]</span>
+<span class="bc-line-num">047</span> <span class="bc-opcode">BEGIN_ACC       </span> <span class="bc-arg">0 0</span> <span class="bc-info">; index($t, red)</span>
+<span class="bc-line-num">048</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 1</span> <span class="bc-info">; t</span>
+<span class="bc-line-num">049</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 2</span> <span class="bc-info">; red</span>
+<span class="bc-line-num">050</span> <span class="bc-opcode">LOAD_STATIC     </span> <span class="bc-arg">0 20</span> <span class="bc-info">; index</span>
+<span class="bc-line-num">051</span> <span class="bc-opcode">CONCAT_CALL     </span> <span class="bc-arg">0 0</span> <span class="bc-info">; index($t, red)</span>
+<span class="bc-line-num">052</span> <span class="bc-opcode">RETURN_FILE     </span> <span class="bc-arg">0 0</span></code></pre>
+</div>
+</div>
+<h4>Output</h4>
+<pre><code>
+2
+</code></pre>
+</div>
+</details>
+<details>
+<summary>
+<span class="status-icon status-pass">✓</span> Variadic 1 <em style='font-weight: normal'></em>
+</summary>
+<div class="test-content">
+<div class="code-grid">
+<div>
+<h4>Code</h4>
+<pre><code class="language-plume">
+set write = macro (...args)
+  Positionnals args: $join(...args, sep:\,\s)\n
+  Named args:\s
+  @join(sep:\,\s)
+    for key, value in items(args, ?named)
+      - $key\=$value
+    end
+  end
+end
+$write(write, paint, song, ink: quill, wing: mark)
+
+</code></pre>
+</div>
+<div>
+<h4>Bytecode</h4>
+<pre><code class="language-bytecode"><span class="bc-line-num">001</span> <span class="bc-opcode">ENTER_SCOPE     </span> <span class="bc-arg">0 0</span> <span class="bc-info">; s</span>
+<span class="bc-line-num">002</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 1</span> <span class="bc-info">; macro (...args)[...]</span>
+<span class="bc-line-num">003</span> <span class="bc-opcode">JUMP            </span> <span class="bc-arg">0 66</span>
+<span class="bc-line-num">004</span> <span class="bc-opcode">BEGIN_ACC       </span> <span class="bc-arg">0 0</span> <span class="bc-info">; [...]</span>
+<span class="bc-line-num">005</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 2</span> <span class="bc-info">; Positionnals args: </span>
+<span class="bc-line-num">006</span> <span class="bc-opcode">BEGIN_ACC       </span> <span class="bc-arg">0 0</span> <span class="bc-info">; join(...args, sep:\,\s)</span>
+<span class="bc-line-num">007</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 1</span> <span class="bc-info">; args</span>
+<span class="bc-line-num">008</span> <span class="bc-opcode">TABLE_EXPAND    </span> <span class="bc-arg">0 0</span> <span class="bc-info">; ...args</span>
+<span class="bc-line-num">009</span> <span class="bc-opcode">BEGIN_ACC       </span> <span class="bc-arg">0 0</span> <span class="bc-info">; \,\s</span>
+<span class="bc-line-num">010</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 4</span> <span class="bc-info">; ,</span>
+<span class="bc-line-num">011</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 5</span>
+<span class="bc-line-num">012</span> <span class="bc-opcode">CONCAT_TEXT     </span> <span class="bc-arg">0 0</span>
+<span class="bc-line-num">013</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 3</span> <span class="bc-info">; sep:\,\s</span>
+<span class="bc-line-num">014</span> <span class="bc-opcode">TAG_KEY         </span> <span class="bc-arg">0 0</span> <span class="bc-info">; sep:\,\s</span>
+<span class="bc-line-num">015</span> <span class="bc-opcode">LOAD_STATIC     </span> <span class="bc-arg">0 6</span> <span class="bc-info">; join</span>
+<span class="bc-line-num">016</span> <span class="bc-opcode">CONCAT_CALL     </span> <span class="bc-arg">0 0</span> <span class="bc-info">; join(...args, sep:\,\s)</span>
+<span class="bc-line-num">017</span> <span class="bc-opcode">CHECK_IS_TEXT   </span> <span class="bc-arg">0 0</span> <span class="bc-info">; join(...args, sep:\,\s)</span>
+<span class="bc-line-num">018</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 6</span>
+<span class="bc-line-num">019</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 7</span> <span class="bc-info">; Named args:</span>
+<span class="bc-line-num">020</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 5</span>
+<span class="bc-line-num">021</span> <span class="bc-opcode">BEGIN_ACC       </span> <span class="bc-arg">0 0</span> <span class="bc-info">; @join(sep:\,\s)[...]</span>
+<span class="bc-line-num">022</span> <span class="bc-opcode">BEGIN_ACC       </span> <span class="bc-arg">0 0</span> <span class="bc-info">; \,\s</span>
+<span class="bc-line-num">023</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 4</span> <span class="bc-info">; ,</span>
+<span class="bc-line-num">024</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 5</span>
+<span class="bc-line-num">025</span> <span class="bc-opcode">CONCAT_TEXT     </span> <span class="bc-arg">0 0</span>
+<span class="bc-line-num">026</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 3</span> <span class="bc-info">; sep:\,\s</span>
+<span class="bc-line-num">027</span> <span class="bc-opcode">TAG_KEY         </span> <span class="bc-arg">0 0</span> <span class="bc-info">; sep:\,\s</span>
+<span class="bc-line-num">028</span> <span class="bc-opcode">BEGIN_ACC       </span> <span class="bc-arg">0 0</span> <span class="bc-info">; items(args, ?named)</span>
+<span class="bc-line-num">029</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 1</span> <span class="bc-info">; args</span>
+<span class="bc-line-num">030</span> <span class="bc-opcode">LOAD_TRUE       </span> <span class="bc-arg">0 0</span> <span class="bc-info">; ?named</span>
+<span class="bc-line-num">031</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 10</span> <span class="bc-info">; ?named</span>
+<span class="bc-line-num">032</span> <span class="bc-opcode">TAG_KEY         </span> <span class="bc-arg">0 0</span> <span class="bc-info">; ?named</span>
+<span class="bc-line-num">033</span> <span class="bc-opcode">LOAD_STATIC     </span> <span class="bc-arg">0 5</span> <span class="bc-info">; items</span>
+<span class="bc-line-num">034</span> <span class="bc-opcode">CONCAT_CALL     </span> <span class="bc-arg">0 0</span> <span class="bc-info">; items(args, ?named)</span>
+<span class="bc-line-num">035</span> <span class="bc-opcode">GET_ITER        </span> <span class="bc-arg">0 0</span> <span class="bc-info">; for key, value in items(args, ?named)[...]</span>
+<span class="bc-line-num">036</span> <span class="bc-opcode">ENTER_SCOPE     </span> <span class="bc-arg">0 3</span>
+<span class="bc-line-num">037</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; for key, value in items(args, ?named)[...]</span>
+<span class="bc-line-num">038</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">0 2</span> <span class="bc-info">; for key, value in items(args, ?named)[...]</span>
+<span class="bc-line-num">039</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">0 3</span> <span class="bc-info">; for key, value in items(args, ?named)[...]</span>
+<span class="bc-line-num">040</span> <span class="bc-opcode">FOR_ITER        </span> <span class="bc-arg">0 60</span>
+<span class="bc-line-num">041</span> <span class="bc-opcode">ENTER_SCOPE     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; [...]</span>
+<span class="bc-line-num">042</span> <span class="bc-opcode">DUPLICATE       </span> <span class="bc-arg">0 0</span>
+<span class="bc-line-num">043</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 11</span>
+<span class="bc-line-num">044</span> <span class="bc-opcode">SWITCH          </span> <span class="bc-arg">0 0</span>
+<span class="bc-line-num">045</span> <span class="bc-opcode">TABLE_INDEX     </span> <span class="bc-arg">0 0</span>
+<span class="bc-line-num">046</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; key</span>
+<span class="bc-line-num">047</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 12</span>
+<span class="bc-line-num">048</span> <span class="bc-opcode">SWITCH          </span> <span class="bc-arg">0 0</span>
+<span class="bc-line-num">049</span> <span class="bc-opcode">TABLE_INDEX     </span> <span class="bc-arg">0 0</span>
+<span class="bc-line-num">050</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">0 2</span> <span class="bc-info">; value</span>
+<span class="bc-line-num">051</span> <span class="bc-opcode">BEGIN_ACC       </span> <span class="bc-arg">0 0</span> <span class="bc-info">; - $key\=$value</span>
+<span class="bc-line-num">052</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 1</span> <span class="bc-info">; key</span>
+<span class="bc-line-num">053</span> <span class="bc-opcode">CHECK_IS_TEXT   </span> <span class="bc-arg">0 0</span> <span class="bc-info">; key</span>
+<span class="bc-line-num">054</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 13</span> <span class="bc-info">; =</span>
+<span class="bc-line-num">055</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 2</span> <span class="bc-info">; value</span>
+<span class="bc-line-num">056</span> <span class="bc-opcode">CHECK_IS_TEXT   </span> <span class="bc-arg">0 0</span> <span class="bc-info">; value</span>
+<span class="bc-line-num">057</span> <span class="bc-opcode">CONCAT_TEXT     </span> <span class="bc-arg">0 0</span>
+<span class="bc-line-num">058</span> <span class="bc-opcode">LEAVE_SCOPE     </span> <span class="bc-arg">0 0</span>
+<span class="bc-line-num">059</span> <span class="bc-opcode">JUMP            </span> <span class="bc-arg">0 40</span>
+<span class="bc-line-num">060</span> <span class="bc-opcode">LEAVE_SCOPE     </span> <span class="bc-arg">0 0</span> <span class="bc-info">; for key, value in items(args, ?named)[...]</span>
+<span class="bc-line-num">061</span> <span class="bc-opcode">LOAD_STATIC     </span> <span class="bc-arg">0 6</span> <span class="bc-info">; join</span>
+<span class="bc-line-num">062</span> <span class="bc-opcode">CONCAT_CALL     </span> <span class="bc-arg">0 0</span> <span class="bc-info">; @join(sep:\,\s)[...]</span>
+<span class="bc-line-num">063</span> <span class="bc-opcode">CHECK_IS_TEXT   </span> <span class="bc-arg">0 0</span> <span class="bc-info">; @join(sep:\,\s)[...]</span>
+<span class="bc-line-num">064</span> <span class="bc-opcode">CONCAT_TEXT     </span> <span class="bc-arg">0 0</span>
+<span class="bc-line-num">065</span> <span class="bc-opcode">RETURN          </span> <span class="bc-arg">0 0</span> <span class="bc-info">; macro (...args)[...]</span>
+<span class="bc-line-num">066</span> <span class="bc-opcode">STORE_STATIC    </span> <span class="bc-arg">0 19</span> <span class="bc-info">; write</span>
+<span class="bc-line-num">067</span> <span class="bc-opcode">BEGIN_ACC       </span> <span class="bc-arg">0 0</span> <span class="bc-info">; write(write, paint, song, ink: quill, wing: mark)</span>
+<span class="bc-line-num">068</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 14</span> <span class="bc-info">; write</span>
+<span class="bc-line-num">069</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 15</span> <span class="bc-info">; paint</span>
+<span class="bc-line-num">070</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 16</span> <span class="bc-info">; song</span>
+<span class="bc-line-num">071</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 18</span> <span class="bc-info">; quill</span>
+<span class="bc-line-num">072</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 17</span> <span class="bc-info">; ink: quill</span>
+<span class="bc-line-num">073</span> <span class="bc-opcode">TAG_KEY         </span> <span class="bc-arg">0 0</span> <span class="bc-info">; ink: quill</span>
+<span class="bc-line-num">074</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 20</span> <span class="bc-info">; mark</span>
+<span class="bc-line-num">075</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 19</span> <span class="bc-info">; wing: mark</span>
+<span class="bc-line-num">076</span> <span class="bc-opcode">TAG_KEY         </span> <span class="bc-arg">0 0</span> <span class="bc-info">; wing: mark</span>
+<span class="bc-line-num">077</span> <span class="bc-opcode">LOAD_STATIC     </span> <span class="bc-arg">0 19</span> <span class="bc-info">; write</span>
+<span class="bc-line-num">078</span> <span class="bc-opcode">CONCAT_CALL     </span> <span class="bc-arg">0 0</span> <span class="bc-info">; write(write, paint, song, ink: quill, wing: mark)</span>
+<span class="bc-line-num">079</span> <span class="bc-opcode">RETURN_FILE     </span> <span class="bc-arg">0 0</span></code></pre>
+</div>
+</div>
+<h4>Output</h4>
+<pre><code>
+Positionnals args: write, paint, song
+Named args: ink=quill, wing=mark
+</code></pre>
+</div>
+</details>
+<details>
+<summary>
+<span class="status-icon status-pass">✓</span> long argument <em style='font-weight: normal'></em>
+</summary>
+<div class="test-content">
+<div class="code-grid">
+<div>
+<h4>Code</h4>
+<pre><code class="language-plume">
+macro id(write)
+  $write
+end
+
+$id(This is quite long\, i think.)
+
+</code></pre>
+</div>
+<div>
+<h4>Bytecode</h4>
+<pre><code class="language-bytecode"><span class="bc-line-num">001</span> <span class="bc-opcode">ENTER_SCOPE     </span> <span class="bc-arg">0 0</span> <span class="bc-info">; m</span>
+<span class="bc-line-num">002</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 1</span> <span class="bc-info">; id</span>
+<span class="bc-line-num">003</span> <span class="bc-opcode">STORE_STATIC    </span> <span class="bc-arg">0 20</span> <span class="bc-info">; id</span>
+<span class="bc-line-num">004</span> <span class="bc-opcode">JUMP            </span> <span class="bc-arg">0 7</span>
+<span class="bc-line-num">005</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 1</span> <span class="bc-info">; write</span>
+<span class="bc-line-num">006</span> <span class="bc-opcode">RETURN          </span> <span class="bc-arg">0 0</span> <span class="bc-info">; macro id(write)[...]</span>
+<span class="bc-line-num">007</span> <span class="bc-opcode">BEGIN_ACC       </span> <span class="bc-arg">0 0</span> <span class="bc-info">; id(This is quite long\, i think.)</span>
+<span class="bc-line-num">008</span> <span class="bc-opcode">BEGIN_ACC       </span> <span class="bc-arg">0 0</span> <span class="bc-info">; This is quite long\, i think.</span>
+<span class="bc-line-num">009</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 2</span> <span class="bc-info">; This is quite long</span>
+<span class="bc-line-num">010</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 3</span> <span class="bc-info">; ,</span>
+<span class="bc-line-num">011</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 4</span> <span class="bc-info">;  i think.</span>
+<span class="bc-line-num">012</span> <span class="bc-opcode">CONCAT_TEXT     </span> <span class="bc-arg">0 0</span>
+<span class="bc-line-num">013</span> <span class="bc-opcode">LOAD_STATIC     </span> <span class="bc-arg">0 20</span> <span class="bc-info">; id</span>
+<span class="bc-line-num">014</span> <span class="bc-opcode">CONCAT_CALL     </span> <span class="bc-arg">0 0</span> <span class="bc-info">; id(This is quite long\, i think.)</span>
+<span class="bc-line-num">015</span> <span class="bc-opcode">RETURN_FILE     </span> <span class="bc-arg">0 0</span></code></pre>
+</div>
+</div>
+<h4>Output</h4>
+<pre><code>
+This is quite long, i think.
+</code></pre>
+</div>
+</details>
+<details>
+<summary>
+<span class="status-icon status-pass">✓</span> macro &amp; call (1 param) <em style='font-weight: normal'></em>
+</summary>
+<div class="test-content">
+<div class="code-grid">
+<div>
+<h4>Code</h4>
+<pre><code class="language-plume">
+macro double(write)
+  $write $write
+end
+$double(quill)
+
+</code></pre>
+</div>
+<div>
+<h4>Bytecode</h4>
+<pre><code class="language-bytecode"><span class="bc-line-num">001</span> <span class="bc-opcode">ENTER_SCOPE     </span> <span class="bc-arg">0 0</span> <span class="bc-info">; m</span>
+<span class="bc-line-num">002</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 1</span> <span class="bc-info">; double</span>
+<span class="bc-line-num">003</span> <span class="bc-opcode">STORE_STATIC    </span> <span class="bc-arg">0 20</span> <span class="bc-info">; double</span>
+<span class="bc-line-num">004</span> <span class="bc-opcode">JUMP            </span> <span class="bc-arg">0 13</span>
+<span class="bc-line-num">005</span> <span class="bc-opcode">BEGIN_ACC       </span> <span class="bc-arg">0 0</span> <span class="bc-info">; [...]</span>
+<span class="bc-line-num">006</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 1</span> <span class="bc-info">; write</span>
+<span class="bc-line-num">007</span> <span class="bc-opcode">CHECK_IS_TEXT   </span> <span class="bc-arg">0 0</span> <span class="bc-info">; write</span>
+<span class="bc-line-num">008</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 2</span> <span class="bc-info">;  </span>
+<span class="bc-line-num">009</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 1</span> <span class="bc-info">; write</span>
+<span class="bc-line-num">010</span> <span class="bc-opcode">CHECK_IS_TEXT   </span> <span class="bc-arg">0 0</span> <span class="bc-info">; write</span>
+<span class="bc-line-num">011</span> <span class="bc-opcode">CONCAT_TEXT     </span> <span class="bc-arg">0 0</span>
+<span class="bc-line-num">012</span> <span class="bc-opcode">RETURN          </span> <span class="bc-arg">0 0</span> <span class="bc-info">; macro double(write)[...]</span>
+<span class="bc-line-num">013</span> <span class="bc-opcode">BEGIN_ACC       </span> <span class="bc-arg">0 0</span> <span class="bc-info">; double(quill)</span>
+<span class="bc-line-num">014</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 3</span> <span class="bc-info">; quill</span>
+<span class="bc-line-num">015</span> <span class="bc-opcode">LOAD_STATIC     </span> <span class="bc-arg">0 20</span> <span class="bc-info">; double</span>
+<span class="bc-line-num">016</span> <span class="bc-opcode">CONCAT_CALL     </span> <span class="bc-arg">0 0</span> <span class="bc-info">; double(quill)</span>
+<span class="bc-line-num">017</span> <span class="bc-opcode">RETURN_FILE     </span> <span class="bc-arg">0 0</span></code></pre>
+</div>
+</div>
+<h4>Output</h4>
+<pre><code>
+quill quill
+</code></pre>
+</div>
+</details>
+<details>
+<summary>
+<span class="status-icon status-pass">✓</span> macro &amp; call (2 params) <em style='font-weight: normal'></em>
+</summary>
+<div class="test-content">
+<div class="code-grid">
+<div>
+<h4>Code</h4>
+<pre><code class="language-plume">
+macro f(write, paint)
+  $write $paint
+end
+$f(quill, mark)
+
+</code></pre>
+</div>
+<div>
+<h4>Bytecode</h4>
+<pre><code class="language-bytecode"><span class="bc-line-num">001</span> <span class="bc-opcode">ENTER_SCOPE     </span> <span class="bc-arg">0 0</span> <span class="bc-info">; m</span>
+<span class="bc-line-num">002</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 1</span> <span class="bc-info">; f</span>
+<span class="bc-line-num">003</span> <span class="bc-opcode">STORE_STATIC    </span> <span class="bc-arg">0 20</span> <span class="bc-info">; f</span>
+<span class="bc-line-num">004</span> <span class="bc-opcode">JUMP            </span> <span class="bc-arg">0 13</span>
+<span class="bc-line-num">005</span> <span class="bc-opcode">BEGIN_ACC       </span> <span class="bc-arg">0 0</span> <span class="bc-info">; [...]</span>
+<span class="bc-line-num">006</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 1</span> <span class="bc-info">; write</span>
+<span class="bc-line-num">007</span> <span class="bc-opcode">CHECK_IS_TEXT   </span> <span class="bc-arg">0 0</span> <span class="bc-info">; write</span>
+<span class="bc-line-num">008</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 2</span> <span class="bc-info">;  </span>
+<span class="bc-line-num">009</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 2</span> <span class="bc-info">; paint</span>
+<span class="bc-line-num">010</span> <span class="bc-opcode">CHECK_IS_TEXT   </span> <span class="bc-arg">0 0</span> <span class="bc-info">; paint</span>
+<span class="bc-line-num">011</span> <span class="bc-opcode">CONCAT_TEXT     </span> <span class="bc-arg">0 0</span>
+<span class="bc-line-num">012</span> <span class="bc-opcode">RETURN          </span> <span class="bc-arg">0 0</span> <span class="bc-info">; macro f(write, paint)[...]</span>
+<span class="bc-line-num">013</span> <span class="bc-opcode">BEGIN_ACC       </span> <span class="bc-arg">0 0</span> <span class="bc-info">; f(quill, mark)</span>
+<span class="bc-line-num">014</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 3</span> <span class="bc-info">; quill</span>
+<span class="bc-line-num">015</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 4</span> <span class="bc-info">; mark</span>
+<span class="bc-line-num">016</span> <span class="bc-opcode">LOAD_STATIC     </span> <span class="bc-arg">0 20</span> <span class="bc-info">; f</span>
+<span class="bc-line-num">017</span> <span class="bc-opcode">CONCAT_CALL     </span> <span class="bc-arg">0 0</span> <span class="bc-info">; f(quill, mark)</span>
+<span class="bc-line-num">018</span> <span class="bc-opcode">RETURN_FILE     </span> <span class="bc-arg">0 0</span></code></pre>
+</div>
+</div>
+<h4>Output</h4>
+<pre><code>
+quill mark
+</code></pre>
+</div>
+</details>
+<details>
+<summary>
+<span class="status-icon status-pass">✓</span> macro &amp; call (miwriteed params) <em style='font-weight: normal'></em>
+</summary>
+<div class="test-content">
+<div class="code-grid">
+<div>
+<h4>Code</h4>
+<pre><code class="language-plume">
+macro f(write, paint, optn: value)
+  $write $paint $optn
+end
+$f(quill, mark)\n
+$f(quill, ink, optn: another value)
+
+</code></pre>
+</div>
+<div>
+<h4>Bytecode</h4>
+<pre><code class="language-bytecode"><span class="bc-line-num">001</span> <span class="bc-opcode">ENTER_SCOPE     </span> <span class="bc-arg">0 0</span> <span class="bc-info">; m</span>
+<span class="bc-line-num">002</span> <span class="bc-opcode">BEGIN_ACC       </span> <span class="bc-arg">0 0</span> <span class="bc-info">; m</span>
+<span class="bc-line-num">003</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 1</span> <span class="bc-info">; f</span>
+<span class="bc-line-num">004</span> <span class="bc-opcode">STORE_STATIC    </span> <span class="bc-arg">0 20</span> <span class="bc-info">; f</span>
+<span class="bc-line-num">005</span> <span class="bc-opcode">JUMP            </span> <span class="bc-arg">0 21</span>
+<span class="bc-line-num">006</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 3</span> <span class="bc-info">; optn: value</span>
+<span class="bc-line-num">007</span> <span class="bc-opcode">JUMP_IF_NOT_EMPTY</span> <span class="bc-arg">0 10</span>
+<span class="bc-line-num">008</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 2</span> <span class="bc-info">; value</span>
+<span class="bc-line-num">009</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">0 3</span> <span class="bc-info">; optn: value</span>
+<span class="bc-line-num">010</span> <span class="bc-opcode">BEGIN_ACC       </span> <span class="bc-arg">0 0</span> <span class="bc-info">; [...]</span>
+<span class="bc-line-num">011</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 1</span> <span class="bc-info">; write</span>
+<span class="bc-line-num">012</span> <span class="bc-opcode">CHECK_IS_TEXT   </span> <span class="bc-arg">0 0</span> <span class="bc-info">; write</span>
+<span class="bc-line-num">013</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 3</span> <span class="bc-info">;  </span>
+<span class="bc-line-num">014</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 2</span> <span class="bc-info">; paint</span>
+<span class="bc-line-num">015</span> <span class="bc-opcode">CHECK_IS_TEXT   </span> <span class="bc-arg">0 0</span> <span class="bc-info">; paint</span>
+<span class="bc-line-num">016</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 3</span> <span class="bc-info">;  </span>
+<span class="bc-line-num">017</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 3</span> <span class="bc-info">; optn</span>
+<span class="bc-line-num">018</span> <span class="bc-opcode">CHECK_IS_TEXT   </span> <span class="bc-arg">0 0</span> <span class="bc-info">; optn</span>
+<span class="bc-line-num">019</span> <span class="bc-opcode">CONCAT_TEXT     </span> <span class="bc-arg">0 0</span>
+<span class="bc-line-num">020</span> <span class="bc-opcode">RETURN          </span> <span class="bc-arg">0 0</span> <span class="bc-info">; macro f(write, paint, optn: value)[...]</span>
+<span class="bc-line-num">021</span> <span class="bc-opcode">BEGIN_ACC       </span> <span class="bc-arg">0 0</span> <span class="bc-info">; f(quill, mark)</span>
+<span class="bc-line-num">022</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 4</span> <span class="bc-info">; quill</span>
+<span class="bc-line-num">023</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 5</span> <span class="bc-info">; mark</span>
+<span class="bc-line-num">024</span> <span class="bc-opcode">LOAD_STATIC     </span> <span class="bc-arg">0 20</span> <span class="bc-info">; f</span>
+<span class="bc-line-num">025</span> <span class="bc-opcode">CONCAT_CALL     </span> <span class="bc-arg">0 0</span> <span class="bc-info">; f(quill, mark)</span>
+<span class="bc-line-num">026</span> <span class="bc-opcode">CHECK_IS_TEXT   </span> <span class="bc-arg">0 0</span> <span class="bc-info">; f(quill, mark)</span>
+<span class="bc-line-num">027</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 6</span>
+<span class="bc-line-num">028</span> <span class="bc-opcode">BEGIN_ACC       </span> <span class="bc-arg">0 0</span> <span class="bc-info">; f(quill, ink, optn: another value)</span>
+<span class="bc-line-num">029</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 4</span> <span class="bc-info">; quill</span>
+<span class="bc-line-num">030</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 7</span> <span class="bc-info">; ink</span>
+<span class="bc-line-num">031</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 9</span> <span class="bc-info">; another value</span>
+<span class="bc-line-num">032</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 8</span> <span class="bc-info">; optn: another value</span>
+<span class="bc-line-num">033</span> <span class="bc-opcode">TAG_KEY         </span> <span class="bc-arg">0 0</span> <span class="bc-info">; optn: another value</span>
+<span class="bc-line-num">034</span> <span class="bc-opcode">LOAD_STATIC     </span> <span class="bc-arg">0 20</span> <span class="bc-info">; f</span>
+<span class="bc-line-num">035</span> <span class="bc-opcode">CONCAT_CALL     </span> <span class="bc-arg">0 0</span> <span class="bc-info">; f(quill, ink, optn: another value)</span>
+<span class="bc-line-num">036</span> <span class="bc-opcode">CHECK_IS_TEXT   </span> <span class="bc-arg">0 0</span> <span class="bc-info">; f(quill, ink, optn: another value)</span>
+<span class="bc-line-num">037</span> <span class="bc-opcode">CONCAT_TEXT     </span> <span class="bc-arg">0 0</span>
+<span class="bc-line-num">038</span> <span class="bc-opcode">RETURN_FILE     </span> <span class="bc-arg">0 0</span></code></pre>
+</div>
+</div>
+<h4>Output</h4>
+<pre><code>
+quill mark value
+quill ink another value
+</code></pre>
+</div>
+</details>
+<details>
+<summary>
+<span class="status-icon status-pass">✓</span> macro &amp; call (named params) <em style='font-weight: normal'></em>
+</summary>
+<div class="test-content">
+<div class="code-grid">
+<div>
+<h4>Code</h4>
+<pre><code class="language-plume">
+macro f(optn: value)
+  $optn
+end
+$f()\n
+$f(optn: another value)
+
+</code></pre>
+</div>
+<div>
+<h4>Bytecode</h4>
+<pre><code class="language-bytecode"><span class="bc-line-num">001</span> <span class="bc-opcode">ENTER_SCOPE     </span> <span class="bc-arg">0 0</span> <span class="bc-info">; m</span>
+<span class="bc-line-num">002</span> <span class="bc-opcode">BEGIN_ACC       </span> <span class="bc-arg">0 0</span> <span class="bc-info">; m</span>
+<span class="bc-line-num">003</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 1</span> <span class="bc-info">; f</span>
+<span class="bc-line-num">004</span> <span class="bc-opcode">STORE_STATIC    </span> <span class="bc-arg">0 20</span> <span class="bc-info">; f</span>
+<span class="bc-line-num">005</span> <span class="bc-opcode">JUMP            </span> <span class="bc-arg">0 12</span>
+<span class="bc-line-num">006</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 1</span> <span class="bc-info">; optn: value</span>
+<span class="bc-line-num">007</span> <span class="bc-opcode">JUMP_IF_NOT_EMPTY</span> <span class="bc-arg">0 10</span>
+<span class="bc-line-num">008</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 2</span> <span class="bc-info">; value</span>
+<span class="bc-line-num">009</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; optn: value</span>
+<span class="bc-line-num">010</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 1</span> <span class="bc-info">; optn</span>
+<span class="bc-line-num">011</span> <span class="bc-opcode">RETURN          </span> <span class="bc-arg">0 0</span> <span class="bc-info">; macro f(optn: value)[...]</span>
+<span class="bc-line-num">012</span> <span class="bc-opcode">BEGIN_ACC       </span> <span class="bc-arg">0 0</span> <span class="bc-info">; f()</span>
+<span class="bc-line-num">013</span> <span class="bc-opcode">LOAD_STATIC     </span> <span class="bc-arg">0 20</span> <span class="bc-info">; f</span>
+<span class="bc-line-num">014</span> <span class="bc-opcode">CONCAT_CALL     </span> <span class="bc-arg">0 0</span> <span class="bc-info">; f()</span>
+<span class="bc-line-num">015</span> <span class="bc-opcode">CHECK_IS_TEXT   </span> <span class="bc-arg">0 0</span> <span class="bc-info">; f()</span>
+<span class="bc-line-num">016</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 3</span>
+<span class="bc-line-num">017</span> <span class="bc-opcode">BEGIN_ACC       </span> <span class="bc-arg">0 0</span> <span class="bc-info">; f(optn: another value)</span>
+<span class="bc-line-num">018</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 5</span> <span class="bc-info">; another value</span>
+<span class="bc-line-num">019</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 4</span> <span class="bc-info">; optn: another value</span>
+<span class="bc-line-num">020</span> <span class="bc-opcode">TAG_KEY         </span> <span class="bc-arg">0 0</span> <span class="bc-info">; optn: another value</span>
+<span class="bc-line-num">021</span> <span class="bc-opcode">LOAD_STATIC     </span> <span class="bc-arg">0 20</span> <span class="bc-info">; f</span>
+<span class="bc-line-num">022</span> <span class="bc-opcode">CONCAT_CALL     </span> <span class="bc-arg">0 0</span> <span class="bc-info">; f(optn: another value)</span>
+<span class="bc-line-num">023</span> <span class="bc-opcode">CHECK_IS_TEXT   </span> <span class="bc-arg">0 0</span> <span class="bc-info">; f(optn: another value)</span>
+<span class="bc-line-num">024</span> <span class="bc-opcode">CONCAT_TEXT     </span> <span class="bc-arg">0 0</span>
+<span class="bc-line-num">025</span> <span class="bc-opcode">RETURN_FILE     </span> <span class="bc-arg">0 0</span></code></pre>
+</div>
+</div>
+<h4>Output</h4>
+<pre><code>
+value
+another value
+</code></pre>
+</div>
+</details>
+<details>
+<summary>
+<span class="status-icon status-pass">✓</span> macro nested <em style='font-weight: normal'></em>
+</summary>
+<div class="test-content">
+<div class="code-grid">
+<div>
+<h4>Code</h4>
+<pre><code class="language-plume">
+macro double(write)
+  $write $write
+end
+
+$double($double(quill))
+
+</code></pre>
+</div>
+<div>
+<h4>Bytecode</h4>
+<pre><code class="language-bytecode"><span class="bc-line-num">001</span> <span class="bc-opcode">ENTER_SCOPE     </span> <span class="bc-arg">0 0</span> <span class="bc-info">; m</span>
+<span class="bc-line-num">002</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 1</span> <span class="bc-info">; double</span>
+<span class="bc-line-num">003</span> <span class="bc-opcode">STORE_STATIC    </span> <span class="bc-arg">0 20</span> <span class="bc-info">; double</span>
+<span class="bc-line-num">004</span> <span class="bc-opcode">JUMP            </span> <span class="bc-arg">0 13</span>
+<span class="bc-line-num">005</span> <span class="bc-opcode">BEGIN_ACC       </span> <span class="bc-arg">0 0</span> <span class="bc-info">; [...]</span>
+<span class="bc-line-num">006</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 1</span> <span class="bc-info">; write</span>
+<span class="bc-line-num">007</span> <span class="bc-opcode">CHECK_IS_TEXT   </span> <span class="bc-arg">0 0</span> <span class="bc-info">; write</span>
+<span class="bc-line-num">008</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 2</span> <span class="bc-info">;  </span>
+<span class="bc-line-num">009</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 1</span> <span class="bc-info">; write</span>
+<span class="bc-line-num">010</span> <span class="bc-opcode">CHECK_IS_TEXT   </span> <span class="bc-arg">0 0</span> <span class="bc-info">; write</span>
+<span class="bc-line-num">011</span> <span class="bc-opcode">CONCAT_TEXT     </span> <span class="bc-arg">0 0</span>
+<span class="bc-line-num">012</span> <span class="bc-opcode">RETURN          </span> <span class="bc-arg">0 0</span> <span class="bc-info">; macro double(write)[...]</span>
+<span class="bc-line-num">013</span> <span class="bc-opcode">BEGIN_ACC       </span> <span class="bc-arg">0 0</span> <span class="bc-info">; double($double(quill))</span>
+<span class="bc-line-num">014</span> <span class="bc-opcode">BEGIN_ACC       </span> <span class="bc-arg">0 0</span> <span class="bc-info">; double(quill)</span>
+<span class="bc-line-num">015</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 3</span> <span class="bc-info">; quill</span>
+<span class="bc-line-num">016</span> <span class="bc-opcode">LOAD_STATIC     </span> <span class="bc-arg">0 20</span> <span class="bc-info">; double</span>
+<span class="bc-line-num">017</span> <span class="bc-opcode">CONCAT_CALL     </span> <span class="bc-arg">0 0</span> <span class="bc-info">; double(quill)</span>
+<span class="bc-line-num">018</span> <span class="bc-opcode">LOAD_STATIC     </span> <span class="bc-arg">0 20</span> <span class="bc-info">; double</span>
+<span class="bc-line-num">019</span> <span class="bc-opcode">CONCAT_CALL     </span> <span class="bc-arg">0 0</span> <span class="bc-info">; double($double(quill))</span>
+<span class="bc-line-num">020</span> <span class="bc-opcode">RETURN_FILE     </span> <span class="bc-arg">0 0</span></code></pre>
+</div>
+</div>
+<h4>Output</h4>
+<pre><code>
+quill quill quill quill
+</code></pre>
+</div>
+</details>
+<details>
+<summary>
+<span class="status-icon status-pass">✓</span> macro scope <em style='font-weight: normal'></em>
+</summary>
+<div class="test-content">
+<div class="code-grid">
+<div>
+<h4>Code</h4>
+<pre><code class="language-plume">
+let _write = 5
+macro f()
+  let _write = 3
+  $_write
+end
+$f()\n
+$_write
+
+</code></pre>
+</div>
+<div>
+<h4>Bytecode</h4>
+<pre><code class="language-bytecode"><span class="bc-line-num">001</span> <span class="bc-opcode">ENTER_SCOPE     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; l</span>
+<span class="bc-line-num">002</span> <span class="bc-opcode">BEGIN_ACC       </span> <span class="bc-arg">0 0</span> <span class="bc-info">; l</span>
+<span class="bc-line-num">003</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 1</span> <span class="bc-info">; 5</span>
+<span class="bc-line-num">004</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; _write</span>
+<span class="bc-line-num">005</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 2</span> <span class="bc-info">; f</span>
+<span class="bc-line-num">006</span> <span class="bc-opcode">STORE_STATIC    </span> <span class="bc-arg">0 20</span> <span class="bc-info">; f</span>
+<span class="bc-line-num">007</span> <span class="bc-opcode">JUMP            </span> <span class="bc-arg">0 12</span>
+<span class="bc-line-num">008</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 3</span> <span class="bc-info">; 3</span>
+<span class="bc-line-num">009</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">0 2</span> <span class="bc-info">; _write</span>
+<span class="bc-line-num">010</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 2</span> <span class="bc-info">; _write</span>
+<span class="bc-line-num">011</span> <span class="bc-opcode">RETURN          </span> <span class="bc-arg">0 0</span> <span class="bc-info">; macro f()[...]</span>
+<span class="bc-line-num">012</span> <span class="bc-opcode">BEGIN_ACC       </span> <span class="bc-arg">0 0</span> <span class="bc-info">; f()</span>
+<span class="bc-line-num">013</span> <span class="bc-opcode">LOAD_STATIC     </span> <span class="bc-arg">0 20</span> <span class="bc-info">; f</span>
+<span class="bc-line-num">014</span> <span class="bc-opcode">CONCAT_CALL     </span> <span class="bc-arg">0 0</span> <span class="bc-info">; f()</span>
+<span class="bc-line-num">015</span> <span class="bc-opcode">CHECK_IS_TEXT   </span> <span class="bc-arg">0 0</span> <span class="bc-info">; f()</span>
+<span class="bc-line-num">016</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 4</span>
+<span class="bc-line-num">017</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 1</span> <span class="bc-info">; _write</span>
+<span class="bc-line-num">018</span> <span class="bc-opcode">CHECK_IS_TEXT   </span> <span class="bc-arg">0 0</span> <span class="bc-info">; _write</span>
+<span class="bc-line-num">019</span> <span class="bc-opcode">CONCAT_TEXT     </span> <span class="bc-arg">0 0</span>
+<span class="bc-line-num">020</span> <span class="bc-opcode">RETURN_FILE     </span> <span class="bc-arg">0 0</span></code></pre>
+</div>
+</div>
+<h4>Output</h4>
+<pre><code>
+3
+5
+</code></pre>
+</div>
+</details>
+<details>
+<summary>
+<span class="status-icon status-pass">✓</span> simple macro &amp; call <em style='font-weight: normal'></em>
+</summary>
+<div class="test-content">
+<div class="code-grid">
+<div>
+<h4>Code</h4>
+<pre><code class="language-plume">
+macro quill()
+  mark
+end
+$quill()
+
+</code></pre>
+</div>
+<div>
+<h4>Bytecode</h4>
+<pre><code class="language-bytecode"><span class="bc-line-num">001</span> <span class="bc-opcode">ENTER_SCOPE     </span> <span class="bc-arg">0 0</span> <span class="bc-info">; m</span>
+<span class="bc-line-num">002</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 1</span> <span class="bc-info">; quill</span>
+<span class="bc-line-num">003</span> <span class="bc-opcode">STORE_STATIC    </span> <span class="bc-arg">0 20</span> <span class="bc-info">; quill</span>
+<span class="bc-line-num">004</span> <span class="bc-opcode">JUMP            </span> <span class="bc-arg">0 7</span>
+<span class="bc-line-num">005</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 2</span> <span class="bc-info">; mark</span>
+<span class="bc-line-num">006</span> <span class="bc-opcode">RETURN          </span> <span class="bc-arg">0 0</span> <span class="bc-info">; macro quill()[...]</span>
+<span class="bc-line-num">007</span> <span class="bc-opcode">BEGIN_ACC       </span> <span class="bc-arg">0 0</span> <span class="bc-info">; quill()</span>
+<span class="bc-line-num">008</span> <span class="bc-opcode">LOAD_STATIC     </span> <span class="bc-arg">0 20</span> <span class="bc-info">; quill</span>
+<span class="bc-line-num">009</span> <span class="bc-opcode">CONCAT_CALL     </span> <span class="bc-arg">0 0</span> <span class="bc-info">; quill()</span>
+<span class="bc-line-num">010</span> <span class="bc-opcode">RETURN_FILE     </span> <span class="bc-arg">0 0</span></code></pre>
+</div>
+</div>
+<h4>Output</h4>
+<pre><code>
+mark
+</code></pre>
+</div>
+</details>
 <h2>macroErrors: <span style="font-weight: normal;">9 passed out of 9 tests</span></h2>
 <div class="progress-bar"><div class="progress-success" style="width: 100.00%"></div><div class="progress-fail" style="width: 0.00%"></div></div>
 <details>
@@ -7731,7 +7731,7 @@ File &#39;static param&#39;, line 1: let static param x = 4
 </code></pre>
 </div>
 </details>
-<h2>std: <span style="font-weight: normal;">21 passed out of 21 tests</span></h2>
+<h2>std: <span style="font-weight: normal;">22 passed out of 22 tests</span></h2>
 <div class="progress-bar"><div class="progress-success" style="width: 100.00%"></div><div class="progress-fail" style="width: 0.00%"></div></div>
 <details>
 <summary>
@@ -8117,6 +8117,116 @@ end
 Item &quot;first&quot; is _(quill)_.
 Item &quot;second&quot; is _(wing)_.
 Item &quot;bonus&quot; is _(bird)_.
+</code></pre>
+</div>
+</details>
+<details>
+<summary>
+<span class="status-icon status-pass">✓</span> items ?named <em style='font-weight: normal'></em>
+</summary>
+<div class="test-content">
+<div class="code-grid">
+<div>
+<h4>Code</h4>
+<pre><code class="language-plume">
+let t = $table(wing: quill, write, song)
+for k, v in items(t)
+  $k -&gt; $v\n
+end
+---\n
+for k, v in items(t, ?named)
+  $k -&gt; $v\n
+end
+
+</code></pre>
+</div>
+<div>
+<h4>Bytecode</h4>
+<pre><code class="language-bytecode"><span class="bc-line-num">001</span> <span class="bc-opcode">ENTER_SCOPE     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; l</span>
+<span class="bc-line-num">002</span> <span class="bc-opcode">BEGIN_ACC       </span> <span class="bc-arg">0 0</span> <span class="bc-info">; l</span>
+<span class="bc-line-num">003</span> <span class="bc-opcode">BEGIN_ACC       </span> <span class="bc-arg">0 0</span> <span class="bc-info">; table(wing: quill, write, song)</span>
+<span class="bc-line-num">004</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 2</span> <span class="bc-info">; quill</span>
+<span class="bc-line-num">005</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 1</span> <span class="bc-info">; wing: quill</span>
+<span class="bc-line-num">006</span> <span class="bc-opcode">TAG_KEY         </span> <span class="bc-arg">0 0</span> <span class="bc-info">; wing: quill</span>
+<span class="bc-line-num">007</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 3</span> <span class="bc-info">; write</span>
+<span class="bc-line-num">008</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 4</span> <span class="bc-info">; song</span>
+<span class="bc-line-num">009</span> <span class="bc-opcode">LOAD_STATIC     </span> <span class="bc-arg">0 15</span> <span class="bc-info">; table</span>
+<span class="bc-line-num">010</span> <span class="bc-opcode">CONCAT_CALL     </span> <span class="bc-arg">0 0</span> <span class="bc-info">; table(wing: quill, write, song)</span>
+<span class="bc-line-num">011</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; t</span>
+<span class="bc-line-num">012</span> <span class="bc-opcode">BEGIN_ACC       </span> <span class="bc-arg">0 0</span> <span class="bc-info">; items(t)</span>
+<span class="bc-line-num">013</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 1</span> <span class="bc-info">; t</span>
+<span class="bc-line-num">014</span> <span class="bc-opcode">LOAD_STATIC     </span> <span class="bc-arg">0 5</span> <span class="bc-info">; items</span>
+<span class="bc-line-num">015</span> <span class="bc-opcode">CONCAT_CALL     </span> <span class="bc-arg">0 0</span> <span class="bc-info">; items(t)</span>
+<span class="bc-line-num">016</span> <span class="bc-opcode">GET_ITER        </span> <span class="bc-arg">0 0</span> <span class="bc-info">; for k, v in items(t)[...]</span>
+<span class="bc-line-num">017</span> <span class="bc-opcode">ENTER_SCOPE     </span> <span class="bc-arg">0 3</span>
+<span class="bc-line-num">018</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; for k, v in items(t)[...]</span>
+<span class="bc-line-num">019</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">0 2</span> <span class="bc-info">; for k, v in items(t)[...]</span>
+<span class="bc-line-num">020</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">0 3</span> <span class="bc-info">; for k, v in items(t)[...]</span>
+<span class="bc-line-num">021</span> <span class="bc-opcode">FOR_ITER        </span> <span class="bc-arg">0 40</span>
+<span class="bc-line-num">022</span> <span class="bc-opcode">ENTER_SCOPE     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; [...]</span>
+<span class="bc-line-num">023</span> <span class="bc-opcode">DUPLICATE       </span> <span class="bc-arg">0 0</span>
+<span class="bc-line-num">024</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 7</span>
+<span class="bc-line-num">025</span> <span class="bc-opcode">SWITCH          </span> <span class="bc-arg">0 0</span>
+<span class="bc-line-num">026</span> <span class="bc-opcode">TABLE_INDEX     </span> <span class="bc-arg">0 0</span>
+<span class="bc-line-num">027</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; k</span>
+<span class="bc-line-num">028</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 8</span>
+<span class="bc-line-num">029</span> <span class="bc-opcode">SWITCH          </span> <span class="bc-arg">0 0</span>
+<span class="bc-line-num">030</span> <span class="bc-opcode">TABLE_INDEX     </span> <span class="bc-arg">0 0</span>
+<span class="bc-line-num">031</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">0 2</span> <span class="bc-info">; v</span>
+<span class="bc-line-num">032</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 1</span> <span class="bc-info">; k</span>
+<span class="bc-line-num">033</span> <span class="bc-opcode">CHECK_IS_TEXT   </span> <span class="bc-arg">0 0</span> <span class="bc-info">; k</span>
+<span class="bc-line-num">034</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 9</span> <span class="bc-info">;  -&gt; </span>
+<span class="bc-line-num">035</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 2</span> <span class="bc-info">; v</span>
+<span class="bc-line-num">036</span> <span class="bc-opcode">CHECK_IS_TEXT   </span> <span class="bc-arg">0 0</span> <span class="bc-info">; v</span>
+<span class="bc-line-num">037</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 10</span>
+<span class="bc-line-num">038</span> <span class="bc-opcode">LEAVE_SCOPE     </span> <span class="bc-arg">0 0</span>
+<span class="bc-line-num">039</span> <span class="bc-opcode">JUMP            </span> <span class="bc-arg">0 21</span>
+<span class="bc-line-num">040</span> <span class="bc-opcode">LEAVE_SCOPE     </span> <span class="bc-arg">0 0</span> <span class="bc-info">; for k, v in items(t)[...]</span>
+<span class="bc-line-num">041</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 11</span> <span class="bc-info">; ---</span>
+<span class="bc-line-num">042</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 10</span>
+<span class="bc-line-num">043</span> <span class="bc-opcode">BEGIN_ACC       </span> <span class="bc-arg">0 0</span> <span class="bc-info">; items(t, ?named)</span>
+<span class="bc-line-num">044</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 1</span> <span class="bc-info">; t</span>
+<span class="bc-line-num">045</span> <span class="bc-opcode">LOAD_TRUE       </span> <span class="bc-arg">0 0</span> <span class="bc-info">; ?named</span>
+<span class="bc-line-num">046</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 12</span> <span class="bc-info">; ?named</span>
+<span class="bc-line-num">047</span> <span class="bc-opcode">TAG_KEY         </span> <span class="bc-arg">0 0</span> <span class="bc-info">; ?named</span>
+<span class="bc-line-num">048</span> <span class="bc-opcode">LOAD_STATIC     </span> <span class="bc-arg">0 5</span> <span class="bc-info">; items</span>
+<span class="bc-line-num">049</span> <span class="bc-opcode">CONCAT_CALL     </span> <span class="bc-arg">0 0</span> <span class="bc-info">; items(t, ?named)</span>
+<span class="bc-line-num">050</span> <span class="bc-opcode">GET_ITER        </span> <span class="bc-arg">0 0</span> <span class="bc-info">; for k, v in items(t, ?named)[...]</span>
+<span class="bc-line-num">051</span> <span class="bc-opcode">ENTER_SCOPE     </span> <span class="bc-arg">0 3</span>
+<span class="bc-line-num">052</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; for k, v in items(t, ?named)[...]</span>
+<span class="bc-line-num">053</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">0 2</span> <span class="bc-info">; for k, v in items(t, ?named)[...]</span>
+<span class="bc-line-num">054</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">0 3</span> <span class="bc-info">; for k, v in items(t, ?named)[...]</span>
+<span class="bc-line-num">055</span> <span class="bc-opcode">FOR_ITER        </span> <span class="bc-arg">0 74</span>
+<span class="bc-line-num">056</span> <span class="bc-opcode">ENTER_SCOPE     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; [...]</span>
+<span class="bc-line-num">057</span> <span class="bc-opcode">DUPLICATE       </span> <span class="bc-arg">0 0</span>
+<span class="bc-line-num">058</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 7</span>
+<span class="bc-line-num">059</span> <span class="bc-opcode">SWITCH          </span> <span class="bc-arg">0 0</span>
+<span class="bc-line-num">060</span> <span class="bc-opcode">TABLE_INDEX     </span> <span class="bc-arg">0 0</span>
+<span class="bc-line-num">061</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">0 1</span> <span class="bc-info">; k</span>
+<span class="bc-line-num">062</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 8</span>
+<span class="bc-line-num">063</span> <span class="bc-opcode">SWITCH          </span> <span class="bc-arg">0 0</span>
+<span class="bc-line-num">064</span> <span class="bc-opcode">TABLE_INDEX     </span> <span class="bc-arg">0 0</span>
+<span class="bc-line-num">065</span> <span class="bc-opcode">STORE_LOCAL     </span> <span class="bc-arg">0 2</span> <span class="bc-info">; v</span>
+<span class="bc-line-num">066</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 1</span> <span class="bc-info">; k</span>
+<span class="bc-line-num">067</span> <span class="bc-opcode">CHECK_IS_TEXT   </span> <span class="bc-arg">0 0</span> <span class="bc-info">; k</span>
+<span class="bc-line-num">068</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 9</span> <span class="bc-info">;  -&gt; </span>
+<span class="bc-line-num">069</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 2</span> <span class="bc-info">; v</span>
+<span class="bc-line-num">070</span> <span class="bc-opcode">CHECK_IS_TEXT   </span> <span class="bc-arg">0 0</span> <span class="bc-info">; v</span>
+<span class="bc-line-num">071</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 10</span>
+<span class="bc-line-num">072</span> <span class="bc-opcode">LEAVE_SCOPE     </span> <span class="bc-arg">0 0</span>
+<span class="bc-line-num">073</span> <span class="bc-opcode">JUMP            </span> <span class="bc-arg">0 55</span>
+<span class="bc-line-num">074</span> <span class="bc-opcode">LEAVE_SCOPE     </span> <span class="bc-arg">0 0</span> <span class="bc-info">; for k, v in items(t, ?named)[...]</span>
+<span class="bc-line-num">075</span> <span class="bc-opcode">CONCAT_TEXT     </span> <span class="bc-arg">0 0</span>
+<span class="bc-line-num">076</span> <span class="bc-opcode">RETURN_FILE     </span> <span class="bc-arg">0 0</span></code></pre>
+</div>
+</div>
+<h4>Output</h4>
+<pre><code>
+wing -&gt; quill
+1 -&gt; write
+2 -&gt; song
+---
+wing -&gt; quill
 </code></pre>
 </div>
 </details>

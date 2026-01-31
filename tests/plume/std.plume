@@ -88,6 +88,23 @@ Item "second" is _(wing)_.
 Item "bonus" is _(bird)_.
 /// End
 
+/// Test items ?named
+let t = $table(wing: quill, write, song)
+for k, v in items(t)
+  $k -> $v\n
+end
+---\n
+for k, v in items(t, ?named)
+  $k -> $v\n
+end
+/// Output
+wing -> quill
+1 -> write
+2 -> song
+---
+wing -> quill
+/// End
+
 /// Test numeric keys 1 (#253)
 let t = @table
   - Wing
