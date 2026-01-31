@@ -735,7 +735,8 @@ Plume provides a set of built-in macros to handle common tasks such as I/O, tabl
 *   **`table`**:
     *   `table(...items)`: Explicitly creates and returns a table containing the provided items. This function can be called directly.
     *   `table.append(table, item)`: Adds `item` to the end of the specified `table`.
-    *   `table.remove(table)`: Removes and returns the last item from the `table`.
+    *   `table.remove(table, [index])`: Removes the `index`-th item of `table` (default: table length) and return it.
+    *   `table.removeKey(table, key)`: Removes a key from `table`. Contrary to `table.remove`, no shift is applied.
 *   `rawset(table, key, value)`: Sets the value of `key` in `table` to `value` without triggering any `setindex` metafield.
 *   `join(sep: "", ...items)`: Returns a string produced by concatenating `items`, optionally separated by `sep`.
 
@@ -743,7 +744,7 @@ Plume provides a set of built-in macros to handle common tasks such as I/O, tabl
 
 *   `seq(start, stop)` or `seq(stop)`: Returns an inclusive iterator from `start` to `stop`. If only one argument is provided, `start` defaults to `1`.
 *   `enumerate(table)`: Returns an iterator yielding pairs of `(index, value)` for each list item in the table.
-*   `items(table)`: Returns an iterator yielding `(key, value)` pairs for all non-numeric entries in the table.
+*   `items(table, ?named)`: Returns an iterator yielding `(key, value)` pairs for all entries in the table (only non-numeric entries if `?named` flag is on).
 
 ### Module System and Imports
 
