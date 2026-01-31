@@ -156,6 +156,7 @@ function TABLE_SET (vm, arg1, arg2)
         value = _STACK_POP(vm.mainStack)
     end
     local meta
+    key = tonumber(key) or key
     if not t.table[key] then
         table.insert(t.keys, key)
         meta = t.meta.table.setindex
@@ -182,7 +183,6 @@ function TABLE_SET (vm, arg1, arg2)
     end
 
     if not meta then
-        key = tonumber(key) or key
         t.table[key] = value
     end
 end
@@ -201,9 +201,11 @@ function TABLE_EXPAND (vm, arg1, arg2)
         end
 
         for _, key in ipairs(t.keys) do
-            _STACK_PUSH(vm.mainStack, t.table[key])
-            _STACK_PUSH(vm.mainStack, key)
-            TAG_KEY(vm)
+            if not tonumber(key) then
+                _STACK_PUSH(vm.mainStack, t.table[key])
+                _STACK_PUSH(vm.mainStack, key)
+                TAG_KEY(vm)
+            end
         end
     else
         _ERROR (vm, vm.plume.error.cannotExpandValue(tt))

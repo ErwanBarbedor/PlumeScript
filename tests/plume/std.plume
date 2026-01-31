@@ -88,6 +88,34 @@ Item "second" is _(wing)_.
 Item "bonus" is _(bird)_.
 /// End
 
+/// Test numeric keys 1 (#253)
+let t = @table
+  - Wing
+  Write: Quill
+  - Song
+end
+
+for k, v in items(t)
+  $k -> $v\n
+end
+/// Output
+1 -> Wing
+Write -> Quill
+2 -> Song
+/// End
+
+/// Test numeric keys 2 (#253)
+let t = $table()
+
+set t[1] = Wing
+
+for k, v in items(t)
+  $k -> $v\n
+end
+/// Output
+1 -> Wing
+/// End
+
 /// Test import text 1
 $import(tests/plume/toimport/text)
 /// Output

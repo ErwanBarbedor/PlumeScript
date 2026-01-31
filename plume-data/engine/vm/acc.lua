@@ -100,7 +100,11 @@ function _CONCAT_TABLE(vm, posParamCount, namedParamOffset, variadic)
                 capturedCount = capturedCount+1
             elseif variadicTable then
                 -- Surplus -> Insert into variadic table
-                table.insert(variadicTable.table, value)
+                local key = #variadicTable.table+1
+                if not variadicTable.table[key] then
+                    table.insert(variadicTable.keys, key)
+                end
+                variadicTable.table[key] = value
             else
                 tomanyPositionnalCounter = tomanyPositionnalCounter+1
             end

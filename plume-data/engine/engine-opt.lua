@@ -259,6 +259,7 @@ return function (plume)
                                             value = _ret26
                                         end
                                         local meta
+                                        key = tonumber (key) or key
                                         if not t.table[key] then
                                             table.insert (t.keys, key)
                                             meta = t.meta.table.setindex
@@ -313,7 +314,6 @@ return function (plume)
                                             end
                                         end
                                         if not meta then
-                                            key = tonumber (key) or key
                                             t.table[key] = value
                                         end
                                     end
@@ -471,15 +471,18 @@ return function (plume)
                                             end
                                             for _, key in ipairs (t.keys)
                                              do
-                                                mainStackPointer = mainStackPointer + 1
-                                                mainStack[mainStackPointer] = t.table[key]
-                                                mainStackPointer = mainStackPointer + 1
-                                                mainStack[mainStackPointer] = key
-                                                do
-                                                    local _ret47
-                                                    _ret47 = mainStackPointer
-                                                    local pos = _ret47
-                                                    tagStack[pos] = "key"
+                                                if not tonumber (key)
+                                                 then
+                                                    mainStackPointer = mainStackPointer + 1
+                                                    mainStack[mainStackPointer] = t.table[key]
+                                                    mainStackPointer = mainStackPointer + 1
+                                                    mainStack[mainStackPointer] = key
+                                                    do
+                                                        local _ret47
+                                                        _ret47 = mainStackPointer
+                                                        local pos = _ret47
+                                                        tagStack[pos] = "key"
+                                                    end
                                                 end
                                             end
                                         else
@@ -589,7 +592,11 @@ return function (plume)
                                                         end
                                                         capturedCount = capturedCount + 1
                                                     elseif variadicTable then
-                                                        table.insert (variadicTable.table, value)
+                                                        local key = #variadicTable.table + 1
+                                                        if not variadicTable.table[key] then
+                                                            table.insert (variadicTable.keys, key)
+                                                        end
+                                                        variadicTable.table[key] = value
                                                     else
                                                         tomanyPositionnalCounter = tomanyPositionnalCounter + 1
                                                     end
@@ -804,7 +811,11 @@ return function (plume)
                                                                 end
                                                                 capturedCount = capturedCount + 1
                                                             elseif variadicTable then
-                                                                table.insert (variadicTable.table, value)
+                                                                local key = #variadicTable.table + 1
+                                                                if not variadicTable.table[key] then
+                                                                    table.insert (variadicTable.keys, key)
+                                                                end
+                                                                variadicTable.table[key] = value
                                                             else
                                                                 tomanyPositionnalCounter = tomanyPositionnalCounter + 1
                                                             end
@@ -965,7 +976,11 @@ return function (plume)
                                                                 end
                                                                 capturedCount = capturedCount + 1
                                                             elseif variadicTable then
-                                                                table.insert (variadicTable.table, value)
+                                                                local key = #variadicTable.table + 1
+                                                                if not variadicTable.table[key] then
+                                                                    table.insert (variadicTable.keys, key)
+                                                                end
+                                                                variadicTable.table[key] = value
                                                             else
                                                                 tomanyPositionnalCounter = tomanyPositionnalCounter + 1
                                                             end
@@ -1125,7 +1140,11 @@ return function (plume)
                                                                 end
                                                                 capturedCount = capturedCount + 1
                                                             elseif variadicTable then
-                                                                table.insert (variadicTable.table, value)
+                                                                local key = #variadicTable.table + 1
+                                                                if not variadicTable.table[key] then
+                                                                    table.insert (variadicTable.keys, key)
+                                                                end
+                                                                variadicTable.table[key] = value
                                                             else
                                                                 tomanyPositionnalCounter = tomanyPositionnalCounter + 1
                                                             end
@@ -1284,7 +1303,11 @@ return function (plume)
                                                                 end
                                                                 capturedCount = capturedCount + 1
                                                             elseif variadicTable then
-                                                                table.insert (variadicTable.table, value)
+                                                                local key = #variadicTable.table + 1
+                                                                if not variadicTable.table[key] then
+                                                                    table.insert (variadicTable.keys, key)
+                                                                end
+                                                                variadicTable.table[key] = value
                                                             else
                                                                 tomanyPositionnalCounter = tomanyPositionnalCounter + 1
                                                             end
