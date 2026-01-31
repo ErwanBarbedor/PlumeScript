@@ -59,12 +59,12 @@ return function (plume, context, nodeHandlerTable)
 				context.nodeHandler(child) -- = nodeHandlerTable.BLOCK_CALL(child)
 			
 			-- `$wing[1]`
-			elseif child.name == "INDEX" then
+			elseif child.name == "INDEX" or child.name == "SAFE_INDEX" then
 				-- Always one child, that contain the index value/computation
 				context.nodeHandler(child.children[1]) 
 			
-			-- `$wing.nib`
-			elseif child.name == "DIRECT_INDEX" then 
+			-- `$wing.nib` or `$wing.nib?`
+			elseif child.name == "DIRECT_INDEX" or child.name == "SAFE_DIRECT_INDEX" then
 				local index = plume.ast.get(child, "IDENTIFIER")
 				local name = index.content
 				local offset = context.registerConstant(name)
@@ -79,7 +79,12 @@ return function (plume, context, nodeHandlerTable)
 			local child = node.children[i]
 			if child.name == "CALL" or child.name == "BLOCK_CALL" then
 				context.registerOP(node, plume.ops.CONCAT_CALL)
-			elseif child.name == "INDEX" or child.name == "DIRECT_INDEX" then
+			elseif child.name == "INDEX" or child.name == "DIRECT_INDEX" or child.name == "SAFE_INDEX" or child.name == "SAFE_DIRECT_INDEX" then
+				local safeFlag = 0
+				if child.name == "SAFE_INDEX" or child.name == "SAFE_DIRECT_INDEX" then
+					safeFlag = 1
+				end
+
 				local nextChild = node.children[i+1]
 				local nextChildIsCall = nextChild and (nextChild.name == "CALL" or nextChild.name == "BLOCK_CALL")
 				-- When call a table field, add the table in argument list as the value for the key `self`
@@ -87,7 +92,7 @@ return function (plume, context, nodeHandlerTable)
 				if nextChildIsCall then
 					context.registerOP(child, plume.ops.CALL_INDEX_REGISTER_SELF, 0, 0)
 				end
-				context.registerOP(child, plume.ops.TABLE_INDEX)
+				context.registerOP(child, plume.ops.TABLE_INDEX, safeFlag)
 			end
 		end
 

@@ -227,8 +227,8 @@ return function (plume)
             local optnarg = Ct("HASH_ITEM", idn*os*P":"*os*Ct("BODY", V"_layer1"^-1))
             local arg = optnarg + posarg + sugarFlagCall(Ct("FLAG", os *"?"*idn))
             local arglist = Ct("CALL", P"(" * arg^-1 * (os * P"," * os * arg)^0 * P")")
-            local index = Ct("INDEX", P"[" * V"_layer1" * P"]")
-        	local directindex = Ct("DIRECT_INDEX", P"." * idn)
+            local index = Ct("SAFE_INDEX", P"[" * V"_layer1" * P"]" * P"?") + Ct("INDEX", P"[" * V"_layer1" * P"]")
+        	local directindex = Ct("SAFE_DIRECT_INDEX", P"." * idn * P"?") + Ct("DIRECT_INDEX", P"." * idn)
 
             local evalOpperator = arglist + index + directindex
         	local access = Ct("EVAL", idn * evalOpperator^1)
@@ -250,8 +250,8 @@ return function (plume)
         )
 
         local eval = P"$" * evalBase
-        local index = Ct("INDEX", P"[" * expr * P"]")
-        local directindex = Ct("DIRECT_INDEX", P"." * idn)
+        local index = Ct("SAFE_INDEX", P"[" * expr * P"]" * P"?") + Ct("INDEX", P"[" * expr * P"]")
+        local directindex = Ct("SAFE_DIRECT_INDEX", P"." * idn * P"?") + Ct("DIRECT_INDEX", P"." * idn)
 
         --------------
         -- commands --
