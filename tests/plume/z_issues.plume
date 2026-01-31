@@ -376,3 +376,14 @@ $nib()
 /// Output
 nibnib
 /// End
+
+/// Test #345
+let t = $table(wing, nib)
+do $table.remove($t)
+
+for k, v in items(t)
+    $k -> $v\n
+end
+/// Output
+1 -> wing
+/// End

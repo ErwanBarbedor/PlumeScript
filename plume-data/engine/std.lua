@@ -24,6 +24,8 @@ return function (plume)
         local t = args.table[1]
         local index = args.table[2]
 
+        t.keys[#t.table] = nil
+
         return table.remove(t.table, index)
     end
 
