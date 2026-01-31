@@ -150,7 +150,22 @@ else
 	labels = "goto DISPATCH"
 end
 
-local footer = "\t\t::END::\n\t\treturn true, _STACK_GET(vm.mainStack)\n\tend\nend"
+local footer = [[
+		::END::
+		--! to-remove-begin
+		if plume.runStatFlag then
+			if plume.stats then
+				for k, v in pairs(vm.stats.opseq) do
+					plume.stats.opseq[k] = v + (plume.stats.opseq[k] or 0)
+				end
+			else
+				plume.stats = {opseq=vm.stats.opseq}
+			end
+		end
+		--! to-remove-end
+		return true, _STACK_GET(vm.mainStack)
+	end
+end]]
 
 
 local result = {header, import, init, dispatch, labels, footer}

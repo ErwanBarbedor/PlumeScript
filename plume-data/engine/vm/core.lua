@@ -107,6 +107,26 @@ function _VM_INIT_VARS(vm, runtime, chunk)
     vm.MASK_ARG2  = vm.bit.lshift(1, vm.ARG2_BITS) - 1
     vm.band       = vm.bit.band
     vm.rshift     = vm.bit.rshift
+    ---------------------------
+
+    --! to-remove-begin
+    if vm.plume.runStatFlag then
+        vm.stats = {}
+        vm.stats.opseq = {} -- opcode sequences
+        
+        -- queue for opcodes history
+        vm.stats.ophist = 0
+        vm.stats.histmask = 128^vm.plume.runStatDeep
+    end
+    --! to-remove-end
+end
+
+--- Register opcodes usages
+function _STAT_REGISTER(vm, op)
+    -- Update history
+    vm.stats.ophist = ((vm.stats.ophist % vm.stats.histmask) * 128) + op
+    -- Update sequences
+    vm.stats.opseq[vm.stats.ophist] = 1 + (vm.stats.opseq[vm.stats.ophist] or 0)
 end
 
 --- Called at each instruction.
@@ -156,7 +176,10 @@ function _VM_DECODE_CURRENT_INSTRUCTION(vm)
             vm.variableStack.frames,
             vm.variableStack.frames.pointer
         )    
-    end  
+    end
+    if vm.plume.runStatFlag then
+        _STAT_REGISTER(vm, op)
+    end
     --! to-remove-end
 
     return op, arg1, arg2

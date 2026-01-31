@@ -17,6 +17,10 @@ If not, see <https://www.gnu.org/licenses/>.
 -- It is an inlined and optimized version of engine.lua
 return function (plume)
     function plume._run (runtime, chunk)
+        function _STAT_REGISTER (vm, op)
+            stats.ophist = ((stats.ophist % stats.histmask) * 128) + op
+            stats.opseq[stats.ophist] = 1 + (stats.opseq[stats.ophist] or 0)
+        end
         require ("table.new")
         local runtime = runtime
         local bytecode = runtime.bytecode

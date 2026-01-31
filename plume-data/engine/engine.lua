@@ -288,6 +288,17 @@ STD_IMPORT(vm, arg1, arg2)
 				end
 			end
 goto DISPATCH		::END::
+		--! to-remove-begin
+		if plume.runStatFlag then
+			if plume.stats then
+				for k, v in pairs(vm.stats.opseq) do
+					plume.stats.opseq[k] = v + (plume.stats.opseq[k] or 0)
+				end
+			else
+				plume.stats = {opseq=vm.stats.opseq}
+			end
+		end
+		--! to-remove-end
 		return true, _STACK_GET(vm.mainStack)
 	end
 end

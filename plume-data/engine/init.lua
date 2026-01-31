@@ -35,8 +35,14 @@ require 'plume-data/engine/engine-opt'    (plume)
 require 'plume-data/engine/finalizer'     (plume)
 require 'plume-data/engine/pec'           (plume)
 require 'plume-data/engine/config'        (plume)
+require 'plume-data/engine/profiler'      (plume)
 
 function plume.run(runtime, chunk)
+	if plume.runStatFlag then
+		plume.runDevFlag = true
+		plume.runStatDeep = plume.runStatDeep or 1
+	end
+
 	if plume.runDevFlag then
 		return plume._run_dev(runtime, chunk)
 	else
