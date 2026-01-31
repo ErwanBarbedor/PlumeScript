@@ -69,6 +69,7 @@ function STD_ITEMS(vm, arg1, arg2)
         type = "stdIterator",
         ref  = args[1],
         flag = vm.flag.ITER_ITEMS,
+        named = args.named,
         ---------------------------------
         -- WILL BE REMOVED IN 1.0 (#230)
         ---------------------------------

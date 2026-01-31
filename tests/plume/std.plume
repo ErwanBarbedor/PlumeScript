@@ -88,6 +88,51 @@ Item "second" is _(wing)_.
 Item "bonus" is _(bird)_.
 /// End
 
+/// Test items ?named
+let t = $table(wing: quill, write, song)
+for k, v in items(t)
+  $k -> $v\n
+end
+---\n
+for k, v in items(t, ?named)
+  $k -> $v\n
+end
+/// Output
+wing -> quill
+1 -> write
+2 -> song
+---
+wing -> quill
+/// End
+
+/// Test numeric keys 1 (#253)
+let t = @table
+  - Wing
+  Write: Quill
+  - Song
+end
+
+for k, v in items(t)
+  $k -> $v\n
+end
+/// Output
+1 -> Wing
+Write -> Quill
+2 -> Song
+/// End
+
+/// Test numeric keys 2 (#253)
+let t = $table()
+
+set t[1] = Wing
+
+for k, v in items(t)
+  $k -> $v\n
+end
+/// Output
+1 -> Wing
+/// End
+
 /// Test import text 1
 $import(tests/plume/toimport/text)
 /// Output
@@ -152,7 +197,7 @@ $len($t)
 3
 /// End
 
-/// Test table remove
+/// Test table remove 1
 let t = @table
   - Wing
   - Nib
@@ -165,6 +210,58 @@ $len($t)
 2
 Nib
 1
+/// End
+
+/// Test table remove 2
+let t = @table
+  - Wing
+  - Nib
+  quill: blue
+end
+$table.remove($t)\n
+$t[1]
+/// Output
+Nib
+Wing
+/// End
+
+/// Test table remove 3
+let t = @table
+  Wing: Nib
+  quill: blue
+end
+$table.removeKey($t, Wing)\n
+for k, v in items(t)
+  $k
+end
+/// Output
+quill
+/// End
+
+/// Test hasKey
+let t = $table(wing: nib)
+
+$table.hasKey($t, wing)\n
+$table.hasKey($t, nib)
+/// Output
+true
+false
+/// End
+
+/// Test find
+let t = $table(wing: nib)
+
+$table.find($t, nib)
+/// Output
+wing
+/// End
+
+/// Test finds
+let t = $table(wing: nib, write: nib)
+
+$join(...table.finds($t, nib))
+/// Output
+wingwrite
 /// End
 
 /// Test Error

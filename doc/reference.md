@@ -500,8 +500,13 @@ For a complete explanation, see `Syntax > macro and Calls`.
 *   **`$(...)`:** Evaluates the code within the parentheses and returns the resulting value.
 *   **Accessors:** A variable or code evaluation can be followed by accessors:
     *   **Call:** `$songMacro(write, paint)`
-    *   **Index:** `$wingTable[0]`, `$wingTable[keyName]`
-    *   **Member:** `$quillObject.property` (Syntactic sugar for `$quillObject["property"]`)
+    *   **Index:** `$wingTable[0]`, `$wingTable[keyName]`. Raises an error if the specified key or index does not exist in the table.
+    *   **Member:** `$quillObject.property`. Syntactic sugar for `$quillObject["property"]`. Raises an error if `property` does not exist.
+    *   **Safe Index (`?`):** Appending `?` to an index or member accessor prevents errors when a key is missing.
+        *   `$quillObject.property?`
+        *   `$wingTable["key"]?`
+        
+        If the key exists, the value is returned. If the key is missing, the expression evaluates to `empty` instead of halting execution.
 
 ### Calls for Side-Effects (`do`)
 
@@ -730,7 +735,11 @@ Plume provides a set of built-in macros to handle common tasks such as I/O, tabl
 *   **`table`**:
     *   `table(...items)`: Explicitly creates and returns a table containing the provided items. This function can be called directly.
     *   `table.append(table, item)`: Adds `item` to the end of the specified `table`.
-    *   `table.remove(table)`: Removes and returns the last item from the `table`.
+    *   `table.remove(table, [index])`: Removes the `index`-th item of `table` (default: table length) and return it.
+    *   `table.removeKey(table, key)`: Removes a key from `table`. Contrary to `table.remove`, no shift is applied.
+    *   `table.hasKey(table, key)`: Check if `table` as a field `key`. Behave exactly like `table.key?`, except if `table.key` exists but is `empty`.
+    *   `table.find(table, v)`: Search for a `k` such that `table[k] = v` and return the first found. Return `empty` if not found.
+    *   `table.finds(table, v)`: Search for all `k` such that `table[k] = v`. Return a table.
 *   `rawset(table, key, value)`: Sets the value of `key` in `table` to `value` without triggering any `setindex` metafield.
 *   `join(sep: "", ...items)`: Returns a string produced by concatenating `items`, optionally separated by `sep`.
 
@@ -738,7 +747,7 @@ Plume provides a set of built-in macros to handle common tasks such as I/O, tabl
 
 *   `seq(start, stop)` or `seq(stop)`: Returns an inclusive iterator from `start` to `stop`. If only one argument is provided, `start` defaults to `1`.
 *   `enumerate(table)`: Returns an iterator yielding pairs of `(index, value)` for each list item in the table.
-*   `items(table)`: Returns an iterator yielding `(key, value)` pairs for all non-numeric entries in the table.
+*   `items(table, ?named)`: Returns an iterator yielding `(key, value)` pairs for all entries in the table (only non-numeric entries if `?named` flag is on).
 
 ### Module System and Imports
 

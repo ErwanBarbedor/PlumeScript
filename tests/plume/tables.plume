@@ -104,3 +104,35 @@ $t[1]
 write
 mark
 /// End
+
+/// Test safe index 1
+let t = $table(a:b)
+$t.a?
+$(t.a?)
+/// Output
+bb
+/// End
+
+/// Test safe index 2
+let t = $table(a:b)
+$t.b?
+$(t.b? or 1)
+/// Output
+1
+/// End
+
+/// Test safe index 3
+let t = $table(a:b)
+$t["a"]?
+$(t["a"]?)
+/// Output
+bb
+/// End
+
+/// Test safe index 4
+let t = $table(a:b)
+$t["b"]?
+$(t["b"]? or 1)
+/// Output
+1
+/// End

@@ -121,6 +121,12 @@ function FOR_ITER (vm, arg1, arg2)
     elseif flag == vm.flag.ITER_ITEMS then
         state = state+1
 
+        if obj.named then
+            while tonumber(obj.ref.keys[state]) do
+                state = state+1
+            end
+        end
+
         if state > #obj.ref.keys then
             result = vm.empty
         else
