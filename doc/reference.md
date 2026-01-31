@@ -500,8 +500,13 @@ For a complete explanation, see `Syntax > macro and Calls`.
 *   **`$(...)`:** Evaluates the code within the parentheses and returns the resulting value.
 *   **Accessors:** A variable or code evaluation can be followed by accessors:
     *   **Call:** `$songMacro(write, paint)`
-    *   **Index:** `$wingTable[0]`, `$wingTable[keyName]`
-    *   **Member:** `$quillObject.property` (Syntactic sugar for `$quillObject["property"]`)
+    *   **Index:** `$wingTable[0]`, `$wingTable[keyName]`. Raises an error if the specified key or index does not exist in the table.
+    *   **Member:** `$quillObject.property`. Syntactic sugar for `$quillObject["property"]`. Raises an error if `property` does not exist.
+    *   **Safe Index (`?`):** Appending `?` to an index or member accessor prevents errors when a key is missing.
+        *   `$quillObject.property?`
+        *   `$wingTable["key"]?`
+        
+        If the key exists, the value is returned. If the key is missing, the expression evaluates to `empty` instead of halting execution.
 
 ### Calls for Side-Effects (`do`)
 
