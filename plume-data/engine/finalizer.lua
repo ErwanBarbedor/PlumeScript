@@ -51,20 +51,8 @@ return function (plume)
 		table.insert(runtime.linkedInstructions, {plume.ops.RETURN_FILE, 0, 0})
 	end
 	
-	------------------------
-    -- Instruction format --
-    ------------------------
     require"table.new"
     local bit = require("bit")
-    local OP_BITS   = 7
-    local ARG1_BITS = 5
-    local ARG2_BITS = 20
-    local ARG1_SHIFT = ARG2_BITS
-    local OP_SHIFT   = ARG1_BITS + ARG2_BITS
-    local MASK_OP   = bit.lshift(1, OP_BITS) - 1
-    local MASK_ARG1 = bit.lshift(1, ARG1_BITS) - 1
-    local MASK_ARG2 = bit.lshift(1, ARG2_BITS) - 1
-    ------------------------
 	local function encode(runtime)
 		if not runtime.bytecode then
 			runtime.bytecode = table.new(#runtime.linkedInstructions, 0)
@@ -73,15 +61,15 @@ return function (plume)
 		for offset=1, #runtime.linkedInstructions do
 			instr = runtime.linkedInstructions[offset]
 
-			local op_part = bit.lshift(bit.band(instr[1], MASK_OP), OP_SHIFT)
-			local arg1_part = bit.lshift(bit.band(instr[2], MASK_ARG1), ARG1_SHIFT)
-			local arg2_part = bit.band(instr[3], MASK_ARG2)
+			local op_part = bit.lshift(bit.band(instr[1], plume.MASK_OP), plume.OP_SHIFT)
+			local arg1_part = bit.lshift(bit.band(instr[2], plume.MASK_ARG1), plume.ARG1_SHIFT)
+			local arg2_part = bit.band(instr[3], plume.MASK_ARG2)
 			local byte = bit.bor(op_part, arg1_part, arg2_part)
 			runtime.bytecode[bytecodeSize+offset] = byte
 			runtime.mapping[bytecodeSize+offset] = instr.mapsto
 		end
 
-		assert(#runtime.bytecode <= MASK_ARG2)
+		assert(#runtime.bytecode <= plume.MASK_ARG2)
 	end
 
 	local function clean(runtime)

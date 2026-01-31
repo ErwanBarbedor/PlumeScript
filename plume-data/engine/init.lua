@@ -34,6 +34,7 @@ require 'plume-data/engine/engine'        (plume)
 require 'plume-data/engine/engine-opt'    (plume)
 require 'plume-data/engine/finalizer'     (plume)
 require 'plume-data/engine/pec'           (plume)
+require 'plume-data/engine/config'        (plume)
 
 function plume.run(runtime, chunk)
 	if plume.runDevFlag then
