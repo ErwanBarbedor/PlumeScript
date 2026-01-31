@@ -46,9 +46,25 @@ return function (plume)
     end
 
     local _table = plume.obj.table (0, 2)
-    _table.table.keys = {"append", "remove"}
+    _table.table.keys = {"append", "remove", "removeKey"}
     _table.table.remove = plume.std.remove
     _table.table.append = plume.std.append
+    _table.table.removeKey = plume.obj.luaFunction("removeKey", function (args)
+        local t = args.table[1]
+        local key = args.table[2]
+
+        key = tonumber(key) or key
+        local index = 0
+        for k, v in ipairs(t.keys) do
+            if v == key then
+                index = k
+                break
+            end
+        end
+
+        t.table[key] = nil
+        table.remove(t.keys, index)
+    end)
 
     plume.std.table = _table
     plume.std.tostring = {} -- hardcoded

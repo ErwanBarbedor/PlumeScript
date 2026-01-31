@@ -225,6 +225,20 @@ Nib
 Wing
 /// End
 
+/// Test table remove 3
+let t = @table
+  Wing: Nib
+  quill: blue
+end
+$table.removeKey($t, Wing)\n
+for k, v in items(t)
+  $k
+end
+/// Output
+quill
+/// End
+
+
 /// Test Error
 let t = @table
   - macro()
