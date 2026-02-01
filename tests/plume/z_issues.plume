@@ -361,6 +361,13 @@ $nib()
 nib
 /// End
 
+/// Test #311
+let t = $table(x: $false)
+$t.x
+/// Output
+false
+/// End
+
 /// Test #330-1
 let nib from $import(tests/plume/toimport/touse)
 $nib()

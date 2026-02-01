@@ -354,7 +354,7 @@ return function (plume)
                                                 end
                                             else
                                                 local value = t.table[key]
-                                                if value then
+                                                if value ~= nil then
                                                     mainStackPointer = mainStackPointer + 1
                                                     mainStack[mainStackPointer] = value
                                                 else
