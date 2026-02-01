@@ -224,7 +224,7 @@ return function (plume)
 
             -- Eval & index
             local posarg  = Ct("LIST_ITEM", V"_layer1")
-            local optnarg = Ct("HASH_ITEM", idn*os*P":"*os*Ct("BODY", V"_layer1"^-1))
+            local optnarg = Ct("HASH_ITEM", (idn + Ct("EVAL", P"$" * V"_layer1"))*os*P":"*os*Ct("BODY", V"_layer1"^-1))
             local arg = optnarg + posarg + sugarFlagCall(Ct("FLAG", os *"?"*idn))
             local arglist = Ct("CALL", P"(" * arg^-1 * (os * P"," * os * arg)^0 * P")")
             local index = Ct("SAFE_INDEX", P"[" * V"_layer1" * P"]" * P"?") + Ct("INDEX", P"[" * V"_layer1" * P"]")
@@ -286,7 +286,7 @@ return function (plume)
         local paramlistM = paramlist + E(plume.error.missingParamListError)
         local macro      = Ct("MACRO", P"macro" * (s * idn)^-1 * os * paramlistM * body * _end)
 
-        local arg       = Ct("HASH_ITEM", os *idn * os * P":" * os * Ct("BODY", V"textic"^-1))	
+        local arg       = Ct("HASH_ITEM", os * (idn + eval) * os * P":" * os * Ct("BODY", V"textic"^-1))	
         				+ sugarFlagCall(Ct("FLAG", os *"?"*idn))
                         + Ct("EXPAND", P"..."*evalBase)
                         + Ct("LIST_ITEM", V"textic")
@@ -340,7 +340,7 @@ return function (plume)
 
         -- table
         local listitem = Ct("LIST_ITEM", P"- " * os * V"firstStatement") 
-        local hashitem = Ct("HASH_ITEM", Ct("META", P"meta"*s)^-1 * idn * P":" *  os *lbody)
+        local hashitem = Ct("HASH_ITEM", Ct("META", P"meta"*s)^-1 * (idn + eval) * P":" *  os *lbody)
         local expand   = Ct("EXPAND", P"..." * evalBase) 
 
         ----------

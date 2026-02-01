@@ -136,3 +136,32 @@ $(t["b"]? or 1)
 /// Output
 1
 /// End
+
+/// Test dynamic keys 1
+let x = wing
+let t = @table
+	$x: nib
+end
+
+$t.wing
+/// Output
+nib
+/// End
+
+/// Test dynamic keys 2
+let x = wing
+let t = $table($x: nib)
+
+$t.wing
+/// Output
+nib
+/// End
+
+/// Test dynamic keys 3
+let x = wing
+let t = $(table($x: "nib"))
+
+$t.wing
+/// Output
+nib
+/// End

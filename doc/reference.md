@@ -19,6 +19,7 @@ To distinguish control flow and logic from text, Plume recognizes a set of **sta
 *   `meta` (defines a metatable field within a table block)
 *   `-` (initiates a table item)
 *   `key:` (initiates a named table item, where `key` is any valid identifier)
+*   `$key:` (initiates a dynamic named table item, where key is an expression to be evaluated)
 *   `...` (expand a table)
 *   `@name` (initiates a block call)
 
@@ -109,7 +110,7 @@ let x = 1 // This is also a comment.
 
 All statements must start at the beginning of a line, though they may be preceded by whitespace.
 
-Some statements that initiate a value assignment or a data structure (`let`, `set`, `-`, `key:`) can be **chained** on the same line with a statement that produces a value (`if`, `for`, `while`, `macro`, `@name`).
+Some statements that initiate a value assignment or a data structure (`let`, `set`, `-`, `key:`, `$key:`) can be **chained** on the same line with a statement that produces a value (`if`, `for`, `while`, `macro`, `@name`).
 
 ```plume
 // Assigning the result of an @-call to a variable
@@ -230,7 +231,7 @@ end
 ```
 The following call formats are available:
 
-1.  **Standard Call:** Arguments are passed in a parenthesized list. This format supports positional arguments, named arguments, and table unpacking using the `...` operator (see *Syntax > Table Expansion and Unpacking*).
+1.  **Standard Call:** Arguments are passed in a parenthesized list. This format supports positional arguments, named arguments (including dynamic keys), and table unpacking using the `...` operator (see *Syntax > Table Expansion and Unpacking*).
     ```plume
     $buildTag(div, mainContent, ...default)
     ```
@@ -425,6 +426,27 @@ set host, p as port, protocol: http from config
 Plume provides a `...` operator to expand or unpack a table's contents into another structure. This is applicable in two contexts: table accumulation blocks and macro calls.
 
 The expression following `...` must evaluate to a table. Attempting to expand any other data type (number, string, etc.) will result in an error.
+
+### Dynamic Keys (`$key:`)
+
+Plume allows table keys to be determined at runtime by evaluating an expression. This is available in both table accumulation blocks and macro calls.
+
+*   **In Tables:** The expression after the `$` is evaluated, and the result is used as the key for the following value.
+*   **In Calls:** It allows passing named arguments where the name is stored in a variable.
+
+```plume
+let dynamicField = status
+let val = 200
+
+let response = @table
+    code: $val
+    $dynamicField: Success
+end
+// Result: { "code": 200, "status": "Success" }
+
+// Also works in standard macro calls
+do $print($dynamicField: All green)
+```
 
 #### In Table Accumulation Blocks (Expansion)
 

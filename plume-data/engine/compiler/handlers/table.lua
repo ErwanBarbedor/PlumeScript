@@ -19,14 +19,23 @@ return function (plume, context, nodeHandlerTable)
 
 	--- `key: value` and `meta key: value`
 	nodeHandlerTable.HASH_ITEM = function(node)
-		local identifier = plume.ast.get(node, "IDENTIFIER").content
-		local body = plume.ast.get(node, "BODY")
-		local meta = plume.ast.get(node, "META")
+		local identifier = plume.ast.get(node, "IDENTIFIER")
+		local eval       = plume.ast.get(node, "EVAL")
+		local body       = plume.ast.get(node, "BODY")
+		local meta       = plume.ast.get(node, "META")
 
-		local offset = context.registerConstant(identifier)
+		if eval then
+			context.nodeHandler(eval) 
+		end
 
 		context.accBlock()(body)
-		context.registerOP(node, plume.ops.LOAD_CONSTANT, 0, offset)
+
+		if identifier then
+			local offset = context.registerConstant(identifier.content)
+			context.registerOP(node, plume.ops.LOAD_CONSTANT, 0, offset)
+		else
+			context.registerOP(node, plume.ops.SWITCH, 0, 0)
+		end
 
 		if meta then
 			context.registerOP(node, plume.ops.TAG_META_KEY, 0, 0)
