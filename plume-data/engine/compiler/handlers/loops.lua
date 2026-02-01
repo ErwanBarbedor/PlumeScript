@@ -75,7 +75,11 @@ return function (plume, context, nodeHandlerTable)
 					true   -- isBodyStacked
 				)
 				
-				table.insert(context.loops, {begin_label="for_loop_end_"..uid, end_label="for_end_"..uid}) -- Informations used by break/continue
+				table.insert(context.loops, {
+					begin_label="for_loop_end_"..uid,
+					end_label="for_end_"..uid,
+					leave=true
+				}) -- Informations used by break/continue
 				context.childrenHandler(body)
 				table.remove(context.loops)
 				context.registerLabel(node, "for_loop_end_"..uid)
@@ -106,7 +110,9 @@ return function (plume, context, nodeHandlerTable)
 		if not loop or not loop.end_label then
 			plume.error.cannotUseBreakOutsideLoop(node)
 		end
-		context.registerOP(nil, plume.ops.LEAVE_SCOPE)
+		if loop.leave then
+			context.registerOP(nil, plume.ops.LEAVE_SCOPE)
+		end
 		context.registerGoto (node, loop.end_label)
 	end
 end

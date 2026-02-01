@@ -404,3 +404,12 @@ $join(...t2)
 /// Output
 abc
 /// End
+
+/// Test #355
+while true
+    break
+end
+a
+/// Output
+a
+/// End
