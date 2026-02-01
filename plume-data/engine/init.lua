@@ -1,6 +1,6 @@
 --[[
 Plume🪶 1.0.beta.1
-Copyright (C) 2024-2025 Erwan Barbedor
+Copyright (C) 2024-2026 Erwan Barbedor
 
 Check https://github.com/PlumeScript/Plume
 for documentation, tutorials, or to report issues.
