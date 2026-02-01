@@ -106,6 +106,7 @@ return function (plume, context, nodeHandlerTable)
 		if not loop or not loop.end_label then
 			plume.error.cannotUseBreakOutsideLoop(node)
 		end
+		context.registerOP(nil, plume.ops.LEAVE_SCOPE)
 		context.registerGoto (node, loop.end_label)
 	end
 end

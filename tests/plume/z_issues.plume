@@ -387,3 +387,12 @@ end
 /// Output
 1 -> wing
 /// End
+
+/// Test #349
+for i in seq(1)
+    for i in seq(1)
+        break
+    end
+end
+/// Output
+/// End
