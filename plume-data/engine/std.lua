@@ -103,6 +103,33 @@ return function (plume)
 
         return result
     end)
+    _table.table.count = plume.obj.luaFunction("count", function (args)
+        local t = args.table[1]
+        local named = args.table.named
+
+        if named then
+            local count = 0
+            for k, v in ipairs(t.keys) do
+                if not tonumber(v) then
+                    count = count + 1
+                end
+            end
+            return count
+        else
+            return #t.keys
+        end
+    end)
+    _table.table.entry = plume.obj.luaFunction("entry", function (args)
+        local t = args.table[1]
+        local index = tonumber(args.table[2])
+
+        local key = t.keys[index]
+        local result = plume.obj.table(2, 0)
+        result.table[1] = key
+        result.table[2] = t.table[key]
+        result.keys = {1, 2}
+        return result
+    end)
 
     plume.std.table = _table
     plume.std.tostring = {} -- hardcoded
