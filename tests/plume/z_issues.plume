@@ -420,3 +420,25 @@ a
 /// Output
 a
 /// End
+
+/// Test #358
+macro wing(x)
+    set x.y = $table()
+end
+macro nib()
+    y: $empty
+
+    meta call: macro()
+        if not self.y
+            $(wing(self))
+        end
+
+        a
+    end
+end
+
+let t = $nib()
+$t()$t()
+/// Output
+aa
+/// End
