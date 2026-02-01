@@ -396,3 +396,11 @@ for i in seq(1)
 end
 /// Output
 /// End
+
+/// Test #354
+let t1 = $table(a, b, c)
+let t2 = $(table(...t1))
+$join(...t2)
+/// Output
+abc
+/// End

@@ -225,7 +225,7 @@ return function (plume)
             -- Eval & index
             local posarg  = Ct("LIST_ITEM", V"_layer1")
             local optnarg = Ct("HASH_ITEM", (idn + Ct("EVAL", P"$" * V"_layer1"))*os*P":"*os*Ct("BODY", V"_layer1"^-1))
-            local arg = optnarg + posarg + sugarFlagCall(Ct("FLAG", os *"?"*idn))
+            local arg = optnarg + posarg + sugarFlagCall(Ct("FLAG", os *"?"*idn)) + Ct("EXPAND", Ct("EVAL", P"..."*V"_layer1"))
             local arglist = Ct("CALL", P"(" * arg^-1 * (os * P"," * os * arg)^0 * P")")
             local index = Ct("SAFE_INDEX", P"[" * V"_layer1" * P"]" * P"?") + Ct("INDEX", P"[" * V"_layer1" * P"]")
         	local directindex = Ct("SAFE_DIRECT_INDEX", P"." * idn * P"?") + Ct("DIRECT_INDEX", P"." * idn)
