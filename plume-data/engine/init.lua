@@ -2,7 +2,7 @@
 Plume🪶 1.0.beta.1
 Copyright (C) 2024-2025 Erwan Barbedor
 
-Check https://github.com/ErwanBarbedor/PlumeScript
+Check https://github.com/PlumeScript/Plume
 for documentation, tutorials, or to report issues.
 
 This program is free software: you can redistribute it and/or modify
