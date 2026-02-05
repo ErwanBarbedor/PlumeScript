@@ -1,4 +1,4 @@
-/// Test do side effect
+/// Test run side effect
 let static x = 1
 
 macro incX()
@@ -6,7 +6,7 @@ macro incX()
   $x
 end
 
-do $incX()
+run $incX()
 $x
 
 /// Output
@@ -14,7 +14,7 @@ $x
 /// End
 
 
-/// Test do return noting & side effect
+/// Test run return noting & side effect
 let static x = 1
 
 macro incX()
@@ -22,13 +22,13 @@ macro incX()
   $x
 end
 
-do $incX()
+run $incX()
 $x
 /// Output
 2
 /// End
 
-/// Test do block
+/// Test run block
 let static x = 1
 
 macro incX(body)
@@ -36,7 +36,7 @@ macro incX(body)
   $x
 end
 
-do @incX()
+run @incX()
 	Wings
 end
 /// Output

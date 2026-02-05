@@ -2945,7 +2945,7 @@ b=mark
 <div class="progress-bar"><div class="progress-success" style="width: 100.00%"></div><div class="progress-fail" style="width: 0.00%"></div></div>
 <details>
 <summary>
-<span class="status-icon status-pass">✓</span> do block <em style='font-weight: normal'></em>
+<span class="status-icon status-pass">✓</span> run block <em style='font-weight: normal'></em>
 </summary>
 <div class="test-content">
 <div class="code-grid">
@@ -2959,7 +2959,7 @@ macro incX(body)
   $x
 end
 
-do @incX()
+run @incX()
 	Wings
 end
 
@@ -2983,7 +2983,7 @@ end
 <span class="bc-line-num">014</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 3</span> <span class="bc-info">; Wings</span>
 <span class="bc-line-num">015</span> <span class="bc-opcode">LOAD_STATIC     </span> <span class="bc-arg">0 21</span> <span class="bc-info">; incX</span>
 <span class="bc-line-num">016</span> <span class="bc-opcode">CONCAT_CALL     </span> <span class="bc-arg">0 0</span> <span class="bc-info">; @incX()[...]</span>
-<span class="bc-line-num">017</span> <span class="bc-opcode">STORE_VOID      </span> <span class="bc-arg">0 0</span> <span class="bc-info">; do @incX()[...]</span>
+<span class="bc-line-num">017</span> <span class="bc-opcode">STORE_VOID      </span> <span class="bc-arg">0 0</span> <span class="bc-info">; run @incX()[...]</span>
 <span class="bc-line-num">018</span> <span class="bc-opcode">LOAD_EMPTY      </span> <span class="bc-arg">0 0</span>
 <span class="bc-line-num">019</span> <span class="bc-opcode">RETURN_FILE     </span> <span class="bc-arg">0 0</span></code></pre>
 </div>
@@ -2996,7 +2996,7 @@ end
 </details>
 <details>
 <summary>
-<span class="status-icon status-pass">✓</span> do return noting &amp; side effect <em style='font-weight: normal'></em>
+<span class="status-icon status-pass">✓</span> run return noting &amp; side effect <em style='font-weight: normal'></em>
 </summary>
 <div class="test-content">
 <div class="code-grid">
@@ -3010,7 +3010,7 @@ macro incX()
   $x
 end
 
-do $incX()
+run $incX()
 $x
 
 </code></pre>
@@ -3032,7 +3032,7 @@ $x
 <span class="bc-line-num">013</span> <span class="bc-opcode">BEGIN_ACC       </span> <span class="bc-arg">0 0</span> <span class="bc-info">; incX()</span>
 <span class="bc-line-num">014</span> <span class="bc-opcode">LOAD_STATIC     </span> <span class="bc-arg">0 21</span> <span class="bc-info">; incX</span>
 <span class="bc-line-num">015</span> <span class="bc-opcode">CONCAT_CALL     </span> <span class="bc-arg">0 0</span> <span class="bc-info">; incX()</span>
-<span class="bc-line-num">016</span> <span class="bc-opcode">STORE_VOID      </span> <span class="bc-arg">0 0</span> <span class="bc-info">; do $incX()</span>
+<span class="bc-line-num">016</span> <span class="bc-opcode">STORE_VOID      </span> <span class="bc-arg">0 0</span> <span class="bc-info">; run $incX()</span>
 <span class="bc-line-num">017</span> <span class="bc-opcode">LOAD_STATIC     </span> <span class="bc-arg">0 20</span> <span class="bc-info">; x</span>
 <span class="bc-line-num">018</span> <span class="bc-opcode">RETURN_FILE     </span> <span class="bc-arg">0 0</span></code></pre>
 </div>
@@ -3045,7 +3045,7 @@ $x
 </details>
 <details>
 <summary>
-<span class="status-icon status-pass">✓</span> do side effect <em style='font-weight: normal'></em>
+<span class="status-icon status-pass">✓</span> run side effect <em style='font-weight: normal'></em>
 </summary>
 <div class="test-content">
 <div class="code-grid">
@@ -3059,7 +3059,7 @@ macro incX()
   $x
 end
 
-do $incX()
+run $incX()
 $x
 
 
@@ -3082,7 +3082,7 @@ $x
 <span class="bc-line-num">013</span> <span class="bc-opcode">BEGIN_ACC       </span> <span class="bc-arg">0 0</span> <span class="bc-info">; incX()</span>
 <span class="bc-line-num">014</span> <span class="bc-opcode">LOAD_STATIC     </span> <span class="bc-arg">0 21</span> <span class="bc-info">; incX</span>
 <span class="bc-line-num">015</span> <span class="bc-opcode">CONCAT_CALL     </span> <span class="bc-arg">0 0</span> <span class="bc-info">; incX()</span>
-<span class="bc-line-num">016</span> <span class="bc-opcode">STORE_VOID      </span> <span class="bc-arg">0 0</span> <span class="bc-info">; do $incX()</span>
+<span class="bc-line-num">016</span> <span class="bc-opcode">STORE_VOID      </span> <span class="bc-arg">0 0</span> <span class="bc-info">; run $incX()</span>
 <span class="bc-line-num">017</span> <span class="bc-opcode">LOAD_STATIC     </span> <span class="bc-arg">0 20</span> <span class="bc-info">; x</span>
 <span class="bc-line-num">018</span> <span class="bc-opcode">RETURN_FILE     </span> <span class="bc-arg">0 0</span></code></pre>
 </div>
@@ -13401,15 +13401,15 @@ song
 <div>
 <h4>Code</h4>
 <pre><code class="language-plume">
-do nothing
+run nothing
 
 </code></pre>
 </div>
 <div>
 <h4>Bytecode</h4>
-<pre><code class="language-bytecode"><span class="bc-line-num">001</span> <span class="bc-opcode">ENTER_SCOPE     </span> <span class="bc-arg">0 0</span> <span class="bc-info">; d</span>
+<pre><code class="language-bytecode"><span class="bc-line-num">001</span> <span class="bc-opcode">ENTER_SCOPE     </span> <span class="bc-arg">0 0</span> <span class="bc-info">; r</span>
 <span class="bc-line-num">002</span> <span class="bc-opcode">LOAD_CONSTANT   </span> <span class="bc-arg">0 1</span> <span class="bc-info">; nothing</span>
-<span class="bc-line-num">003</span> <span class="bc-opcode">STORE_VOID      </span> <span class="bc-arg">0 0</span> <span class="bc-info">; do nothing</span>
+<span class="bc-line-num">003</span> <span class="bc-opcode">STORE_VOID      </span> <span class="bc-arg">0 0</span> <span class="bc-info">; run nothing</span>
 <span class="bc-line-num">004</span> <span class="bc-opcode">LOAD_EMPTY      </span> <span class="bc-arg">0 0</span>
 <span class="bc-line-num">005</span> <span class="bc-opcode">RETURN_FILE     </span> <span class="bc-arg">0 0</span></code></pre>
 </div>
@@ -14100,7 +14100,7 @@ nibnib
 <h4>Code</h4>
 <pre><code class="language-plume">
 let t = $table(wing, nib)
-do $table.remove($t)
+run $table.remove($t)
 
 for k, v in items(t)
     $k -&gt; $v\n
@@ -14125,7 +14125,7 @@ end
 <span class="bc-line-num">013</span> <span class="bc-opcode">CALL_INDEX_REGISTER_SELF</span> <span class="bc-arg">0 0</span> <span class="bc-info">; .remove</span>
 <span class="bc-line-num">014</span> <span class="bc-opcode">TABLE_INDEX     </span> <span class="bc-arg">0 0</span> <span class="bc-info">; .remove</span>
 <span class="bc-line-num">015</span> <span class="bc-opcode">CONCAT_CALL     </span> <span class="bc-arg">0 0</span> <span class="bc-info">; table.remove($t)</span>
-<span class="bc-line-num">016</span> <span class="bc-opcode">STORE_VOID      </span> <span class="bc-arg">0 0</span> <span class="bc-info">; do $table.remove($t)</span>
+<span class="bc-line-num">016</span> <span class="bc-opcode">STORE_VOID      </span> <span class="bc-arg">0 0</span> <span class="bc-info">; run $table.remove($t)</span>
 <span class="bc-line-num">017</span> <span class="bc-opcode">BEGIN_ACC       </span> <span class="bc-arg">0 0</span> <span class="bc-info">; items(t)</span>
 <span class="bc-line-num">018</span> <span class="bc-opcode">LOAD_LOCAL      </span> <span class="bc-arg">0 1</span> <span class="bc-info">; t</span>
 <span class="bc-line-num">019</span> <span class="bc-opcode">LOAD_STATIC     </span> <span class="bc-arg">0 5</span> <span class="bc-info">; items</span>

@@ -22,7 +22,7 @@ return function (plume, context, nodeHandlerTable)
 		table.remove(context.scopes)
 	end)
 
-	nodeHandlerTable.DO = function(node)
+	nodeHandlerTable.RUN = function(node)
 		context.accBlock(function(node)
 			context.childrenHandler(node)
 		end)(node)

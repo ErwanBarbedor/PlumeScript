@@ -356,7 +356,7 @@ return function (plume)
             firstStatement = os * (-V"statementTerminator")
                                 * (
                                       V"command"
-                                    + Ct("DO", P"do" * s * V"firstStatement")
+                                    + Ct("RUN", P"run" * s * V"firstStatement")
                                     + V"invalid"^-1 * V"text"
                                 )
                                 ,

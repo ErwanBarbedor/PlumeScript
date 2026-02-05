@@ -14,7 +14,7 @@ This is a valid Plume program.
 
 To distinguish control flow and logic from text, Plume recognizes a set of **statements**. A line is treated as a statement if it begins (after any leading whitespace) with one of the following keywords:
 
-*   `if`, `elseif`, `else`, `for`, `while`, `macro`, `end`, `do`, `leave`, `break`, `continue`
+*   `if`, `elseif`, `else`, `for`, `while`, `macro`, `end`, `run`, `leave`, `break`, `continue`
 *   `let`, `set`, `use`
 *   `meta` (defines a metatable field within a table block)
 *   `-` (initiates a table item)
@@ -195,7 +195,7 @@ The `break` and `continue` statements provide fine-grained control over the exec
             // Skip this item and move to the next
             continue
         end
-        do $process(number)
+        run $process(number)
     end
     ```
 
@@ -445,7 +445,7 @@ end
 // Result: { "code": 200, "status": "Success" }
 
 // Also works in standard macro calls
-do $print($dynamicField: All green)
+run $print($dynamicField: All green)
 ```
 
 #### In Table Accumulation Blocks (Expansion)
@@ -555,7 +555,7 @@ end
 - The `ref` variable is a **live reference** to the table field. If the field is modified later, the `ref` variable will reflect the change.
 - If the referenced field is `empty` or undefined, the `ref` variable will return `empty`.
 
-### Calls for Side-Effects (`do`)
+### Calls for Side-Effects (`run`)
 
 By default, every expression in Plume, including macro calls, contributes its return value to the current accumulation block. This can be undesirable for macros that are executed solely for their side-effects (e.g., printing to the console, writing to a file).
 
@@ -563,9 +563,9 @@ To execute a macro call without its return value affecting the accumulation cont
 
 ```plume
 let myTable = @table
-    // $print returns 'empty', but 'do' prevents it from converting
+    // $print returns 'empty', but 'run' prevents it from converting
     // this block into a TEXT block.
-    do $print(Initializing table definition...)
+    run $print(Initializing table definition...)
 
     // This remains a valid TABLE block
     id: 42
@@ -573,20 +573,20 @@ let myTable = @table
 end
 ```
 
-The `do` statement can be used with both standard and block calls:
+The `run` statement can be used with both standard and block calls:
 
 ```plume
 // Standard call
-do $myMacro(arg1)
+run $myMacro(arg1)
 
 // Block call
-do @myMacro
+run @myMacro
     - arg1
     - arg2
 end
 ```
 
-Using `do` allows for imperative-style procedure calls within Plume's expression-oriented architecture, providing a clear and safe way to manage side-effects.
+Using `run` allows for imperative-style procedure calls within Plume's expression-oriented architecture, providing a clear and safe way to manage side-effects.
 
 ### Context Injection (`use`)
 
