@@ -41,11 +41,18 @@ return function (plume, context)
 			local current = context.scopes[i]
 			if current[name] then
 				local variable = current[name]
-				return {
+				local result = {
 					frameOffset = #context.scopes-i,
 					offset   = variable.offset,
-					isConst  = variable.isConst,	
+					isConst  = variable.isConst,
+					isRef    = variable.isRef
 				}
+
+				if variable.isRef then
+					result.frameOffset = context.accBlockDeep - variable.blockOffset
+				end
+
+				return result
 			end
 		end
 		if context.static[name] then
@@ -53,7 +60,7 @@ return function (plume, context)
 			return {
 				offset   = variable.offset,
 				isConst  = variable.isConst,
-				isStatic = variable.isStatic	
+				isStatic = variable.isStatic
 			}
 		end
 	end
@@ -77,8 +84,9 @@ return function (plume, context)
 	--- @param isParam boolean True if it should be initialized by the calling script.
 	--- @param staticValue any Initial value for static vars (compilation time, default to empty).
 	--- @param source string|nil The path to the file if imported via `use`.
-	--- @return table|nil Returns the variable metadata {offset, isStatic, isConst, source}, or nil on name collision.
-	function context.registerVariable(name, isStatic, isConst, isParam, staticValue, source)
+	--- @param isRef boolean True if it is a reference to a table field
+	--- @return table|nil Returns the variable metadata {offset, isStatic, isConst, isRef, source}, or nil on name collision.
+	function context.registerVariable(name, isStatic, isConst, isParam, staticValue, source, isRef)
 		local scope
 		if isStatic then
 			scope = context.static
@@ -110,8 +118,13 @@ return function (plume, context)
 			offset = #scope, -- Used by opcodes GET_LOCAL / SET_LOCAL to use the correct frame
 			isStatic = isStatic,
 			isConst = isConst,
+			isRef = isRef,
 			source = source
 		}
+
+		if isRef then
+			scope[name].blockOffset = context.accBlockDeep
+		end
 
 		if isParam then
 			-- Files parameters are always named.

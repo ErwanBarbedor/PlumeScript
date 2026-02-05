@@ -23,6 +23,7 @@ return function (plume, context, nodeHandlerTable)
 		local eval       = plume.ast.get(node, "EVAL")
 		local body       = plume.ast.get(node, "BODY")
 		local meta       = plume.ast.get(node, "META")
+		local ref        = plume.ast.get(node, "REF")
 
 		if eval then
 			context.nodeHandler(eval) 
@@ -33,6 +34,12 @@ return function (plume, context, nodeHandlerTable)
 		if identifier then
 			local offset = context.registerConstant(identifier.content)
 			context.registerOP(node, plume.ops.LOAD_CONSTANT, 0, offset)
+
+			if ref then
+				if not context.registerVariable(identifier.content, nil, nil, nil, nil, nil, true) then
+					
+				end
+			end
 		else
 			context.registerOP(node, plume.ops.SWITCH, 0, 0)
 		end

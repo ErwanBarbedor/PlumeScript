@@ -68,6 +68,8 @@ return function(plume)
 		context.roots     = {}
 		context.loops     = {}
 		context.macros    = {}
+
+		context.accBlockDeep = 0
 		
 
 		require 'plume-data/engine/compiler/labels'    (plume, context)

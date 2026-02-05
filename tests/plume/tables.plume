@@ -165,3 +165,58 @@ $t.wing
 /// Output
 nib
 /// End
+
+/// Test ref 1
+let t = @table
+	ref x: 1
+	y: $x
+end
+$t.y
+/// Output
+1
+/// End
+
+/// Test ref 2
+let t = @table
+	ref x: 1
+	z: aaaa
+	y: $x
+end
+$t.y
+/// Output
+1
+/// End
+
+/// Test ref 3
+let t = @table
+	ref x: 1
+	if true
+		y: $x
+	end
+end
+$t.y
+/// Output
+1
+/// End
+
+/// Test ref 4
+let t = @table
+	ref x: 1
+	y: $x$x$x
+end
+$t.y
+/// Output
+111
+/// End
+
+/// Test ref 5
+let t = @table
+	ref x: 1
+	y: @join
+		a$x\aaa
+	end
+end
+$t.y
+/// Output
+a1aaa
+/// End

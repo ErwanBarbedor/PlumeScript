@@ -50,11 +50,13 @@ return function (plume, context, nodeHandlerTable)
 
 			-- `$wing(arg1, arg2)`
 			if child.name == "CALL" then
+				context.accBlockDeep = context.accBlockDeep + 1
 				context.accTableInit(node)
 				context.childrenHandler(child) -- child.children are the args
 			
 			-- `@wing ... end`
 			elseif child.name == "BLOCK_CALL" then
+				context.accBlockDeep = context.accBlockDeep + 1
 				context.accTableInit(node)
 				context.nodeHandler(child) -- = nodeHandlerTable.BLOCK_CALL(child)
 			
@@ -79,6 +81,7 @@ return function (plume, context, nodeHandlerTable)
 			local child = node.children[i]
 			if child.name == "CALL" or child.name == "BLOCK_CALL" then
 				context.registerOP(node, plume.ops.CONCAT_CALL)
+				context.accBlockDeep = context.accBlockDeep - 1
 			elseif child.name == "INDEX" or child.name == "DIRECT_INDEX" or child.name == "SAFE_INDEX" or child.name == "SAFE_DIRECT_INDEX" then
 				local safeFlag = 0
 				if child.name == "SAFE_INDEX" or child.name == "SAFE_DIRECT_INDEX" then

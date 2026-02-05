@@ -37,6 +37,37 @@ function LOAD_LOCAL (vm, arg1, arg2)
 end
 
 --- @opcode
+--- Unstack 1, key
+--- Stack 1, key value in target accumulator
+--- @param arg1 Scope offset
+--! inline
+function LOAD_REF (vm, arg1, arg2)
+    local key = _STACK_POP(vm.mainStack)
+
+    local frameOffset  = _STACK_GET(vm.mainStack.frames, _STACK_POS(vm.mainStack.frames)-arg1)
+    local frameTop
+    if arg1 == 0 then
+        frameTop = _STACK_POS(vm.mainStack)
+    else
+        frameTop = _STACK_GET(vm.mainStack.frames, _STACK_POS(vm.mainStack.frames)-arg1+1)
+    end
+
+    local found
+    for i = frameTop, frameOffset, -1 do
+        if vm.tagStack[i] == "key" then
+            if _STACK_GET(vm.mainStack, i) == key then
+                found = true
+                _STACK_PUSH(vm.mainStack, _STACK_GET(vm.mainStack, i-1))
+            end
+        end
+    end
+
+    if not found then
+        _STACK_PUSH(vm.mainStack, vm.plume.obj.empty)
+    end
+end
+
+--- @opcode
 --- Stack 1 from the static table
 --- @param arg2 static offset
 --! inline

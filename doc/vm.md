@@ -233,6 +233,10 @@ JUMP_IF_NOT :else   -- Jumps if result is false.
 - **arg1** *(Scope)*: offset
 - **arg2** *(Variable)*: offset
 
+#### LOAD_REF
+<br>Unstack 1, key <br>Stack 1, key value in target accumulator 
+- **arg1** *(Scope)*: offset
+
 #### LOAD_STATIC
 <br>Stack 1 from the static table 
 - **arg2** *(static)*: offset
