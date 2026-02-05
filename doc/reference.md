@@ -530,6 +530,31 @@ For a complete explanation, see `Syntax > macro and Calls`.
         
         If the key exists, the value is returned. If the key is missing, the expression evaluates to `empty` instead of halting execution.
 
+#### References and Aliases (`ref`)
+**`ref` Keyword: Creating References to Table Fields**
+
+The `ref` keyword allows creating a variable that acts as a **reference** to a specific field in the current table. This variable will automatically reflect changes to the referenced field.
+
+**Syntax:**
+- `ref x`: Creates a variable `x` that references the field `x` of the current table.
+- `ref x as y`: Creates a variable `y` that references the field `x` of the current table (aliasing).
+- `ref x: value`: Shorthand for `ref x` followed by `x: value` (sets the value of the referenced field).
+
+**Example:**
+
+```plume
+let t = @table
+    ref x
+    y: $x  // y is `empty` (x is not yet set)
+    x: 5   // x is now 5
+    z: $x  // z is 5 (references the updated x)
+end
+```
+
+**Behavior:**
+- The `ref` variable is a **live reference** to the table field. If the field is modified later, the `ref` variable will reflect the change.
+- If the referenced field is `empty` or undefined, the `ref` variable will return `empty`.
+
 ### Calls for Side-Effects (`do`)
 
 By default, every expression in Plume, including macro calls, contributes its return value to the current accumulation block. This can be undesirable for macros that are executed solely for their side-effects (e.g., printing to the console, writing to a file).
