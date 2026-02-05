@@ -24,6 +24,7 @@ return function (plume, context, nodeHandlerTable)
 		local body       = plume.ast.get(node, "BODY")
 		local meta       = plume.ast.get(node, "META")
 		local ref        = plume.ast.get(node, "REF")
+		local refalias   = plume.ast.get(node, "ALIAS")
 
 		if eval then
 			context.nodeHandler(eval) 
@@ -32,11 +33,13 @@ return function (plume, context, nodeHandlerTable)
 		context.accBlock()(body)
 
 		if identifier then
+
 			local offset = context.registerConstant(identifier.content)
 			context.registerOP(node, plume.ops.LOAD_CONSTANT, 0, offset)
 
 			if ref then
-				if not context.registerVariable(identifier.content, nil, nil, nil, nil, nil, true) then
+				local varName = refalias and plume.ast.get(refalias, "IDENTIFIER").content or identifier.content
+				if not context.registerVariable(varName, nil, nil, nil, nil, nil, true, identifier.content) then
 					
 				end
 			end

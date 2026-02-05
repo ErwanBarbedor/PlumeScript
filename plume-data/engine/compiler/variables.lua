@@ -45,7 +45,8 @@ return function (plume, context)
 					frameOffset = #context.scopes-i,
 					offset   = variable.offset,
 					isConst  = variable.isConst,
-					isRef    = variable.isRef
+					isRef    = variable.isRef,
+					ref      = variable.ref
 				}
 
 				if variable.isRef then
@@ -85,8 +86,9 @@ return function (plume, context)
 	--- @param staticValue any Initial value for static vars (compilation time, default to empty).
 	--- @param source string|nil The path to the file if imported via `use`.
 	--- @param isRef boolean True if it is a reference to a table field
+	--- @param ref string If isRef, name of the key ref
 	--- @return table|nil Returns the variable metadata {offset, isStatic, isConst, isRef, source}, or nil on name collision.
-	function context.registerVariable(name, isStatic, isConst, isParam, staticValue, source, isRef)
+	function context.registerVariable(name, isStatic, isConst, isParam, staticValue, source, isRef, ref)
 		local scope
 		if isStatic then
 			scope = context.static
@@ -119,7 +121,8 @@ return function (plume, context)
 			isStatic = isStatic,
 			isConst = isConst,
 			isRef = isRef,
-			source = source
+			source = source,
+			ref = ref
 		}
 
 		if isRef then

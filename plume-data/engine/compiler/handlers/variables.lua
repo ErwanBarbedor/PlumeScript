@@ -26,7 +26,7 @@ return function (plume, context, nodeHandlerTable)
 		if var.isStatic then  
 			context.registerOP(node, plume.ops.LOAD_STATIC, 0, var.offset)
 		elseif var.isRef then
-			context.registerOP(node, plume.ops.LOAD_CONSTANT, 0, context.registerConstant(varName))  
+			context.registerOP(node, plume.ops.LOAD_CONSTANT, 0, context.registerConstant(var.ref))  
 			context.registerOP(node, plume.ops.LOAD_REF, var.frameOffset, 0)  
 		else  
 			context.registerOP(node, plume.ops.LOAD_LOCAL, var.frameOffset, var.offset)  

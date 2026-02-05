@@ -220,3 +220,15 @@ $t.y
 /// Output
 a1aaa
 /// End
+
+/// Test ref alias
+let t = @table
+	ref x as z: 1
+	y: @join
+		a$z\aaa
+	end
+end
+$t.y
+/// Output
+a1aaa
+/// End
