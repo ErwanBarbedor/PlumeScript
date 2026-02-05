@@ -232,3 +232,14 @@ $t.y
 /// Output
 a1aaa
 /// End
+
+/// Test ref error
+let t = @table
+	let x
+	ref x: 5
+end
+/// Error
+Compilation error: Cannot define variable 'x', it already exists in the current scope.
+File 'ref error', line 3: ref x: 5
+                          ^^^^^^^^
+/// End
