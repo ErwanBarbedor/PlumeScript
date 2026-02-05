@@ -214,6 +214,7 @@ return function (plume)
                                                     _ret24 = mainStack[i - 1 or mainStackPointer]
                                                     mainStackPointer = mainStackPointer + 1
                                                     mainStack[mainStackPointer] = _ret24
+                                                    break
                                                 end
                                             end
                                         end

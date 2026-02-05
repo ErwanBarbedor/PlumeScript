@@ -58,6 +58,7 @@ function LOAD_REF (vm, arg1, arg2)
             if _STACK_GET(vm.mainStack, i) == key then
                 found = true
                 _STACK_PUSH(vm.mainStack, _STACK_GET(vm.mainStack, i-1))
+                break
             end
         end
     end

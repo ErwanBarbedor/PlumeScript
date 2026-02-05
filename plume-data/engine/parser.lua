@@ -342,6 +342,7 @@ return function (plume)
         local listitem = Ct("LIST_ITEM", P"- " * os * V"firstStatement") 
         local hashitem = Ct("HASH_ITEM", (Ct("META", P"meta"*s))^-1 * (idn + eval) * P":" *  os *lbody)
                         + Ct("HASH_ITEM", Ct("REF", P"ref"*s) * idn * (s * P"as" * s * Ct("ALIAS", idn))^-1 * P":" *  os *lbody)
+                        + Ct("EMPTY_REF", Ct("REF", P"ref"*s) * idn * (s * P"as" * s * Ct("ALIAS", idn))^-1)
         local expand   = Ct("EXPAND", P"..." * evalBase) 
 
         ----------

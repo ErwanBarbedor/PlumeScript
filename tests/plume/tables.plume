@@ -221,6 +221,27 @@ $t.y
 a1aaa
 /// End
 
+/// Test ref  empty 1
+let t = @table
+	ref x
+	y: $x
+end
+$t.y
+/// Output
+/// End
+
+/// Test ref  empty 2
+let t = @table
+	ref x
+	x: 5
+	y: $x
+end
+$t.y
+/// Output
+5
+/// End
+
+
 /// Test ref alias
 let t = @table
 	ref x as z: 1
