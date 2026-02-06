@@ -442,3 +442,12 @@ $t()$t()
 /// Output
 aa
 /// End
+
+/// Test #364
+for i in seq(1)
+    let a, b
+    $b
+end
+/// Output
+
+/// End

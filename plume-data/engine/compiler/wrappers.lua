@@ -82,7 +82,7 @@ return function (plume, context)
     function context.scope(f, internVar)  
         f = f or context.childrenHandler  
         return function (node)  
-            local lets = #plume.ast.getAll(node, "LET") + (internVar or 0)
+            local lets = context.countLocals(node) + (internVar or 0)
             if lets>0 then  
                 context.registerOP(node, plume.ops.ENTER_SCOPE, 0, lets)  
                 table.insert(context.scopes, {})  
