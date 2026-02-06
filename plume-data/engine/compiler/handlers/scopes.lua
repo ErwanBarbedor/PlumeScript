@@ -28,4 +28,11 @@ return function (plume, context, nodeHandlerTable)
 		end)(node)
 		context.registerOP(node, plume.ops.STORE_VOID)
 	end
+
+	nodeHandlerTable.DO = function(node)
+		local body = plume.ast.get(node, "BODY")
+		context.scope(function()
+			context.accBlock()(body)
+		end)(body)
+	end
 end

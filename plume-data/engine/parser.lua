@@ -345,6 +345,8 @@ return function (plume)
                         + Ct("EMPTY_REF", Ct("REF", P"ref"*s) * idn * (s * P"as" * s * Ct("ALIAS", idn))^-1)
         local expand   = Ct("EXPAND", P"..." * evalBase) 
 
+        local _do = Ct("DO", os * P"do" * body * _end)
+
         ----------
         -- main --
         ----------
@@ -362,7 +364,7 @@ return function (plume)
                                 ,
             statement    = lt * V"firstStatement",
 
-            command =  _if + _while + _for + _break + continue + macro + block + let + set + leave + listitem + hashitem + expand + use,
+            command =  _if + _while + _for + _break + continue + macro + _do + block + let + set + leave + listitem + hashitem + expand + use,
 
             text =   (escaped + eval + V"comment" + V"rawtext")^1,
             textns = (escaped + eval + V"comment" + V"rawtextns")^1,

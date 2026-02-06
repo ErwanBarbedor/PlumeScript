@@ -1,0 +1,41 @@
+/// Test table
+let t = do
+	- Wing
+end
+$t[1]
+/// Output
+Wing
+/// End
+
+/// Test text
+let t = do
+	Wing\n
+	Nib
+end
+$t
+/// Output
+Wing
+Nib
+/// End
+
+/// Test nested - item
+let t = do
+	- do
+		- Wing
+	end
+end
+$t[1][1]
+/// Output
+Wing
+/// End
+
+/// Test nested - key
+let t = do
+	nib: do
+		- Wing
+	end
+end
+$t.nib[1]
+/// Output
+Wing
+/// End

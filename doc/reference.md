@@ -14,7 +14,7 @@ This is a valid Plume program.
 
 To distinguish control flow and logic from text, Plume recognizes a set of **statements**. A line is treated as a statement if it begins (after any leading whitespace) with one of the following keywords:
 
-*   `if`, `elseif`, `else`, `for`, `while`, `macro`, `end`, `run`, `leave`, `break`, `continue`
+*   `if`, `elseif`, `else`, `for`, `while`, `macro`, `end`, `run`, `leave`, `break`, `continue`, `do`
 *   `let`, `set`, `use`
 *   `meta` (defines a metatable field within a table block)
 *   `-` (initiates a table item)
@@ -520,6 +520,20 @@ For a complete explanation, see `Syntax > macro and Calls`.
 
 *   **`$name`:** Evaluates the variable `name` and interpolates its value as text.
 *   **`$(...)`:** Evaluates the code within the parentheses and returns the resulting value.
+*   **`do`** Can be used to evaluate a multiline block.
+    ```plume
+    // Creates a multiline block and assigns its return value to text
+    let t = do
+        - Wing
+        - Nib
+        write: quill
+    end
+
+    let text = do
+        This is a text.\n
+        (a multiline one)
+    end
+    ```
 *   **Accessors:** A variable or code evaluation can be followed by accessors:
     *   **Call:** `$songMacro(write, paint)`
     *   **Index:** `$wingTable[0]`, `$wingTable[keyName]`. Raises an error if the specified key or index does not exist in the table.
