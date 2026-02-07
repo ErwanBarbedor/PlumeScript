@@ -18,13 +18,13 @@ return function (plume)
 	plume.warning.cache = {}
 
 	--- Emits a runtime warning with deduplication.
-	-- Displays the warning once per unique message globally, and once per specific
-	-- position (instruction pointer). The detailed help text is only shown on the
-	-- first global occurrence of the message, regardless of call site.
-	-- @param msg string the warning message
-	-- @param help string|nil detailed help text (displayed once globally, then omitted)
-	-- @param runtime table current execution context
-	-- @param ip number instruction pointer identifying the call site
+	--- Displays the warning once per unique message globally, and once per specific
+	--- position (instruction pointer). The detailed help text is only shown on the
+	--- first global occurrence of the message, regardless of call site.
+	--- @param msg string the warning message
+	--- @param help string|nil detailed help text (displayed once globally, then omitted)
+	--- @param runtime table current execution context
+	--- @param ip number instruction pointer identifying the call site
 	function plume.warning.runtimeWarning(msg, help, runtime, ip)
 	    if plume.warning.cache[msg] then
 	        help = nil
@@ -50,13 +50,13 @@ return function (plume)
 	end
 
 	--- Emits a deprecation warning for features scheduled for removal.
-	-- Formats the description with target version and indents the help text.
-	-- Inherits deduplication logic from runtimeWarning.
-	-- @param version string target version for removal (e.g., "1.0")
-	-- @param description string description of the deprecated feature
-	-- @param help string migration instructions or alternatives
-	-- @param runtime table current execution context
-	-- @param ip number instruction pointer identifying the call site
+	--- Formats the description with target version and indents the help text.
+	--- Inherits deduplication logic from runtimeWarning.
+	--- @param version string target version for removal (e.g., "1.0")
+	--- @param description string description of the deprecated feature
+	--- @param help string migration instructions or alternatives
+	--- @param runtime table current execution context
+	--- @param ip number instruction pointer identifying the call site
 	function plume.warning.deprecated(version, description, help, runtime, ip, issue)
 	    help = "  "..help:gsub('\n', '\n  ')
 	    plume.warning.runtimeWarning(
