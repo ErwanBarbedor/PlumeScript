@@ -65,6 +65,20 @@ end
 --! inline
 function STD_ITEMS(vm, arg1, arg2)
     local args = _STACK_POP(vm.mainStack).table
+
+    ---------------------------------
+    -- WILL BE REMOVED IN 1.0 (#230)
+    ---------------------------------
+    if args.legacy then
+        vm.plume.warning.deprecated(
+                    "1.0",
+                    "`?legacy` flag for macro items",
+                    "Instead of \n```\nfor x in items(t, ?legacy)\n\tx.key -> x.value\nend\n```\ndo\n```\nfor key, value in items(t)\n\tkey -> value\nend\n```",
+                    vm.runtime, vm.ip, 230
+                )
+    end
+    ---------------------------------
+
     _STACK_PUSH(vm.mainStack, {
         type = "stdIterator",
         ref  = args[1],
@@ -82,6 +96,20 @@ end
 --! inline
 function STD_ENUMERATE(vm, arg1, arg2)
     local args = _STACK_POP(vm.mainStack).table
+
+    ---------------------------------
+    -- WILL BE REMOVED IN 1.0 (#230)
+    ---------------------------------
+    if args.legacy then
+        vm.plume.warning.deprecated(
+                    "1.0",
+                    "`?legacy` flag for macro enumerate",
+                    "Instead of \n```\nfor x in enumerate(t, ?legacy)\n\tx.index -> x.value\nend\n```\ndo\n```\nfor index, value in enumerate(t)\n\tindex -> value\nend\n```",
+                    vm.runtime, vm.ip, 230
+                )
+    end
+    ---------------------------------
+
     _STACK_PUSH(vm.mainStack, {
         type = "stdIterator",
         ref = args[1],
