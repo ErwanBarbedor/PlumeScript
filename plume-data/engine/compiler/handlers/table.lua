@@ -17,16 +17,43 @@ return function (plume, context, nodeHandlerTable)
 	--- `- item`
 	nodeHandlerTable.LIST_ITEM = context.accBlock()
 
+	--- Register reference
+	local function handleRef(node)
+		local identifier = plume.ast.get(node, "IDENTIFIER")
+		local ref        = plume.ast.get(node, "REF")
+		local refalias   = plume.ast.get(node, "ALIAS")
+
+		if ref then
+			local varName = refalias and plume.ast.get(refalias, "IDENTIFIER").content or identifier.content
+			if not context.registerVariable(varName, nil, nil, nil, nil, nil, true, identifier.content) then
+				plume.error.letExistingVariableError(node, varName)
+			end
+		end
+	end
+
+	nodeHandlerTable.INLINE_TABLE = context.accBlock()
+	
 	--- `key: value` and `meta key: value`
 	nodeHandlerTable.HASH_ITEM = function(node)
-		local identifier = plume.ast.get(node, "IDENTIFIER").content
-		local body = plume.ast.get(node, "BODY")
-		local meta = plume.ast.get(node, "META")
+		local identifier = plume.ast.get(node, "IDENTIFIER")
+		local eval       = plume.ast.get(node, "EVAL")
+		local body       = plume.ast.get(node, "BODY")
+		local meta       = plume.ast.get(node, "META")
 
-		local offset = context.registerConstant(identifier)
+		handleRef(node)
+
+		if eval then
+			context.nodeHandler(eval) 
+		end
 
 		context.accBlock()(body)
-		context.registerOP(node, plume.ops.LOAD_CONSTANT, 0, offset)
+
+		if identifier then
+			local offset = context.registerConstant(identifier.content)
+			context.registerOP(node, plume.ops.LOAD_CONSTANT, 0, offset)
+		else
+			context.registerOP(node, plume.ops.SWITCH, 0, 0)
+		end
 
 		if meta then
 			context.registerOP(node, plume.ops.TAG_META_KEY, 0, 0)
@@ -34,6 +61,11 @@ return function (plume, context, nodeHandlerTable)
 			context.registerOP(node, plume.ops.TAG_KEY, 0, 0)
 		end
 	end
+
+	nodeHandlerTable.EMPTY_REF = function(node)
+		handleRef(node)
+	end
+
 
 	--- `...table`
 	nodeHandlerTable.EXPAND = function(node)

@@ -241,7 +241,7 @@ song
 /// End
 
 /// Test #177
-do nothing
+run nothing
 /// Output
 
 /// End
@@ -361,6 +361,13 @@ $nib()
 nib
 /// End
 
+/// Test #311
+let t = $table(x: $false)
+$t.x
+/// Output
+false
+/// End
+
 /// Test #330-1
 let nib from $import(tests/plume/toimport/touse)
 $nib()
@@ -379,11 +386,68 @@ nibnib
 
 /// Test #345
 let t = $table(wing, nib)
-do $table.remove($t)
+run $table.remove($t)
 
 for k, v in items(t)
     $k -> $v\n
 end
 /// Output
 1 -> wing
+/// End
+
+/// Test #349
+for i in seq(1)
+    for i in seq(1)
+        break
+    end
+end
+/// Output
+/// End
+
+/// Test #354
+let t1 = $table(a, b, c)
+let t2 = $(table(...t1))
+$join(...t2)
+/// Output
+abc
+/// End
+
+/// Test #355
+while true
+    break
+end
+a
+/// Output
+a
+/// End
+
+/// Test #358
+macro wing(x)
+    set x.y = $table()
+end
+macro nib()
+    y: $empty
+
+    meta call: macro()
+        if not self.y
+            $(wing(self))
+        end
+
+        a
+    end
+end
+
+let t = $nib()
+$t()$t()
+/// Output
+aa
+/// End
+
+/// Test #364
+for i in seq(1)
+    let a, b
+    $b
+end
+/// Output
+
 /// End

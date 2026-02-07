@@ -17,7 +17,7 @@ return function (plume)
 	-- OPP
 	plume.ops_names = [[
 		LOAD_CONSTANT LOAD_TRUE LOAD_FALSE LOAD_EMPTY
-		LOAD_LOCAL LOAD_STATIC 
+		LOAD_LOCAL LOAD_STATIC LOAD_REF
 		STORE_LOCAL STORE_STATIC STORE_VOID
 
 		TABLE_NEW
@@ -232,7 +232,10 @@ return function (plume)
 		    or node.name == "OR"
 
 		    or node.name == "FALSE"
-		    or node.name == "TRUE" then
+		    or node.name == "TRUE"
+
+		    or node.name == "DO"
+		    or node.name == "INLINE_TABLE" then
 			return "VALUE"
 		else
 			return "EMPTY"

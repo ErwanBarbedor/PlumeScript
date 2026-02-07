@@ -264,6 +264,25 @@ $join(...table.finds($t, nib))
 wingwrite
 /// End
 
+/// Test count
+let t = $table(wing: nib, write, nib)
+
+$table.count($t)\n
+$table.count($t, ?named)
+/// Output
+3
+1
+/// End
+
+/// Test entry
+let t = $table(wing: nib, write: nib)
+
+let k, v = $table.entry($t, 2)
+$k = $v
+/// Output
+write = nib
+/// End
+
 /// Test Error
 let t = @table
   - macro()

@@ -136,3 +136,164 @@ $(t["b"]? or 1)
 /// Output
 1
 /// End
+
+/// Test dynamic keys 1
+let x = wing
+let t = @table
+	$x: nib
+end
+
+$t.wing
+/// Output
+nib
+/// End
+
+/// Test dynamic keys 2
+let x = wing
+let t = $table($x: nib)
+
+$t.wing
+/// Output
+nib
+/// End
+
+/// Test dynamic keys 3
+let x = wing
+let t = $(table($x: "nib"))
+
+$t.wing
+/// Output
+nib
+/// End
+
+/// Test ref 1
+let t = @table
+	ref x: 1
+	y: $x
+end
+$t.y
+/// Output
+1
+/// End
+
+/// Test ref 2
+let t = @table
+	ref x: 1
+	z: aaaa
+	y: $x
+end
+$t.y
+/// Output
+1
+/// End
+
+/// Test ref 3
+let t = @table
+	ref x: 1
+	if true
+		y: $x
+	end
+end
+$t.y
+/// Output
+1
+/// End
+
+/// Test ref 4
+let t = @table
+	ref x: 1
+	y: $x$x$x
+end
+$t.y
+/// Output
+111
+/// End
+
+/// Test ref 5
+let t = @table
+	ref x: 1
+	y: @join
+		a$x\aaa
+	end
+end
+$t.y
+/// Output
+a1aaa
+/// End
+
+/// Test ref  empty 1
+let t = @table
+	ref x
+	y: $x
+end
+$t.y
+/// Output
+/// End
+
+/// Test ref  empty 2
+let t = @table
+	ref x
+	x: 5
+	y: $x
+end
+$t.y
+/// Output
+5
+/// End
+
+
+/// Test ref alias
+let t = @table
+	ref x as z: 1
+	y: @join
+		a$z\aaa
+	end
+end
+$t.y
+/// Output
+a1aaa
+/// End
+
+/// Test inline table
+let t = (1, 2, a:b)
+$t[1]$t.a
+/// Output
+1b
+/// End
+
+/// Test inline table - eval
+let t = $((1+2, 2, a:"b"))
+$t[1]$t.a
+/// Output
+3b
+/// End
+
+/// Test inline table nested
+let t = (1, (1, 2), a:b)
+$t[2][1]
+/// Output
+1
+/// End
+
+/// Test inline table in call
+$len((1, 2, 3))
+/// Output
+3
+/// End
+
+/// Test inline table in call - eval
+$(len((1, 2, 3)))
+/// Output
+3
+/// End
+
+/// Test ref error
+let t = @table
+	let x
+	ref x: 5
+end
+/// Error
+Compilation error: Cannot define variable 'x', it already exists in the current scope.
+File 'ref error', line 3: ref x: 5
+                          ^^^^^^^^
+/// End

@@ -14,11 +14,12 @@ This is a valid Plume program.
 
 To distinguish control flow and logic from text, Plume recognizes a set of **statements**. A line is treated as a statement if it begins (after any leading whitespace) with one of the following keywords:
 
-*   `if`, `elseif`, `else`, `for`, `while`, `macro`, `end`, `do`, `leave`, `break`, `continue`
+*   `if`, `elseif`, `else`, `for`, `while`, `macro`, `end`, `run`, `leave`, `break`, `continue`, `do`
 *   `let`, `set`, `use`
 *   `meta` (defines a metatable field within a table block)
 *   `-` (initiates a table item)
 *   `key:` (initiates a named table item, where `key` is any valid identifier)
+*   `$key:` (initiates a dynamic named table item, where key is an expression to be evaluated)
 *   `...` (expand a table)
 *   `@name` (initiates a block call)
 
@@ -109,7 +110,7 @@ let x = 1 // This is also a comment.
 
 All statements must start at the beginning of a line, though they may be preceded by whitespace.
 
-Some statements that initiate a value assignment or a data structure (`let`, `set`, `-`, `key:`) can be **chained** on the same line with a statement that produces a value (`if`, `for`, `while`, `macro`, `@name`).
+Some statements that initiate a value assignment or a data structure (`let`, `set`, `-`, `key:`, `$key:`) can be **chained** on the same line with a statement that produces a value (`if`, `for`, `while`, `macro`, `@name`).
 
 ```plume
 // Assigning the result of an @-call to a variable
@@ -194,7 +195,7 @@ The `break` and `continue` statements provide fine-grained control over the exec
             // Skip this item and move to the next
             continue
         end
-        do $process(number)
+        run $process(number)
     end
     ```
 
@@ -230,7 +231,7 @@ end
 ```
 The following call formats are available:
 
-1.  **Standard Call:** Arguments are passed in a parenthesized list. This format supports positional arguments, named arguments, and table unpacking using the `...` operator (see *Syntax > Table Expansion and Unpacking*).
+1.  **Standard Call:** Arguments are passed in a parenthesized list. This format supports positional arguments, named arguments (including dynamic keys), and table unpacking using the `...` operator (see *Syntax > Table Expansion and Unpacking*).
     ```plume
     $buildTag(div, mainContent, ...default)
     ```
@@ -426,6 +427,27 @@ Plume provides a `...` operator to expand or unpack a table's contents into anot
 
 The expression following `...` must evaluate to a table. Attempting to expand any other data type (number, string, etc.) will result in an error.
 
+### Dynamic Keys (`$key:`)
+
+Plume allows table keys to be determined at runtime by evaluating an expression. This is available in both table accumulation blocks and macro calls.
+
+*   **In Tables:** The expression after the `$` is evaluated, and the result is used as the key for the following value.
+*   **In Calls:** It allows passing named arguments where the name is stored in a variable.
+
+```plume
+let dynamicField = status
+let val = 200
+
+let response = @table
+    code: $val
+    $dynamicField: Success
+end
+// Result: { "code": 200, "status": "Success" }
+
+// Also works in standard macro calls
+run $print($dynamicField: All green)
+```
+
 #### In Table Accumulation Blocks (Expansion)
 
 When used inside a `TABLE` accumulation block, the `...` operator inserts all items (list and named) from the specified table into the table being constructed.
@@ -498,6 +520,20 @@ For a complete explanation, see `Syntax > macro and Calls`.
 
 *   **`$name`:** Evaluates the variable `name` and interpolates its value as text.
 *   **`$(...)`:** Evaluates the code within the parentheses and returns the resulting value.
+*   **`do`** Can be used to evaluate a multiline block.
+    ```plume
+    // Creates a multiline block and assigns its return value to text
+    let t = do
+        - Wing
+        - Nib
+        write: quill
+    end
+
+    let text = do
+        This is a text.\n
+        (a multiline one)
+    end
+    ```
 *   **Accessors:** A variable or code evaluation can be followed by accessors:
     *   **Call:** `$songMacro(write, paint)`
     *   **Index:** `$wingTable[0]`, `$wingTable[keyName]`. Raises an error if the specified key or index does not exist in the table.
@@ -508,7 +544,50 @@ For a complete explanation, see `Syntax > macro and Calls`.
         
         If the key exists, the value is returned. If the key is missing, the expression evaluates to `empty` instead of halting execution.
 
-### Calls for Side-Effects (`do`)
+#### References and Aliases (`ref`)
+**`ref` Keyword: Creating References to Table Fields**
+
+The `ref` keyword allows creating a variable that acts as a **reference** to a specific field in the current table. This variable will automatically reflect changes to the referenced field.
+
+**Syntax:**
+- `ref x`: Creates a variable `x` that references the field `x` of the current table.
+- `ref x as y`: Creates a variable `y` that references the field `x` of the current table (aliasing).
+- `ref x: value`: Shorthand for `ref x` followed by `x: value` (sets the value of the referenced field).
+
+**Example:**
+
+```plume
+let t = @table
+    ref x
+    y: $x  // y is `empty` (x is not yet set)
+    x: 5   // x is now 5
+    z: $x  // z is 5 (references the updated x)
+end
+```
+
+**Behavior:**
+- The `ref` variable is a **live reference** to the table field. If the field is modified later, the `ref` variable will reflect the change.
+- If the referenced field is `empty` or undefined, the `ref` variable will return `empty`.
+
+#### Inline Tables
+Plume allows you to define table literals directly within expressions using parentheses. The syntax mirrors the argument table syntax used in macro calls.
+
+*   **Syntax:** `(items...)`
+*   **Evaluation:** The content within the parentheses is evaluated to produce the values for the table items.
+
+```plume
+// Assigning an inline table to a variable
+let t = (a, b, c, d: e)
+
+// Evaluating expressions inside the inline table
+let t = $((1, 2, 3, key: 4))
+```
+
+**Constraints:**
+*   **Multi-element requirement:** An inline table must contain at least two items. It cannot be used for empty tables or single-element tables.
+*   **Fallback:** For empty tables or single-element tables, use the `$table()` function instead.
+
+### Calls for Side-Effects (`run`)
 
 By default, every expression in Plume, including macro calls, contributes its return value to the current accumulation block. This can be undesirable for macros that are executed solely for their side-effects (e.g., printing to the console, writing to a file).
 
@@ -516,9 +595,9 @@ To execute a macro call without its return value affecting the accumulation cont
 
 ```plume
 let myTable = @table
-    // $print returns 'empty', but 'do' prevents it from converting
+    // $print returns 'empty', but 'run' prevents it from converting
     // this block into a TEXT block.
-    do $print(Initializing table definition...)
+    run $print(Initializing table definition...)
 
     // This remains a valid TABLE block
     id: 42
@@ -526,20 +605,20 @@ let myTable = @table
 end
 ```
 
-The `do` statement can be used with both standard and block calls:
+The `run` statement can be used with both standard and block calls:
 
 ```plume
 // Standard call
-do $myMacro(arg1)
+run $myMacro(arg1)
 
 // Block call
-do @myMacro
+run @myMacro
     - arg1
     - arg2
 end
 ```
 
-Using `do` allows for imperative-style procedure calls within Plume's expression-oriented architecture, providing a clear and safe way to manage side-effects.
+Using `run` allows for imperative-style procedure calls within Plume's expression-oriented architecture, providing a clear and safe way to manage side-effects.
 
 ### Context Injection (`use`)
 
@@ -740,8 +819,15 @@ Plume provides a set of built-in macros to handle common tasks such as I/O, tabl
     *   `table.hasKey(table, key)`: Check if `table` as a field `key`. Behave exactly like `table.key?`, except if `table.key` exists but is `empty`.
     *   `table.find(table, v)`: Search for a `k` such that `table[k] = v` and return the first found. Return `empty` if not found.
     *   `table.finds(table, v)`: Search for all `k` such that `table[k] = v`. Return a table.
+    *   `table.count(table, ?named)`: Total number of elements (all keys or named keys only).
+    *   `table.entry(table, index)`: Returns the key and value at the given position in insertion order.
+    *   **Edge Cases:** Use this function specifically when creating empty tables (`table()`) or tables with a single element.
 *   `rawset(table, key, value)`: Sets the value of `key` in `table` to `value` without triggering any `setindex` metafield.
 *   `join(sep: "", ...items)`: Returns a string produced by concatenating `items`, optionally separated by `sep`.
+
+Note: For multi-element inline tables, the parentheses syntax `(a, b, ...)` is the preferred method against `$table(a, b, ...)` and evaluates to the same result.
+
+Use `$table` specifically when creating empty tables or tables with a single element.
 
 ### Iterators
 

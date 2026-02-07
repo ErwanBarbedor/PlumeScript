@@ -78,7 +78,7 @@ LOAD_LOCAL(vm, arg1, arg2)
 								if op < 7 then
 LOAD_STATIC(vm, arg1, arg2)
 								else
-STORE_LOCAL(vm, arg1, arg2)
+LOAD_REF(vm, arg1, arg2)
 								end
 							end
 						end
@@ -86,29 +86,29 @@ STORE_LOCAL(vm, arg1, arg2)
 						if op < 12 then
 							if op < 10 then
 								if op < 9 then
-STORE_STATIC(vm, arg1, arg2)
+STORE_LOCAL(vm, arg1, arg2)
 								else
-STORE_VOID(vm, arg1, arg2)
+STORE_STATIC(vm, arg1, arg2)
 								end
 							else
 								if op < 11 then
-TABLE_NEW(vm, arg1, arg2)
+STORE_VOID(vm, arg1, arg2)
 								else
-TABLE_SET(vm, arg1, arg2)
+TABLE_NEW(vm, arg1, arg2)
 								end
 							end
 						else
 							if op < 14 then
 								if op < 13 then
-TABLE_INDEX(vm, arg1, arg2)
+TABLE_SET(vm, arg1, arg2)
 								else
-TABLE_REGISTER_SELF(vm, arg1, arg2)
+TABLE_INDEX(vm, arg1, arg2)
 								end
 							else
 								if op < 15 then
-TABLE_SET_META(vm, arg1, arg2)
+TABLE_REGISTER_SELF(vm, arg1, arg2)
 								else
-TABLE_SET_ACC(vm, arg1, arg2)
+TABLE_SET_META(vm, arg1, arg2)
 								end
 							end
 						end
@@ -118,29 +118,29 @@ TABLE_SET_ACC(vm, arg1, arg2)
 						if op < 20 then
 							if op < 18 then
 								if op < 17 then
-TABLE_EXPAND(vm, arg1, arg2)
+TABLE_SET_ACC(vm, arg1, arg2)
 								else
-CALL_INDEX_REGISTER_SELF(vm, arg1, arg2)
+TABLE_EXPAND(vm, arg1, arg2)
 								end
 							else
 								if op < 19 then
-TAG_META_KEY(vm, arg1, arg2)
+CALL_INDEX_REGISTER_SELF(vm, arg1, arg2)
 								else
-TAG_KEY(vm, arg1, arg2)
+TAG_META_KEY(vm, arg1, arg2)
 								end
 							end
 						else
 							if op < 22 then
 								if op < 21 then
-ENTER_SCOPE(vm, arg1, arg2)
+TAG_KEY(vm, arg1, arg2)
 								else
-LEAVE_SCOPE(vm, arg1, arg2)
+ENTER_SCOPE(vm, arg1, arg2)
 								end
 							else
 								if op < 23 then
-BEGIN_ACC(vm, arg1, arg2)
+LEAVE_SCOPE(vm, arg1, arg2)
 								else
-CONCAT_TABLE(vm, arg1, arg2)
+BEGIN_ACC(vm, arg1, arg2)
 								end
 							end
 						end
@@ -148,29 +148,29 @@ CONCAT_TABLE(vm, arg1, arg2)
 						if op < 28 then
 							if op < 26 then
 								if op < 25 then
-CONCAT_TEXT(vm, arg1, arg2)
+CONCAT_TABLE(vm, arg1, arg2)
 								else
-CONCAT_CALL(vm, arg1, arg2)
+CONCAT_TEXT(vm, arg1, arg2)
 								end
 							else
 								if op < 27 then
-CHECK_IS_TEXT(vm, arg1, arg2)
+CONCAT_CALL(vm, arg1, arg2)
 								else
-JUMP_IF(vm, arg1, arg2)
+CHECK_IS_TEXT(vm, arg1, arg2)
 								end
 							end
 						else
 							if op < 30 then
 								if op < 29 then
-JUMP_IF_NOT(vm, arg1, arg2)
+JUMP_IF(vm, arg1, arg2)
 								else
-JUMP_IF_NOT_EMPTY(vm, arg1, arg2)
+JUMP_IF_NOT(vm, arg1, arg2)
 								end
 							else
 								if op < 31 then
-JUMP_FOR(vm, arg1, arg2)
+JUMP_IF_NOT_EMPTY(vm, arg1, arg2)
 								else
-JUMP(vm, arg1, arg2)
+JUMP_FOR(vm, arg1, arg2)
 								end
 							end
 						end
@@ -182,29 +182,29 @@ JUMP(vm, arg1, arg2)
 						if op < 36 then
 							if op < 34 then
 								if op < 33 then
-JUMP_IF_PEEK(vm, arg1, arg2)
+JUMP(vm, arg1, arg2)
 								else
-JUMP_IF_NOT_PEEK(vm, arg1, arg2)
+JUMP_IF_PEEK(vm, arg1, arg2)
 								end
 							else
 								if op < 35 then
-GET_ITER(vm, arg1, arg2)
+JUMP_IF_NOT_PEEK(vm, arg1, arg2)
 								else
-FOR_ITER(vm, arg1, arg2)
+GET_ITER(vm, arg1, arg2)
 								end
 							end
 						else
 							if op < 38 then
 								if op < 37 then
-OP_ADD(vm, arg1, arg2)
+FOR_ITER(vm, arg1, arg2)
 								else
-OP_MUL(vm, arg1, arg2)
+OP_ADD(vm, arg1, arg2)
 								end
 							else
 								if op < 39 then
-OP_SUB(vm, arg1, arg2)
+OP_MUL(vm, arg1, arg2)
 								else
-OP_DIV(vm, arg1, arg2)
+OP_SUB(vm, arg1, arg2)
 								end
 							end
 						end
@@ -212,29 +212,29 @@ OP_DIV(vm, arg1, arg2)
 						if op < 44 then
 							if op < 42 then
 								if op < 41 then
-OP_NEG(vm, arg1, arg2)
+OP_DIV(vm, arg1, arg2)
 								else
-OP_MOD(vm, arg1, arg2)
+OP_NEG(vm, arg1, arg2)
 								end
 							else
 								if op < 43 then
-OP_POW(vm, arg1, arg2)
+OP_MOD(vm, arg1, arg2)
 								else
-OP_LT(vm, arg1, arg2)
+OP_POW(vm, arg1, arg2)
 								end
 							end
 						else
 							if op < 46 then
 								if op < 45 then
-OP_EQ(vm, arg1, arg2)
+OP_LT(vm, arg1, arg2)
 								else
-OP_AND(vm, arg1, arg2)
+OP_EQ(vm, arg1, arg2)
 								end
 							else
 								if op < 47 then
-OP_NOT(vm, arg1, arg2)
+OP_AND(vm, arg1, arg2)
 								else
-OP_OR(vm, arg1, arg2)
+OP_NOT(vm, arg1, arg2)
 								end
 							end
 						end
@@ -244,29 +244,29 @@ OP_OR(vm, arg1, arg2)
 						if op < 52 then
 							if op < 50 then
 								if op < 49 then
-DUPLICATE(vm, arg1, arg2)
+OP_OR(vm, arg1, arg2)
 								else
-SWITCH(vm, arg1, arg2)
+DUPLICATE(vm, arg1, arg2)
 								end
 							else
 								if op < 51 then
-RETURN(vm, arg1, arg2)
+SWITCH(vm, arg1, arg2)
 								else
-RETURN_FILE(vm, arg1, arg2)
+RETURN(vm, arg1, arg2)
 								end
 							end
 						else
 							if op < 54 then
 								if op < 53 then
-									goto END
+RETURN_FILE(vm, arg1, arg2)
 								else
-STD_LEN(vm, arg1, arg2)
+									goto END
 								end
 							else
 								if op < 55 then
-STD_TYPE(vm, arg1, arg2)
+STD_LEN(vm, arg1, arg2)
 								else
-STD_SEQ(vm, arg1, arg2)
+STD_TYPE(vm, arg1, arg2)
 								end
 							end
 						end
@@ -274,12 +274,14 @@ STD_SEQ(vm, arg1, arg2)
 						if op < 60 then
 							if op < 58 then
 								if op < 57 then
-STD_ITEMS(vm, arg1, arg2)
+STD_SEQ(vm, arg1, arg2)
 								else
-STD_ENUMERATE(vm, arg1, arg2)
+STD_ITEMS(vm, arg1, arg2)
 								end
 							else
 								if op < 59 then
+STD_ENUMERATE(vm, arg1, arg2)
+								else
 STD_IMPORT(vm, arg1, arg2)
 								end
 							end

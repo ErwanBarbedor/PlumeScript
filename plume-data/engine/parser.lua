@@ -224,18 +224,20 @@ return function (plume)
 
             -- Eval & index
             local posarg  = Ct("LIST_ITEM", V"_layer1")
-            local optnarg = Ct("HASH_ITEM", idn*os*P":"*os*Ct("BODY", V"_layer1"^-1))
-            local arg = optnarg + posarg + sugarFlagCall(Ct("FLAG", os *"?"*idn))
+            local optnarg = Ct("HASH_ITEM", (idn + Ct("EVAL", P"$" * V"_layer1"))*os*P":"*os*Ct("BODY", V"_layer1"^-1))
+            local arg = optnarg + posarg + sugarFlagCall(Ct("FLAG", os *"?"*idn)) + Ct("EXPAND", Ct("EVAL", P"..."*V"_layer1"))
             local arglist = Ct("CALL", P"(" * arg^-1 * (os * P"," * os * arg)^0 * P")")
             local index = Ct("SAFE_INDEX", P"[" * V"_layer1" * P"]" * P"?") + Ct("INDEX", P"[" * V"_layer1" * P"]")
         	local directindex = Ct("SAFE_DIRECT_INDEX", P"." * idn * P"?") + Ct("DIRECT_INDEX", P"." * idn)
+
+            local inlinetable = Ct("INLINE_TABLE", P"(" * arg^-1 * (os * P"," * os * arg)^1 * P")")
 
             local evalOpperator = arglist + index + directindex
         	local access = Ct("EVAL", idn * evalOpperator^1)
         	---
 
             local terminal = num + access + idn + quote
-            rules["_layer" .. (#opplist+1)] = os * (terminal + P"(" * V("_layer1") * P")") * os
+            rules["_layer" .. (#opplist+1)] = os * (inlinetable + terminal + P"(" * V("_layer1") * P")") * os
 
             return rules
         end
@@ -286,9 +288,10 @@ return function (plume)
         local paramlistM = paramlist + E(plume.error.missingParamListError)
         local macro      = Ct("MACRO", P"macro" * (s * idn)^-1 * os * paramlistM * body * _end)
 
-        local arg       = Ct("HASH_ITEM", os *idn * os * P":" * os * Ct("BODY", V"textic"^-1))	
+        local arg       = Ct("HASH_ITEM", os * (idn + eval) * os * P":" * os * Ct("BODY", V"textic"^-1))	
         				+ sugarFlagCall(Ct("FLAG", os *"?"*idn))
                         + Ct("EXPAND", P"..."*evalBase)
+                        + Ct("LIST_ITEM", V"inlinetable")
                         + Ct("LIST_ITEM", V"textic")
 
         local call      = Ct("CALL", P"(" * arg^-1 * (os * P"," * os * arg)^0 * P")")
@@ -340,8 +343,14 @@ return function (plume)
 
         -- table
         local listitem = Ct("LIST_ITEM", P"- " * os * V"firstStatement") 
-        local hashitem = Ct("HASH_ITEM", Ct("META", P"meta"*s)^-1 * idn * P":" *  os *lbody)
+        local hashitem = Ct("HASH_ITEM", (Ct("META", P"meta"*s))^-1 * (idn + eval) * P":" *  os *lbody)
+                        + Ct("HASH_ITEM", Ct("REF", P"ref"*s) * idn * (s * P"as" * s * Ct("ALIAS", idn))^-1 * P":" *  os *lbody)
+                        + Ct("EMPTY_REF", Ct("REF", P"ref"*s) * idn * (s * P"as" * s * Ct("ALIAS", idn))^-1)
         local expand   = Ct("EXPAND", P"..." * evalBase) 
+
+        local _do = Ct("DO", os * P"do" * body * _end)
+
+        local inlinetable = Ct("INLINE_TABLE", os * P"(" * arg * (P"," * arg)^1 * P")")
 
         ----------
         -- main --
@@ -354,13 +363,13 @@ return function (plume)
             firstStatement = os * (-V"statementTerminator")
                                 * (
                                       V"command"
-                                    + Ct("DO", P"do" * s * V"firstStatement")
+                                    + Ct("RUN", P"run" * s * V"firstStatement")
                                     + V"invalid"^-1 * V"text"
                                 )
                                 ,
             statement    = lt * V"firstStatement",
 
-            command =  _if + _while + _for + _break + continue + macro + block + let + set + leave + listitem + hashitem + expand + use,
+            command =  _if + _while + _for + _break + continue + macro + _do + block + let + set + leave + listitem + hashitem + inlinetable + expand + use,
 
             text =   (escaped + eval + V"comment" + V"rawtext")^1,
             textns = (escaped + eval + V"comment" + V"rawtextns")^1,
@@ -374,7 +383,9 @@ return function (plume)
             rawtextic = C("TEXT", NOT(S"$\n,)\\"+ P"//")^1),
 
             invalid = E(plume.error.emptySetError, P"set"),
-            evalOpperator = call + index + directindex
+            evalOpperator = call + index + directindex,
+
+            inlinetable= inlinetable
         }
 
         return lpeg.Ct(rules)

@@ -32,14 +32,16 @@ return function (plume, context)
         --- @param label|nil string Used to jump at block end, but before finalizer.
         --- @return nil
         return function (node, label)  
-            if node.type == "TEXT" then  
+            if node.type == "TEXT" then
+                context.accBlockDeep = context.accBlockDeep + 1
                 context.toggleConcatOn()
                 context.registerOP(node, plume.ops.BEGIN_ACC, 0, 0)  
                 f(node)  
                 if label then  
                     context.registerLabel(node, label)  
                 end  
-                context.registerOP(nil, plume.ops.CONCAT_TEXT, 0, 0)  
+                context.registerOP(nil, plume.ops.CONCAT_TEXT, 0, 0)
+                context.accBlockDeep = context.accBlockDeep - 1
             else  
                 context.toggleConcatOff()
                 -- More or less a TEXT block with 1 element.
@@ -51,13 +53,15 @@ return function (plume, context)
                     end  
                 -- Handled by block in most cases  
                 elseif node.type == "TABLE" then  
-                    context.accTableInit(node)  
+                    context.accTableInit(node)
+                    context.accBlockDeep = context.accBlockDeep + 1
                     f(node)  
                     if label then  
                         context.registerLabel(node, label)  
                     end  
-                    context.registerOP(nil, plume.ops.CONCAT_TABLE, 0, 0)  
-                -- Exactly same behavior as BEGIN_ACC (nothing) ACC_TEXT  
+                    context.registerOP(nil, plume.ops.CONCAT_TABLE, 0, 0)
+                    context.accBlockDeep = context.accBlockDeep - 1
+                -- Exactly same behavior as BEGIN_ACC (nothing) ACC_TEXT
                 elseif node.type == "EMPTY" then  
                     f(node)  
                     if label then  
@@ -78,7 +82,7 @@ return function (plume, context)
     function context.scope(f, internVar)  
         f = f or context.childrenHandler  
         return function (node)  
-            local lets = #plume.ast.getAll(node, "LET") + (internVar or 0)
+            local lets = context.countLocals(node) + (internVar or 0)
             if lets>0 then  
                 context.registerOP(node, plume.ops.ENTER_SCOPE, 0, lets)  
                 table.insert(context.scopes, {})  

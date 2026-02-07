@@ -1,8 +1,8 @@
 --[[
-Plume🪶 0.70
-Copyright (C) 2024-2025 Erwan Barbedor
+Plume🪶 1.0.beta.1
+Copyright (C) 2024-2026 Erwan Barbedor
 
-Check https://github.com/ErwanBarbedor/PlumeScript
+Check https://github.com/PlumeScript/Plume
 for documentation, tutorials, or to report issues.
 
 This program is free software: you can redistribute it and/or modify
@@ -25,8 +25,6 @@ require 'plume-data/engine/error'         (plume)
 require 'plume-data/engine/errorMessages' (plume)
 require 'plume-data/engine/utils'         (plume)
 require 'plume-data/engine/objects'       (plume)
-require 'plume-data/engine/std/vm'        (plume)
-require 'plume-data/engine/std/lua'       (plume)
 require 'plume-data/engine/std'           (plume)
 require 'plume-data/engine/parser'        (plume)
 require 'plume-data/engine/compiler/core' (plume)

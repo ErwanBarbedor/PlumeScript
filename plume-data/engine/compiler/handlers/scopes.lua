@@ -22,10 +22,17 @@ return function (plume, context, nodeHandlerTable)
 		table.remove(context.scopes)
 	end)
 
-	nodeHandlerTable.DO = function(node)
+	nodeHandlerTable.RUN = function(node)
 		context.accBlock(function(node)
 			context.childrenHandler(node)
 		end)(node)
 		context.registerOP(node, plume.ops.STORE_VOID)
+	end
+
+	nodeHandlerTable.DO = function(node)
+		local body = plume.ast.get(node, "BODY")
+		context.scope(function()
+			context.accBlock()(body)
+		end)(body)
 	end
 end

@@ -88,7 +88,7 @@ function TABLE_INDEX (vm, arg1, arg2)
             end
         else
             local value = t.table[key]
-            if value then
+            if value ~= nil then
                 _STACK_PUSH(vm.mainStack, value)
             else
                 if arg1 == 1 then
