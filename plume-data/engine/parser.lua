@@ -133,7 +133,8 @@ return function (plume)
         ---------------------------
         -- compilation directive --
         ---------------------------
-        local use = P"use" * s * C("USE", NOT(s + "\n")^1)
+        local libname = C("USE", NOT(s + "\n" + ",")^1)
+        local use = P"use" * s * libname * (os*P","*os*libname)^0
 
         ----------
         -- eval --
