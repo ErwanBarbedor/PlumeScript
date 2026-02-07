@@ -234,7 +234,8 @@ return function (plume)
 		    or node.name == "FALSE"
 		    or node.name == "TRUE"
 
-		    or node.name == "DO" then
+		    or node.name == "DO"
+		    or node.name == "INLINE_TABLE" then
 			return "VALUE"
 		else
 			return "EMPTY"

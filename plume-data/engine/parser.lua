@@ -230,12 +230,14 @@ return function (plume)
             local index = Ct("SAFE_INDEX", P"[" * V"_layer1" * P"]" * P"?") + Ct("INDEX", P"[" * V"_layer1" * P"]")
         	local directindex = Ct("SAFE_DIRECT_INDEX", P"." * idn * P"?") + Ct("DIRECT_INDEX", P"." * idn)
 
+            local inlinetable = Ct("INLINE_TABLE", P"(" * arg^-1 * (os * P"," * os * arg)^1 * P")")
+
             local evalOpperator = arglist + index + directindex
         	local access = Ct("EVAL", idn * evalOpperator^1)
         	---
 
             local terminal = num + access + idn + quote
-            rules["_layer" .. (#opplist+1)] = os * (terminal + P"(" * V("_layer1") * P")") * os
+            rules["_layer" .. (#opplist+1)] = os * (inlinetable + terminal + P"(" * V("_layer1") * P")") * os
 
             return rules
         end
@@ -289,6 +291,7 @@ return function (plume)
         local arg       = Ct("HASH_ITEM", os * (idn + eval) * os * P":" * os * Ct("BODY", V"textic"^-1))	
         				+ sugarFlagCall(Ct("FLAG", os *"?"*idn))
                         + Ct("EXPAND", P"..."*evalBase)
+                        + Ct("LIST_ITEM", V"inlinetable")
                         + Ct("LIST_ITEM", V"textic")
 
         local call      = Ct("CALL", P"(" * arg^-1 * (os * P"," * os * arg)^0 * P")")
@@ -347,6 +350,8 @@ return function (plume)
 
         local _do = Ct("DO", os * P"do" * body * _end)
 
+        local inlinetable = Ct("INLINE_TABLE", os * P"(" * arg * (P"," * arg)^1 * P")")
+
         ----------
         -- main --
         ----------
@@ -364,7 +369,7 @@ return function (plume)
                                 ,
             statement    = lt * V"firstStatement",
 
-            command =  _if + _while + _for + _break + continue + macro + _do + block + let + set + leave + listitem + hashitem + expand + use,
+            command =  _if + _while + _for + _break + continue + macro + _do + block + let + set + leave + listitem + hashitem + inlinetable + expand + use,
 
             text =   (escaped + eval + V"comment" + V"rawtext")^1,
             textns = (escaped + eval + V"comment" + V"rawtextns")^1,
@@ -378,7 +383,9 @@ return function (plume)
             rawtextic = C("TEXT", NOT(S"$\n,)\\"+ P"//")^1),
 
             invalid = E(plume.error.emptySetError, P"set"),
-            evalOpperator = call + index + directindex
+            evalOpperator = call + index + directindex,
+
+            inlinetable= inlinetable
         }
 
         return lpeg.Ct(rules)

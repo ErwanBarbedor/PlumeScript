@@ -31,6 +31,8 @@ return function (plume, context, nodeHandlerTable)
 		end
 	end
 
+	nodeHandlerTable.INLINE_TABLE = context.accBlock()
+	
 	--- `key: value` and `meta key: value`
 	nodeHandlerTable.HASH_ITEM = function(node)
 		local identifier = plume.ast.get(node, "IDENTIFIER")

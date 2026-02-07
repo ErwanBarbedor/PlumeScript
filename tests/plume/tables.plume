@@ -254,6 +254,39 @@ $t.y
 a1aaa
 /// End
 
+/// Test inline table
+let t = (1, 2, a:b)
+$t[1]$t.a
+/// Output
+1b
+/// End
+
+/// Test inline table - eval
+let t = $((1+2, 2, a:"b"))
+$t[1]$t.a
+/// Output
+3b
+/// End
+
+/// Test inline table nested
+let t = (1, (1, 2), a:b)
+$t[2][1]
+/// Output
+1
+/// End
+
+/// Test inline table in call
+$len((1, 2, 3))
+/// Output
+3
+/// End
+
+/// Test inline table in call - eval
+$(len((1, 2, 3)))
+/// Output
+3
+/// End
+
 /// Test ref error
 let t = @table
 	let x

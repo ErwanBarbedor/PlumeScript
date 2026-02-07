@@ -569,6 +569,24 @@ end
 - The `ref` variable is a **live reference** to the table field. If the field is modified later, the `ref` variable will reflect the change.
 - If the referenced field is `empty` or undefined, the `ref` variable will return `empty`.
 
+#### Inline Tables
+Plume allows you to define table literals directly within expressions using parentheses. The syntax mirrors the argument table syntax used in macro calls.
+
+*   **Syntax:** `(items...)`
+*   **Evaluation:** The content within the parentheses is evaluated to produce the values for the table items.
+
+```plume
+// Assigning an inline table to a variable
+let t = (a, b, c, d: e)
+
+// Evaluating expressions inside the inline table
+let t = $((1, 2, 3, key: 4))
+```
+
+**Constraints:**
+*   **Multi-element requirement:** An inline table must contain at least two items. It cannot be used for empty tables or single-element tables.
+*   **Fallback:** For empty tables or single-element tables, use the `$table()` function instead.
+
 ### Calls for Side-Effects (`run`)
 
 By default, every expression in Plume, including macro calls, contributes its return value to the current accumulation block. This can be undesirable for macros that are executed solely for their side-effects (e.g., printing to the console, writing to a file).
@@ -803,8 +821,13 @@ Plume provides a set of built-in macros to handle common tasks such as I/O, tabl
     *   `table.finds(table, v)`: Search for all `k` such that `table[k] = v`. Return a table.
     *   `table.count(table, ?named)`: Total number of elements (all keys or named keys only).
     *   `table.entry(table, index)`: Returns the key and value at the given position in insertion order.
+    *   **Edge Cases:** Use this function specifically when creating empty tables (`table()`) or tables with a single element.
 *   `rawset(table, key, value)`: Sets the value of `key` in `table` to `value` without triggering any `setindex` metafield.
 *   `join(sep: "", ...items)`: Returns a string produced by concatenating `items`, optionally separated by `sep`.
+
+Note: For multi-element inline tables, the parentheses syntax `(a, b, ...)` is the preferred method against `$table(a, b, ...)` and evaluates to the same result.
+
+Use `$table` specifically when creating empty tables or tables with a single element.
 
 ### Iterators
 
