@@ -17,6 +17,7 @@ return function (plume)
 	plume.warning = {}
 	plume.warning.cache = {}
 	plume.warning.mode = {default="normal"}
+	plume.warning.first = true
 
 	--- Emits a warning with deduplication.
 	--- Displays the warning once per unique message globally, and once per specific
@@ -62,8 +63,14 @@ return function (plume)
 	    if mode == "strict" then
 	    	plume.error.customError (node, msg)
 	    else
+	    	if plume.warning.first then
+	    		msg = msg .. "\nAdd `use #warning-ignore[-global][-related issues]` in your file to ignore warnings.\n"
+	    		plume.warning.first = false
+	    	end
 	    	print(msg)
 	    end
+
+
 	end
 
 	--- Emits a runtime warning
