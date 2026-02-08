@@ -620,13 +620,14 @@ end
 
 Using `run` allows for imperative-style procedure calls within Plume's expression-oriented architecture, providing a clear and safe way to manage side-effects.
 
-### Context Injection (`use`)
+### Context Injection (`use <path>`)
 
 The `use` directive allows injecting the keys of a table returned by a module directly into the current file’s scope as `static const` variables.
 
 **Syntax:**
 ```plume
 use path
+use path1, path2, ...
 ```
 
 **Implementation Details:**
@@ -689,6 +690,20 @@ end
 // job.plume
 use mylib
 ```
+
+
+### Directives (`use #name`)
+`use #directive[-option1][-option2]` is executed during compilation and allows specific behaviors to be enabled/disabled.
+
+**Existing directives**:
+*   **warning**
+    *   **Options**
+        *   `-strict`: the first warning encountered raises an error
+        *   `-ignore`: does not display warnings
+        *   `-[n]`: applies the directive only to warnings related to issue n
+    *   **Exemples**
+        *   `use #warning-ignore` suppresses all warnings
+        *   `use #warning-strict-75-76` raises an error at the first warning related to issues #75 or #76
 
 ### Metatables
 

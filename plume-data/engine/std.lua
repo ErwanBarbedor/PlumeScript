@@ -33,10 +33,10 @@ return function (plume)
     plume.std = {}
     require 'plume-data/engine/std/lua' (plume)
     ---------------------------------
-    -- WILL BE REMOVED IN 1.0 (#230)
+    -- WILL BE REMOVED IN 1.0 (#175, #230)
     ---------------------------------
-    plume.stdLua.remove = remove
-    plume.stdLua.append = append
+    plume.stdLua.remove = plume.warning.deprecatedFunction("1.0", "`remove` standard macro", "Instead of `remove`, use `able.remove`", {175, 230}, remove)
+    plume.stdLua.append = plume.warning.deprecatedFunction("1.0", "`append` standard macro", "Instead of `append`, use `table.append`", {175, 230}, append)
     ---------------------------------
     for name, f in pairs(plume.stdLua) do
         plume.std[name] = plume.obj.luaFunction(name, f)

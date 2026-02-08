@@ -44,7 +44,7 @@ function CONCAT_CALL (vm, arg1, arg2)
     elseif t == "luaFunction" then
         CONCAT_TABLE(vm)
         table.insert(vm.runtime.callstack, {runtime=vm.runtime, macro=tocall, ip=vm.ip})
-        local success, result  =  pcall(tocall.callable, _STACK_POP(vm.mainStack), vm.runtime, _STACK_GET(vm.fileStack))
+        local success, result  =  pcall(tocall.callable, _STACK_POP(vm.mainStack), vm.runtime, _STACK_GET(vm.fileStack), vm.ip)
         if success then
             table.remove(vm.runtime.callstack)
             if result == nil then

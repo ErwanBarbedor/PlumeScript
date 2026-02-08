@@ -22,6 +22,10 @@ return function(plume)
 		error(message, -1)
 	end
 
+	function plume.error.customError (node, message)
+		error(message, -1)
+	end
+
 	function plume.error.cannotAddPositionnalAfterNamed(node, varName)
 		local message = "Cannot add a positionnal parameter after a named one"
 		throwCompilationError(node, message)
@@ -37,6 +41,10 @@ return function(plume)
 		throwCompilationError(node, message)
 	end
 
+	function plume.error.unknowDirective(node, name)
+		local message = string.format("Cannot use directive '%s': it doesn't exists.", name)
+		throwCompilationError(node, message)
+	end
 
 	function plume.error.compoundWithDestructionError(node)
 		local message = "Cannot use compound operator and destructuration at the same time."

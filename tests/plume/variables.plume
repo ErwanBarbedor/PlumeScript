@@ -93,6 +93,15 @@ $nib
 quill
 /// End
 
+/// Test use 2
+use tests/plume/toimport/lib, tests/plume/toimport/lib2
+$nib\n
+$wing()
+/// Output
+quill
+blue quill
+/// End
+
 /// Test wrong indentifier
 let if = 5
 /// Error

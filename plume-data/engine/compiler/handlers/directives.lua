@@ -16,7 +16,7 @@ If not, see <https://www.gnu.org/licenses/>.
 return function (plume, context, nodeHandlerTable)
 	--- `use` directive execute a file that must return a table,
 	--- and load all keys as constants into the current file static table.
-	nodeHandlerTable.USE = function(node)
+	nodeHandlerTable.USE_LIB = function(node)
 		local path = node.content
 
 		-- Same path resolver as `import`
@@ -52,4 +52,42 @@ return function (plume, context, nodeHandlerTable)
         return result
 	end
 
+	local directivesHandler = {
+		warning = function (...)
+			local mode = "normal"
+			local filters = {}
+
+			for _, x in ipairs({...}) do
+				if x == "strict" or x == "ignore" or x == "normal" then
+					mode = x
+				else
+					table.insert(filters, x)
+				end
+			end
+
+			if #filters == 0 then
+				plume.warning.mode.default = mode
+			else
+				for _, x in ipairs(filters) do
+					plume.warning.mode[x] = mode
+				end
+			end
+		end
+	}
+
+	--- `use #name-optn-optn`
+	nodeHandlerTable.USE_DIRECTIVE = function(node)
+		local directiveNameNode = plume.ast.get(node, "IDENTIFIER")
+		local directiveName = directiveNameNode.content
+		local options = {}
+		for _, option in ipairs(plume.ast.getAll(node, "USE_OPTION")) do
+			table.insert(options, option.content)
+		end
+		
+		local handler = directivesHandler[directiveName]
+		if not handler then
+			plume.error.unknowDirective(directiveNameNode, directiveName)
+		end
+		handler(unpack(options))
+	end
 end

@@ -102,7 +102,7 @@ function FOR_ITER (vm, arg1, arg2)
             result = vm.empty
         else
              ---------------------------------
-            -- WILL BE REMOVED IN 1.0 (#230)
+            -- WILL BE REMOVED IN 1.0 (#228, #230)
             ---------------------------------
             if obj.legacy then
                 result = vm.plume.obj.table(0, 2)
@@ -131,7 +131,7 @@ function FOR_ITER (vm, arg1, arg2)
             result = vm.empty
         else
              ---------------------------------
-            -- WILL BE REMOVED IN 1.0 (#230)
+            -- WILL BE REMOVED IN 1.0 (#228, #230)
             ---------------------------------
             if obj.legacy then
                 result = vm.plume.obj.table(0, 2)

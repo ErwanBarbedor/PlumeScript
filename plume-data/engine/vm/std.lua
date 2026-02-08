@@ -65,13 +65,27 @@ end
 --! inline
 function STD_ITEMS(vm, arg1, arg2)
     local args = _STACK_POP(vm.mainStack).table
+
+    ---------------------------------
+    -- WILL BE REMOVED IN 1.0 (#228, #230)
+    ---------------------------------
+    if args.legacy then
+        vm.plume.warning.deprecated(
+                    "1.0",
+                    "`?legacy` flag for macro items",
+                    "Instead of \n```\nfor x in items(t, ?legacy)\n\tx.key -> x.value\nend\n```\ndo\n```\nfor key, value in items(t)\n\tkey -> value\nend\n```",
+                    vm.runtime, vm.ip, {228, 230}
+                )
+    end
+    ---------------------------------
+
     _STACK_PUSH(vm.mainStack, {
         type = "stdIterator",
         ref  = args[1],
         flag = vm.flag.ITER_ITEMS,
         named = args.named,
         ---------------------------------
-        -- WILL BE REMOVED IN 1.0 (#230)
+        -- WILL BE REMOVED IN 1.0 (#228, #230)
         ---------------------------------
         legacy = args.legacy
         ---------------------------------
@@ -82,12 +96,26 @@ end
 --! inline
 function STD_ENUMERATE(vm, arg1, arg2)
     local args = _STACK_POP(vm.mainStack).table
+
+    ---------------------------------
+    -- WILL BE REMOVED IN 1.0 (#228, #230)
+    ---------------------------------
+    if args.legacy then
+        vm.plume.warning.deprecated(
+                    "1.0",
+                    "`?legacy` flag for macro enumerate",
+                    "Instead of \n```\nfor x in enumerate(t, ?legacy)\n\tx.index -> x.value\nend\n```\ndo\n```\nfor index, value in enumerate(t)\n\tindex -> value\nend\n```",
+                    vm.runtime, vm.ip, {228, 230}
+                )
+    end
+    ---------------------------------
+
     _STACK_PUSH(vm.mainStack, {
         type = "stdIterator",
         ref = args[1],
         flag = vm.flag.ITER_ENUMS,
         ---------------------------------
-        -- WILL BE REMOVED IN 1.0 (#230)
+        -- WILL BE REMOVED IN 1.0 (#228, #230)
         ---------------------------------
         legacy = args.legacy
         ---------------------------------
@@ -102,10 +130,23 @@ function STD_IMPORT(vm, arg1, arg2)
     local firstFilename = vm.runtime.files[1].name
     local lastFilename  = vm.runtime.files[vm.fileStack[vm.fileStack.pointer]].name
 
+    ---------------------------------
+    -- WILL BE REMOVED IN 1.0 (#235, #230)
+    ---------------------------------
+    if args.legacy then
+        vm.plume.warning.deprecated(
+            "1.0",
+            "`?lua` flag for macro import",
+            "Instead of \n`$import(<path>, ?lua)`, use `lua.require(<path>)`",
+            vm.runtime, vm.ip, {235, 230}
+        )
+    end
+    ---------------------------------
+
     local filename, searchPaths = vm.plume.getFilenameFromPath(
         args.table[1],
         ---------------------------------
-        -- WILL BE REMOVED IN 1.0 (#230)
+        -- WILL BE REMOVED IN 1.0 (#235, #230)
         ---------------------------------
         args.table.lua,
         ---------------------------------
@@ -116,7 +157,7 @@ function STD_IMPORT(vm, arg1, arg2)
 
     if filename then
         ---------------------------------
-        -- WILL BE REMOVED IN 1.0 (#230)
+        -- WILL BE REMOVED IN 1.0 (#235, #230)
         ---------------------------------
         if args.table.lua then
             local result = dofile(filename)(vm.plume)
