@@ -53,9 +53,10 @@ return function (plume)
     	local msg = msg .. "\n" .. plume.error.formatLine(lineInfos)
 
 	    if help then
-	    	msg = msg .. "\n" .. "=== Migration help ==="
+	    	msg = msg .. "\n" .. "- - - - - - - -"
+	    	msg = msg .. "\n" .. "Migration help:"
 	        msg = msg .. "\n" .. help
-	        msg = msg .. "\n" .. "======================"
+	        msg = msg .. "\n" .. "- - - - - - - -"
 	    end
 
 	    if mode == "strict" then
@@ -87,8 +88,15 @@ return function (plume)
 	--- @param issues table Identifier for the issue (e.g., GitHub issue number).
 	function plume.warning.deprecated(version, description, help, runtime, ip, issues)
 	    help = "  "..help:gsub('\n', '\n  ')
+	    local issueLabel = ""
+	    if #issues > 1 then
+	    	issueLabel = "(Issues " .. table.concat(issues, ", ") .. ")"
+	    elseif #issues == 1 then
+	    	issueLabel = "(Issue " .. issues[1] .. ")"
+	    end
+
 	    plume.warning.runtimeWarning(
-	        string.format("%s will be removed in version %s (Issues %s).", description, version, table.concat(issues, ", ")),
+	        string.format("%s will be removed in version %s %s.", description, version, issueLabel),
 	        help,
 	        runtime,
 	        ip
