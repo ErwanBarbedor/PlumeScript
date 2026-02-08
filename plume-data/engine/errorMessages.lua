@@ -37,6 +37,10 @@ return function(plume)
 		throwCompilationError(node, message)
 	end
 
+	function plume.error.unknowDirective(node, name)
+		local message = string.format("Cannot use directive '%s': it doesn't exists.", name)
+		throwCompilationError(node, message)
+	end
 
 	function plume.error.compoundWithDestructionError(node)
 		local message = "Cannot use compound operator and destructuration at the same time."
