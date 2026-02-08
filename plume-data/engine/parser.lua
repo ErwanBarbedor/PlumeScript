@@ -326,7 +326,7 @@ return function (plume)
         local setvarlist = Ct("VARLIST", setvar * (os * P"," * os * setvar)^0)
         
         local let = Ct("LET", P"let" * statconst * s * letvarlist * (
-                                  os * C("EQ", P"=") * lbody
+                                  os * P"=" * lbody
                                 + s  * C("FROM", P"from") * s * lbody
                             )^-1)
 
@@ -352,7 +352,7 @@ return function (plume)
 
         local _do = Ct("DO", os * P"do" * body * _end)
 
-        local inlinetable = Ct("INLINE_TABLE", os * P"(" * arg * (P"," * arg)^1 * P")")
+        local inlinetable = Ct("INLINE_TABLE", os * P"(" * arg * (P"," * os * arg)^1 * P")")
 
         ----------
         -- main --

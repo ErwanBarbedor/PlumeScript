@@ -147,7 +147,7 @@ return function (plume)
 
 
 
-		for _, child in ipairs(node.children or {}) do
+		for i, child in ipairs(node.children or {}) do
 			child.parent = node
 			local childType = plume.ast.markType(child)
 
@@ -176,7 +176,11 @@ return function (plume)
 				elseif node.type == "TEXT" and childType == "VALUE" then
 					node.type = "TEXT"
 				elseif childType ~= "EMPTY" and node.type ~= childType then
-					plume.error.mixedBlockError(child, node.type, childType)
+					if node.parent and (node.parent.name == "ELSE" or node.parent.name == "ELSEIF") and i==1 then
+						plume.error.mixedBlockErrorInsideIf(child, node.type, childType, node.parent.name)
+					else
+						plume.error.mixedBlockError(child, node.type, childType)
+					end
 				end
 			end
 		end
