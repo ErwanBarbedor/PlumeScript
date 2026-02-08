@@ -64,3 +64,23 @@ end
 /// Output
 quill Bar baz
 /// End
+
+/// Test FOR VALUE
+let t = for i in seq(5)
+  - $(2*i)
+end
+$t[2]
+/// Output
+4
+/// End
+
+/// Test WHILE VALUE
+let i = 100
+let t = while i>0
+  - $i
+  set i -= 1
+end
+$t[2]
+/// Output
+99
+/// End

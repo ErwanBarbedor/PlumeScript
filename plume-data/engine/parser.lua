@@ -326,7 +326,7 @@ return function (plume)
         local setvarlist = Ct("VARLIST", setvar * (os * P"," * os * setvar)^0)
         
         local let = Ct("LET", P"let" * statconst * s * letvarlist * (
-                                  os * C("EQ", P"=") * lbody
+                                  os * P"=" * lbody
                                 + s  * C("FROM", P"from") * s * lbody
                             )^-1)
 
