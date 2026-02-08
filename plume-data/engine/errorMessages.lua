@@ -192,6 +192,11 @@ return function(plume)
 		throwSyntaxError(node, message)
 	end
 
+	function plume.error.mixedBlockErrorInsideIf(node, expected, found, parentName)
+		local message = string.format("Mixed block: The previous branches of this if statement were of type %s, but this %s body is of type %s.\nAll branches of an if statement must be of the same type.", expected, parentName:lower(), found)
+		throwSyntaxError(node, message)
+	end
+
 	function plume.error.compilationCannotOpenFile(node, path, searchPaths)
 		local message = string.format("Cannot open '%s'.\nPaths tried:\n\t%s", path, table.concat(searchPaths, '\n\t'))
 		throwCompilationError(node, message)

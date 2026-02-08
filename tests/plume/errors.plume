@@ -208,19 +208,6 @@ File 'MixedBlockError 4', line 3: - nib
                                   ^^^^^
 /// End
 
-/// Test MixedBlockError 5
-Wing
-if true
-    quill
-else
-    - nib
-end
-/// Error
-Syntax error: Mixed block: the expected type of the block is TEXT, but it contains an element TABLE.
-File 'MixedBlockError 5', line 5: - nib
-                                  ^^^^^
-/// End
-
 /// Test MixedBlockError 6
 Wing
 if true

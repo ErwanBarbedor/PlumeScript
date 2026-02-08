@@ -104,3 +104,59 @@ $(len(x))
 table
 0
 /// End
+
+/// Test IF auto unbalanced 1
+let x = if true
+  - Wing
+else
+  Nib
+end
+/// Error
+Syntax error: Mixed block: The previous branches of this if statement were of type TABLE, but this else body is of type TEXT.
+All branches of an if statement must be of the same type.
+File 'IF auto unbalanced 1', line 4: Nib
+                                     ^^^
+/// End
+
+/// Test IF auto unbalanced 2
+let x = if true
+  Wing
+else
+  - Nib
+end
+/// Error
+Syntax error: Mixed block: The previous branches of this if statement were of type VALUE, but this else body is of type TABLE.
+All branches of an if statement must be of the same type.
+File 'IF auto unbalanced 2', line 4: - Nib
+                                     ^^^^^
+/// End
+
+/// Test IF auto unbalanced 3
+let x = if true
+  Wing
+elseif false
+  Foo
+else
+  - Nib
+end
+/// Error
+Syntax error: Mixed block: The previous branches of this if statement were of type TEXT, but this else body is of type TABLE.
+All branches of an if statement must be of the same type.
+File 'IF auto unbalanced 3', line 6: - Nib
+                                     ^^^^^
+/// End
+
+/// Test IF auto unbalanced 4
+let x = if true
+  Wing
+elseif false
+  - Foo
+else
+  - Nib
+end
+/// Error
+Syntax error: Mixed block: The previous branches of this if statement were of type VALUE, but this elseif body is of type TABLE.
+All branches of an if statement must be of the same type.
+File 'IF auto unbalanced 4', line 4: - Foo
+                                     ^^^^^
+/// End
