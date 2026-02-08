@@ -66,4 +66,11 @@ return function (plume)
 	        ip
 	    )
 	end
+
+	function plume.warning.deprecatedFunction(version, description, help, issue, f)
+		return function (args, runtime, _, ip)
+			plume.warning.deprecated(version, description, help, runtime, ip, issue)
+			return f(args, runtime, _, ip)
+		end
+	end
 end
