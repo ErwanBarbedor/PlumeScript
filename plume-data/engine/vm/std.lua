@@ -130,6 +130,19 @@ function STD_IMPORT(vm, arg1, arg2)
     local firstFilename = vm.runtime.files[1].name
     local lastFilename  = vm.runtime.files[vm.fileStack[vm.fileStack.pointer]].name
 
+    ---------------------------------
+    -- WILL BE REMOVED IN 1.0 (#235, #230)
+    ---------------------------------
+    if args.legacy then
+        vm.plume.warning.deprecated(
+            "1.0",
+            "`?lua` flag for macro import",
+            "Instead of \n`$import(<path>, ?lua)`, use `lua.require(<path>)`",
+            vm.runtime, vm.ip, {235, 230}
+        )
+    end
+    ---------------------------------
+
     local filename, searchPaths = vm.plume.getFilenameFromPath(
         args.table[1],
         ---------------------------------
