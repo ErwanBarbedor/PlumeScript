@@ -35,8 +35,8 @@ return function (plume)
     ---------------------------------
     -- WILL BE REMOVED IN 1.0 (#230)
     ---------------------------------
-    plume.stdLua.remove = plume.warning.deprecatedFunction("1.0", "`remove` standard macro", "Instead `remove`, use `able.remove`", 175, remove)
-    plume.stdLua.append = plume.warning.deprecatedFunction("1.0", "`append` standard macro", "Instead `append`, use `table.append`", 175, append)
+    plume.stdLua.remove = plume.warning.deprecatedFunction("1.0", "`remove` standard macro", "Instead of `remove`, use `able.remove`", 175, remove)
+    plume.stdLua.append = plume.warning.deprecatedFunction("1.0", "`append` standard macro", "Instead of `append`, use `table.append`", 175, append)
     ---------------------------------
     for name, f in pairs(plume.stdLua) do
         plume.std[name] = plume.obj.luaFunction(name, f)
