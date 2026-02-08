@@ -352,7 +352,7 @@ return function (plume)
 
         local _do = Ct("DO", os * P"do" * body * _end)
 
-        local inlinetable = Ct("INLINE_TABLE", os * P"(" * arg * (P"," * arg)^1 * P")")
+        local inlinetable = Ct("INLINE_TABLE", os * P"(" * arg * (P"," * os * arg)^1 * P")")
 
         ----------
         -- main --
