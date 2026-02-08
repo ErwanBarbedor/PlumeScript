@@ -16,6 +16,7 @@ If not, see <https://www.gnu.org/licenses/>.
 return function (plume)
 	plume.warning = {}
 	plume.warning.cache = {}
+	plume.warning.mode = {default="normal"}
 
 	--- Emits a warning with deduplication.
 	--- Displays the warning once per unique message globally, and once per specific
@@ -25,6 +26,12 @@ return function (plume)
 	--- @param help string|nil detailed help text (displayed once globally, then omitted)
 	--- @param node node Warning source in the code
 	function plume.warning.throwWarning(msg, help, node)
+		local mode = plume.warning.mode.default
+
+		if mode == "ignore" then
+			return
+		end
+
 	    if plume.warning.cache[msg] then
 	        help = nil
 	    else
@@ -36,14 +43,25 @@ return function (plume)
 	    end
 	    plume.warning.cache[msg][node] = true
 
-	    print("Warning: " .. msg)
-	    local lineInfos = plume.error.getLineInfos(node)
-	    print(plume.error.formatLine(lineInfos))
+	    if mode == "normal" then
+		    msg = "Warning: " .. msg
+		else
+			 msg = "(Warning strict mode) " .. msg
+		end
+
+    	local lineInfos = plume.error.getLineInfos(node)
+    	local msg = msg .. "\n" .. plume.error.formatLine(lineInfos)
 
 	    if help then
-	    	print("=== Migration help ===")
-	        print(help)
-	        print("======================")
+	    	msg = msg .. "\n" .. "=== Migration help ==="
+	        msg = msg .. "\n" .. help
+	        msg = msg .. "\n" .. "======================"
+	    end
+
+	    if mode == "strict" then
+	    	plume.error.customError (node, msg)
+	    else
+	    	print(msg)
 	    end
 	end
 

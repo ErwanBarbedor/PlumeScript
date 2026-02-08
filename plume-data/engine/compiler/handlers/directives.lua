@@ -52,7 +52,28 @@ return function (plume, context, nodeHandlerTable)
         return result
 	end
 
-	local directivesHandler = {}
+	local directivesHandler = {
+		warning = function (...)
+			local mode = "normal"
+			local filters = {}
+
+			for _, x in ipairs({...}) do
+				if x == "strict" or x == "ignore" or x == "normal" then
+					mode = x
+				else
+					table.insert(filters, x)
+				end
+			end
+
+			if #filters == 0 then
+				plume.warning.mode.default = mode
+			else
+				for _, x in ipairs(filters) do
+					plume.warning.mode[x] = mode
+				end
+			end
+		end
+	}
 
 	--- `use #name-optn-optn`
 	nodeHandlerTable.USE_DIRECTIVE = function(node)

@@ -22,6 +22,10 @@ return function(plume)
 		error(message, -1)
 	end
 
+	function plume.error.customError (node, message)
+		error(message, -1)
+	end
+
 	function plume.error.cannotAddPositionnalAfterNamed(node, varName)
 		local message = "Cannot add a positionnal parameter after a named one"
 		throwCompilationError(node, message)
