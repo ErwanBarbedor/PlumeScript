@@ -84,3 +84,23 @@ $t[2]
 /// Output
 99
 /// End
+
+/// Test IF auto balance (text)
+let x = if false
+  Wing
+end
+$(x == empty)
+/// Output
+true
+/// End
+
+/// Test IF auto balance (table)
+let x = if false
+  - Wing
+end
+$(type(x))\n
+$(len(x))
+/// Output
+table
+0
+/// End
