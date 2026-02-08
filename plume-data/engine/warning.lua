@@ -66,11 +66,11 @@ return function (plume)
 	--- @param help string migration instructions or alternatives
 	--- @param runtime table current execution context
 	--- @param ip number instruction pointer identifying the call site
-	--- @param issue string Unique identifier for the issue (e.g., GitHub issue number).
-	function plume.warning.deprecated(version, description, help, runtime, ip, issue)
+	--- @param issues table Identifier for the issue (e.g., GitHub issue number).
+	function plume.warning.deprecated(version, description, help, runtime, ip, issues)
 	    help = "  "..help:gsub('\n', '\n  ')
 	    plume.warning.runtimeWarning(
-	        string.format("%s will be removed in version %s (#%s).", description, version, issue),
+	        string.format("%s will be removed in version %s (Issues %s).", description, version, table.concat(issues, ", ")),
 	        help,
 	        runtime,
 	        ip
@@ -81,12 +81,12 @@ return function (plume)
     --- @param version string target version for removal (e.g., "1.0")
 	--- @param description string description of the deprecated feature
 	--- @param help string migration instructions or alternatives
-    --- @param issue string Unique identifier for the issue (e.g., GitHub issue number).
+    --- @param issues table Identifier for the issue (e.g., GitHub issue number).
     --- @param f function The original function to be wrapped.
     --- @return function A new function that executes `f` after emitting the deprecation warning.
-	function plume.warning.deprecatedFunction(version, description, help, issue, f)
+	function plume.warning.deprecatedFunction(version, description, help, issues, f)
 		return function (args, runtime, _, ip)
-			plume.warning.deprecated(version, description, help, runtime, ip, issue)
+			plume.warning.deprecated(version, description, help, runtime, ip, issues)
 			return f(args, runtime, _, ip)
 		end
 	end

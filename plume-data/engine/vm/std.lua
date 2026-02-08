@@ -74,7 +74,7 @@ function STD_ITEMS(vm, arg1, arg2)
                     "1.0",
                     "`?legacy` flag for macro items",
                     "Instead of \n```\nfor x in items(t, ?legacy)\n\tx.key -> x.value\nend\n```\ndo\n```\nfor key, value in items(t)\n\tkey -> value\nend\n```",
-                    vm.runtime, vm.ip, 228
+                    vm.runtime, vm.ip, {228, 230}
                 )
     end
     ---------------------------------
@@ -105,7 +105,7 @@ function STD_ENUMERATE(vm, arg1, arg2)
                     "1.0",
                     "`?legacy` flag for macro enumerate",
                     "Instead of \n```\nfor x in enumerate(t, ?legacy)\n\tx.index -> x.value\nend\n```\ndo\n```\nfor index, value in enumerate(t)\n\tindex -> value\nend\n```",
-                    vm.runtime, vm.ip, 228
+                    vm.runtime, vm.ip, {228, 230}
                 )
     end
     ---------------------------------
