@@ -8,7 +8,7 @@ Wing
 /// End
 
 /// Test positionnal
-let t = $table(quill, mark)
+let t = (quill, mark)
 
 let a, b = $t
 a=$a\n
@@ -19,7 +19,7 @@ b=mark
 /// End
 
 /// Test positionnal with set
-let t = $table(quill, mark)
+let t = (quill, mark)
 
 let a, b
 set a, b = $t
