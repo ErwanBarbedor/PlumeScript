@@ -26,8 +26,11 @@ return function (plume)
 	--- @param msg string the warning message
 	--- @param help string|nil detailed help text (displayed once globally, then omitted)
 	--- @param node node Warning source in the code
-	function plume.warning.throwWarning(msg, help, node)
+	function plume.warning.throwWarning(msg, help, node, issues)
 		local mode = plume.warning.mode.default
+		for _, issue in ipairs(issues) do
+			mode = plume.warning.mode[tostring(issue)] or mode
+		end
 
 		if mode == "ignore" then
 			return
@@ -79,9 +82,10 @@ return function (plume)
 	--- @param help string|nil detailed help text (displayed once globally, then omitted)
 	--- @param runtime table current execution context
 	--- @param ip number instruction pointer identifying the call site
-	function plume.warning.runtimeWarning(msg, help, runtime, ip)
+	--- @param issues table Identifier for the issue (e.g., GitHub issue number).
+	function plume.warning.runtimeWarning(msg, help, runtime, ip, issues)
 	    local node = plume.error.getNode(runtime, ip)
-	    plume.warning.throwWarning(msg, help, node)
+	    plume.warning.throwWarning(msg, help, node, issues)
 	end
 
 	--- Emits a deprecation warning for features scheduled for removal.
@@ -106,7 +110,7 @@ return function (plume)
 	        string.format("%s will be removed in version %s %s.", description, version, issueLabel),
 	        help,
 	        runtime,
-	        ip
+	        ip, issues
 	    )
 	end
 
