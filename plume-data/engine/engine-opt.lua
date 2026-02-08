@@ -1143,7 +1143,7 @@ return function (plume)
                                             local _ret146
                                             mainStackPointer = mainStackPointer - 1
                                             _ret146 = mainStack[mainStackPointer + 1]
-                                            local success, result = pcall (tocall.callable, _ret146, runtime, _ret145)
+                                            local success, result = pcall (tocall.callable, _ret146, runtime, _ret145, ip)
                                             if success then
                                                 table.remove (runtime.callstack)
                                                 if result == nil then
@@ -3390,7 +3390,7 @@ return function (plume)
                                         _ret330 = mainStack[mainStackPointer + 1]
                                         local args = _ret330.table
                                         if args.legacy then
-                                            plume.warning.deprecated ("1.0", "`?legacy` flag for macro items", "Instead of \n```\nfor x in enumerate(t, ?legacy)\n\tx.key -> x.value\nend\n```\ndo\n```\nfor key, value in enumerate(t)\n\tkey -> value\nend\n```", runtime, ip, 230)
+                                            plume.warning.deprecated ("1.0", "`?legacy` flag for macro items", "Instead of \n```\nfor x in items(t, ?legacy)\n\tx.key -> x.value\nend\n```\ndo\n```\nfor key, value in items(t)\n\tkey -> value\nend\n```", runtime, ip, 230)
                                         end
                                         mainStackPointer = mainStackPointer + 1
                                         mainStack[mainStackPointer] = {type = "stdIterator", ref = args[1], flag = ITER_ITEMS, named = args.named, legacy = args.legacy}
